@@ -1,0 +1,89 @@
+############################################################
+# +------------------------------------------------------+ #
+# |                     - Config -                       | #
+# |               Plugin by Christian34	  	      	     | #
+# +------------------------------------------------------+ #
+############################################################
+
+config:
+  enabled: true
+  # do not modify the version
+  version: 1.6.3
+  # default language (en_EN, de_DE, it_IT)
+  lang: en_EN
+  # use bungeecord for chat transmitting and receiving
+  bungeecord: false
+  # sql for bungeecord usage
+  sql:
+    enabled: false
+    host: 'localhost'
+    port: 3306
+    database: 'EasyPrefix'
+    username: 'username'
+    password: 'password'
+    table-prefix: 'ep'
+  # allow easyprefix to set join and quit messages
+  # messages can be changed in 'groups.yml'
+  join-quit-messages:
+    # let easyprefix manage join and quit messages
+    enabled: true
+    # hide join/quit messages
+    hide-messages: false
+    # modify or enable/disable the sounds when a player joins/quits the game
+    sound:
+      # define who receives the sound | "all" for all online player; "player" for the player who joined/quit
+      receiver: all
+      join:
+        enabled: true
+        # sound_name; volume; pitch
+        sound: "ENTITY_EXPERIENCE_ORB_PICKUP; 20; 1"
+      quit:
+        enabled: true
+        # sound_name; volume; pitch
+        sound: "ENTITY_EXPERIENCE_BOTTLE_THROW; 18; 1"
+  user:
+    # allow players to create custom prefixes (requires permission EasyPrefix.chat.custom)
+    custom-prefix:
+      enabled: false
+  # groups can mixed with subgroups - please look up my github wiki for more informations
+  subgroups:
+    # show context menu for subgroups | only visible if necessary
+    enabled: true
+  # allow players to define their gender (placeholder: %ep_user_gender%) | works only if subgroups are enabled!
+  gender:
+    enabled: true
+    # force a player to select a gender
+    force-gender: true
+    # you must add it also in your messages file (en_EN.yml, de_DE.yml, it_IT.yml)
+    types:
+      - female
+      - male
+      - intersex
+  # settings for the gui
+  gui:
+    # Specifies if all colors and formattings should be visible, even if the player has no permissions for it.
+    show-all-chatcolors: true
+  # settings for chat appearance
+  chat:
+    # false removes all duplicate spaces
+    duplicate-white-spaces: false
+    color:
+      # requires permission EasyPrefix.color.rainbow
+      rainbow:
+        # please use valid chat colors, if you do not know the names, please lookup at
+        # https://minecraft.gamepedia.com/Formatting_codes#Color_codes
+        colors:
+          - YELLOW
+          - BLUE
+          - LIGHT_PURPLE
+          - RED
+          - DARK_AQUA
+          - GOLD
+          - GREEN
+          - DARK_PURPLE
+  discordsrv:
+    log-chat: false
+    channel:
+      id: "680804158928191530"
+      name: "bungee-log"
+    log-joinquit: false

@@ -1,0 +1,14 @@
+name: EasyPrefix
+version: 1.6.4_R1
+author: Christian34
+main: com.christian34.easyprefix.EasyPrefix
+api-version: "1.13"
+softdepend:
+  - PlaceholderAPI
+  - Vault
+  - Venture
+  - DiscordSRV
+commands:
+  EasyPrefix:
+    description: Main command
+    aliases: [ep, easyp, eprefix]
