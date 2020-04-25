@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.setup.responder.gui;
 
 import com.christian34.easyprefix.groups.EasyGroup;
+import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.Button;
@@ -43,6 +44,36 @@ public class EditGroup {
                 return null;
             } else {
                 easyGroup.setSuffix(answer);
+                user.sendMessage(Messages.getText(Message.INPUT_SAVED));
+                return "correct";
+            }
+        });
+    }
+
+    public void editJoinMessage() {
+        if (!(easyGroup instanceof Group)) return;
+        Group group = (Group) easyGroup;
+        new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: &7" + group.getJoinMessage().replace("§", "&"), (answer) -> {
+            if (answer.equals("cancelled")) {
+                user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
+                return null;
+            } else {
+                group.setJoinMessage(answer);
+                user.sendMessage(Messages.getText(Message.INPUT_SAVED));
+                return "correct";
+            }
+        });
+    }
+
+    public void editQuitMessage() {
+        if (!(easyGroup instanceof Group)) return;
+        Group group = (Group) easyGroup;
+        new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: &7" + group.getJoinMessage().replace("§", "&"), (answer) -> {
+            if (answer.equals("cancelled")) {
+                user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
+                return null;
+            } else {
+                group.setQuitMessage(answer);
                 user.sendMessage(Messages.getText(Message.INPUT_SAVED));
                 return "correct";
             }

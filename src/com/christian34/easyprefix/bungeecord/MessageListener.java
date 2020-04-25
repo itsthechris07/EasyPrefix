@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.bungeecord;
 
-import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
 import com.google.common.io.ByteArrayDataInput;
@@ -9,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+@Deprecated
 public class MessageListener implements PluginMessageListener {
 
     @Override

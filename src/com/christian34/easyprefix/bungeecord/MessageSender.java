@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class MessageSender {
 
     public void sendChat(Player sender, ArrayList<Player> blockedPlayers, String text) {

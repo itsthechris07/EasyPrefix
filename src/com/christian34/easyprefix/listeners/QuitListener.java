@@ -66,7 +66,6 @@ public class QuitListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit2(PlayerQuitEvent e) {
         if (EasyPrefix.getInstance().isUseBungee()) {
-            Bukkit.broadcastMessage("quit");
             final String playerName = e.getPlayer().getName();
             final String quitMessage = e.getQuitMessage();
             Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {

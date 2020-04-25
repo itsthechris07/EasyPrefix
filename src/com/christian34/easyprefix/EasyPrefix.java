@@ -5,7 +5,6 @@ import com.christian34.easyprefix.commands.CommandListener;
 import com.christian34.easyprefix.commands.TabComplete;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
@@ -13,20 +12,16 @@ import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.Gender;
-import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
-import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.sql.SQLException;
-import java.util.Set;
 
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance;
@@ -43,14 +38,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void onDisable() {
-        if (getDatabase() != null) {
-            try {
-                if (getDatabase().getConnection() != null && !getDatabase().getConnection().isClosed()) {
-                    getDatabase().getConnection().close();
-                }
-            } catch(SQLException ignored) {
-            }
-        }
+        if (getDatabase() != null) getDatabase().close();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player != null) player.closeInventory();
         }
@@ -80,8 +68,6 @@ public class EasyPrefix extends JavaPlugin {
             this.database = new Database();
         }
         GroupHandler.load();
-        String configVersion = cfg.getFileData().getString("config.version");
-        if (configVersion == null) update();
         PluginCommand mainCmd = getCommand("EasyPrefix");
         if (mainCmd != null) {
             mainCmd.setExecutor(new CommandListener());
@@ -125,30 +111,6 @@ public class EasyPrefix extends JavaPlugin {
         Gender.load();
         GroupHandler.load();
         RainbowEffect.getRainbowColors().clear();
-    }
-
-    private void update() {
-        Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + "§cYour configuration is not up to date!");
-        Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + "§cUpdating files...");
-        ConfigData config = FileManager.getConfig();
-        GroupsData groups = FileManager.getGroups();
-        try {
-            Set<String> oldGroups = config.getFileData().getConfigurationSection("config.prefix").getKeys(false);
-            for (String name : oldGroups) {
-                groups.getFileData().set("groups." + name + ".prefix", config.getFileData().getString("config.prefix." + name + ".prefix"));
-                groups.getFileData().set("groups." + name + ".suffix", config.getFileData().getString("config.prefix." + name + ".suffix"));
-                groups.getFileData().set("groups." + name + ".chat-color", config.getFileData().getString("config.prefix." + name + ".chatcolor"));
-            }
-            File file = new File(getDataFolder(), "config.yml");
-            file.renameTo(new File(getDataFolder(), "old-config.yml"));
-            groups.save();
-        } catch(Exception ignored) {
-        }
-        config.getFileData().set("config.prefix", null);
-        config.getFileData().set("config.version", VersionController.getPluginVersion());
-        config.getFileData().set("config.enabled", true);
-        config.save();
-        Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + "§bFiles have been updated!");
     }
 
     private void registerEvents() {

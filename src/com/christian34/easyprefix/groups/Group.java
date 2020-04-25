@@ -81,9 +81,11 @@ public class Group extends EasyGroup {
             for (String target : childs) {
                 if (Gender.getTypes().contains(target)) {
                     String genderPrefix = data.getString(getFilePath() + target + ".prefix");
-                    if (genderPrefix != null) getGroupsData().set(getFilePath() + ".genders." + target + ".prefix", genderPrefix);
+                    if (genderPrefix != null)
+                        getGroupsData().set(getFilePath() + ".genders." + target + ".prefix", genderPrefix);
                     String genderSuffix = data.getString(getFilePath() + target + ".suffix");
-                    if (genderSuffix != null) getGroupsData().set(getFilePath() + ".genders." + target + ".suffix", genderSuffix);
+                    if (genderSuffix != null)
+                        getGroupsData().set(getFilePath() + ".genders." + target + ".suffix", genderSuffix);
                     data.set(getFilePath() + target, null);
                 }
             }
@@ -111,7 +113,7 @@ public class Group extends EasyGroup {
     private void applyData(String prefix, String suffix, String chatColor, String chatFormatting, String joinMessage, String quitMessage) throws Exception {
         this.prefix = translate(prefix);
         this.rawPrefix = prefix.replace("§", "&");
-        this.suffix = translate( suffix);
+        this.suffix = translate(suffix);
         this.rawSuffix = suffix.replace("§", "&");
 
         if (chatColor == null || chatColor.length() < 2) {
@@ -304,6 +306,16 @@ public class Group extends EasyGroup {
         }
         GroupHandler.getGroups().remove(NAME.toLowerCase());
         User.getUsers().clear();
+    }
+
+    public void setJoinMessage(String joinMessage) {
+        this.joinMessage = translate(joinMessage);
+        saveData("join-msg", this.joinMessage);
+    }
+
+    public void setQuitMessage(String quitMessage) {
+        this.quitMessage = translate(quitMessage);
+        saveData("quit-msg", this.quitMessage);
     }
 
     private String translate(String text) {

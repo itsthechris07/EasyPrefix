@@ -109,8 +109,8 @@ public class GroupHandler {
         } else {
             Database database = EasyPrefix.getInstance().getDatabase();
             if (!database.exists("SELECT `prefix` FROM `%p%groups` WHERE `group` = 'default'")) {
-                database.update("INSERT INTO `%p%groups`(`group`, `prefix`, `suffix`, `chat_color`, `join_msg`, " + "`quit_msg`) " + "VALUES ('default','&7','&f:','&7','&8» %ep_user_prefix%%player% &7joined the game','&8« %ep_user_prefix%%player% &7left the game')");
-                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" + " with: /easyprefix database migrate");
+                database.update("INSERT INTO `%p%groups`(`group`, `prefix`, `suffix`, `chat_color`, `join_msg`, `quit_msg`) " + "VALUES ('default','&7','&f:','&7','&8» %ep_user_prefix%%player% &7joined the game','&8« %ep_user_prefix%%player% &7left the game')");
+                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data with: /easyprefix database migrate");
             }
         }
     }

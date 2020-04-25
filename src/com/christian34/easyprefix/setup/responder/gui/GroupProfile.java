@@ -34,8 +34,8 @@ public class GroupProfile {
     }
 
     public void openGroupProfile(Group group) {
-        CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 5);
-        Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(3, 3);
+        CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 4);
+        Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(2, 3);
         String prefix = group.getRawPrefix();
         if (prefix.length() > 25) {
             List<String> lore = new ArrayList<>();
@@ -50,7 +50,7 @@ public class GroupProfile {
         }
         inventory.addItem(prefixBtn);
 
-        Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(3, 5);
+        Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(2, 5);
         String suffix = group.getRawSuffix();
 
         if (suffix.length() > 25) {
@@ -66,6 +66,38 @@ public class GroupProfile {
         }
 
         inventory.addItem(suffixBtn);
+
+
+        Button joinBtn = new Button(Material.BLAZE_ROD, "§aJoin Message", null).setSlot(3, 4);
+        String joinMsg = group.getJoinMessage().replace("§", "&");
+        if (joinMsg.length() > 25) {
+            List<String> lore = new ArrayList<>();
+            lore.add(this.DIVIDER);
+            lore.add(Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + joinMsg.substring(0, 25));
+            lore.add("§f" + joinMsg.substring(26) + "§7»");
+            lore.add(" ");
+            lore.add(Messages.getText(Message.LORE_EDIT, user));
+            joinBtn.setLore(lore);
+        } else {
+            joinBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + joinMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        }
+
+        inventory.addItem(joinBtn);
+
+        Button quitBtn = new Button(Material.STICK, "§aQuit Message", null).setSlot(3, 6);
+        String quitMsg = group.getQuitMessage().replace("§", "&");
+        if (quitMsg.length() > 25) {
+            List<String> lore = new ArrayList<>();
+            lore.add(this.DIVIDER);
+            lore.add(Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + quitMsg.substring(0, 25));
+            lore.add("§f" + quitMsg.substring(26) + "§7»");
+            lore.add(" ");
+            lore.add(Messages.getText(Message.LORE_EDIT, user));
+            quitBtn.setLore(lore);
+        } else {
+            quitBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + quitMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        }
+        inventory.addItem(quitBtn);
 
         String groupChatColor = "-";
 
@@ -96,7 +128,7 @@ public class GroupProfile {
         } else {
             chatColor = new Button(Material.LIME_DYE, Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);
         }
-        chatColor = chatColor.setSlot(3, 7);
+        chatColor = chatColor.setSlot(2, 7);
         inventory.addItem(chatColor);
         new GuiRespond(user, inventory, (respond) -> {
             String name = respond.getDisplayName();
@@ -112,6 +144,10 @@ public class GroupProfile {
                     editGroupPage.editChatColor();
                 } else if (name.equals(Messages.getText(Message.BTN_DELETE))) {
                     editGroupPage.deleteConfirmation();
+                } else if (name.equals("§aJoin Message")) {
+                    editGroupPage.editJoinMessage();
+                } else if (name.equals("§aQuit Message")) {
+                    editGroupPage.editQuitMessage();
                 }
             }
         });

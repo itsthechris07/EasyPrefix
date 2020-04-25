@@ -39,6 +39,17 @@ public class Database {
         return connection;
     }
 
+    public void close() {
+        synchronized(this) {
+            try {
+                if (getConnection() != null && !getConnection().isClosed()) {
+                    getConnection().close();
+                }
+            } catch(SQLException ignored) {
+            }
+        }
+    }
+
     private void connect() {
         synchronized(this) {
             try {
@@ -118,7 +129,7 @@ public class Database {
         Set<String> groups = data.getConfigurationSection("groups").getKeys(false);
         for (String groupName : groups) {
             try {
-                String sql = "INSERT INTO ` %p%groups`(`group`) VALUES (?)";
+                String sql = "INSERT INTO `%p%groups`(`group`) VALUES (?)";
                 PreparedStatement stmt = prepareStatement(sql);
                 stmt.setString(1, groupName);
                 stmt.executeUpdate();
@@ -126,8 +137,7 @@ public class Database {
             } catch(SQLIntegrityConstraintViolationException ignored) {
             }
 
-            String sql = "UPDATE ` %p%groups` SET `prefix`= ?,`suffix`= ?,`chat_color`= ?,`chat_formatting`= ?," +
-                    "`join_msg`= ?,`quit_msg`= ? WHERE `group` = ?";
+            String sql = "UPDATE `%p%groups` SET `prefix`= ?,`suffix`= ?,`chat_color`= ?,`chat_formatting`= ?," + "`join_msg`= ?,`quit_msg`= ? WHERE `group` = ?";
             PreparedStatement stmt = prepareStatement(sql);
 
             String prefix = data.getString("groups." + groupName + ".prefix");
@@ -178,8 +188,7 @@ public class Database {
                     String sql3;
                     PreparedStatement stmt3;
                     if (!result.next()) {
-                        sql3 = "INSERT INTO `%p%genders`(`gender`, `type`, `group_name`, `prefix`, `suffix`) VALUES (?," +
-                                " ?, ?, ?, ?)";
+                        sql3 = "INSERT INTO `%p%genders`(`gender`, `type`, `group_name`, `prefix`, `suffix`) VALUES (?," + " ?, ?, ?, ?)";
                         stmt3 = prepareStatement(sql3);
                         stmt3.setString(1, gender);
                         stmt3.setInt(2, 0);
@@ -188,8 +197,7 @@ public class Database {
                         stmt3.setString(5, suf);
                         stmt3.executeUpdate();
                     } else {
-                        sql3 = "UPDATE `%p%genders` SET `prefix`=?,`suffix`=? WHERE `type` = ? AND `gender` = ? AND " +
-                                "`group_name` = ?";
+                        sql3 = "UPDATE `%p%genders` SET `prefix`=?,`suffix`=? WHERE `type` = ? AND `gender` = ? AND " + "`group_name` = ?";
                         stmt3 = prepareStatement(sql3);
                         stmt3.setString(1, pref);
                         stmt3.setString(2, suf);
