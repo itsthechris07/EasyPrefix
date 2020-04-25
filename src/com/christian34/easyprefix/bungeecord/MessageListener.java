@@ -26,9 +26,6 @@ public class MessageListener implements PluginMessageListener {
 
             if (PlaceholderAPI.isEnabled()) msg = PlaceholderAPI.setPlaceholder(user.getPlayer(), msg);
             msg = setPlaceholder(user, msg.replace("%player%", user.getPlayer().getDisplayName()));
-            if (EasyPrefix.getInstance().getDiscordSRVHoster() != null) {
-                EasyPrefix.getInstance().getDiscordSRVHoster().sendJoinQuitMessage(msg);
-            }
             Bukkit.broadcastMessage(msg);
         }
     }

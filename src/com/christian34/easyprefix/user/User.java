@@ -89,7 +89,7 @@ public class User {
                     gender = result.getString("gender");
                     forceGroup = result.getBoolean("force_group");
                 } else {
-                    String sql = "INSERT INTO `" + db.getTablePrefix() + "users`(`uuid`) VALUES (?)";
+                    String sql = "INSERT INTO `%p%users`(`uuid`) VALUES (?)";
                     PreparedStatement st = db.prepareStatement(sql);
                     st.setString(1, uniqueId.toString());
                     st.executeUpdate();
@@ -112,10 +112,10 @@ public class User {
         }
 
         this.forceGroup = forceGroup;
-        if (groupName == null) {
+        if (groupName == null || groupName.equals("")) {
             this.group = getGroupPerPerms();
         } else {
-            if (GroupHandler.isGroup(groupName) && PLAYER.hasPermission("EasyPrefix.group." + groupName) || forceGroup || groupName.equals("default")) {
+            if (GroupHandler.isGroup(groupName) && (PLAYER.hasPermission("EasyPrefix.group." + groupName) || forceGroup || groupName.equals("default"))) {
                 this.group = GroupHandler.getGroup(groupName);
             } else {
                 this.group = getGroupPerPerms();
@@ -248,7 +248,10 @@ public class User {
     }
 
     public ChatFormatting getChatFormatting() {
-        return chatFormatting;
+        if (chatFormatting != null) {
+            return chatFormatting;
+        }
+        return getGroup().getChatFormatting();
     }
 
     public void setChatFormatting(ChatFormatting chatFormatting) {
@@ -366,7 +369,7 @@ public class User {
             getUserData().set(key, value);
         } else {
             key = key.replace("-", "_");
-            String sql = "UPDATE `" + db.getTablePrefix() + "users` SET `" + key + "`=? WHERE `uuid`=?";
+            String sql = "UPDATE `%p%users` SET `" + key + "`=? WHERE `uuid`=?";
             PreparedStatement stmt = db.prepareStatement(sql);
             try {
                 stmt.setObject(1, value);

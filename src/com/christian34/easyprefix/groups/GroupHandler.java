@@ -5,8 +5,11 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
+import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
+import com.sun.istack.internal.Nullable;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -25,84 +28,91 @@ public class GroupHandler {
         groups = new ConcurrentHashMap<>();
         User.getUsers().clear();
 
+        loadDefaults();
+
         groups.put("default", new Group("default"));
 
-        if (EasyPrefix.getInstance().getDatabase() == null) {
-            if (getGroupsData().getFileData().getString("groups.default.prefix") == null) {
-                getGroupsData().set("groups.default.prefix", "&7");
-            }
-            if (getGroupsData().getFileData().getString("groups.default.suffix") == null) {
-                getGroupsData().set("groups.default.suffix", "&f:");
-            }
-            if (getGroupsData().getFileData().getString("groups.default.chat-color") == null) {
-                getGroupsData().set("groups.default.chat-color", "&7");
-            }
-            if (getGroupsData().getFileData().getString("groups.default.join-msg") == null) {
-                getGroupsData().set("groups.default.join-msg", "&8» %ep_user_prefix% %player% &8joined the game");
-            }
-            if (getGroupsData().getFileData().getString("groups.default.quit-msg") == null) {
-                getGroupsData().set("groups.default.quit-msg", "&8« %ep_user_prefix% %player% &8left the game");
-            }
+        ArrayList<String> groupNames = new ArrayList<>();
+        ArrayList<String> subgroupNames = new ArrayList<>();
 
-            Set<String> groupsList = getGroupsData().getFileData().getConfigurationSection("groups").getKeys(false);
-            for (String g : groupsList) {
-                if (g.equals("default")) continue;
-                Group group = new Group(g);
-                groups.put(g.toLowerCase(), group);
-            }
-            if (groups.isEmpty()) {
+        if (EasyPrefix.getInstance().getDatabase() == null) {
+            FileConfiguration groupsData = getGroupsData().getFileData();
+            Set<String> groupsList = groupsData.getConfigurationSection("groups").getKeys(false);
+            groupNames = new ArrayList<>(groupsList);
+            if (groupNames.isEmpty()) {
                 File old = new File(FileManager.getPluginFolder(), "groups.yml");
-                File backup = new File(FileManager.getPluginFolder(), "backup-groups.yml");
-                if (old.renameTo(backup)) {
+                if (old.renameTo(new File(FileManager.getPluginFolder(), "backup-groups.yml"))) {
                     getGroupsData().load();
                     load();
                 }
             }
             if (FileManager.getConfig().getFileData().getBoolean(ConfigData.Values.USE_SUBGROUPS.toString())) {
-                ConfigurationSection configurationSection = getGroupsData().getFileData().getConfigurationSection("subgroups");
+                ConfigurationSection configurationSection = groupsData.getConfigurationSection("subgroups");
                 if (configurationSection != null) {
-                    Set<String> subgroupsList = configurationSection.getKeys(false);
-                    for (String g : subgroupsList) {
-                        Subgroup group = new Subgroup(g);
-                        subgroups.put(g.toLowerCase(), group);
-                    }
+                    subgroupNames.addAll(configurationSection.getKeys(false));
                 }
             }
         } else {
-            Database db = EasyPrefix.getInstance().getDatabase();
-            ResultSet result = db.getValue("SELECT `group` FROM `%p%groups`");
-            ArrayList<String> groupList = new ArrayList<>();
+            Database database = EasyPrefix.getInstance().getDatabase();
+            ResultSet groupsResult = database.getValue("SELECT `group` FROM `%p%groups`");
             try {
-                while (result.next()) {
-                    groupList.add(result.getString("group"));
+                while (groupsResult.next()) {
+                    String value = groupsResult.getString("group");
+                    if (!value.equals("default")) groupNames.add(value);
                 }
             } catch(SQLException e) {
                 e.printStackTrace();
                 return;
-            }
-            for (String name : groupList) {
-                if (name.equals("default")) continue;
-                Group group = new Group(name);
-                groups.put(name.toLowerCase(), group);
             }
 
-            ResultSet result2 = db.getValue("SELECT `group` FROM `%p%subgroups`");
-            ArrayList<String> sgList = new ArrayList<>();
+            ResultSet subgroupsResult = database.getValue("SELECT `group` FROM `%p%subgroups`");
             try {
-                while (result2.next()) {
-                    sgList.add(result2.getString("group"));
+                while (subgroupsResult.next()) {
+                    String value = subgroupsResult.getString("group");
+                    subgroupNames.add(value);
                 }
             } catch(SQLException e) {
                 e.printStackTrace();
                 return;
-            }
-            for (String name : sgList) {
-                if (name.equals("default")) continue;
-                Subgroup group = new Subgroup(name);
-                subgroups.put(name.toLowerCase(), group);
             }
         }
 
+        groupNames.remove("default");
+        for (String name : groupNames) {
+            groups.put(name.toLowerCase(), new Group(name));
+        }
+
+        for (String name : subgroupNames) {
+            subgroups.put(name.toLowerCase(), new Subgroup(name));
+        }
+    }
+
+    private static void loadDefaults() {
+        if (EasyPrefix.getInstance().getDatabase() == null) {
+            GroupsData groupsData = getGroupsData();
+            FileConfiguration fileData = groupsData.getFileData();
+            if (fileData.getString("groups.default.prefix") == null) {
+                groupsData.set("groups.default.prefix", "&7");
+            }
+            if (fileData.getString("groups.default.suffix") == null) {
+                groupsData.set("groups.default.suffix", "&f:");
+            }
+            if (fileData.getString("groups.default.chat-color") == null) {
+                groupsData.set("groups.default.chat-color", "&7");
+            }
+            if (fileData.getString("groups.default.join-msg") == null) {
+                groupsData.set("groups.default.join-msg", "&8» %ep_user_prefix% %player% &8joined the game");
+            }
+            if (fileData.getString("groups.default.quit-msg") == null) {
+                groupsData.set("groups.default.quit-msg", "&8« %ep_user_prefix% %player% &8left the game");
+            }
+        } else {
+            Database database = EasyPrefix.getInstance().getDatabase();
+            if (!database.exists("SELECT `prefix` FROM `%p%groups` WHERE `group` = 'default'")) {
+                database.update("INSERT INTO `%p%groups`(`group`, `prefix`, `suffix`, `chat_color`, `join_msg`, " + "`quit_msg`) " + "VALUES ('default','&7','&f:','&7','&8» %ep_user_prefix%%player% &7joined the game','&8« %ep_user_prefix%%player% &7left the game')");
+                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" + " with: /easyprefix database migrate");
+            }
+        }
     }
 
     public static Group getGroup(String name) {
@@ -130,14 +140,20 @@ public class GroupHandler {
     }
 
     public static void createGroup(String groupName) {
-        getGroupsData().getFileData().set("groups." + groupName + ".prefix", "&6" + groupName + " &7| &8");
-        getGroupsData().getFileData().set("groups." + groupName + ".suffix", "&f:");
-        getGroupsData().getFileData().set("groups." + groupName + ".chat-color", "&7");
-        getGroupsData().getFileData().set("groups." + groupName + ".chat-formatting", "&o");
-        getGroupsData().save();
+        if (EasyPrefix.getInstance().getDatabase() == null) {
+            getGroupsData().getFileData().set("groups." + groupName + ".prefix", "&6" + groupName + " &7| &8");
+            getGroupsData().getFileData().set("groups." + groupName + ".suffix", "&f:");
+            getGroupsData().getFileData().set("groups." + groupName + ".chat-color", "&7");
+            getGroupsData().getFileData().set("groups." + groupName + ".chat-formatting", "&o");
+            getGroupsData().save();
+        } else {
+            Database database = EasyPrefix.getInstance().getDatabase();
+            database.update("INSERT INTO `%p%groups`(`group`) VALUES ('" + groupName + "')");
+        }
         getGroups().put(groupName.toLowerCase(), new Group(groupName));
     }
 
+    @Nullable
     private static GroupsData getGroupsData() {
         return groupsData;
     }

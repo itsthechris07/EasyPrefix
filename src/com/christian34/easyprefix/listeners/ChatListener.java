@@ -26,7 +26,6 @@ public class ChatListener implements Listener {
         if (e.isCancelled()) return;
         User user = User.getUser(e.getPlayer());
         String prefix = user.getPrefix();
-
         String suffix = user.getSuffix();
         String msg = e.getMessage();
         String chatColor = "";
@@ -36,43 +35,39 @@ public class ChatListener implements Listener {
             suffix = PlaceholderAPI.setPlaceholder(user.getPlayer(), suffix);
         }
 
-        if (user.getChatColor() != null || user.getChatFormatting() != null) {
-            if (user.getChatFormatting() != null && user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                msg = RainbowEffect.addRainbowEffect(msg);
-            } else {
-                chatColor = user.getChatColor().getCode();
-                if (user.getChatFormatting() != null) chatColor += user.getChatFormatting().getCode();
+        if (FileManager.getConfig().getFileData().getBoolean("config.chat.handle-colors")) {
+            ChatFormatting chatFormatting = user.getChatFormatting();
+            chatColor = user.getChatColor().getCode();
+            if (chatFormatting != null) {
+                if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
+                    msg = RainbowEffect.addRainbowEffect(msg);
+                    chatColor = "";
+                } else {
+                    chatColor += chatFormatting.getCode();
+                }
             }
-        } else {
-            if (user.getGroup().getChatFormatting() != null && user.getGroup().getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                msg = RainbowEffect.addRainbowEffect(msg);
-            } else {
-                chatColor = user.getGroup().getChatColor().getCode();
-                if (user.getGroup().getChatFormatting() != null)
-                    chatColor += user.getGroup().getChatFormatting().getCode();
-            }
-        }
 
-        if (user.getPlayer().hasPermission("EasyPrefix.Color.all")) {
-            msg = ChatColor.translateAlternateColorCodes('&', msg);
-        } else {
-            for (Color c : user.getColors()) {
-                msg = msg.replace(c.getCode().replace("§", "&"), c.getCode());
-            }
-            for (ChatFormatting formatting : user.getChatFormattings()) {
-                msg = msg.replace(formatting.getCode().replace("§", "&"), formatting.getCode());
+            if (user.getPlayer().hasPermission("EasyPrefix.Color.all")) {
+                msg = ChatColor.translateAlternateColorCodes('&', msg);
+            } else {
+                for (Color c : user.getColors()) {
+                    msg = msg.replace(c.getCode().replace("§", "&"), c.getCode());
+                }
+                for (ChatFormatting formatting : user.getChatFormattings()) {
+                    msg = msg.replace(formatting.getCode().replace("§", "&"), formatting.getCode());
+                }
             }
         }
 
         e.setMessage(msg);
         String format = prefix + user.getPlayer().getDisplayName() + suffix + " " + chatColor + e.getMessage();
+
         if (!FileManager.getConfig().getFileData().getBoolean(ConfigData.Values.DUPLICATE_WHITE_SPACES.toString())) {
             format = format.replaceAll("\\s+", " ");
         }
         e.setFormat(format.replace("%", "%%"));
-        if (EasyPrefix.getInstance().getDiscordSRVHoster() != null) {
-            EasyPrefix.getInstance().getDiscordSRVHoster().sendChat(e.getPlayer(), msg);
-        }
+
+
         if (EasyPrefix.getInstance().isUseBungee()) {
             ArrayList<Player> blockedPlayers = new ArrayList<>();
             if (e.getRecipients().size() != Bukkit.getOnlinePlayers().size()) {

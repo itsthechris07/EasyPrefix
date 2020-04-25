@@ -3,7 +3,6 @@ package com.christian34.easyprefix;
 import com.christian34.easyprefix.bungeecord.MessageListener;
 import com.christian34.easyprefix.commands.CommandListener;
 import com.christian34.easyprefix.commands.TabComplete;
-import com.christian34.easyprefix.discordsrv.DiscordSRVHoster;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
@@ -33,15 +32,10 @@ public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance;
     private Plugin plugin;
     private Database database;
-    private DiscordSRVHoster discordSRVHoster = null;
     private boolean useBungee = false;
 
     public static EasyPrefix getInstance() {
         return instance;
-    }
-
-    public DiscordSRVHoster getDiscordSRVHoster() {
-        return discordSRVHoster;
     }
 
     public boolean isUseBungee() {
@@ -107,9 +101,6 @@ public class EasyPrefix extends JavaPlugin {
         Updater.checkForUpdates();
         Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + "§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + "§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
-        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null) {
-            this.discordSRVHoster = new DiscordSRVHoster(this);
-        }
     }
 
     private boolean isBungeeConfigured() {
@@ -133,7 +124,6 @@ public class EasyPrefix extends JavaPlugin {
         Messages.load();
         Gender.load();
         GroupHandler.load();
-        User.getUsers().clear();
         RainbowEffect.getRainbowColors().clear();
     }
 

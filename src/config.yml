@@ -67,6 +67,8 @@ config:
   chat:
     # false removes all duplicate spaces
     duplicate-white-spaces: false
+    # allow easyprefix to handle colors and formattings
+    handle-colors: true
     color:
       # requires permission EasyPrefix.color.rainbow
       rainbow:
@@ -81,9 +83,3 @@ config:
           - GOLD
           - GREEN
           - DARK_PURPLE
-  discordsrv:
-    log-chat: false
-    channel:
-      id: "680804158928191530"
-      name: "bungee-log"
-    log-joinquit: false

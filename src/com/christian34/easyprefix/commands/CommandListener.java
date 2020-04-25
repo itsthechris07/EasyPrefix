@@ -2,6 +2,7 @@ package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -128,7 +129,42 @@ public class CommandListener implements Listener, CommandExecutor {
                     sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
                     return false;
                 }
-            } else if (args[0].equalsIgnoreCase("user")) {
+            } else if (args[0].equalsIgnoreCase("group")) {
+                if (sender.hasPermission("EasyPrefix.admin")) {
+                    Group group;
+                    if (GroupHandler.isGroup(args[1])) {
+                        group = GroupHandler.getGroup(args[1]);
+                    } else {
+                        user.sendMessage("§cGroup was not found!");
+                        return false;
+                    }
+                    if (args.length >= 3) {
+                        if (args[2].equalsIgnoreCase("info")) {
+                            sender.sendMessage(" ");
+                            sender.sendMessage("§7--------------=== §5§l" + group.getName() + " §7===--------------");
+                            sender.sendMessage(" ");
+                            sender.sendMessage("§5Prefix§f: §8«§7" + group.getPrefix().replace("§", "&") + "§8»");
+                            sender.sendMessage("§5Suffix§f: §8«§7" + group.getSuffix().replace("§", "&") + "§8»");
+                            String cc = (group.getChatColor() != null) ? group.getChatColor().getCode() : "-";
+                            if (group.getChatFormatting() != null) cc = cc + group.getChatFormatting().getCode();
+                            sender.sendMessage("§5Chatcolor§f: §7" + cc.replace("§", "&"));
+                            sender.sendMessage("§5Join message§f: §7" + group.getJoinMessage());
+                            sender.sendMessage("§5Quit message§f: §7" + group.getQuitMessage());
+                            sender.sendMessage(" ");
+                            sender.sendMessage("§7-----------------------------------------------");
+                            return true;
+                        }
+                    } else {
+                        sender.sendMessage(" ");
+                        sender.sendMessage("§7--------------=== §5§lEasyPrefix Group §7===--------------");
+                        sender.sendMessage(" ");
+                        sender.sendMessage("§7/§5EasyPrefix group <Group> info §f| §7get information about the group");
+                        sender.sendMessage(" ");
+                        sender.sendMessage("§7----------------------------------------------------");
+                    }
+                }
+            }
+            else if (args[0].equalsIgnoreCase("user")) {
                 if (sender.hasPermission("EasyPrefix.admin")) {
                     Player player = Bukkit.getPlayer(args[1]);
                     if (player != null) {
@@ -236,15 +272,14 @@ public class CommandListener implements Listener, CommandExecutor {
                         sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while.");
                         try {
                             EasyPrefix.getInstance().getDatabase().migrateData();
+                            EasyPrefix.getInstance().reload();
+                            sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
                         } catch(SQLException e) {
                             e.printStackTrace();
                             return false;
                         }
-                        EasyPrefix.getInstance().reload();
-                        sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
-                        return true;
+                         return true;
                     }
-
                     return true;
                 } else {
                     sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
@@ -260,6 +295,7 @@ public class CommandListener implements Listener, CommandExecutor {
         sender.sendMessage("§7/§5EasyPrefix setup §f| §7opens setup gui");
         sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
         sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
+        sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
         if (EasyPrefix.getInstance().getDatabase() != null && sender.hasPermission("easyprefix.admin")) {
             sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
         }

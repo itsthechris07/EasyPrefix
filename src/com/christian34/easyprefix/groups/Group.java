@@ -4,6 +4,7 @@ import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
+import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.Gender;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
@@ -34,11 +35,11 @@ public class Group extends EasyGroup {
     private HashMap<Gender, String> suffixes;
 
     Group(String name) {
-        groupsData = FileManager.getGroups();
-        prefixes = new HashMap<>();
-        suffixes = new HashMap<>();
         this.NAME = name;
-        String chatColor = "", chatFormatting = "", joinMsg = "", quitMsg = "";
+        this.groupsData = FileManager.getGroups();
+        this.prefixes = new HashMap<>();
+        this.suffixes = new HashMap<>();
+        String prefix = "", suffix = "", chatColor = "", chatFormatting = "", joinMsg = "", quitMsg = "";
 
         Database db = EasyPrefix.getInstance().getDatabase();
         if (db != null) {
@@ -46,8 +47,8 @@ public class Group extends EasyGroup {
                 String sql = "SELECT `prefix`,`suffix`,`chat_color`,`chat_formatting`,`join_msg`,`quit_msg` FROM `%p%groups` WHERE `group` = '" + name + "'";
                 ResultSet result = db.getValue(sql);
                 while (result.next()) {
-                    rawPrefix = result.getString("prefix");
-                    rawSuffix = result.getString("suffix");
+                    prefix = result.getString("prefix");
+                    suffix = result.getString("suffix");
                     chatColor = result.getString("chat_color");
                     chatFormatting = result.getString("chat_formatting");
                     joinMsg = result.getString("join_msg");
@@ -70,17 +71,8 @@ public class Group extends EasyGroup {
             }
         } else {
             FileConfiguration data = getGroupsData().getFileData();
-            if (data.getString(getFilePath() + "chatcolor") != null) {
-                getGroupsData().set(getFilePath() + "chat-color", data.getString(getFilePath() + "chatcolor"));
-                getGroupsData().set(getFilePath() + "chatcolor", null);
-            }
-            if (data.getString(getFilePath() + "chatformatting") != null) {
-                getGroupsData().set(getFilePath() + "chat-formatting", data.getString(getFilePath() + "chatformatting"));
-                getGroupsData().set(getFilePath() + "chatformatting", null);
-            }
-
-            rawPrefix = data.getString(getFilePath() + "prefix");
-            rawSuffix = data.getString(getFilePath() + "suffix");
+            prefix = data.getString(getFilePath() + "prefix");
+            suffix = data.getString(getFilePath() + "suffix");
             chatColor = data.getString(getFilePath() + "chat-color");
             chatFormatting = data.getString(getFilePath() + "chat-formatting");
             joinMsg = data.getString(getFilePath() + "join-msg");
@@ -88,66 +80,76 @@ public class Group extends EasyGroup {
             Set<String> childs = getGroupsData().getFileData().getConfigurationSection("groups." + getName()).getKeys(false);
             for (String target : childs) {
                 if (Gender.getTypes().contains(target)) {
-                    String prefix = getGroupsData().getFileData().getString(getFilePath() + target + ".prefix");
-                    if (prefix != null) getGroupsData().set(getFilePath() + ".genders." + target + ".prefix", prefix);
-                    String suffix = getGroupsData().getFileData().getString(getFilePath() + target + ".suffix");
-                    if (suffix != null) getGroupsData().set(getFilePath() + ".genders." + target + ".suffix", suffix);
-                    getGroupsData().getFileData().set(getFilePath() + target, null);
+                    String genderPrefix = data.getString(getFilePath() + target + ".prefix");
+                    if (genderPrefix != null) getGroupsData().set(getFilePath() + ".genders." + target + ".prefix", genderPrefix);
+                    String genderSuffix = data.getString(getFilePath() + target + ".suffix");
+                    if (genderSuffix != null) getGroupsData().set(getFilePath() + ".genders." + target + ".suffix", genderSuffix);
+                    data.set(getFilePath() + target, null);
                 }
             }
             for (String target : childs) {
                 if (Gender.getTypes().contains(target)) {
-                    String prefix = getGroupsData().getFileData().getString(getFilePath() + target + ".genders.prefix");
-                    if (prefix != null) prefixes.put(Gender.get(target), prefix);
-                    String suffix = getGroupsData().getFileData().getString(getFilePath() + target + ".genders.suffix");
-                    if (suffix != null) suffixes.put(Gender.get(target), suffix);
+                    String genderPrefix = data.getString(getFilePath() + target + ".genders.prefix");
+                    if (genderPrefix != null) prefixes.put(Gender.get(target), genderPrefix);
+                    String genderSuffix = data.getString(getFilePath() + target + ".genders.suffix");
+                    if (genderSuffix != null) suffixes.put(Gender.get(target), genderSuffix);
                 }
             }
         }
 
-        rawPrefix = (rawPrefix != null) ? rawPrefix.replace("§", "&") : "";
-        prefix = translate(rawPrefix);
-        rawSuffix = (rawSuffix != null) ? rawSuffix.replace("§", "&") : "";
-        suffix = translate(rawSuffix);
+        prefix = (prefix == null) ? "" : prefix;
+        suffix = (suffix == null) ? "" : suffix;
+
+        try {
+            applyData(prefix, suffix, chatColor, chatFormatting, joinMsg, quitMsg);
+        } catch(Exception e) {
+            Messages.log("§cCouldn't load group " + name + "!");
+            e.printStackTrace();
+        }
+    }
+
+    private void applyData(String prefix, String suffix, String chatColor, String chatFormatting, String joinMessage, String quitMessage) throws Exception {
+        this.prefix = translate(prefix);
+        this.rawPrefix = prefix.replace("§", "&");
+        this.suffix = translate( suffix);
+        this.rawSuffix = suffix.replace("§", "&");
 
         if (chatColor == null || chatColor.length() < 2) {
             setChatColor(Color.GRAY);
             chatColor = "&7";
-        }
-
-        if (chatColor.length() > 2) {
+        } else if (chatColor.length() == 4) {
             setChatColor(Color.getByCode(chatColor.substring(1, 2)));
             setChatFormatting(ChatFormatting.getByCode(chatColor.substring(3, 4)));
         }
-        String chatColorCode = chatColor.substring(1, 2);
-        if (chatColorCode.equals("r")) {
-            setChatColor(null);
-            setChatFormatting(ChatFormatting.RAINBOW);
-        }
-        this.chatColor = Color.getByCode(chatColorCode);
-        if (this.chatColor == null) setChatColor(null);
 
-        if (chatFormatting != null && chatFormatting.length() >= 2) {
+        chatColor = chatColor.substring(1, 2);
+        if (chatColor.equals("r")) setChatFormatting(ChatFormatting.RAINBOW);
+
+        this.chatColor = Color.getByCode(chatColor);
+        if (this.chatColor == null) setChatColor(Color.GRAY);
+
+        if (chatFormatting != null && chatFormatting.length() == 2) {
             this.chatFormatting = ChatFormatting.getByCode(chatFormatting.substring(1, 2));
             if (this.chatFormatting == null) setChatFormatting(null);
         }
 
-        if (getRawPrefix().contains("&")) {
-            if (!getRawPrefix().startsWith("&")) {
-                String temp = getRawPrefix();
-                while (!temp.startsWith("&") && temp.length() > 0) {
+        if (prefix.contains("§")) {
+            if (!prefix.startsWith("§")) {
+                String temp = prefix;
+                while (!temp.startsWith("§") && temp.length() > 0) {
                     temp = temp.substring(1);
                 }
-                groupColor = ChatColor.getByChar(temp.substring(1, 2));
+                this.groupColor = ChatColor.getByChar(temp.substring(1, 2));
             } else {
-                groupColor = ChatColor.getByChar(getPrefix().substring(1, 2));
+                this.groupColor = ChatColor.getByChar(getPrefix().substring(1, 2));
             }
         }
         if (getGroupColor() == null) groupColor = ChatColor.DARK_PURPLE;
 
+        Group defaultGroup = GroupHandler.getGroup("default");
 
-        joinMessage = (joinMsg == null) ? translate(GroupHandler.getGroup("default").getJoinMessage()) : translate(joinMsg);
-        quitMessage = (quitMsg == null) ? translate(GroupHandler.getGroup("default").getQuitMessage()) : translate(quitMsg);
+        this.joinMessage = (joinMessage == null) ? translate(defaultGroup.getJoinMessage()) : translate(joinMessage);
+        this.quitMessage = (quitMessage == null) ? translate(defaultGroup.getQuitMessage()) : translate(quitMessage);
     }
 
     public String getJoinMessage() {
@@ -170,7 +172,7 @@ public class Group extends EasyGroup {
             groupsData.set(getFilePath() + key, value);
         } else {
             key = key.replace("-", "_");
-            String sql = "UPDATE `" + db.getTablePrefix() + "groups` SET `" + key + "`=? WHERE `group`=?";
+            String sql = "UPDATE `%p%groups` SET `" + key + "`=? WHERE `group`=?";
             PreparedStatement stmt = db.prepareStatement(sql);
             try {
                 stmt.setObject(1, value);
@@ -253,7 +255,7 @@ public class Group extends EasyGroup {
 
     @Override
     public void setChatColor(Color color) {
-        chatColor = color;
+        this.chatColor = color;
         String value = null;
         if (color != null) {
             value = color.getCode().replace("§", "&");

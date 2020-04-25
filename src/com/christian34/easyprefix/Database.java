@@ -68,6 +68,21 @@ public class Database {
         }
     }
 
+    public boolean exists(String statement) {
+        try {
+            if (connection.isClosed()) connect();
+            statement = statement.replace("%p%", getTablePrefix());
+            Statement stmt = connection.createStatement();
+            ResultSet result = stmt.executeQuery(statement);
+            return result.next();
+        } catch(SQLException e) {
+            Messages.log("§cCouldn't get value from statement '" + statement + "'!");
+            Messages.log("§c" + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public ResultSet getValue(String statement) {
         try {
             if (connection.isClosed()) connect();
@@ -98,12 +113,12 @@ public class Database {
         }
     }
 
-    private void uploadGroups() throws SQLException {
+    public void uploadGroups() throws SQLException {
         FileConfiguration data = FileManager.getGroups().getFileData();
         Set<String> groups = data.getConfigurationSection("groups").getKeys(false);
         for (String groupName : groups) {
             try {
-                String sql = "INSERT INTO `" + getTablePrefix() + "groups`(`group`) VALUES (?)";
+                String sql = "INSERT INTO ` %p%groups`(`group`) VALUES (?)";
                 PreparedStatement stmt = prepareStatement(sql);
                 stmt.setString(1, groupName);
                 stmt.executeUpdate();
@@ -111,7 +126,8 @@ public class Database {
             } catch(SQLIntegrityConstraintViolationException ignored) {
             }
 
-            String sql = "UPDATE `" + getTablePrefix() + "groups` SET `prefix`= ?,`suffix`= ?,`chat_color`= ?,`chat_formatting`= ?,`join_msg`= ?,`quit_msg`= ? WHERE `group` = ?";
+            String sql = "UPDATE ` %p%groups` SET `prefix`= ?,`suffix`= ?,`chat_color`= ?,`chat_formatting`= ?," +
+                    "`join_msg`= ?,`quit_msg`= ? WHERE `group` = ?";
             PreparedStatement stmt = prepareStatement(sql);
 
             String prefix = data.getString("groups." + groupName + ".prefix");
@@ -124,13 +140,13 @@ public class Database {
                 stmt.setString(2, suffix);
             } else stmt.setNull(2, Types.VARCHAR);
 
-            String chatcolor = data.getString("groups." + groupName + ".chatcolor");
+            String chatcolor = data.getString("groups." + groupName + ".chat-color");
 
             if (chatcolor != null && chatcolor.length() >= 2) {
                 stmt.setString(3, chatcolor.substring(1, 2));
             } else stmt.setNull(3, Types.VARCHAR);
 
-            String chatformatting = data.getString("groups." + groupName + ".chatformatting");
+            String chatformatting = data.getString("groups." + groupName + ".chat-formatting");
             if (chatformatting != null && chatformatting.length() >= 2) {
                 stmt.setString(4, chatformatting.substring(1, 2));
             } else stmt.setNull(4, Types.VARCHAR);
@@ -153,7 +169,7 @@ public class Database {
                     String pref = data.getString(path + "prefix");
                     String suf = data.getString(path + "suffix");
 
-                    String sql2 = "SELECT `id` FROM `" + getTablePrefix() + "genders` WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
+                    String sql2 = "SELECT `id` FROM `%p%genders` WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
                     PreparedStatement stmt2 = prepareStatement(sql2);
                     stmt2.setInt(1, 0);
                     stmt2.setString(2, gender);
@@ -162,7 +178,8 @@ public class Database {
                     String sql3;
                     PreparedStatement stmt3;
                     if (!result.next()) {
-                        sql3 = "INSERT INTO `" + getTablePrefix() + "genders`(`gender`, `type`, `group_name`, `prefix`, `suffix`) VALUES (?, ?, ?, ?, ?)";
+                        sql3 = "INSERT INTO `%p%genders`(`gender`, `type`, `group_name`, `prefix`, `suffix`) VALUES (?," +
+                                " ?, ?, ?, ?)";
                         stmt3 = prepareStatement(sql3);
                         stmt3.setString(1, gender);
                         stmt3.setInt(2, 0);
@@ -171,7 +188,8 @@ public class Database {
                         stmt3.setString(5, suf);
                         stmt3.executeUpdate();
                     } else {
-                        sql3 = "UPDATE `" + getTablePrefix() + "genders` SET `prefix`=?,`suffix`=? WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
+                        sql3 = "UPDATE `%p%genders` SET `prefix`=?,`suffix`=? WHERE `type` = ? AND `gender` = ? AND " +
+                                "`group_name` = ?";
                         stmt3 = prepareStatement(sql3);
                         stmt3.setString(1, pref);
                         stmt3.setString(2, suf);
@@ -182,7 +200,7 @@ public class Database {
                     }
                 }
             } else {
-                String sql2 = "DELETE FROM `" + getTablePrefix() + "genders` WHERE `type` = 0 AND `group_name` = ?";
+                String sql2 = "DELETE FROM `%p%genders` WHERE `type` = 0 AND `group_name` = ?";
                 PreparedStatement stmt2 = prepareStatement(sql2);
                 stmt2.setString(1, groupName);
                 stmt2.executeUpdate();
@@ -200,14 +218,14 @@ public class Database {
         Set<String> groups = mainSection.getKeys(false);
         for (String groupName : groups) {
             try {
-                PreparedStatement stmt = prepareStatement("INSERT INTO `" + getTablePrefix() + "subgroups`(`group`) VALUES (?)");
+                PreparedStatement stmt = prepareStatement("INSERT INTO `%p%subgroups`(`group`) VALUES (?)");
                 stmt.setString(1, groupName);
                 stmt.executeUpdate();
                 Messages.log("§7Uploaded subgroup '" + groupName + "' to database!");
             } catch(SQLIntegrityConstraintViolationException ignored) {
             }
 
-            String sql = "UPDATE `" + getTablePrefix() + "subgroups` SET `prefix`= ?,`suffix`= ? WHERE `group` = ?";
+            String sql = "UPDATE `%p%subgroups` SET `prefix`= ?,`suffix`= ? WHERE `group` = ?";
             PreparedStatement stmt = prepareStatement(sql);
 
             String prefix = data.getString("subgroups." + groupName + ".prefix");
@@ -230,7 +248,7 @@ public class Database {
                     String pref = data.getString(path + "prefix");
                     String suf = data.getString(path + "suffix");
 
-                    String sql2 = "SELECT `id` FROM `" + getTablePrefix() + "genders` WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
+                    String sql2 = "SELECT `id` FROM `%p%genders` WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
                     PreparedStatement stmt2 = prepareStatement(sql2);
                     stmt2.setInt(1, 1);
                     stmt2.setString(2, gender);
@@ -239,7 +257,7 @@ public class Database {
                     String sql3;
                     PreparedStatement stmt3;
                     if (!result.next()) {
-                        sql3 = "INSERT INTO `" + getTablePrefix() + "genders`(`gender`, `type`, `group_name`, `prefix`, `suffix`) VALUES (?, ?, ?, ?, ?)";
+                        sql3 = "INSERT INTO `%p%genders`(`gender`, `type`, `group_name`, `prefix`, `suffix`) VALUES (?, ?, ?, ?, ?)";
                         stmt3 = prepareStatement(sql3);
                         stmt3.setString(1, gender);
                         stmt3.setInt(2, 1);
@@ -248,7 +266,7 @@ public class Database {
                         stmt3.setString(5, suf);
                         stmt3.executeUpdate();
                     } else {
-                        sql3 = "UPDATE `" + getTablePrefix() + "genders` SET `prefix`=?,`suffix`=? WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
+                        sql3 = "UPDATE `%p%genders` SET `prefix`=?,`suffix`=? WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
                         stmt3 = prepareStatement(sql3);
                         stmt3.setString(1, pref);
                         stmt3.setString(2, suf);
@@ -259,7 +277,7 @@ public class Database {
                     }
                 }
             } else {
-                String sql2 = "DELETE FROM `" + getTablePrefix() + "genders` WHERE `type` = 1 AND `group_name` = ?";
+                String sql2 = "DELETE FROM `%p%genders` WHERE `type` = 1 AND `group_name` = ?";
                 PreparedStatement stmt2 = prepareStatement(sql2);
                 stmt2.setString(1, groupName);
                 stmt2.executeUpdate();
@@ -284,7 +302,7 @@ public class Database {
                     String cstmSuffix = userData.getFileData().getString("custom-suffix");
                     String gender = userData.getFileData().getString("gender");
                     boolean forceGroup = userData.getFileData().getBoolean("force-group");
-                    String sql = "INSERT INTO `" + getTablePrefix() + "users`(`uuid`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_suffix`, `gender`, `chat_color`, `chat_formatting`) " + "VALUES (?,?,?,?,?,?,?,?,?)";
+                    String sql = "INSERT INTO `%p%users`(`uuid`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_suffix`, `gender`, `chat_color`, `chat_formatting`) " + "VALUES (?,?,?,?,?,?,?,?,?)";
                     PreparedStatement stmt = prepareStatement(sql);
                     stmt.setString(1, uuid.toString());
                     stmt.setString(2, groupName);

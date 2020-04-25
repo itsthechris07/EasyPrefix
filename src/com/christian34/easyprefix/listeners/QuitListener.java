@@ -77,11 +77,6 @@ public class QuitListener implements Listener {
                 e.getPlayer().sendPluginMessage(EasyPrefix.getInstance(), "easyprefix:quitlistener", quitListenerOut.toByteArray());
             });
             e.setQuitMessage(null);
-        } else {
-            if (EasyPrefix.getInstance().getDiscordSRVHoster() == null) return;
-            String quitMessage = e.getQuitMessage();
-            if (quitMessage == null) quitMessage = e.getPlayer().getName() + " left the game";
-            EasyPrefix.getInstance().getDiscordSRVHoster().sendJoinQuitMessage(quitMessage);
         }
     }
 

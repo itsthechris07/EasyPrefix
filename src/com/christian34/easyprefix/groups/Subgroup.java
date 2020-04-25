@@ -108,7 +108,7 @@ public class Subgroup extends EasyGroup {
             groupsData.set(getFilePath() + key, value);
         } else {
             key = key.replace("-", "_");
-            String sql = "UPDATE `" + db.getTablePrefix() + "groups` SET `" + key + "`=? WHERE `group`=?";
+            String sql = "UPDATE `%p%groups` SET `" + key + "`=? WHERE `group`=?";
             PreparedStatement stmt = db.prepareStatement(sql);
             try {
                 stmt.setObject(1, value);

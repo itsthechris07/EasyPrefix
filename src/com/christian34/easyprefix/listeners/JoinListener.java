@@ -65,7 +65,6 @@ public class JoinListener implements Listener {
             }
         }
 
-
         Bukkit.getScheduler().runTaskAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
             if (user.getPlayer().hasPermission("easyprefix.admin")) {
                 if (Updater.isAvailable()) {
@@ -90,11 +89,6 @@ public class JoinListener implements Listener {
     public void onJoin2(PlayerJoinEvent e) {
         if (EasyPrefix.getInstance().isUseBungee()) {
             e.setJoinMessage(null);
-        } else {
-            if (EasyPrefix.getInstance().getDiscordSRVHoster() == null) return;
-            String joinMessage = e.getJoinMessage();
-            if (joinMessage == null) joinMessage = e.getPlayer().getName() + " joined the game";
-            EasyPrefix.getInstance().getDiscordSRVHoster().sendJoinQuitMessage(joinMessage);
         }
     }
 
