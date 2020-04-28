@@ -33,10 +33,6 @@ public class EasyPrefix extends JavaPlugin {
     private GroupHandler groupHandler;
     private VaultManager vaultManager = null;
 
-    public boolean formatChat() {
-        return !Bukkit.getServer().getPluginManager().isPluginEnabled("MultiChatSpigot");
-    }
-
     public void onDisable() {
         if (getDatabase() != null) getDatabase().close();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -81,6 +77,10 @@ public class EasyPrefix extends JavaPlugin {
         Updater.checkForUpdates();
         Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Messages.log("§bIf you like the plugin or you have suggestions, please write a review " + "on spigotmc.org!");
+    }
+
+    public boolean formatChat() {
+        return !Bukkit.getServer().getPluginManager().isPluginEnabled("MultiChatSpigot");
     }
 
     public VaultManager getVaultManager() {
