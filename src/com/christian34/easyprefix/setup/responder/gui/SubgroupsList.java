@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.setup.responder.gui;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
@@ -25,9 +26,10 @@ public class SubgroupsList {
     }
 
     private void open() {
+        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» " + Messages.getText(Message.TITLE_SUBGROUPS), 5);
         int counter = 9;
-        for (final Subgroup subgroup : GroupHandler.getSubgroups().values()) {
+        for (final Subgroup subgroup : groupHandler.getSubgroups()) {
             String prefix = subgroup.getRawPrefix();
             String suffix = subgroup.getRawSuffix();
             suffix = (suffix == null) ? "-" : suffix;
@@ -58,8 +60,8 @@ public class SubgroupsList {
             String name = respond.getDisplayName();
             if (name.equals(Messages.getText(Message.BTN_BACK))) {
                 new WelcomePage(user);
-            } else if (GroupHandler.isSubgroup(name.substring(2))) {
-                new GroupProfile(user, GroupHandler.getSubgroup(name.substring(2)));
+            } else if (groupHandler.isSubgroup(name.substring(2))) {
+                new GroupProfile(user, groupHandler.getSubgroup(name.substring(2)));
             }
         });
     }

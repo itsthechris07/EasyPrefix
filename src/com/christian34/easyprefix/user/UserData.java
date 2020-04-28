@@ -34,12 +34,16 @@ public class UserData {
         return fileData;
     }
 
-    public void set(String path, Object value) {
+    public void setAndSave(String path, Object value) {
         getFileData().set(path, value);
         save();
     }
 
-    private void save() {
+    public void set(String path, Object value) {
+        getFileData().set(path, value);
+    }
+
+    public void save() {
         try {
             fileData.save(file);
         } catch(IOException e) {

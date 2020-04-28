@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.placeholderapi;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
@@ -30,7 +31,7 @@ class CustomPlaceholder extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer op, String identifier) {
-        User user = User.getUser(op.getPlayer());
+        User user = EasyPrefix.getInstance().getUser(op.getPlayer());
         switch (identifier) {
             case "user_prefix":
                 return PlaceholderAPI.setPlaceholder(user.getPlayer(), user.getPrefix());

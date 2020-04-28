@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.setup.responder.gui;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Message;
@@ -24,9 +25,10 @@ public class GroupsList {
     }
 
     private void open() {
+        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» " + Messages.getText(Message.SETUP_GROUPS_TITLE), 5);
         int counter = 9;
-        for (Group group : GroupHandler.getGroups().values()) {
+        for (Group group : groupHandler.getGroups()) {
             String prefix = group.getRawPrefix();
             String suffix = group.getRawSuffix();
             ChatColor prefixColor = group.getGroupColor();
@@ -68,8 +70,8 @@ public class GroupsList {
                 new WelcomePage(user);
             } else if (name.equals(Messages.getText(Message.BTN_ADDGROUP, user))) {
                 new CreateGroupPage(user);
-            } else if (GroupHandler.isGroup(name.substring(2))) {
-                new GroupProfile(user, GroupHandler.getGroup(name.substring(2)));
+            } else if (groupHandler.isGroup(name.substring(2))) {
+                new GroupProfile(user, groupHandler.getGroup(name.substring(2)));
             }
         });
     }

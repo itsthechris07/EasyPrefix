@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.bungeecord;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
 import com.google.common.io.ByteArrayDataInput;
@@ -14,20 +15,34 @@ public class MessageListener implements PluginMessageListener {
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] data) {
         if (!channel.startsWith("easyprefix:")) return;
-        if (channel.endsWith("logger")) {
+        if (channel.equals(ChannelHandler.Channel.CHAT.toString())) {
+            ByteArrayDataInput in = ByteStreams.newDataInput(data);
+            String username = in.readUTF();
+            Bukkit.broadcastMessage(in.readUTF());
+        } else if (channel.equals(ChannelHandler.Channel.LOGGER.toString())) {
             ByteArrayDataInput in = ByteStreams.newDataInput(data);
             Bukkit.getConsoleSender().sendMessage(in.readUTF());
         } else if (channel.endsWith("joinlistener")) {
             ByteArrayDataInput in = ByteStreams.newDataInput(data);
             String playerName = in.readUTF();
             Player targetPlayer = Bukkit.getPlayer(playerName);
-            User user = User.getUser(targetPlayer);
+            User user = EasyPrefix.getInstance().getUser(targetPlayer);
             String msg = user.getGroup().getJoinMessage();
 
             if (PlaceholderAPI.isEnabled()) msg = PlaceholderAPI.setPlaceholder(user.getPlayer(), msg);
             msg = setPlaceholder(user, msg.replace("%player%", user.getPlayer().getDisplayName()));
             Bukkit.broadcastMessage(msg);
+        } else if (channel.equals(ChannelHandler.Channel.QUIT.toString())) {
+            MessageSender messageSender = new MessageSender(player);
+            messageSender.sendQuitMessage();
+        } else if (channel.equals(ChannelHandler.Channel.JQ_NOTIFIER.toString())) {
+            ByteArrayDataInput in = ByteStreams.newDataInput(data);
+            String username = in.readUTF();
+            String msg = in.readUTF();
+            System.out.print("masdklajsd");
+            Bukkit.broadcastMessage(msg);
         }
+        System.out.print("234: " + channel);
     }
 
     private String setPlaceholder(User user, String text) {

@@ -1,7 +1,8 @@
 package com.christian34.easyprefix;
 
-import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigData.Values;
 import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.UserData;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,12 +20,12 @@ public class Database {
 
     Database() {
         FileConfiguration config = FileManager.getConfig().getFileData();
-        this.host = config.getString(ConfigData.Values.SQL_HOST.toString());
-        this.database = config.getString(ConfigData.Values.SQL_DATABASE.toString());
-        this.username = config.getString(ConfigData.Values.SQL_USERNAME.toString());
-        this.password = config.getString(ConfigData.Values.SQL_PASSWORD.toString());
-        this.tablePrefix = config.getString(ConfigData.Values.SQL_TABLE_PREFIX.toString());
-        this.port = config.getInt(ConfigData.Values.SQL_PORT.toString());
+        this.host = config.getString(Values.SQL_HOST.toString());
+        this.database = config.getString(Values.SQL_DATABASE.toString());
+        this.username = config.getString(Values.SQL_USERNAME.toString());
+        this.password = config.getString(Values.SQL_PASSWORD.toString());
+        this.tablePrefix = config.getString(Values.SQL_TABLE_PREFIX.toString());
+        this.port = config.getInt(Values.SQL_PORT.toString());
         if (tablePrefix == null || tablePrefix.isEmpty()) {
             this.tablePrefix = "";
         } else if (!this.tablePrefix.endsWith("_")) this.tablePrefix += "_";
@@ -71,9 +72,8 @@ public class Database {
     public void update(String statement) {
         try {
             if (connection.isClosed()) connect();
-            statement = statement.replace("%p%", getTablePrefix());
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate(statement);
+            stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
         } catch(SQLException e) {
             e.printStackTrace();
         }
@@ -82,9 +82,8 @@ public class Database {
     public boolean exists(String statement) {
         try {
             if (connection.isClosed()) connect();
-            statement = statement.replace("%p%", getTablePrefix());
             Statement stmt = connection.createStatement();
-            ResultSet result = stmt.executeQuery(statement);
+            ResultSet result = stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
             return result.next();
         } catch(SQLException e) {
             Messages.log("§cCouldn't get value from statement '" + statement + "'!");
@@ -97,9 +96,8 @@ public class Database {
     public ResultSet getValue(String statement) {
         try {
             if (connection.isClosed()) connect();
-            statement = statement.replace("%p%", getTablePrefix());
             Statement stmt = connection.createStatement();
-            return stmt.executeQuery(statement);
+            return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch(SQLException e) {
             Messages.log("§cCouldn't get value from statement '" + statement + "'!");
             Messages.log("§c" + e.getMessage());
@@ -151,14 +149,14 @@ public class Database {
             } else stmt.setNull(2, Types.VARCHAR);
 
             String chatcolor = data.getString("groups." + groupName + ".chat-color");
-
-            if (chatcolor != null && chatcolor.length() >= 2) {
-                stmt.setString(3, chatcolor.substring(1, 2));
+            if (chatcolor != null) {
+                stmt.setString(3, chatcolor);
             } else stmt.setNull(3, Types.VARCHAR);
 
             String chatformatting = data.getString("groups." + groupName + ".chat-formatting");
-            if (chatformatting != null && chatformatting.length() >= 2) {
-                stmt.setString(4, chatformatting.substring(1, 2));
+            if (chatformatting != null) {
+                if (chatformatting.equalsIgnoreCase("%rainbow%")) chatformatting = "%r";
+                stmt.setString(4, chatformatting);
             } else stmt.setNull(4, Types.VARCHAR);
 
             String joinMessage = data.getString("groups." + groupName + ".join-msg");
@@ -310,20 +308,26 @@ public class Database {
                     String cstmSuffix = userData.getFileData().getString("custom-suffix");
                     String gender = userData.getFileData().getString("gender");
                     boolean forceGroup = userData.getFileData().getBoolean("force-group");
-                    String sql = "INSERT INTO `%p%users`(`uuid`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_suffix`, `gender`, `chat_color`, `chat_formatting`) " + "VALUES (?,?,?,?,?,?,?,?,?)";
-                    PreparedStatement stmt = prepareStatement(sql);
+                    PreparedStatement stmt = prepareStatement("INSERT INTO `%p%users`(`uuid`) VALUES (?)");
                     stmt.setString(1, uuid.toString());
-                    stmt.setString(2, groupName);
-                    stmt.setBoolean(3, forceGroup);
-                    stmt.setString(4, subgroupName);
-                    stmt.setString(5, cstmPrefix);
-                    stmt.setString(6, cstmSuffix);
-                    stmt.setString(7, gender);
-                    stmt.setString(8, chatColor);
-                    stmt.setString(9, chatFormatting);
                     try {
                         stmt.executeUpdate();
                     } catch(SQLIntegrityConstraintViolationException ignored) {
+                    }
+                    String sql = "UPDATE `%p%users` SET `group`=?,`force_group`=?,`subgroup`=?,`custom_prefix`=?," + "`custom_suffix`=?,`gender`=?,`chat_color`=?,`chat_formatting`=? WHERE `uuid` ='" + uuid.toString() + "'";
+                    stmt = prepareStatement(sql);
+                    stmt.setString(1, groupName);
+                    stmt.setBoolean(2, forceGroup);
+                    stmt.setString(3, subgroupName);
+                    stmt.setString(4, cstmPrefix);
+                    stmt.setString(5, cstmSuffix);
+                    stmt.setString(6, gender);
+                    stmt.setString(7, chatColor);
+                    stmt.setString(8, chatFormatting);
+                    try {
+                        stmt.executeUpdate();
+                    } catch(SQLIntegrityConstraintViolationException ex) {
+                        ex.printStackTrace();
                     }
                 }
             }
@@ -331,9 +335,9 @@ public class Database {
 
     }
 
-    public void migrateData() throws SQLException {
+    public void uploadData() throws SQLException {
         long startTime = System.currentTimeMillis();
-        Messages.log("§cMigrating data to SQL...");
+        Messages.log("§cUploading data to SQL...");
         Messages.log("§7loading files...");
         FileManager.load();
         Messages.log("§7creating tables...");
@@ -345,7 +349,69 @@ public class Database {
         Messages.log("§7uploading users...");
         uploadUsers();
         long ms = System.currentTimeMillis() - startTime;
-        Messages.log("§aMigration took " + ms + " ms!");
+        Messages.log("§aUpload took " + ms + " ms!");
+    }
+
+    public void downloadData() throws SQLException {
+        long startTime = System.currentTimeMillis();
+        Messages.log("§cDownloading data to local storage...");
+        FileManager.load();
+        GroupsData groupsData = FileManager.getGroups();
+        groupsData.load();
+        groupsData.set("groups", null);
+        groupsData.set("subgroups", null);
+
+        String sql = "SELECT `group`,`prefix`,`suffix`,`chat_color`,`chat_formatting`,`join_msg`,`quit_msg` FROM " + "`%p%groups`";
+        ResultSet resultSet = getValue(sql);
+        while (resultSet.next()) {
+            String group = resultSet.getString("group");
+            groupsData.set("groups." + group + ".prefix", resultSet.getString("prefix"));
+            groupsData.set("groups." + group + ".suffix", resultSet.getString("suffix"));
+            groupsData.set("groups." + group + ".chat-color", resultSet.getString("chat_color"));
+            groupsData.set("groups." + group + ".chat-formatting", resultSet.getString("chat_formatting"));
+            groupsData.set("groups." + group + ".join-msg", resultSet.getString("join_msg"));
+            groupsData.set("groups." + group + ".quit-msg", resultSet.getString("quit_msg"));
+        }
+
+        resultSet = getValue("SELECT `group_name`, `gender`, `prefix`, `suffix`  FROM `%p%genders` WHERE `type` = '0'");
+        while (resultSet.next()) {
+            String group = resultSet.getString("group_name");
+            groupsData.set("groups." + group + ".genders." + resultSet.getString("gender") + ".prefix", resultSet.getString("prefix"));
+            groupsData.set("groups." + group + ".genders." + resultSet.getString("gender") + ".suffix", resultSet.getString("suffix"));
+        }
+
+        resultSet = getValue("SELECT `group`,`prefix`,`suffix` FROM `%p%subgroups`");
+        while (resultSet.next()) {
+            String group = resultSet.getString("group");
+            groupsData.set("subgroups." + group + ".prefix", resultSet.getString("prefix"));
+            groupsData.set("subgroups." + group + ".suffix", resultSet.getString("suffix"));
+        }
+
+        resultSet = getValue("SELECT `group_name`, `gender`, `prefix`, `suffix`  FROM `%p%genders` WHERE `type` = '1'");
+        while (resultSet.next()) {
+            String group = resultSet.getString("group_name");
+            groupsData.set("subgroups." + group + ".genders." + resultSet.getString("gender") + ".prefix", resultSet.getString("prefix"));
+            groupsData.set("subgroups." + group + ".genders." + resultSet.getString("gender") + ".suffix", resultSet.getString("suffix"));
+        }
+
+        resultSet = getValue("SELECT `uuid`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_suffix`, " + "`gender`, `chat_color`, `chat_formatting` FROM `%p%users`");
+        while (resultSet.next()) {
+            String uuid = resultSet.getString("uuid");
+            UserData userData = new UserData(UUID.fromString(uuid));
+            userData.set("group", resultSet.getString("group"));
+            userData.set("force-group", resultSet.getBoolean("force_group"));
+            userData.set("subgroup", resultSet.getString("subgroup"));
+            userData.set("custom-prefix", resultSet.getString("custom_prefix"));
+            userData.set("custom-suffix", resultSet.getString("custom_suffix"));
+            userData.set("gender", resultSet.getString("gender"));
+            userData.set("chat-color", resultSet.getString("chat_color"));
+            userData.set("chat-formatting", resultSet.getString("chat_formatting"));
+            userData.save();
+        }
+        groupsData.save();
+
+        long ms = System.currentTimeMillis() - startTime;
+        Messages.log("§aDownload took " + ms + " ms!");
     }
 
 }

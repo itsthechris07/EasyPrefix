@@ -5,11 +5,9 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.user.Gender;
-import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.sun.istack.internal.Nullable;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -105,7 +103,7 @@ public class Subgroup extends EasyGroup {
         if (value instanceof String) value = ((String) value).replace("§", "&");
         if (db == null) {
             key = key.replace("_", "-");
-            groupsData.set(getFilePath() + key, value);
+            groupsData.setAndSave(getFilePath() + key, value);
         } else {
             key = key.replace("-", "_");
             String sql = "UPDATE `%p%groups` SET `" + key + "`=? WHERE `group`=?";
@@ -118,7 +116,7 @@ public class Subgroup extends EasyGroup {
                 e.printStackTrace();
             }
         }
-        GroupHandler.load();
+        EasyPrefix.getInstance().getGroupHandler().load();
     }
 
     @Override
@@ -203,7 +201,6 @@ public class Subgroup extends EasyGroup {
 
     @Override
     public void setChatFormatting(ChatFormatting chatFormatting) {
-        Bukkit.broadcastMessage("112sadj");
     }
 
     @Override
@@ -213,14 +210,16 @@ public class Subgroup extends EasyGroup {
 
     @Override
     public void delete() {
-        if (EasyPrefix.getInstance().getDatabase() == null) {
-            groupsData.set("subgroups." + getName(), null);
+        EasyPrefix instance = EasyPrefix.getInstance();
+        if (instance.getDatabase() == null) {
+            groupsData.setAndSave("subgroups." + getName(), null);
         } else {
-            Database db = EasyPrefix.getInstance().getDatabase();
+            Database db = instance.getDatabase();
             db.update("DELETE FROM `%p%subgroups` WHERE `group` = '" + getName() + "'");
         }
-        GroupHandler.getSubgroups().remove(getName().toLowerCase());
-        User.getUsers().clear();
+        /* todo grouphandler unregister function */
+        instance.getGroupHandler().getSubgroups().remove(this);
+        instance.getUsers().clear();
     }
 
     private String translate(String text) {

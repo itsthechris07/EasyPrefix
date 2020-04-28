@@ -7,8 +7,6 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,9 +20,9 @@ public class QuitListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
-        User user = User.getUser(e.getPlayer());
+        User user = EasyPrefix.getInstance().getUser(e.getPlayer());
         FileConfiguration config = FileManager.getConfig().getFileData();
-        if (config.getBoolean(ConfigData.Values.HIDE_JOIN_QUIT.toString()) && !EasyPrefix.getInstance().isUseBungee()) {
+        if (config.getBoolean(ConfigData.Values.HIDE_JOIN_QUIT.toString())) {
             e.setQuitMessage(null);
         } else {
             if (e.getQuitMessage() != null) {
@@ -60,23 +58,7 @@ public class QuitListener implements Listener {
                 Messages.log("&cCouldn't play sound '" + soundOption[0] + "'. Please use valid sounds!");
             }
         }
-        User.getUsers().remove(e.getPlayer().getName());
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onQuit2(PlayerQuitEvent e) {
-        if (EasyPrefix.getInstance().isUseBungee()) {
-            final String playerName = e.getPlayer().getName();
-            final String quitMessage = e.getQuitMessage();
-            Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {
-                ByteArrayDataOutput quitListenerOut = ByteStreams.newDataOutput();
-                quitListenerOut.writeUTF(playerName);
-                quitListenerOut.writeUTF((quitMessage == null) ? "silent" : "all");
-                quitListenerOut.writeUTF(quitMessage);
-                e.getPlayer().sendPluginMessage(EasyPrefix.getInstance(), "easyprefix:quitlistener", quitListenerOut.toByteArray());
-            });
-            e.setQuitMessage(null);
-        }
+        EasyPrefix.getInstance().unloadUser(e.getPlayer());
     }
 
 }

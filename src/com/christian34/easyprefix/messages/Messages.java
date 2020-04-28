@@ -132,4 +132,16 @@ public class Messages {
         Bukkit.getConsoleSender().sendMessage(getPrefix() + translate(message));
     }
 
+    public static String setPlaceholder(User user, String message) {
+        if (!PlaceholderAPI.isEnabled()) {
+            String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user.getGender()) : "";
+            String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user.getGender()) : "";
+            message = message.replace("%ep_user_prefix%", getPrefix()).replace("%ep_user_suffix%", user.getSuffix()).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
+        } else {
+            message = PlaceholderAPI.setPlaceholder(user.getPlayer(), message);
+        }
+        message = message.replace("%player%", user.getPlayer().getDisplayName());
+        return translate(message);
+    }
+
 }

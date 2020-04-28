@@ -1,11 +1,14 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 public class GroupsData {
     private File file;
@@ -36,9 +39,21 @@ public class GroupsData {
         load();
     }
 
-    public void set(String key, Object value) {
+    public Set<String> getSection(String key) {
+        ConfigurationSection section = getFileData().getConfigurationSection(key);
+        if (section != null) {
+            return section.getKeys(false);
+        }
+        return Collections.emptySet();
+    }
+
+    public void setAndSave(String key, Object value) {
         getFileData().set(key, value);
         save();
+    }
+
+    public void set(String key, Object value) {
+        getFileData().set(key, value);
     }
 
     public FileConfiguration getFileData() {

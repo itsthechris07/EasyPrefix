@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.setup.responder.gui;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
@@ -64,6 +65,7 @@ public class SettingsGUI {
     }
 
     public void openGroupsPage() {
+        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETTINGS_TITLE).replace("%page%", Messages.getText(Message.SETTINGS_TITLE_PREFIXES)), 5);
         int counter = 9;
         for (Group group : user.getAvailableGroups()) {
@@ -95,8 +97,8 @@ public class SettingsGUI {
                 openMainPage();
             } else if (btn.getDisplayName().equals(Messages.getText(Message.BTN_CUSTOM_PREFIX))) {
                 openCustomPrefixPage();
-            } else if (GroupHandler.isGroup(btn.getDisplayName().substring(2))) {
-                user.setGroup(GroupHandler.getGroup(btn.getDisplayName().substring(2)), false);
+            } else if (groupHandler.isGroup(btn.getDisplayName().substring(2))) {
+                user.setGroup(groupHandler.getGroup(btn.getDisplayName().substring(2)), false);
                 openGroupsPage();
             } else if (btn.equals(subgroups)) {
                 openSubgroupsPage();
@@ -121,13 +123,14 @@ public class SettingsGUI {
             inventory.addItem(button);
             counter++;
         }
+        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         new GuiRespond(user, inventory, (btn) -> {
             if (btn.getDisplayName().equals(Messages.getText(Message.BTN_BACK))) {
                 openMainPage();
             } else if (btn.getDisplayName().equals(Messages.getText(Message.BTN_CUSTOM_PREFIX))) {
                 openCustomPrefixPage();
-            } else if (GroupHandler.isSubgroup(btn.getDisplayName().substring(2))) {
-                Subgroup subgroup = GroupHandler.getSubgroup(btn.getDisplayName().substring(2));
+            } else if (groupHandler.isSubgroup(btn.getDisplayName().substring(2))) {
+                Subgroup subgroup = groupHandler.getSubgroup(btn.getDisplayName().substring(2));
                 if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
                     user.setSubgroup(null);
                 } else {

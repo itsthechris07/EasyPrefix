@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.commands;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.groups.Group;
-import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.user.Gender;
 import org.bukkit.Bukkit;
@@ -15,6 +15,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class TabComplete implements TabCompleter {
+    private EasyPrefix instance;
+
+    public TabComplete(EasyPrefix instance) {
+        this.instance = instance;
+    }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
@@ -37,7 +42,8 @@ public class TabComplete implements TabCompleter {
                         cmds.add(target.getDisplayName());
                     }
                 } else if (args[0].equalsIgnoreCase("database")) {
-                    cmds.add("migrate");
+                    cmds.add("upload");
+                    cmds.add("download");
                 }
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("user")) {
@@ -50,17 +56,15 @@ public class TabComplete implements TabCompleter {
             } else if (args.length == 4) {
                 if (args[0].equalsIgnoreCase("user")) {
                     if (args[2].equalsIgnoreCase("setgroup")) {
-                        for (Group targetGroup : GroupHandler.getGroups().values()) {
+                        for (Group targetGroup : this.instance.getGroupHandler().getGroups()) {
                             cmds.add(targetGroup.getName());
                         }
                     } else if (args[2].equalsIgnoreCase("setsubgroup")) {
-                        for (Subgroup targetGroup : GroupHandler.getSubgroups().values()) {
+                        for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
                             cmds.add(targetGroup.getName());
                         }
                     } else if (args[2].equalsIgnoreCase("setgender")) {
-                        for (String gender : Gender.getTypes()) {
-                            cmds.add(gender);
-                        }
+                        cmds.addAll(Gender.getTypes());
                     }
                 }
             }

@@ -35,7 +35,7 @@ groups:
   Vip:
     prefix: '%ep_user_subgroup_prefix% &7| &e'
     suffix: '&f:'
-    chat-formatting: '%rainbow%'
+    chat-formatting: '%r'
   Premium:
     prefix: '&6Premium &7| &6'
     suffix: '&f:'
