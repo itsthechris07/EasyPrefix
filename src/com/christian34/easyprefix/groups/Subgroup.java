@@ -17,6 +17,11 @@ import java.sql.SQLException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Subgroup extends EasyGroup {
     private String name, prefix, suffix, rawPrefix, rawSuffix;
     private ChatColor groupColor;

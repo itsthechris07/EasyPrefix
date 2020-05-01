@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class RainbowEffect {
     private static ArrayList<ChatColor> rainbowColors = null;
 

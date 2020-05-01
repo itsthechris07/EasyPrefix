@@ -20,6 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class GroupProfile {
     private final String DIVIDER = "§7-------------------------";
     private User user;

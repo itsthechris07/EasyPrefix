@@ -2,6 +2,11 @@ package com.christian34.easyprefix.placeholderapi;
 
 import org.bukkit.entity.Player;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class PlaceholderAPI {
     private static boolean enabled;
 

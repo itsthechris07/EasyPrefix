@@ -15,6 +15,11 @@ import org.bukkit.Material;
 
 import java.util.List;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class EditGroup {
     private User user;
     private EasyGroup easyGroup;
@@ -98,8 +103,7 @@ public class EditGroup {
             List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
             Button button = new Button(Material.BOOKSHELF, chatFormatting.toString(), lore).setSlot(slot);
             button.setData("formatting", chatFormatting.name());
-            if (easyGroup.getChatFormatting() != null && easyGroup.getChatFormatting().equals(chatFormatting))
-                button.addEnchantment();
+            if (easyGroup.getChatFormatting() != null && easyGroup.getChatFormatting().equals(chatFormatting)) button.addEnchantment();
             inventory.addItem(button);
             slot++;
         }

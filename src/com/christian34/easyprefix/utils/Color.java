@@ -7,7 +7,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public enum Color {
     BLACK("0", 15, Message.COLOR_BLACK), DARK_BLUE("1", 11, Message.COLOR_DARK_BLUE), DARK_GREEN("2", 13, Message.COLOR_DARK_GREEN), DARK_AQUA("3", 9, Message.COLOR_DARK_AQUA), DARK_RED("4", 14, Message.COLOR_DARK_RED), DARK_PURPLE("5", 10, Message.COLOR_PURPLE), GOLD("6", 1, Message.COLOR_GOLD), GRAY("7", 8, Message.COLOR_LIGHT_GRAY), DARK_GRAY("8", 7, Message.COLOR_GRAY), BLUE("9", 3, Message.COLOR_DARK_BLUE), GREEN("a", 5, Message.COLOR_DARK_GREEN), AQUA("b", 3, Message.COLOR_AQUA), RED("c", 6, Message.COLOR_RED), LIGHT_PURPLE("d", 2, Message.COLOR_MAGENTA), YELLOW("e", 4, Message.COLOR_YELLOW), WHITE("f", 0, Message.COLOR_WHITE), UNDEFINED("r", 0, null);
 
@@ -52,7 +58,8 @@ public enum Color {
         if (VersionController.getMinorVersion() >= 13) {
             return new Button(new ItemStack(getNewTerracotta(this), 1), toString());
         } else {
-            Field field = Reflection.getField(Reflection.getClass("org.bukkit", "Material"), "STAINED_CLAY");
+            Field field = Reflection.getField(Objects.requireNonNull(Reflection.getClass("org.bukkit", "Material")), "STAINED_CLAY");
+            assert field != null;
             return new Button(new ItemStack(Material.valueOf(field.getName()), 1, getByte()), toString());
         }
     }

@@ -3,6 +3,11 @@ package com.christian34.easyprefix.utils;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public enum ChatFormatting {
     BOLD("l", Message.FORMATTING_BOLD), UNDERLINE("n", Message.FORMATTING_UNDERLINE), RAINBOW("r", Message.FORMATTING_RAINBOW), ITALIC("o", Message.FORMATTING_ITALIC), STRIKETHROUGH("m", Message.FORMATTING_STRIKETHROUGH), UNDEFINED("r", null);
 

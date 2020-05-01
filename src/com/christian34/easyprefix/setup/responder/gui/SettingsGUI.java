@@ -23,6 +23,11 @@ import org.bukkit.Material;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class SettingsGUI {
     private final User user;
 
@@ -168,8 +173,7 @@ public class SettingsGUI {
                     button.setLore(lore);
                 }
                 button.setData("formatting", chatFormatting.name());
-                if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting))
-                    button.addEnchantment();
+                if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) button.addEnchantment();
                 inventory.addItem(button);
                 formattingsSlot++;
             }

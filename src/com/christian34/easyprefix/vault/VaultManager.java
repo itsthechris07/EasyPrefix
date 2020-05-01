@@ -8,6 +8,11 @@ import org.bukkit.plugin.ServicePriority;
 
 import static org.bukkit.Bukkit.getServer;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class VaultManager {
     private EasyPrefix instance;
     private Chat chat = null;

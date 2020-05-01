@@ -8,6 +8,11 @@ import com.christian34.easyprefix.utils.ChatFormatting;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 class CustomPlaceholder extends PlaceholderExpansion {
 
     static void enable() {

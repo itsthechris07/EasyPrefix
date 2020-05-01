@@ -22,6 +22,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class User {
     private final Player PLAYER;
     private UserData userData;
@@ -85,7 +90,6 @@ public class User {
                 return;
             }
         } else {
-            updateUserData();
             FileConfiguration data = userData.getFileData();
             groupName = data.getString("group");
             subgroupName = data.getString("subgroup");
@@ -145,19 +149,6 @@ public class User {
         }
         if (gender != null) {
             this.gender = Gender.get(gender);
-        }
-    }
-
-    private void updateUserData() {
-        if (userData.getFileData().getConfigurationSection("user") != null) {
-            userData.setAndSave("group", userData.getFileData().getString("user.group"));
-            userData.setAndSave("subgroup", userData.getFileData().getString("user.subgroup"));
-            userData.setAndSave("chat-color", userData.getFileData().getString("user.chatcolor"));
-            userData.setAndSave("custom-prefix", userData.getFileData().getString("user.custom.prefix"));
-            userData.setAndSave("custom-suffix", userData.getFileData().getString("user.custom.suffix"));
-            userData.setAndSave("gender", userData.getFileData().getString("user.gender"));
-            userData.setAndSave("force-group", userData.getFileData().getBoolean("user.force-group"));
-            userData.setAndSave("user", null);
         }
     }
 

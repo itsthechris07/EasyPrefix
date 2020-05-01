@@ -15,6 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Button {
     private final ItemStack ITEMSTACK;
     private HashMap<String, String> DATA = new HashMap<>();

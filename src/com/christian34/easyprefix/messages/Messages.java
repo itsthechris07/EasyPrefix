@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Messages {
     private static FileConfiguration data;
     private static List<String> languages = Arrays.asList("en_EN", "de_DE", "it_IT");
@@ -130,18 +135,6 @@ public class Messages {
 
     public static void log(String message) {
         Bukkit.getConsoleSender().sendMessage(getPrefix() + translate(message));
-    }
-
-    public static String setPlaceholder(User user, String message) {
-        if (!PlaceholderAPI.isEnabled()) {
-            String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user.getGender()) : "";
-            String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user.getGender()) : "";
-            message = message.replace("%ep_user_prefix%", getPrefix()).replace("%ep_user_suffix%", user.getSuffix()).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
-        } else {
-            message = PlaceholderAPI.setPlaceholder(user.getPlayer(), message);
-        }
-        message = message.replace("%player%", user.getPlayer().getDisplayName());
-        return translate(message);
     }
 
 }

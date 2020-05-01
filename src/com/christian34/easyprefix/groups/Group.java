@@ -9,7 +9,6 @@ import com.christian34.easyprefix.user.Gender;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.sun.istack.internal.Nullable;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,6 +18,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Group extends EasyGroup {
     private final String NAME;
     private String prefix;
@@ -81,11 +85,9 @@ public class Group extends EasyGroup {
             for (String target : childs) {
                 if (Gender.getTypes().contains(target)) {
                     String genderPrefix = data.getString(getFilePath() + target + ".prefix");
-                    if (genderPrefix != null)
-                        getGroupsData().setAndSave(getFilePath() + ".genders." + target + ".prefix", genderPrefix);
+                    if (genderPrefix != null) getGroupsData().setAndSave(getFilePath() + ".genders." + target + ".prefix", genderPrefix);
                     String genderSuffix = data.getString(getFilePath() + target + ".suffix");
-                    if (genderSuffix != null)
-                        getGroupsData().setAndSave(getFilePath() + ".genders." + target + ".suffix", genderSuffix);
+                    if (genderSuffix != null) getGroupsData().setAndSave(getFilePath() + ".genders." + target + ".suffix", genderSuffix);
                     getGroupsData().set(getFilePath() + target, null);
                 }
             }
@@ -131,7 +133,6 @@ public class Group extends EasyGroup {
         chatColor = chatColor.substring(1, 2);
         this.chatColor = Color.getByCode(chatColor);
         if (this.chatColor == null) setChatColor(Color.GRAY);
-
 
 
         if (prefix.contains("§")) {

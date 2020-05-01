@@ -10,6 +10,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Updater {
     public static final String UPDATE_MSG = "§7A new update is available at: §bhttps://www.spigotmc" + ".org/resources/44580/updates";
     private static final String ERR_MSG = "§cUpdate checker failed!";
@@ -24,7 +29,6 @@ public class Updater {
                 spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
             } catch(IOException e) {
                 Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + ERR_MSG);
-                e.printStackTrace();
                 return;
             }
             if (!VersionController.getPluginVersion().equals(spigotPluginVersion)) {

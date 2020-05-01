@@ -10,6 +10,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class GroupsData {
     private File file;
     private FileConfiguration fileData;

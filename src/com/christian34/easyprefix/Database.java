@@ -13,6 +13,11 @@ import java.sql.*;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Database {
     private String host, database, username, tablePrefix, password;
     private Connection connection;

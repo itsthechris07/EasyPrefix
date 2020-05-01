@@ -14,6 +14,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)

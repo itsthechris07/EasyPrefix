@@ -15,6 +15,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class GroupHandler {
     private EasyPrefix instance;
     private ArrayList<Group> groups;
@@ -49,8 +54,7 @@ public class GroupHandler {
             Database database = EasyPrefix.getInstance().getDatabase();
             if (!database.exists("SELECT `prefix` FROM `%p%groups` WHERE `group` = 'default'")) {
                 database.update("INSERT INTO `%p%groups`(`group`, `prefix`, `suffix`, `chat_color`, `join_msg`, `quit_msg`) " + "VALUES ('default','&7','&f:','&7','&8» %ep_user_prefix%%player% &7joined the game','&8« %ep_user_prefix%%player% &7left the game')");
-                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" +
-                        " with: /easyprefix database upload");
+                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" + " with: /easyprefix database upload");
             }
         }
         load();

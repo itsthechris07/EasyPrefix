@@ -26,6 +26,11 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class GuiRespond {
     private final ListenUp LISTENER = new ListenUp();
     private boolean preventClose;
@@ -113,6 +118,10 @@ public class GuiRespond {
     }
 
     private void closeInventory() {
+        this.buttons = null;
+        this.customInventory = null;
+        this.inventory = null;
+        this.pages = null;
         HandlerList.unregisterAll(LISTENER);
     }
 

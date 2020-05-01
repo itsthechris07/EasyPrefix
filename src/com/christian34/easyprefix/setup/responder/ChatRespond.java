@@ -14,6 +14,11 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class ChatRespond {
     private final ListenUp LISTENER = new ListenUp();
     private final User RESPONDER;

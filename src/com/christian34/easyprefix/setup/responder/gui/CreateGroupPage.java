@@ -7,6 +7,11 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.responder.ChatRespond;
 import com.christian34.easyprefix.user.User;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class CreateGroupPage {
     private User user;
 

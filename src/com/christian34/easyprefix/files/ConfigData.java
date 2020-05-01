@@ -8,6 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class ConfigData {
     private File file;
     private FileConfiguration fileData;

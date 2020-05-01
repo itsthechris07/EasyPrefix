@@ -16,6 +16,11 @@ import org.bukkit.Material;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class GroupsList {
     private User user;
 

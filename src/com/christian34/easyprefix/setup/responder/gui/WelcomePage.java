@@ -9,6 +9,11 @@ import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Material;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class WelcomePage {
     private User user;
 

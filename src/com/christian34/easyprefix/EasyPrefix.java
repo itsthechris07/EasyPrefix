@@ -25,6 +25,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance;
     public ArrayList<User> users;
@@ -32,13 +37,6 @@ public class EasyPrefix extends JavaPlugin {
     private Database database;
     private GroupHandler groupHandler;
     private VaultManager vaultManager = null;
-
-    public void onDisable() {
-        if (getDatabase() != null) getDatabase().close();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player != null) player.closeInventory();
-        }
-    }
 
     public void onEnable() {
         instance = this;
@@ -77,6 +75,13 @@ public class EasyPrefix extends JavaPlugin {
         Updater.checkForUpdates();
         Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Messages.log("§bIf you like the plugin or you have suggestions, please write a review " + "on spigotmc.org!");
+    }
+
+    public void onDisable() {
+        if (getDatabase() != null) getDatabase().close();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player != null) player.closeInventory();
+        }
     }
 
     public boolean formatChat() {

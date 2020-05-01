@@ -16,6 +16,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class QuitListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)

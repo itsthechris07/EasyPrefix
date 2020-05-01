@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Gender {
     private static List<String> types;
     private static ConcurrentHashMap<String, Gender> genderTypes;

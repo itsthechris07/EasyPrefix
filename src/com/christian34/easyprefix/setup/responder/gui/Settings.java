@@ -13,6 +13,11 @@ import org.bukkit.Material;
 
 import java.util.List;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class Settings {
     private User user;
 

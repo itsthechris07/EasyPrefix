@@ -26,6 +26,11 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class CommandListener implements Listener, CommandExecutor {
     private EasyPrefix instance;
 
@@ -141,7 +146,7 @@ public class CommandListener implements Listener, CommandExecutor {
                     if (groupHandler.isGroup(args[1])) {
                         group = groupHandler.getGroup(args[1]);
                     } else {
-                        user.sendMessage("§cGroup was not found!");
+                        sender.sendMessage(Messages.getPrefix() + "§cGroup was not found!");
                         return false;
                     }
                     if (args.length >= 3) {

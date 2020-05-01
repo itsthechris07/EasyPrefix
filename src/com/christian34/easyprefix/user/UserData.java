@@ -8,6 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class UserData {
     private final UUID uniqueId;
     private File file;

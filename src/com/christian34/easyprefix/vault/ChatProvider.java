@@ -9,6 +9,11 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class ChatProvider extends Chat {
 
     public ChatProvider(Permission perms) {

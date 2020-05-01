@@ -2,6 +2,11 @@ package com.christian34.easyprefix.setup;
 
 import java.util.ArrayList;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class CustomInventory {
     private final String TITLE;
     private final int LINES;

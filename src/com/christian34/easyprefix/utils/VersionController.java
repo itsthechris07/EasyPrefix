@@ -3,6 +3,11 @@ package com.christian34.easyprefix.utils;
 import com.christian34.easyprefix.EasyPrefix;
 import org.bukkit.Bukkit;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class VersionController {
     private static final String pluginVersion;
     private static final int minorVersion;

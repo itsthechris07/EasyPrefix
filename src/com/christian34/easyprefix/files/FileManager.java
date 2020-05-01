@@ -2,6 +2,11 @@ package com.christian34.easyprefix.files;
 
 import java.io.File;
 
+/**
+ * EasyPrefix 2020.
+ *
+ * @author Christian34
+ */
 public class FileManager {
     private static ConfigData configData;
     private static GroupsData groupsData;
