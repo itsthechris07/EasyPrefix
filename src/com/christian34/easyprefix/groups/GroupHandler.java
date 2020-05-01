@@ -81,7 +81,7 @@ public class GroupHandler {
                     load();
                 }
             }
-            if (FileManager.getConfig().getFileData().getBoolean(ConfigData.Values.USE_SUBGROUPS.toString())) {
+            if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_SUBGROUPS)) {
                 subgroupNames.addAll(groupsData.getSection("subgroups"));
             }
         } else {

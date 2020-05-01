@@ -35,7 +35,7 @@ public class ChatListener implements Listener {
             suffix = PlaceholderAPI.setPlaceholder(user.getPlayer(), suffix);
         }
 
-        if (FileManager.getConfig().getFileData().getBoolean("config.chat.handle-colors")) {
+        if (FileManager.getConfig().getBoolean(ConfigData.Values.HANDLE_COLORS)) {
             ChatFormatting chatFormatting = user.getChatFormatting();
             chatColor = user.getChatColor().getCode();
             if (chatFormatting != null) {
@@ -63,8 +63,7 @@ public class ChatListener implements Listener {
 
         if (EasyPrefix.getInstance().formatChat()) {
             String format = prefix + user.getPlayer().getDisplayName() + suffix + " " + chatColor + e.getMessage();
-
-            if (!FileManager.getConfig().getFileData().getBoolean(ConfigData.Values.DUPLICATE_WHITE_SPACES.toString())) {
+            if (!FileManager.getConfig().getBoolean(ConfigData.Values.DUPLICATE_WHITE_SPACES)) {
                 format = format.replaceAll("\\s+", " ");
             }
             e.setFormat(format.replace("%", "%%"));

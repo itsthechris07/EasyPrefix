@@ -1,5 +1,6 @@
 package com.christian34.easyprefix;
 
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigData.Values;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
@@ -24,13 +25,13 @@ public class Database {
     private int port;
 
     Database() {
-        FileConfiguration config = FileManager.getConfig().getFileData();
-        this.host = config.getString(Values.SQL_HOST.toString());
-        this.database = config.getString(Values.SQL_DATABASE.toString());
-        this.username = config.getString(Values.SQL_USERNAME.toString());
-        this.password = config.getString(Values.SQL_PASSWORD.toString());
-        this.tablePrefix = config.getString(Values.SQL_TABLE_PREFIX.toString());
-        this.port = config.getInt(Values.SQL_PORT.toString());
+        ConfigData config = FileManager.getConfig();
+        this.host = config.getString(Values.SQL_HOST);
+        this.database = config.getString(Values.SQL_DATABASE);
+        this.username = config.getString(Values.SQL_USERNAME);
+        this.password = config.getString(Values.SQL_PASSWORD);
+        this.tablePrefix = config.getString(Values.SQL_TABLE_PREFIX);
+        this.port = config.getInt(Values.SQL_PORT);
         if (tablePrefix == null || tablePrefix.isEmpty()) {
             this.tablePrefix = "";
         } else if (!this.tablePrefix.endsWith("_")) this.tablePrefix += "_";

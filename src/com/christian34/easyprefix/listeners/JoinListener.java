@@ -13,7 +13,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,8 +29,8 @@ public class JoinListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
         User user = EasyPrefix.getInstance().getUser(e.getPlayer());
-        FileConfiguration config = FileManager.getConfig().getFileData();
-        if (config.getBoolean(ConfigData.Values.HIDE_JOIN_QUIT.toString())) {
+        ConfigData configData = FileManager.getConfig();
+        if (configData.getBoolean(ConfigData.Values.HIDE_JOIN_QUIT)) {
             e.setJoinMessage(null);
         } else {
             if (e.getJoinMessage() != null) {
@@ -44,15 +43,15 @@ public class JoinListener implements Listener {
                 e.setJoinMessage(joinMsg);
             }
         }
-        if (config.getBoolean(ConfigData.Values.USE_JOIN_SOUND.toString())) {
-            String cfg = config.getString(ConfigData.Values.JOIN_SOUND.toString());
+        if (configData.getBoolean(ConfigData.Values.USE_JOIN_SOUND)) {
+            String cfg = configData.getString(ConfigData.Values.JOIN_SOUND);
             String[] soundOption = cfg.replace(" ", "").split(";");
             try {
                 Sound sound = Sound.valueOf(soundOption[0]);
                 float volume = Integer.parseInt(soundOption[1]);
                 float pitch = Integer.parseInt(soundOption[2]);
                 if (soundOption.length == 3) {
-                    String receiver = config.getString(ConfigData.Values.JOIN_QUIT_SOUND_RECEIVER.toString());
+                    String receiver = configData.getString(ConfigData.Values.JOIN_QUIT_SOUND_RECEIVER);
                     if (receiver.equals("all")) {
                         for (Player target : Bukkit.getOnlinePlayers()) {
                             target.playSound(target.getLocation(), sound, volume, pitch);
@@ -75,7 +74,7 @@ public class JoinListener implements Listener {
                     user.sendMessage(Updater.UPDATE_MSG);
                 }
             }
-            if (config.getBoolean(ConfigData.Values.FORCE_GENDER.toString())) {
+            if (configData.getBoolean(ConfigData.Values.FORCE_GENDER)) {
                 if (user.getGender() == null) {
                     String prefix = Messages.getText("info.prefix");
                     if (prefix == null) prefix = Messages.getPrefix();

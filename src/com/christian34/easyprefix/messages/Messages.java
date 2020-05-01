@@ -60,8 +60,7 @@ public class Messages {
         String path = "plugins/EasyPrefix";
         if (language == null || !languages.contains(language)) {
             language = "en_EN";
-            config.getFileData().set("config.lang", "en_EN");
-            config.save();
+            config.set("config.lang", "en_EN");
         }
         File file = new File(path, language + ".yml");
         if (!file.exists()) {

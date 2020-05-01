@@ -46,7 +46,7 @@ public class EasyPrefix extends JavaPlugin {
         ConfigData cfg = FileManager.getConfig();
         Messages.load();
         Gender.load();
-        if (cfg.getFileData().getBoolean(ConfigData.Values.USE_SQL.toString())) {
+        if (cfg.getBoolean(ConfigData.Values.USE_SQL)) {
             this.database = new Database();
         }
         this.groupHandler = new GroupHandler(this);
@@ -55,7 +55,7 @@ public class EasyPrefix extends JavaPlugin {
         mainCmd.setExecutor(new CommandListener(this));
         mainCmd.setTabCompleter(new TabComplete(this));
         registerEvents();
-        if (!cfg.getFileData().getBoolean("config.enabled")) {
+        if (!cfg.getBoolean(ConfigData.Values.ENABLED)) {
             Messages.log("§cPlugin has been disabled! §7Please enable it in \"config.yml\"");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
@@ -115,7 +115,7 @@ public class EasyPrefix extends JavaPlugin {
 
     public void reload() {
         FileManager.load();
-        if (FileManager.getConfig().getFileData().getBoolean(ConfigData.Values.USE_SQL.toString()) && this.database != null) {
+        if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_SQL) && this.database != null) {
             try {
                 getDatabase().getConnection().close();
             } catch(SQLException ignored) {

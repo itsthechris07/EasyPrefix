@@ -113,7 +113,7 @@ public class User {
                 saveData("group", null);
             }
         }
-        if (FileManager.getConfig().getFileData().getBoolean(ConfigData.Values.USE_SUBGROUPS.toString())) {
+        if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_SUBGROUPS)) {
             if (subgroupName != null) {
                 if (groupHandler.isSubgroup(subgroupName) && PLAYER.hasPermission("EasyPrefix.subgroup." + subgroupName)) {
                     this.subgroup = groupHandler.getSubgroup(subgroupName);

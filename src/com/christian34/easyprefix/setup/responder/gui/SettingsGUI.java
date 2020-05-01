@@ -149,7 +149,7 @@ public class SettingsGUI {
     public void openColorsPage() {
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETTINGS_TITLE).replace("%page%", Messages.getText(Message.SETTINGS_TITLE_FORMATTINGS)), 5);
         int colorSlot = 9;
-        boolean showAll = FileManager.getConfig().getFileData().getBoolean(ConfigData.Values.GUI_SHOW_ALL_CHATCOLORS.toString());
+        boolean showAll = FileManager.getConfig().getBoolean(ConfigData.Values.GUI_SHOW_ALL_CHATCOLORS);
         for (Color color : Color.values()) {
             if (color.equals(Color.UNDEFINED)) continue;
             if (showAll || user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {

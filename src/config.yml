@@ -11,9 +11,7 @@ config:
   version: 1.6.3
   # default language (en_EN, de_DE, it_IT)
   lang: en_EN
-  # use bungeecord for chat transmitting and receiving
-  bungeecord: false
-  # sql for bungeecord usage
+  # connect multiple servers
   sql:
     enabled: false
     host: 'localhost'
