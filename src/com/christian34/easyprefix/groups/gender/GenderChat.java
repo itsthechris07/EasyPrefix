@@ -54,7 +54,7 @@ public class GenderChat {
                 e.printStackTrace();
             }
         } else {
-            GroupsData groupsData = FileManager.getGroups();
+            GroupsData groupsData = FileManager.getGroupsData();
             Set<String> set = groupsData.getSection(easyGroup.getFilePath() + "genders");
             if (!set.isEmpty()) {
                 for (String genderName : set) {
@@ -63,9 +63,9 @@ public class GenderChat {
                         Messages.log("error GC_02: " + genderName);
                         continue;
                     }
-                    String prefix = groupsData.getFileData().getString(easyGroup.getFilePath() + "genders." + genderName + ".prefix");
+                    String prefix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + genderName + ".prefix");
                     if (prefix != null) prefixes.put(genderType, prefix);
-                    String suffix = groupsData.getFileData().getString(easyGroup.getFilePath() + "genders." + genderName + ".suffix");
+                    String suffix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + genderName + ".suffix");
                     if (suffix != null) suffixes.put(genderType, suffix);
                 }
             }

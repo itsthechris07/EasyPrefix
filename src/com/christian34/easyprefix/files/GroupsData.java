@@ -17,15 +17,15 @@ import java.util.Set;
  */
 public class GroupsData {
     private File file;
-    private FileConfiguration fileData;
+    private FileConfiguration data;
 
     public GroupsData load() {
         this.file = new File(FileManager.getPluginFolder(), "groups.yml");
         if (!file.exists()) {
             EasyPrefix.getInstance().getPlugin().saveResource("groups.yml", true);
         }
-        this.fileData = YamlConfiguration.loadConfiguration(file);
-        if (fileData.getConfigurationSection("groups") == null) {
+        this.data = YamlConfiguration.loadConfiguration(file);
+        if (data.getConfigurationSection("groups") == null) {
             File old = new File(FileManager.getPluginFolder(), "groups.yml");
             File backup = new File(FileManager.getPluginFolder(), "backup-groups.yml");
             if (old.renameTo(backup) && old.delete()) {
@@ -37,7 +37,7 @@ public class GroupsData {
 
     public void save() {
         try {
-            fileData.save(file);
+            data.save(file);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -45,7 +45,7 @@ public class GroupsData {
     }
 
     public Set<String> getSection(String key) {
-        ConfigurationSection section = getFileData().getConfigurationSection(key);
+        ConfigurationSection section = getData().getConfigurationSection(key);
         if (section != null) {
             return section.getKeys(false);
         }
@@ -53,16 +53,16 @@ public class GroupsData {
     }
 
     public void setAndSave(String key, Object value) {
-        getFileData().set(key, value);
+        getData().set(key, value);
         save();
     }
 
     public void set(String key, Object value) {
-        getFileData().set(key, value);
+        getData().set(key, value);
     }
 
-    public FileConfiguration getFileData() {
-        return fileData;
+    public FileConfiguration getData() {
+        return data;
     }
 
 }

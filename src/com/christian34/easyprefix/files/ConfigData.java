@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class ConfigData {
     private File file;
-    private FileConfiguration fileData;
+    private FileConfiguration data;
 
     public ConfigData load() {
         EasyPrefix instance = EasyPrefix.getInstance();
@@ -29,38 +29,38 @@ public class ConfigData {
                 e.printStackTrace();
             }
         }
-        this.fileData = YamlConfiguration.loadConfiguration(file);
+        this.data = YamlConfiguration.loadConfiguration(file);
         return this;
     }
 
     public void save() {
         try {
-            fileData.options().copyDefaults(true);
-            fileData.save(file);
+            data.options().copyDefaults(true);
+            data.save(file);
         } catch(IOException e) {
             e.printStackTrace();
         }
         load();
     }
 
-    public FileConfiguration getFileData() {
-        return fileData;
+    public FileConfiguration getData() {
+        return data;
     }
 
     public String getString(Values key) {
-        return getFileData().getString(key.toString());
+        return getData().getString(key.toString());
     }
 
     public int getInt(Values key) {
-        return getFileData().getInt(key.toString());
+        return getData().getInt(key.toString());
     }
 
     public boolean getBoolean(Values key) {
-        return getFileData().getBoolean(key.toString());
+        return getData().getBoolean(key.toString());
     }
 
     public void set(String path, Object value) {
-        getFileData().set(path, value);
+        getData().set(path, value);
         save();
     }
 

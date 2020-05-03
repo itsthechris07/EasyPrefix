@@ -32,11 +32,11 @@ public class GroupHandler {
 
     public GroupHandler(EasyPrefix instance) {
         this.instance = instance;
-        this.groupsData = FileManager.getGroups();
+        this.groupsData = FileManager.getGroupsData();
 
         if (EasyPrefix.getInstance().getDatabase() == null) {
             GroupsData groupsData = getGroupsData();
-            FileConfiguration fileData = groupsData.getFileData();
+            FileConfiguration fileData = groupsData.getData();
             if (fileData.getString("groups.default.prefix") == null) {
                 groupsData.set("groups.default.prefix", "&7");
             }
@@ -131,7 +131,7 @@ public class GroupHandler {
 
     private void loadGenders() {
         this.genderTypes = new ArrayList<>();
-        List<String> types = FileManager.getConfig().getFileData().getStringList("config.gender.types");
+        List<String> types = FileManager.getConfig().getData().getStringList("config.gender.types");
         for (String name : types) {
             if (Messages.getText("gender." + name) != null) {
                 GenderType genderType = new GenderType(name);

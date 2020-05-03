@@ -43,9 +43,9 @@ public class Subgroup extends EasyGroup {
                 e.printStackTrace();
             }
         } else {
-            this.groupsData = FileManager.getGroups();
-            this.prefix = groupsData.getFileData().getString(getFilePath() + "prefix");
-            this.suffix = groupsData.getFileData().getString(getFilePath() + "suffix");
+            this.groupsData = FileManager.getGroupsData();
+            this.prefix = groupsData.getData().getString(getFilePath() + "prefix");
+            this.suffix = groupsData.getData().getString(getFilePath() + "suffix");
         }
 
         if (groupHandler.handleGenders()) {

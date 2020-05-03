@@ -129,7 +129,7 @@ public class Database {
     }
 
     public void uploadGroups() throws SQLException {
-        FileConfiguration data = FileManager.getGroups().getFileData();
+        FileConfiguration data = FileManager.getGroupsData().getData();
         Set<String> groups = data.getConfigurationSection("groups").getKeys(false);
         for (String groupName : groups) {
             try {
@@ -224,7 +224,7 @@ public class Database {
     }
 
     private void uploadSubgroups() throws SQLException {
-        FileConfiguration data = FileManager.getGroups().getFileData();
+        FileConfiguration data = FileManager.getGroupsData().getData();
         ConfigurationSection mainSection = data.getConfigurationSection("subgroups");
         if (mainSection == null) return;
         Set<String> groups = mainSection.getKeys(false);
@@ -362,7 +362,7 @@ public class Database {
         long startTime = System.currentTimeMillis();
         Messages.log("§cDownloading data to local storage...");
         FileManager.load();
-        GroupsData groupsData = FileManager.getGroups();
+        GroupsData groupsData = FileManager.getGroupsData();
         groupsData.load();
         groupsData.set("groups", null);
         groupsData.set("subgroups", null);

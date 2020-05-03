@@ -34,7 +34,7 @@ public class Group extends EasyGroup {
 
     public Group(GroupHandler groupHandler, String name) {
         this.NAME = name;
-        this.groupsData = FileManager.getGroups();
+        this.groupsData = FileManager.getGroupsData();
         this.groupHandler = groupHandler;
 
         String prefix = "", suffix = "", chatColor = "", chatFormatting = "", joinMsg = "", quitMsg = "";
@@ -56,7 +56,7 @@ public class Group extends EasyGroup {
                 e.printStackTrace();
             }
         } else {
-            FileConfiguration data = getGroupsData().getFileData();
+            FileConfiguration data = getGroupsData().getData();
             prefix = data.getString(getFilePath() + "prefix");
             suffix = data.getString(getFilePath() + "suffix");
             chatColor = data.getString(getFilePath() + "chat-color");

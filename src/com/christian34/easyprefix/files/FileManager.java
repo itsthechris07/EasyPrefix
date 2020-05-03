@@ -24,7 +24,7 @@ public class FileManager {
         return configData;
     }
 
-    public static GroupsData getGroups() {
+    public static GroupsData getGroupsData() {
         return groupsData;
     }
 
