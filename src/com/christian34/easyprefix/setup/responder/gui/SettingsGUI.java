@@ -3,10 +3,10 @@ package com.christian34.easyprefix.setup.responder.gui;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
+import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.Button;
@@ -30,9 +30,11 @@ import java.util.List;
  */
 public class SettingsGUI {
     private final User user;
+    private GroupHandler groupHandler;
 
     public SettingsGUI(User user) {
         this.user = user;
+        this.groupHandler = EasyPrefix.getInstance().getGroupHandler();
         openMainPage();
     }
 
@@ -43,24 +45,22 @@ public class SettingsGUI {
     public void openGenderPage() {
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETTINGS_TITLE).replace("%page%", Messages.getText(Message.TITLE_GENDER)), 3);
         String genderName = "n/A";
-        if (user.getGender() != null) genderName = user.getGender().getName();
+        if (user.getGenderType() != null) genderName = user.getGenderType().getDisplayName();
         Button crntGender = new Button(Button.playerHead(user.getName()), genderName).setSlot(2, 5);
         crntGender.setLore(" ", Messages.getText(Message.LORE_CHANGE_GENDER));
         inventory.addItem(crntGender);
         new GuiRespond(getUser(), inventory, (btn) -> {
             if (btn.equals(crntGender)) {
-                if (user.getGender() == null) {
-                    user.setGender(Gender.get(Gender.getTypes().get(0)));
+                if (user.getGenderType() == null) {
+                    user.setGenderType(this.groupHandler.getGenderTypes().get(0));
                 } else {
-                    List<String> genderList = Gender.getTypes();
-                    int idx = genderList.indexOf(user.getGender().getId());
-                    String gender;
-                    if (idx + 1 == genderList.size()) {
-                        gender = genderList.get(0);
-                    } else {
-                        gender = genderList.get(idx + 1);
-                    }
-                    user.setGender(Gender.get(gender));
+                    ArrayList<GenderType> genderTypes = this.groupHandler.getGenderTypes();
+                    int index = genderTypes.indexOf(user.getGenderType());
+                    if (index + 1 >= genderTypes.size()) {
+                        index = 0;
+                    } else index++;
+                    GenderType nextGenderType = this.groupHandler.getGenderTypes().get(index);
+                    user.setGenderType(nextGenderType);
                 }
                 openGenderPage();
             } else {
@@ -173,7 +173,8 @@ public class SettingsGUI {
                     button.setLore(lore);
                 }
                 button.setData("formatting", chatFormatting.name());
-                if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) button.addEnchantment();
+                if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting))
+                    button.addEnchantment();
                 inventory.addItem(button);
                 formattingsSlot++;
             }
@@ -225,10 +226,15 @@ public class SettingsGUI {
     private void openMainPage() {
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETTINGS_TITLE).replace("%page%", Messages.getText(Message.SETTINGS_TITLE_MAIN)), 3);
         Button prefix = new Button(Material.CHEST, Messages.getText(Message.BTN_MY_PREFIXES)).setSlot(2, 3).setLore(Messages.getText(Message.LORE_CHANGE_PREFIX, user), " ");
-        inventory.addItem(prefix);
-        Button gender = new Button(Button.playerHead(user.getName()), Messages.getText(Message.CHANGE_GENDER)).setSlot(2, 5).setLore(Messages.getText(Message.LORE_CHANGE_GENDER), " ");
-        inventory.addItem(gender);
         Button formattings = new Button(Material.CHEST, Messages.getText(Message.BTN_MY_FORMATTINGS)).setSlot(2, 7).setLore(Messages.getText(Message.LORE_CHANGE_CHATCOLOR, user), " ");
+        if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_GENDER)) {
+            Button gender = new Button(Button.playerHead(user.getName()), Messages.getText(Message.CHANGE_GENDER)).setSlot(2, 5).setLore(Messages.getText(Message.LORE_CHANGE_GENDER), " ");
+            inventory.addItem(gender);
+        } else {
+            prefix.setSlot(2, 4);
+            formattings.setSlot(2, 6);
+        }
+        inventory.addItem(prefix);
         inventory.addItem(formattings);
         new GuiRespond(user, inventory, (btn) -> {
             String name = btn.getDisplayName();
@@ -242,7 +248,7 @@ public class SettingsGUI {
                 }
             } else if (btn.equals(formattings)) {
                 openColorsPage();
-            } else if (btn.equals(gender)) {
+            } else if (btn.getDisplayName().equals(Messages.getText(Message.CHANGE_GENDER))) {
                 openGenderPage();
             }
         });

@@ -2,7 +2,6 @@ package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Message;
@@ -86,7 +85,7 @@ public class CommandListener implements Listener, CommandExecutor {
                 sender.sendMessage("§7------------=== §5§lEasyPrefix DEBUG §7===------------");
                 sender.sendMessage("§5Groups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
                 sender.sendMessage("§5Users cached: §7" + EasyPrefix.getInstance().getUsers().size());
-                sender.sendMessage("§5Genders cached: §7" + Gender.getTypes().size());
+                sender.sendMessage("§5Genders cached: §7" + groupHandler.getGenderTypes().size());
                 sender.sendMessage("§5Bukkit Version: §7" + Bukkit.getVersion());
                 sender.sendMessage("§5Version Name: §7" + Bukkit.getBukkitVersion());
                 sender.sendMessage("§5active EventHandler: §7" + HandlerList.getRegisteredListeners(EasyPrefix.getInstance().getPlugin()).size());
@@ -154,25 +153,25 @@ public class CommandListener implements Listener, CommandExecutor {
                             sender.sendMessage(" ");
                             sender.sendMessage("§7--------------=== §5§l" + group.getName() + " §7===--------------");
                             sender.sendMessage(" ");
-                            sender.sendMessage("§5Prefix§f: §8«§7" + group.getPrefix().replace("§", "&") + "§8»");
-                            sender.sendMessage("§5Suffix§f: §8«§7" + group.getSuffix().replace("§", "&") + "§8»");
+                            sender.sendMessage("§5Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
+                            sender.sendMessage("§5Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
                             String cc = (group.getChatColor() != null) ? group.getChatColor().getCode() : "-";
                             if (group.getChatFormatting() != null) cc = cc + group.getChatFormatting().getCode();
                             sender.sendMessage("§5Chatcolor§f: §7" + cc.replace("§", "&"));
-                            sender.sendMessage("§5Join message§f: §7" + group.getJoinMessage());
-                            sender.sendMessage("§5Quit message§f: §7" + group.getQuitMessage());
+                            sender.sendMessage("§5Join message§f: §7" + group.getJoinMessageText());
+                            sender.sendMessage("§5Quit message§f: §7" + group.getQuitMessageText());
                             sender.sendMessage(" ");
                             sender.sendMessage("§7-----------------------------------------------");
                             return true;
                         }
-                    } else {
-                        sender.sendMessage(" ");
-                        sender.sendMessage("§7--------------=== §5§lEasyPrefix Group §7===--------------");
-                        sender.sendMessage(" ");
-                        sender.sendMessage("§7/§5EasyPrefix group <Group> info §f| §7get information about the group");
-                        sender.sendMessage(" ");
-                        sender.sendMessage("§7----------------------------------------------------");
                     }
+                    sender.sendMessage(" ");
+                    sender.sendMessage("§7--------------=== §5§lEasyPrefix Group §7===--------------");
+                    sender.sendMessage(" ");
+                    sender.sendMessage("§7/§5EasyPrefix group <Group> info §f| §7get information about the group");
+                    sender.sendMessage(" ");
+                    sender.sendMessage("§7----------------------------------------------------");
+                    return false;
                 }
             } else if (args[0].equalsIgnoreCase("user")) {
                 easyCommand = new Command_User(this.instance);

@@ -5,6 +5,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
+import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Messages;
 import com.sun.istack.internal.Nullable;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,6 +26,7 @@ public class GroupHandler {
     private EasyPrefix instance;
     private ArrayList<Group> groups;
     private ArrayList<Subgroup> subgroups;
+    private ArrayList<GenderType> genderTypes;
     private GroupsData groupsData;
     private Group defaultGroup;
 
@@ -57,14 +60,16 @@ public class GroupHandler {
                 Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" + " with: /easyprefix database upload");
             }
         }
-        load();
     }
 
     public void load() {
         this.groups = new ArrayList<>();
         this.subgroups = new ArrayList<>();
         this.instance.getUsers().clear();
-        this.defaultGroup = new Group("default");
+        if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_GENDER)) {
+            loadGenders();
+        }
+        this.defaultGroup = new Group(this, "default");
         groups.add(defaultGroup);
 
         ArrayList<String> groupNames = new ArrayList<>();
@@ -111,14 +116,43 @@ public class GroupHandler {
 
         groupNames.remove("default");
         for (String name : groupNames) {
-            groups.add(new Group(name));
+            groups.add(new Group(this, name));
         }
 
         for (String name : subgroupNames) {
-            subgroups.add(new Subgroup(name));
+            subgroups.add(new Subgroup(this, name));
+        }
+
+    }
+
+    public boolean handleGenders() {
+        return FileManager.getConfig().getBoolean(ConfigData.Values.USE_GENDER);
+    }
+
+    private void loadGenders() {
+        this.genderTypes = new ArrayList<>();
+        List<String> types = FileManager.getConfig().getFileData().getStringList("config.gender.types");
+        for (String name : types) {
+            if (Messages.getText("gender." + name) != null) {
+                GenderType genderType = new GenderType(name);
+                this.genderTypes.add(genderType);
+            } else {
+                Messages.log("&cCouldn't recognize gender '" + name + "'. " + "Please add a name to the language file. " + "If you're not sure what to do, please have a look to GitHub.");
+            }
         }
     }
 
+    public ArrayList<GenderType> getGenderTypes() {
+        return genderTypes;
+    }
+
+    public GenderType getGender(String name) {
+        if (name == null) return null;
+        for (GenderType genderType : this.genderTypes) {
+            if (genderType.getName().equalsIgnoreCase(name)) return genderType;
+        }
+        return null;
+    }
 
     public Group getGroup(String name) {
         for (Group crntGroup : groups) {
@@ -130,16 +164,16 @@ public class GroupHandler {
     }
 
     @Nullable
-    public Subgroup getSubgroup(String name) {
-        for (Subgroup crntGroup : subgroups) {
-            if (crntGroup.getName().equalsIgnoreCase(name)) return crntGroup;
+    public Subgroup getSubgroup(String subgroupName) {
+        for (Subgroup group : subgroups) {
+            if (group.getName().equalsIgnoreCase(subgroupName)) return group;
         }
         return null;
     }
 
-    public Boolean isGroup(String group) {
-        for (Group crntGroup : groups) {
-            if (crntGroup.getName().equalsIgnoreCase(group)) return true;
+    public Boolean isGroup(String groupName) {
+        for (Group group : groups) {
+            if (group.getName().equalsIgnoreCase(groupName)) return true;
         }
         return false;
     }
@@ -161,16 +195,17 @@ public class GroupHandler {
 
     public void createGroup(String groupName) {
         if (EasyPrefix.getInstance().getDatabase() == null) {
-            getGroupsData().set("groups." + groupName + ".prefix", "&6" + groupName + " &7| &8");
-            getGroupsData().set("groups." + groupName + ".suffix", "&f:");
-            getGroupsData().set("groups." + groupName + ".chat-color", "&7");
-            getGroupsData().set("groups." + groupName + ".chat-formatting", "&o");
+            String path = "groups." + groupName + ".";
+            getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");
+            getGroupsData().set(path + "suffix", "&f:");
+            getGroupsData().set(path + "chat-color", "&7");
+            getGroupsData().set(path + "chat-formatting", "&o");
             getGroupsData().save();
         } else {
             Database database = EasyPrefix.getInstance().getDatabase();
             database.update("INSERT INTO `%p%groups`(`group`) VALUES ('" + groupName + "')");
         }
-        groups.add(new Group(groupName));
+        this.groups.add(new Group(this, groupName));
     }
 
     @Nullable

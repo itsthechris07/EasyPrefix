@@ -4,16 +4,14 @@ import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
+import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.sun.istack.internal.Nullable;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -40,7 +38,7 @@ public class User {
     private Subgroup subgroup;
     private Color chatColor;
     private ChatFormatting chatFormatting;
-    private Gender gender;
+    private GenderType genderType;
     private UUID uniqueId;
     private boolean forceGroup;
 
@@ -148,8 +146,8 @@ public class User {
                 this.cSuffix = cstmSuffix.replace("&", "§");
             }
         }
-        if (gender != null) {
-            this.gender = Gender.get(gender);
+        if (gender != null && groupHandler.handleGenders()) {
+            this.genderType = groupHandler.getGender(gender);
         }
     }
 
@@ -162,9 +160,9 @@ public class User {
 
     public String getPrefix() {
         if (hasPermission("EasyPrefix.settings.custom") && cPrefix != null) {
-            return setPlaceholder(cPrefix);
+            return cPrefix;
         }
-        return setPlaceholder(group.getPrefix(gender));
+        return group.getPrefix(this, true);
     }
 
     public void setPrefix(String prefix) {
@@ -175,21 +173,11 @@ public class User {
         this.cPrefix = prefix;
     }
 
-    public String setPlaceholder(String text) {
-        if (!PlaceholderAPI.isEnabled()) {
-            String sgPrefix = (getSubgroup() != null) ? getSubgroup().getPrefix(getGender()) : "";
-            String sgSuffix = (getSubgroup() != null) ? getSubgroup().getSuffix(getGender()) : "";
-            text = text.replace("%ep_user_prefix%", getPrefix()).replace("%ep_user_suffix%", getSuffix()).replace("%ep_user_group%", getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
-            return text;
-        }
-        return ChatColor.translateAlternateColorCodes('&', text);
-    }
-
     public String getSuffix() {
         if (hasPermission("EasyPrefix.settings.custom") && cSuffix != null) {
-            return setPlaceholder(cSuffix);
+            return cSuffix;
         }
-        return setPlaceholder(group.getSuffix(gender));
+        return group.getSuffix(this, true);
     }
 
     public void setSuffix(String suffix) {
@@ -279,13 +267,13 @@ public class User {
         saveData("subgroup", name);
     }
 
-    public Gender getGender() {
-        return gender;
+    public GenderType getGenderType() {
+        return genderType;
     }
 
-    public void setGender(Gender gender) {
-        this.gender = gender;
-        saveData("gender", gender.getId());
+    public void setGenderType(GenderType genderType) {
+        this.genderType = genderType;
+        saveData("gender", genderType.getName());
     }
 
     public Player getPlayer() {

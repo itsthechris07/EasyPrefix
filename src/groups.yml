@@ -57,8 +57,8 @@ subgroups:
     # you can add more genders in config.yml
     genders:
       female:
-        prefix: '&5VIP'
+        prefix: '&5VIP '
       male:
-        prefix: '&9VIP'
+        prefix: '&9VIP '
       intersex:
-        prefix: '&eVIP'
+        prefix: '&eVIP '

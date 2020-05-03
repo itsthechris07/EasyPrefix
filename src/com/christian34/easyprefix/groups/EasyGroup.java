@@ -1,5 +1,7 @@
 package com.christian34.easyprefix.groups;
 
+import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
+import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.sun.istack.internal.Nullable;
@@ -18,14 +20,11 @@ public abstract class EasyGroup {
     public abstract String getName();
 
     /**
-     * @return String returns the unformatted prefix
+     * @param user
+     * @param translate set colors/formattings and placeholders
+     * @return String
      */
-    public abstract String getRawPrefix();
-
-    /**
-     * @return String returns the prefix
-     */
-    public abstract String getPrefix();
+    public abstract String getPrefix(User user, boolean translate);
 
     /**
      * @param prefix unformatted prefix
@@ -33,31 +32,16 @@ public abstract class EasyGroup {
     public abstract void setPrefix(String prefix);
 
     /**
-     * @param gender target gender
-     * @return String returns the formatted prefix for param gender
+     * @param user
+     * @param translate
+     * @return
      */
-    public abstract String getPrefix(Gender gender);
-
-    /**
-     * @return String returns the unformatted suffix
-     */
-    public abstract String getRawSuffix();
-
-    /**
-     * @return String returns the formatted suffix
-     */
-    public abstract String getSuffix();
+    public abstract String getSuffix(User user, boolean translate);
 
     /**
      * @param suffix unformatted suffix
      */
     public abstract void setSuffix(String suffix);
-
-    /**
-     * @param gender target gender
-     * @return String returns the formatted suffix for param gender
-     */
-    public abstract String getSuffix(Gender gender);
 
     /**
      * @return ChatColor returns the automatic generated color
@@ -95,5 +79,30 @@ public abstract class EasyGroup {
      * deletes the group recursively
      */
     public abstract void delete();
+
+    /**
+     * apply colors/formattings and placeholders to prefix or suffix
+     *
+     * @param text
+     * @param user
+     * @return String
+     */
+    public String translate(String text, User user) {
+        if (text == null) return null;
+
+        if (user != null) {
+            if (!PlaceholderAPI.isEnabled()) {
+                String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user, false) : "";
+                String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user, false) : "";
+                text = text.replace("%ep_user_prefix%", user.getPrefix()).replace("%ep_user_suffix%", user.getSuffix()).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
+            } else {
+                text = PlaceholderAPI.setPlaceholder(user.getPlayer(), text);
+            }
+            text = text.replace("%player%", user.getPlayer().getDisplayName());
+        }
+
+        text = ChatColor.translateAlternateColorCodes('&', text);
+        return text;
+    }
 
 }

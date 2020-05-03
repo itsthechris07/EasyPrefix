@@ -4,7 +4,6 @@ import com.christian34.easyprefix.commands.CommandListener;
 import com.christian34.easyprefix.commands.TabComplete;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
@@ -38,6 +37,12 @@ public class EasyPrefix extends JavaPlugin {
     private GroupHandler groupHandler;
     private VaultManager vaultManager = null;
 
+    private Updater updater;
+
+    public Updater getUpdater() {
+        return updater;
+    }
+
     public void onEnable() {
         instance = this;
         this.plugin = this;
@@ -45,11 +50,11 @@ public class EasyPrefix extends JavaPlugin {
         FileManager.load();
         ConfigData cfg = FileManager.getConfig();
         Messages.load();
-        Gender.load();
         if (cfg.getBoolean(ConfigData.Values.USE_SQL)) {
             this.database = new Database();
         }
         this.groupHandler = new GroupHandler(this);
+        groupHandler.load();
         PluginCommand mainCmd = getCommand("EasyPrefix");
         assert mainCmd != null;
         mainCmd.setExecutor(new CommandListener(this));
@@ -70,9 +75,10 @@ public class EasyPrefix extends JavaPlugin {
             }
         }
 
+        this.updater = new Updater(this);
+
         PlaceholderAPI.setEnabled(Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI"));
         hookMetrics();
-        Updater.checkForUpdates();
         Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Messages.log("§bIf you like the plugin or you have suggestions, please write a review " + "on spigotmc.org!");
     }
@@ -125,7 +131,6 @@ public class EasyPrefix extends JavaPlugin {
             this.database = null;
         }
         Messages.load();
-        Gender.load();
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
     }
@@ -140,7 +145,7 @@ public class EasyPrefix extends JavaPlugin {
 
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
-        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(this), this);
         getServer().getPluginManager().registerEvents(new QuitListener(), this);
     }
 

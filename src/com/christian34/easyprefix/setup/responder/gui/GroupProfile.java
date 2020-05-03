@@ -41,7 +41,7 @@ public class GroupProfile {
     public void openGroupProfile(Group group) {
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 4);
         Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(2, 3);
-        String prefix = group.getRawPrefix();
+        String prefix = group.getPrefix(null, false);
         if (prefix.length() > 25) {
             List<String> lore = new ArrayList<>();
             lore.add(this.DIVIDER);
@@ -51,12 +51,12 @@ public class GroupProfile {
             lore.add(Messages.getText(Message.LORE_EDIT, user));
             prefixBtn.setLore(lore);
         } else {
-            prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + group.getRawPrefix() + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+            prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + prefix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         }
         inventory.addItem(prefixBtn);
 
         Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(2, 5);
-        String suffix = group.getRawSuffix();
+        String suffix = group.getSuffix(null, false);
 
         if (suffix.length() > 25) {
             List<String> lore = new ArrayList<>();
@@ -67,14 +67,14 @@ public class GroupProfile {
             lore.add(Messages.getText(Message.LORE_EDIT, user));
             suffixBtn.setLore(lore);
         } else {
-            suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + group.getRawSuffix() + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+            suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + suffix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         }
 
         inventory.addItem(suffixBtn);
 
 
         Button joinBtn = new Button(Material.BLAZE_ROD, "§aJoin Message", null).setSlot(3, 4);
-        String joinMsg = group.getJoinMessage().replace("§", "&");
+        String joinMsg = group.getJoinMessageText();
         if (joinMsg.length() > 25) {
             List<String> lore = new ArrayList<>();
             lore.add(this.DIVIDER);
@@ -90,7 +90,7 @@ public class GroupProfile {
         inventory.addItem(joinBtn);
 
         Button quitBtn = new Button(Material.STICK, "§aQuit Message", null).setSlot(3, 6);
-        String quitMsg = group.getQuitMessage().replace("§", "&");
+        String quitMsg = group.getQuitMessageText();
         if (quitMsg.length() > 25) {
             List<String> lore = new ArrayList<>();
             lore.add(this.DIVIDER);
@@ -162,10 +162,10 @@ public class GroupProfile {
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 5);
         Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(3, 3);
 
-        prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + subgroup.getRawPrefix() + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + subgroup.getPrefix(null, false) + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(prefixBtn);
         Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(3, 5);
-        suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + subgroup.getRawSuffix() + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + subgroup.getSuffix(null, false) + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(suffixBtn);
 
         if (!subgroup.getName().equals("default")) {

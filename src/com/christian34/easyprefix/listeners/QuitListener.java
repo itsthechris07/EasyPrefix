@@ -5,7 +5,6 @@ import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -31,12 +30,8 @@ public class QuitListener implements Listener {
         } else {
             if (e.getQuitMessage() != null) {
                 Group group = user.getGroup();
-                String quitMsg = group.getQuitMessage();
-                if (PlaceholderAPI.isEnabled()) {
-                    quitMsg = PlaceholderAPI.setPlaceholder(user.getPlayer(), quitMsg);
-                }
-                quitMsg = quitMsg.replace("%player%", user.getPlayer().getDisplayName()).replace("  ", " ");
-                e.setQuitMessage(user.setPlaceholder(quitMsg));
+                String quitMsg = group.getQuitMessage(user);
+                e.setQuitMessage(quitMsg);
             }
         }
         if (configData.getBoolean(ConfigData.Values.USE_QUIT_SOUND)) {

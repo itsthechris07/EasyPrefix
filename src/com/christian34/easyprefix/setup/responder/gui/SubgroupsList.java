@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.setup.responder.gui;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
@@ -35,8 +34,8 @@ public class SubgroupsList {
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» " + Messages.getText(Message.TITLE_SUBGROUPS), 5);
         int counter = 9;
         for (final Subgroup subgroup : groupHandler.getSubgroups()) {
-            String prefix = subgroup.getRawPrefix();
-            String suffix = subgroup.getRawSuffix();
+            String prefix = subgroup.getPrefix(null, false);
+            String suffix = subgroup.getSuffix(null, false);
             suffix = (suffix == null) ? "-" : suffix;
             ChatColor prefixColor = subgroup.getGroupColor();
             List<String> lore = new ArrayList<>();
@@ -48,7 +47,10 @@ public class SubgroupsList {
                 lore.add(Messages.getText(Message.LORE_PREFIX).replace("%value%", "§7«§f" + prefix + "§7»"));
             }
             lore.add(Messages.getText(Message.LORE_SUFFIX).replace("%value%", "§7«§f" + suffix + "§7»"));
-            if (!Gender.getTypes().contains(subgroup.getName().toLowerCase())) {
+
+            /* todo what's happening here? */
+            if (groupHandler.getGender(subgroup.getName()) == null) {
+                //  if (!Gender.getTypes().contains(subgroup.getName().toLowerCase())) {
                 lore.add(Messages.getText(Message.LORE_PERMISSION).replace("%value%", "EasyPrefix.subgroup." + subgroup.getName()));
             }
             Button button;

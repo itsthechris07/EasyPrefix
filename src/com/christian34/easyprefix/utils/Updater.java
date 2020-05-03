@@ -16,12 +16,17 @@ import java.net.URL;
  * @author Christian34
  */
 public class Updater {
-    public static final String UPDATE_MSG = "§7A new update is available at: §bhttps://www.spigotmc" + ".org/resources/44580/updates";
-    private static final String ERR_MSG = "§cUpdate checker failed!";
-    private static String spigotPluginVersion;
-    private static boolean available = false;
+    public final String UPDATE_MSG = "§7A new update is available at: §bhttps://www.spigotmc" + ".org/resources/44580/updates";
+    private final String ERR_MSG = "§cUpdate checker failed!";
+    private String spigotPluginVersion;
+    private boolean available = false;
+    private EasyPrefix instance;
 
-    public static void checkForUpdates() {
+    public Updater(EasyPrefix instance) {
+        this.instance = instance;
+    }
+
+    public boolean checkForUpdates() {
         Bukkit.getScheduler().runTaskAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
             try {
                 HttpsURLConnection connection = (HttpsURLConnection) new URL("https://api.spigotmc.org/legacy/update" + ".php?resource=44580").openConnection();
@@ -36,11 +41,8 @@ public class Updater {
                 Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + UPDATE_MSG);
             }
         });
+        return this.available;
     }
 
-    public static boolean isAvailable() {
-        checkForUpdates();
-        return available;
-    }
 
 }

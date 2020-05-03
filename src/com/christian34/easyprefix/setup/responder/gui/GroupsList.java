@@ -34,8 +34,8 @@ public class GroupsList {
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» " + Messages.getText(Message.SETUP_GROUPS_TITLE), 5);
         int counter = 9;
         for (Group group : groupHandler.getGroups()) {
-            String prefix = group.getRawPrefix();
-            String suffix = group.getRawSuffix();
+            String prefix = group.getPrefix(null, false);
+            String suffix = group.getSuffix(null, false);
             ChatColor prefixColor = group.getGroupColor();
             List<String> lore = new ArrayList<>();
             StringBuilder line = new StringBuilder("§7-------------------------------");

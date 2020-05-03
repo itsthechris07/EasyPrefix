@@ -30,7 +30,7 @@ public class EditGroup {
     }
 
     public void editPrefix() {
-        new ChatRespond(user, Messages.getText(Message.SET_PREFIX).replace("%name%", easyGroup.getName()).replace("%prefix%", easyGroup.getRawPrefix()), (answer) -> {
+        new ChatRespond(user, Messages.getText(Message.SET_PREFIX).replace("%name%", easyGroup.getName()).replace("%prefix%", easyGroup.getPrefix(null, false)), (answer) -> {
             if (answer.equals("cancelled")) {
                 user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
                 return null;
@@ -43,7 +43,7 @@ public class EditGroup {
     }
 
     public void editSuffix() {
-        new ChatRespond(user, Messages.getText(Message.CHAT_INPUT_SUFFIX).replace("%suffix%", easyGroup.getRawSuffix()), (answer) -> {
+        new ChatRespond(user, Messages.getText(Message.CHAT_INPUT_SUFFIX).replace("%suffix%", easyGroup.getSuffix(null, false)), (answer) -> {
             if (answer.equals("cancelled")) {
                 user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
                 return null;
@@ -58,7 +58,7 @@ public class EditGroup {
     public void editJoinMessage() {
         if (!(easyGroup instanceof Group)) return;
         Group group = (Group) easyGroup;
-        new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: &7" + group.getJoinMessage().replace("§", "&"), (answer) -> {
+        new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: &7" + group.getJoinMessageText(), (answer) -> {
             if (answer.equals("cancelled")) {
                 user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
                 return null;
@@ -73,7 +73,7 @@ public class EditGroup {
     public void editQuitMessage() {
         if (!(easyGroup instanceof Group)) return;
         Group group = (Group) easyGroup;
-        new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: &7" + group.getJoinMessage().replace("§", "&"), (answer) -> {
+        new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: &7" + group.getJoinMessageText(), (answer) -> {
             if (answer.equals("cancelled")) {
                 user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
                 return null;
@@ -103,7 +103,8 @@ public class EditGroup {
             List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
             Button button = new Button(Material.BOOKSHELF, chatFormatting.toString(), lore).setSlot(slot);
             button.setData("formatting", chatFormatting.name());
-            if (easyGroup.getChatFormatting() != null && easyGroup.getChatFormatting().equals(chatFormatting)) button.addEnchantment();
+            if (easyGroup.getChatFormatting() != null && easyGroup.getChatFormatting().equals(chatFormatting))
+                button.addEnchantment();
             inventory.addItem(button);
             slot++;
         }

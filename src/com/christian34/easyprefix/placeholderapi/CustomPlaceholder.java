@@ -39,7 +39,11 @@ class CustomPlaceholder extends PlaceholderExpansion {
         User user = EasyPrefix.getInstance().getUser(op.getPlayer());
         switch (identifier) {
             case "user_prefix":
-                return PlaceholderAPI.setPlaceholder(user.getPlayer(), user.getPrefix());
+                return user.getPrefix();
+            case "user_suffix":
+                return user.getSuffix();
+            case "user_group":
+                return user.getGroup().getName();
             case "user_chatcolor":
                 String color;
                 if (user.getChatColor() != null) {
@@ -58,25 +62,19 @@ class CustomPlaceholder extends PlaceholderExpansion {
                     }
                 }
                 return color.replace("&", "§");
-            case "user_suffix":
-                return PlaceholderAPI.setPlaceholder(user.getPlayer(), user.getSuffix());
-            case "user_group":
-                return user.getGroup().getName();
             case "user_gender":
-                if (user.getGender() != null) {
-                    return user.getGender().getName();
+                if (user.getGenderType() != null) {
+                    return user.getGenderType().getDisplayName();
                 }
                 return "";
             case "user_subgroup_prefix":
-                if (user.getSubgroup() != null && user.getSubgroup().getPrefix(user.getGender()) != null) {
-                    return PlaceholderAPI.setPlaceholder(user.getPlayer(), user.getSubgroup().getPrefix(user.getGender()));
-                }
-                return "";
+                if (user.getSubgroup() == null) return "";
+                String prefix = user.getSubgroup().getPrefix(user, true);
+                return (prefix == null) ? "" : prefix;
             case "user_subgroup_suffix":
-                if (user.getSubgroup() != null && user.getSubgroup().getSuffix(user.getGender()) != null) {
-                    return PlaceholderAPI.setPlaceholder(user.getPlayer(), user.getSubgroup().getSuffix(user.getGender()));
-                }
-                return "";
+                if (user.getSubgroup() == null) return "";
+                String suffix = user.getSubgroup().getSuffix(user, true);
+                return (suffix == null) ? "" : suffix;
         }
         return null;
     }

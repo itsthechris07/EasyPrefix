@@ -6,9 +6,7 @@ import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.Updater;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -25,21 +23,22 @@ import org.bukkit.event.player.PlayerJoinEvent;
  * @author Christian34
  */
 public class JoinListener implements Listener {
+    private EasyPrefix instance;
+
+    public JoinListener(EasyPrefix instance) {
+        this.instance = instance;
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        User user = EasyPrefix.getInstance().getUser(e.getPlayer());
+        User user = instance.getUser(e.getPlayer());
         ConfigData configData = FileManager.getConfig();
         if (configData.getBoolean(ConfigData.Values.HIDE_JOIN_QUIT)) {
             e.setJoinMessage(null);
         } else {
             if (e.getJoinMessage() != null) {
                 Group group = user.getGroup();
-                String joinMsg = group.getJoinMessage();
-                if (PlaceholderAPI.isEnabled()) {
-                    joinMsg = PlaceholderAPI.setPlaceholder(user.getPlayer(), joinMsg);
-                }
-                joinMsg = user.setPlaceholder(joinMsg.replace("%player%", user.getPlayer().getDisplayName()));
+                String joinMsg = group.getJoinMessage(user);
                 e.setJoinMessage(joinMsg);
             }
         }
@@ -67,15 +66,14 @@ public class JoinListener implements Listener {
             }
         }
 
-
-        Bukkit.getScheduler().runTaskAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(instance.getPlugin(), () -> {
             if (user.getPlayer().hasPermission("easyprefix.admin")) {
-                if (Updater.isAvailable()) {
-                    user.sendMessage(Updater.UPDATE_MSG);
+                if (instance.getUpdater().checkForUpdates()) {
+                    user.sendMessage(instance.getUpdater().UPDATE_MSG);
                 }
             }
             if (configData.getBoolean(ConfigData.Values.FORCE_GENDER)) {
-                if (user.getGender() == null) {
+                if (user.getGenderType() == null) {
                     String prefix = Messages.getText("info.prefix");
                     if (prefix == null) prefix = Messages.getPrefix();
                     TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Messages.getText(Message.NOTIFY_GENDER_TEXT)));

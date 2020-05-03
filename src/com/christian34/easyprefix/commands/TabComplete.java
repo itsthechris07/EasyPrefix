@@ -1,9 +1,9 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.Subgroup;
+import com.christian34.easyprefix.groups.gender.GenderType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -30,7 +30,7 @@ public class TabComplete implements TabCompleter {
         if (!cmd.getName().equalsIgnoreCase("easyprefix")) return null;
         ArrayList<String> matches = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = Arrays.asList("reload", "set", "setup", "user", "database");
+            List<String> list = Arrays.asList("reload", "set", "setup", "user", "database", "group");
             if (!args[0].isEmpty()) {
                 for (String match : list) {
                     if (match.toLowerCase().startsWith(args[0].toLowerCase())) matches.add(match);
@@ -48,6 +48,19 @@ public class TabComplete implements TabCompleter {
                 return null;
             } else if (args[0].equalsIgnoreCase("database")) {
                 List<String> list = Arrays.asList("upload", "download");
+                if (!args[1].isEmpty()) {
+                    for (String match : list) {
+                        if (match.toLowerCase().startsWith(args[1].toLowerCase()))
+                            return Collections.singletonList(match);
+                    }
+                } else {
+                    matches.addAll(list);
+                }
+            } else if (args[0].equalsIgnoreCase("group")) {
+                List<String> list = new ArrayList<>();
+                for (Group group : EasyPrefix.getInstance().getGroupHandler().getGroups()) {
+                    list.add(group.getName());
+                }
                 if (!args[1].isEmpty()) {
                     for (String match : list) {
                         if (match.toLowerCase().startsWith(args[1].toLowerCase()))
@@ -91,8 +104,8 @@ public class TabComplete implements TabCompleter {
                         }
                     }
                 } else if (args[2].equalsIgnoreCase("setgender")) {
-                    List<String> genders = Gender.getTypes();
-                    for (String targetGroup : genders) {
+                    for (GenderType genderType : EasyPrefix.getInstance().getGroupHandler().getGenderTypes()) {
+                        String targetGroup = genderType.getName();
                         if (!args[3].isEmpty()) {
                             if (targetGroup.toLowerCase().startsWith(args[3].toLowerCase())) matches.add(targetGroup);
                         } else {

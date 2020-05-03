@@ -1,10 +1,10 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
+import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
@@ -53,8 +53,8 @@ public class Command_User extends EasyCommand {
                 String cc = (target.getChatColor() != null) ? target.getChatColor().getCode() : "-";
                 if (target.getChatFormatting() != null) cc = cc + target.getChatFormatting().getCode();
                 sender.sendMessage("§5Chatcolor§f: §7" + cc.replace("§", "&"));
-                if (target.getGender() != null) {
-                    sender.sendMessage("§5Gender§f: §7" + target.getGender().getName() + "§7/§7" + target.getGender().getId());
+                if (target.getGenderType() != null) {
+                    sender.sendMessage("§5Gender§f: §7" + target.getGenderType().getDisplayName() + "§7/§7" + target.getGenderType().getName());
                 }
                 sender.sendMessage(" ");
                 sender.sendMessage("§7-----------------------------------------------");
@@ -85,9 +85,9 @@ public class Command_User extends EasyCommand {
                 }
             } else if (args[2].equalsIgnoreCase("setgender")) {
                 if (args.length == 4) {
-                    Gender gender = Gender.get(args[3]);
-                    if (gender != null) {
-                        target.setGender(gender);
+                    GenderType genderType = groupHandler.getGender(args[3]);
+                    if (genderType != null) {
+                        target.setGenderType(genderType);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));
                         return true;
                     } else {
