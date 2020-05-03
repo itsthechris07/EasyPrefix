@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.groups;
 
-import com.christian34.easyprefix.user.Gender;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.sun.istack.internal.Nullable;

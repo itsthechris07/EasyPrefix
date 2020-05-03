@@ -4,6 +4,7 @@ import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -28,7 +29,7 @@ import java.util.UUID;
  * @author Christian34
  */
 public class User {
-    private final Player PLAYER;
+    private Player player;
     private UserData userData;
     private ArrayList<Color> colors;
     private ArrayList<ChatFormatting> chatFormattings;
@@ -44,7 +45,7 @@ public class User {
     private boolean forceGroup;
 
     public User(Player player) {
-        this.PLAYER = player;
+        this.player = player;
         this.name = player.getName();
         this.uniqueId = player.getUniqueId();
         if (EasyPrefix.getInstance().getDatabase() == null) this.userData = new UserData(player.getUniqueId());
@@ -54,20 +55,20 @@ public class User {
     public void load() {
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
-        if (!PLAYER.hasPermission("EasyPrefix.Color.all")) {
+        if (!hasPermission("EasyPrefix.Color.all") && FileManager.getConfig().getBoolean(ConfigData.Values.HANDLE_COLORS)) {
             for (Color color : Color.values()) {
-                if (PLAYER.hasPermission("EasyPrefix.Color." + color.name())) colors.add(color);
+                if (player.hasPermission("EasyPrefix.Color." + color.name())) colors.add(color);
             }
             for (ChatFormatting formatting : ChatFormatting.values()) {
                 if (formatting.equals(ChatFormatting.RAINBOW)) continue;
-                if (PLAYER.hasPermission("EasyPrefix.Color." + formatting.name())) chatFormattings.add(formatting);
+                if (player.hasPermission("EasyPrefix.Color." + formatting.name())) chatFormattings.add(formatting);
             }
         }
         String groupName = null, subgroupName = null, chatColor = null, chatFormatting = null, cstmPrefix = null, cstmSuffix = null, gender = null;
         boolean forceGroup = false;
         Database db = EasyPrefix.getInstance().getDatabase();
         if (db != null) {
-            String stmt = "SELECT `group`,`force_group`,`subgroup`,`custom_prefix`,`custom_suffix`,`gender`," + "`chat_color`,`chat_formatting` FROM `" + db.getTablePrefix() + "users` WHERE `uuid` = '" + PLAYER.getUniqueId().toString() + "'";
+            String stmt = "SELECT `group`,`force_group`,`subgroup`,`custom_prefix`,`custom_suffix`,`gender`," + "`chat_color`,`chat_formatting` FROM `" + db.getTablePrefix() + "users` WHERE `uuid` = '" + player.getUniqueId().toString() + "'";
             try {
                 ResultSet result = db.getValue(stmt);
                 if (result.next()) {
@@ -106,7 +107,7 @@ public class User {
         if (groupName == null || groupName.equals("")) {
             this.group = getGroupPerPerms();
         } else {
-            if (groupHandler.isGroup(groupName) && (PLAYER.hasPermission("EasyPrefix.group." + groupName) || forceGroup || groupName.equals("default"))) {
+            if (groupHandler.isGroup(groupName) && (hasPermission("EasyPrefix.group." + groupName) || forceGroup || groupName.equals("default"))) {
                 this.group = groupHandler.getGroup(groupName);
             } else {
                 this.group = getGroupPerPerms();
@@ -115,7 +116,7 @@ public class User {
         }
         if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_SUBGROUPS)) {
             if (subgroupName != null) {
-                if (groupHandler.isSubgroup(subgroupName) && PLAYER.hasPermission("EasyPrefix.subgroup." + subgroupName)) {
+                if (groupHandler.isSubgroup(subgroupName) && hasPermission("EasyPrefix.subgroup." + subgroupName)) {
                     this.subgroup = groupHandler.getSubgroup(subgroupName);
                 } else {
                     this.subgroup = getSubgroupPerPerms();
@@ -139,7 +140,7 @@ public class User {
             }
         }
 
-        if (PLAYER.hasPermission("EasyPrefix.settings.custom")) {
+        if (hasPermission("EasyPrefix.settings.custom")) {
             if (cstmPrefix != null) {
                 this.cPrefix = cstmPrefix.replace("&", "§");
             }
@@ -152,9 +153,16 @@ public class User {
         }
     }
 
+    public boolean hasPermission(String permission) {
+        if (player != null) {
+            return player.hasPermission(permission);
+        }
+        return true;
+    }
+
     public String getPrefix() {
-        if (PLAYER.hasPermission("EasyPrefix.settings.custom")) {
-            if (cPrefix != null) return setPlaceholder(cPrefix);
+        if (hasPermission("EasyPrefix.settings.custom") && cPrefix != null) {
+            return setPlaceholder(cPrefix);
         }
         return setPlaceholder(group.getPrefix(gender));
     }
@@ -178,8 +186,8 @@ public class User {
     }
 
     public String getSuffix() {
-        if (PLAYER.hasPermission("EasyPrefix.settings.custom")) {
-            if (cSuffix != null) return setPlaceholder(cSuffix);
+        if (hasPermission("EasyPrefix.settings.custom") && cSuffix != null) {
+            return setPlaceholder(cSuffix);
         }
         return setPlaceholder(group.getSuffix(gender));
     }
@@ -281,13 +289,13 @@ public class User {
     }
 
     public Player getPlayer() {
-        return PLAYER;
+        return player;
     }
 
     public ArrayList<Group> getAvailableGroups() {
         ArrayList<Group> availableGroups = new ArrayList<>();
         for (Group targetGroup : EasyPrefix.getInstance().getGroupHandler().getGroups()) {
-            if (PLAYER.hasPermission("EasyPrefix.group." + targetGroup.getName())) {
+            if (player.hasPermission("EasyPrefix.group." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);
             }
         }
@@ -301,7 +309,7 @@ public class User {
     public ArrayList<Subgroup> getAvailableSubgroups() {
         ArrayList<Subgroup> availableGroups = new ArrayList<>();
         for (Subgroup targetGroup : EasyPrefix.getInstance().getGroupHandler().getSubgroups()) {
-            if (PLAYER.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())) {
+            if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);
             }
         }
@@ -312,7 +320,7 @@ public class User {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         for (Group group : groupHandler.getGroups()) {
             if (group.getName().equals("default")) continue;
-            if (PLAYER.hasPermission("EasyPrefix.group." + group.getName())) {
+            if (player.hasPermission("EasyPrefix.group." + group.getName())) {
                 return group;
             }
         }
@@ -321,7 +329,7 @@ public class User {
 
     private Subgroup getSubgroupPerPerms() {
         for (Subgroup subgroup : EasyPrefix.getInstance().getGroupHandler().getSubgroups()) {
-            if (PLAYER.hasPermission("EasyPrefix.subgroup." + subgroup.getName())) {
+            if (player.hasPermission("EasyPrefix.subgroup." + subgroup.getName())) {
                 return subgroup;
             }
         }
@@ -337,7 +345,7 @@ public class User {
     }
 
     public void sendMessage(String message) {
-        PLAYER.sendMessage(Messages.getPrefix() + message);
+        player.sendMessage(Messages.getPrefix() + message);
     }
 
     private void saveData(String key, Object value) {

@@ -1,16 +1,15 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.Subgroup;
-import com.christian34.easyprefix.user.Gender;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,55 +27,83 @@ public class TabComplete implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("easyprefix")) {
-            ArrayList<String> cmds = new ArrayList<>();
-            if (args.length == 1) {
+        if (!cmd.getName().equalsIgnoreCase("easyprefix")) return null;
+        ArrayList<String> matches = new ArrayList<>();
+        if (args.length == 1) {
+            List<String> list = Arrays.asList("reload", "set", "setup", "user", "database");
+            if (!args[0].isEmpty()) {
+                for (String match : list) {
+                    if (match.toLowerCase().startsWith(args[0].toLowerCase())) matches.add(match);
+                }
+            } else {
                 if (sender.hasPermission("EasyPrefix.admin")) {
-                    cmds.add("reload");
-                    cmds.add("set");
-                    cmds.add("setup");
-                    cmds.add("user");
-                    cmds.add("database");
+                    matches.addAll(list);
                 }
                 if (sender.hasPermission("EasyPrefix.settings")) {
-                    cmds.add("settings");
+                    matches.add("settings");
                 }
-            } else if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("user")) {
-                    for (Player target : Bukkit.getOnlinePlayers()) {
-                        cmds.add(target.getDisplayName());
+            }
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("user")) {
+                return null;
+            } else if (args[0].equalsIgnoreCase("database")) {
+                List<String> list = Arrays.asList("upload", "download");
+                if (!args[1].isEmpty()) {
+                    for (String match : list) {
+                        if (match.toLowerCase().startsWith(args[1].toLowerCase()))
+                            return Collections.singletonList(match);
                     }
-                } else if (args[0].equalsIgnoreCase("database")) {
-                    cmds.add("upload");
-                    cmds.add("download");
+                } else {
+                    matches.addAll(list);
                 }
-            } else if (args.length == 3) {
-                if (args[0].equalsIgnoreCase("user")) {
-                    cmds.add("info");
-                    cmds.add("update");
-                    cmds.add("setgroup");
-                    cmds.add("setsubgroup");
-                    cmds.add("setgender");
+            }
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("user")) {
+                List<String> list = Arrays.asList("info", "reload", "setgroup", "setsubgroup", "setgender");
+                if (!args[2].isEmpty()) {
+                    for (String match : list) {
+                        if (match.toLowerCase().startsWith(args[2].toLowerCase())) matches.add(match);
+                    }
+                } else {
+                    matches.addAll(list);
                 }
-            } else if (args.length == 4) {
-                if (args[0].equalsIgnoreCase("user")) {
-                    if (args[2].equalsIgnoreCase("setgroup")) {
-                        for (Group targetGroup : this.instance.getGroupHandler().getGroups()) {
-                            cmds.add(targetGroup.getName());
+            }
+        } else if (args.length == 4) {
+            if (args[0].equalsIgnoreCase("user")) {
+                if (args[2].equalsIgnoreCase("setgroup")) {
+                    ArrayList<Group> groups = this.instance.getGroupHandler().getGroups();
+                    for (Group targetGroup : groups) {
+                        if (!args[3].isEmpty()) {
+                            if (targetGroup.getName().toLowerCase().startsWith(args[3].toLowerCase()))
+                                matches.add(targetGroup.getName());
+                        } else {
+                            matches.add(targetGroup.getName());
                         }
-                    } else if (args[2].equalsIgnoreCase("setsubgroup")) {
-                        for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
-                            cmds.add(targetGroup.getName());
+                    }
+                } else if (args[2].equalsIgnoreCase("setsubgroup")) {
+                    ArrayList<Subgroup> groups = this.instance.getGroupHandler().getSubgroups();
+                    for (Subgroup targetGroup : groups) {
+                        if (!args[3].isEmpty()) {
+                            if (targetGroup.getName().toLowerCase().startsWith(args[3].toLowerCase()))
+                                matches.add(targetGroup.getName());
+                        } else {
+                            matches.add(targetGroup.getName());
                         }
-                    } else if (args[2].equalsIgnoreCase("setgender")) {
-                        cmds.addAll(Gender.getTypes());
+                    }
+                } else if (args[2].equalsIgnoreCase("setgender")) {
+                    List<String> genders = Gender.getTypes();
+                    for (String targetGroup : genders) {
+                        if (!args[3].isEmpty()) {
+                            if (targetGroup.toLowerCase().startsWith(args[3].toLowerCase())) matches.add(targetGroup);
+                        } else {
+                            matches.add(targetGroup);
+                        }
                     }
                 }
             }
-            Collections.sort(cmds);
-            return cmds;
         }
-        return null;
+        Collections.sort(matches);
+        return matches;
     }
 
 }

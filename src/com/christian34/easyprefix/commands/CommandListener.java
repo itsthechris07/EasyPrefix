@@ -2,14 +2,13 @@ package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
-import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.responder.gui.SettingsGUI;
 import com.christian34.easyprefix.setup.responder.gui.WelcomePage;
-import com.christian34.easyprefix.user.Gender;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -40,6 +39,7 @@ public class CommandListener implements Listener, CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        EasyCommand easyCommand;
         User user = null;
         if (sender instanceof Player) {
             user = this.instance.getUser((Player) sender);
@@ -175,88 +175,22 @@ public class CommandListener implements Listener, CommandExecutor {
                     }
                 }
             } else if (args[0].equalsIgnoreCase("user")) {
-                if (sender.hasPermission("EasyPrefix.admin")) {
-                    Player player = Bukkit.getPlayer(args[1]);
-                    if (player != null) {
-                        User target = new User(player);
-                        if (args.length >= 3) {
-                            if (args[2].equalsIgnoreCase("update")) {
-                                Bukkit.getScheduler().runTaskLaterAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
-                                    target.load();
-                                    sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                                }, 20L);
-                                return true;
-                            } else if (args[2].equalsIgnoreCase("info")) {
-                                sender.sendMessage(" ");
-                                sender.sendMessage("§7--------------=== §5§l" + target.getPlayer().getName() + " §7===--------------");
-                                sender.sendMessage(" ");
-                                sender.sendMessage("§5Group§f: §7" + target.getGroup().getName());
-                                String subgroup = (target.getSubgroup() != null) ? target.getSubgroup().getName() : "-";
-                                sender.sendMessage("§5Subgroup§f: §7" + subgroup);
-                                sender.sendMessage("§5Prefix§f: §8«§7" + target.getPrefix().replace("§", "&") + "§8»");
-                                sender.sendMessage("§5Suffix§f: §8«§7" + target.getSuffix().replace("§", "&") + "§8»");
-                                String cc = (target.getChatColor() != null) ? target.getChatColor().getCode() : "-";
-                                if (target.getChatFormatting() != null) cc = cc + target.getChatFormatting().getCode();
-                                sender.sendMessage("§5Chatcolor§f: §7" + cc.replace("§", "&"));
-                                if (target.getGender() != null) {
-                                    sender.sendMessage("§5Gender§f: §7" + target.getGender().getName() + "§7/§7" + target.getGender().getId());
-                                }
-                                sender.sendMessage(" ");
-                                sender.sendMessage("§7-----------------------------------------------");
-                                return true;
-                            } else if (args[2].equalsIgnoreCase("setgroup")) {
-                                if (args.length == 4) {
-                                    if (groupHandler.isGroup(args[3])) {
-                                        Group targetGroup = groupHandler.getGroup(args[3]);
-                                        target.setGroup(targetGroup, true);
-                                        sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                                        return true;
-                                    } else {
-                                        sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
-                                        return false;
-                                    }
-                                }
-                            } else if (args[2].equalsIgnoreCase("setsubgroup")) {
-                                if (args.length == 4) {
-                                    if (groupHandler.isSubgroup(args[3])) {
-                                        Subgroup targetGroup = groupHandler.getSubgroup(args[3]);
-                                        target.setSubgroup(targetGroup);
-                                        sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                                        return true;
-                                    } else {
-                                        sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
-                                        return false;
-                                    }
-                                }
-                            } else if (args[2].equalsIgnoreCase("setgender")) {
-                                if (args.length == 4) {
-                                    Gender gender = Gender.get(args[3]);
-                                    if (gender != null) {
-                                        target.setGender(gender);
-                                        sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                                        return true;
-                                    } else {
-                                        sender.sendMessage(Messages.getPrefix() + "§cThis gender doesn't exist");
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        sender.sendMessage(Messages.getMessage(Message.PLAYER_NOT_FOUND));
+                easyCommand = new Command_User(this.instance);
+                if (sender.hasPermission(easyCommand.getPermission())) {
+                    if (!easyCommand.handleCommand(sender, cmd, args)) {
+                        sender.sendMessage(" ");
+                        sender.sendMessage("§7--------------=== §5§lEasyPrefix User §7===--------------");
+                        sender.sendMessage(" ");
+                        sender.sendMessage("§7/§5EasyPrefix user <Player> info §f| §7get information about the player");
+                        sender.sendMessage("§7/§5EasyPrefix user <Player> update §f| §7update player data");
+                        sender.sendMessage("§7/§5EasyPrefix user <Player> setgroup <Group> §f| §7force group to player");
+                        sender.sendMessage("§7/§5EasyPrefix user <Player> setsubgroup <Subgroup> §f| §7set subgroup to player");
+                        sender.sendMessage("§7/§5EasyPrefix user <Player> setgender <Gender> §f| §7set gender");
+                        sender.sendMessage(" ");
+                        sender.sendMessage("§7----------------------------------------------------");
                         return false;
                     }
-                    sender.sendMessage(" ");
-                    sender.sendMessage("§7--------------=== §5§lEasyPrefix User §7===--------------");
-                    sender.sendMessage(" ");
-                    sender.sendMessage("§7/§5EasyPrefix user <Player> info §f| §7get information about the player");
-                    sender.sendMessage("§7/§5EasyPrefix user <Player> update §f| §7update player data");
-                    sender.sendMessage("§7/§5EasyPrefix user <Player> setgroup <Group> §f| §7force group to player");
-                    sender.sendMessage("§7/§5EasyPrefix user <Player> setsubgroup <Subgroup> §f| §7set subgroup to player");
-                    sender.sendMessage("§7/§5EasyPrefix user <Player> setgender <Gender> §f| §7set gender");
-                    sender.sendMessage(" ");
-                    sender.sendMessage("§7----------------------------------------------------");
-                    return false;
+                    return true;
                 } else {
                     sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
                     return false;

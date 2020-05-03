@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.setup.responder.gui;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
@@ -8,7 +9,6 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.Button;
 import com.christian34.easyprefix.setup.CustomInventory;
 import com.christian34.easyprefix.setup.responder.GuiRespond;
-import com.christian34.easyprefix.user.Gender;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.ChatColor;

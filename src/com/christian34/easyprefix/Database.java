@@ -24,7 +24,7 @@ public class Database {
     private Connection connection;
     private int port;
 
-    Database() {
+    public Database() {
         ConfigData config = FileManager.getConfig();
         this.host = config.getString(Values.SQL_HOST);
         this.database = config.getString(Values.SQL_DATABASE);

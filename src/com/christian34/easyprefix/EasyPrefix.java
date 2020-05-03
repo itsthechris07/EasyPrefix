@@ -4,13 +4,13 @@ import com.christian34.easyprefix.commands.CommandListener;
 import com.christian34.easyprefix.commands.TabComplete;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.groups.Gender;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
-import com.christian34.easyprefix.user.Gender;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
@@ -126,8 +126,8 @@ public class EasyPrefix extends JavaPlugin {
         }
         Messages.load();
         Gender.load();
-        this.groupHandler = new GroupHandler(this);
         RainbowEffect.getRainbowColors().clear();
+        this.groupHandler = new GroupHandler(this);
     }
 
     public Database getDatabase() {
