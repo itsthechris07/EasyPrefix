@@ -40,14 +40,15 @@ public class User {
     private ChatFormatting chatFormatting;
     private GenderType genderType;
     private UUID uniqueId;
+    private EasyPrefix instance;
     private boolean forceGroup;
 
     public User(Player player) {
         this.player = player;
         this.name = player.getName();
         this.uniqueId = player.getUniqueId();
-        if (EasyPrefix.getInstance().getSqlDatabase() == null) this.userData = new UserData(player.getUniqueId());
-        load();
+        this.instance = EasyPrefix.getInstance();
+        if (this.instance.getSqlDatabase() == null) this.userData = new UserData(player.getUniqueId());
     }
 
     public void load() {
@@ -64,7 +65,7 @@ public class User {
         }
         String groupName = null, subgroupName = null, chatColor = null, chatFormatting = null, cstmPrefix = null, cstmSuffix = null, gender = null;
         boolean forceGroup = false;
-        Database db = EasyPrefix.getInstance().getSqlDatabase();
+        Database db = this.instance.getSqlDatabase();
         if (db != null) {
             String stmt = "SELECT `group`,`force_group`,`subgroup`,`custom_prefix`,`custom_suffix`,`gender`," + "`chat_color`,`chat_formatting` FROM `" + db.getTablePrefix() + "users` WHERE `uuid` = '" + player.getUniqueId().toString() + "'";
             try {
@@ -101,7 +102,7 @@ public class User {
         }
 
         this.forceGroup = forceGroup;
-        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        GroupHandler groupHandler = this.instance.getGroupHandler();
         if (groupName == null || groupName.equals("")) {
             this.group = getGroupPerPerms();
         } else {
@@ -127,9 +128,7 @@ public class User {
             this.chatColor = Color.getByCode(chatColor.substring(1, 2));
         }
 
-        if (chatFormatting == null || chatFormatting.length() < 2) {
-            setChatFormatting(null);
-        } else {
+        if (chatFormatting != null) {
             if (chatFormatting.equals("%r")) {
                 this.chatFormatting = ChatFormatting.RAINBOW;
                 setChatColor(null);
@@ -171,6 +170,7 @@ public class User {
             prefix = prefix.replace("&", "§");
         }
         this.cPrefix = prefix;
+        this.instance.unloadUser(getPlayer());
     }
 
     public String getSuffix() {
@@ -186,6 +186,7 @@ public class User {
             suffix = suffix.replace("&", "§");
         }
         this.cSuffix = suffix;
+        this.instance.unloadUser(getPlayer());
     }
 
     public ArrayList<Color> getColors() {
@@ -213,6 +214,7 @@ public class User {
             }
         }
         saveData("chat-color", value);
+        this.instance.unloadUser(getPlayer());
     }
 
     public ArrayList<ChatFormatting> getChatFormattings() {
@@ -236,6 +238,7 @@ public class User {
             } else value = chatFormatting.getCode().replace("§", "&");
         }
         saveData("chat-formatting", value);
+        this.instance.unloadUser(getPlayer());
     }
 
     public Group getGroup() {
@@ -254,6 +257,7 @@ public class User {
         this.chatFormatting = null;
         saveData("group", group.getName());
         saveData("force-group", force);
+        this.instance.unloadUser(getPlayer());
     }
 
     @Nullable
@@ -265,6 +269,7 @@ public class User {
         this.subgroup = subgroup;
         String name = (subgroup != null) ? subgroup.getName() : null;
         saveData("subgroup", name);
+        this.instance.unloadUser(getPlayer());
     }
 
     public GenderType getGenderType() {
@@ -274,6 +279,7 @@ public class User {
     public void setGenderType(GenderType genderType) {
         this.genderType = genderType;
         saveData("gender", genderType.getName());
+        this.instance.unloadUser(getPlayer());
     }
 
     public Player getPlayer() {
@@ -282,7 +288,7 @@ public class User {
 
     public ArrayList<Group> getAvailableGroups() {
         ArrayList<Group> availableGroups = new ArrayList<>();
-        for (Group targetGroup : EasyPrefix.getInstance().getGroupHandler().getGroups()) {
+        for (Group targetGroup : this.instance.getGroupHandler().getGroups()) {
             if (player.hasPermission("EasyPrefix.group." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);
             }
@@ -296,7 +302,7 @@ public class User {
 
     public ArrayList<Subgroup> getAvailableSubgroups() {
         ArrayList<Subgroup> availableGroups = new ArrayList<>();
-        for (Subgroup targetGroup : EasyPrefix.getInstance().getGroupHandler().getSubgroups()) {
+        for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
             if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);
             }
@@ -305,7 +311,7 @@ public class User {
     }
 
     private Group getGroupPerPerms() {
-        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        GroupHandler groupHandler = this.instance.getGroupHandler();
         for (Group group : groupHandler.getGroups()) {
             if (group.getName().equals("default")) continue;
             if (player.hasPermission("EasyPrefix.group." + group.getName())) {
@@ -316,7 +322,7 @@ public class User {
     }
 
     private Subgroup getSubgroupPerPerms() {
-        for (Subgroup subgroup : EasyPrefix.getInstance().getGroupHandler().getSubgroups()) {
+        for (Subgroup subgroup : this.instance.getGroupHandler().getSubgroups()) {
             if (player.hasPermission("EasyPrefix.subgroup." + subgroup.getName())) {
                 return subgroup;
             }
@@ -337,7 +343,7 @@ public class User {
     }
 
     private void saveData(String key, Object value) {
-        Database db = EasyPrefix.getInstance().getSqlDatabase();
+        Database db = this.instance.getSqlDatabase();
         if (db == null) {
             key = key.replace("_", "-");
             getUserData().setAndSave(key, value);

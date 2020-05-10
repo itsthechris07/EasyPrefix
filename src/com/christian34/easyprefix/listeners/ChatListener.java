@@ -20,11 +20,17 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  * @author Christian34
  */
 public class ChatListener implements Listener {
+    private EasyPrefix instance;
+
+    public ChatListener(EasyPrefix instance) {
+        this.instance = instance;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent e) {
         if (e.isCancelled()) return;
-        User user = EasyPrefix.getInstance().getUser(e.getPlayer());
+        if (!this.instance.formatChat()) return;
+        User user = instance.getUser(e.getPlayer());
         String prefix = user.getPrefix();
         String suffix = user.getSuffix();
         String msg = e.getMessage();
@@ -61,13 +67,13 @@ public class ChatListener implements Listener {
 
         e.setMessage(msg);
 
-        if (EasyPrefix.getInstance().formatChat()) {
-            String format = prefix + user.getPlayer().getDisplayName() + suffix + " " + chatColor + e.getMessage();
+
+        String format = prefix + user.getPlayer().getDisplayName() + suffix + " " + chatColor + e.getMessage();
             if (!FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.DUPLICATE_WHITE_SPACES)) {
                 format = format.replaceAll("\\s+", " ");
             }
             e.setFormat(format.replace("%", "%%"));
-        }
+
     }
 
 }

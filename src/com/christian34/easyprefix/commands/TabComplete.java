@@ -107,6 +107,7 @@ public class TabComplete implements TabCompleter {
                             matches.add(targetGroup.getName());
                         }
                     }
+                    matches.add("none");
                 } else if (args[2].equalsIgnoreCase("setgender")) {
                     for (GenderType genderType : EasyPrefix.getInstance().getGroupHandler().getGenderTypes()) {
                         String targetGroup = genderType.getName();

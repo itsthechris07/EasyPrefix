@@ -12,6 +12,7 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Metrics;
+import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
 import com.christian34.easyprefix.vault.VaultManager;
 import org.bukkit.Bukkit;
@@ -97,9 +98,12 @@ public class EasyPrefix extends JavaPlugin {
 
     public User getUser(Player player) {
         for (User user : users) {
-            if (user.getPlayer().getName().equals(player.getName())) return user;
+            if (user.getPlayer().getName().equalsIgnoreCase(player.getName())) {
+                return user;
+            }
         }
         User newUser = new User(player);
+        newUser.load();
         users.add(newUser);
         return newUser;
     }
@@ -125,7 +129,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void reload() {
-        //   FileManager.load();
+        FileManager.load();
         if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SQL) && this.database != null) {
             try {
                 getSqlDatabase().getConnection().close();
@@ -135,15 +139,14 @@ public class EasyPrefix extends JavaPlugin {
         } else {
             this.database = null;
         }
-      /*  Messages.load();
+        Messages.load();
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
-        this.groupHandler.load();*/
-        onEnable();
+        this.groupHandler.load();
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new JoinListener(this), this);
         getServer().getPluginManager().registerEvents(new QuitListener(), this);
     }

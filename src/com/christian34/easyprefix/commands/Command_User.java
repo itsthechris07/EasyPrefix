@@ -34,6 +34,7 @@ public class Command_User extends EasyCommand {
             return true;
         }
         User target = new User(player);
+        target.load();
         if (args.length >= 3) {
             if (args[2].equalsIgnoreCase("reload")) {
                 Bukkit.getScheduler().runTaskLaterAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
@@ -68,7 +69,7 @@ public class Command_User extends EasyCommand {
                         return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
-                        return false;
+                        return true;
                     }
                 }
             } else if (args[2].equalsIgnoreCase("setsubgroup")) {
@@ -78,9 +79,13 @@ public class Command_User extends EasyCommand {
                         target.setSubgroup(targetGroup);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));
                         return true;
+                    } else if (args[3].equalsIgnoreCase("none")) {
+                        target.setSubgroup(null);
+                        sender.sendMessage(Messages.getMessage(Message.SUCCESS));
+                        return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
-                        return false;
+                        return true;
                     }
                 }
             } else if (args[2].equalsIgnoreCase("setgender")) {
@@ -92,7 +97,7 @@ public class Command_User extends EasyCommand {
                         return true;
                     } else {
                         sender.sendMessage(Messages.getPrefix() + "§cThis gender doesn't exist");
-                        return false;
+                        return true;
                     }
                 }
             }
