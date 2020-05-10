@@ -31,12 +31,13 @@ import java.util.ArrayList;
  */
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance;
-    public ArrayList<User> users;
+    private ArrayList<User> users;
     private Plugin plugin;
     private Database database;
     private GroupHandler groupHandler;
     private VaultManager vaultManager = null;
     private Updater updater;
+    private FileManager fileManager;
 
     public void onDisable() {
         if (getSqlDatabase() != null) getSqlDatabase().close();
@@ -49,8 +50,8 @@ public class EasyPrefix extends JavaPlugin {
         instance = this;
         this.plugin = this;
         this.users = new ArrayList<>();
-        FileManager.load();
-        ConfigData cfg = FileManager.getConfig();
+        this.fileManager = new FileManager(this);
+        ConfigData cfg = this.fileManager.getConfig();
         Messages.load();
         if (cfg.getBoolean(ConfigData.ConfigKeys.USE_SQL)) {
             this.database = new Database(this);
@@ -85,7 +86,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public boolean formatChat() {
-        return FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_CHAT);
+        return this.fileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_CHAT);
     }
 
     public VaultManager getVaultManager() {
@@ -124,13 +125,17 @@ public class EasyPrefix extends JavaPlugin {
         return updater;
     }
 
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
     public void unloadUser(final Player player) {
         users.removeIf(crntUser -> crntUser.getPlayer().getName().equals(player.getName()));
     }
 
     public void reload() {
-        FileManager.load();
-        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SQL) && this.database != null) {
+        this.fileManager = new FileManager(this);
+        if (this.fileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SQL) && this.database != null) {
             try {
                 getSqlDatabase().getConnection().close();
             } catch(SQLException ignored) {
@@ -148,7 +153,7 @@ public class EasyPrefix extends JavaPlugin {
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new JoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new QuitListener(), this);
+        getServer().getPluginManager().registerEvents(new QuitListener(this), this);
     }
 
     private void hookMetrics() {

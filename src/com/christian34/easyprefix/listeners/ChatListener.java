@@ -2,7 +2,6 @@ package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
@@ -26,7 +25,7 @@ public class ChatListener implements Listener {
         this.instance = instance;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
         if (e.isCancelled()) return;
         if (!this.instance.formatChat()) return;
@@ -41,7 +40,7 @@ public class ChatListener implements Listener {
             suffix = PlaceholderAPI.setPlaceholder(user.getPlayer(), suffix);
         }
 
-        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {
+        if (instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {
             ChatFormatting chatFormatting = user.getChatFormatting();
             chatColor = user.getChatColor().getCode();
             if (chatFormatting != null) {
@@ -67,12 +66,11 @@ public class ChatListener implements Listener {
 
         e.setMessage(msg);
 
-
         String format = prefix + user.getPlayer().getDisplayName() + suffix + " " + chatColor + e.getMessage();
-            if (!FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.DUPLICATE_WHITE_SPACES)) {
-                format = format.replaceAll("\\s+", " ");
-            }
-            e.setFormat(format.replace("%", "%%"));
+        if (!instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.DUPLICATE_WHITE_SPACES)) {
+            format = format.replaceAll("\\s+", " ");
+        }
+        e.setFormat(format.replace("%", "%%"));
 
     }
 

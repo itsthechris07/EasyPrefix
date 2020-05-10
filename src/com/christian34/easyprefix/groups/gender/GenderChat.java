@@ -2,7 +2,6 @@ package com.christian34.easyprefix.groups.gender;
 
 import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
@@ -54,7 +53,7 @@ public class GenderChat {
                 e.printStackTrace();
             }
         } else {
-            GroupsData groupsData = FileManager.getGroupsData();
+            GroupsData groupsData = this.instance.getFileManager().getGroupsData();
             Set<String> set = groupsData.getSection(easyGroup.getFilePath() + "genders");
             if (!set.isEmpty()) {
                 for (String genderName : set) {

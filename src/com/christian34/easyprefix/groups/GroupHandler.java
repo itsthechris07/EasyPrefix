@@ -32,7 +32,7 @@ public class GroupHandler {
 
     public GroupHandler(EasyPrefix instance) {
         this.instance = instance;
-        this.groupsData = FileManager.getGroupsData();
+        this.groupsData = instance.getFileManager().getGroupsData();
 
         if (EasyPrefix.getInstance().getSqlDatabase() == null) {
             GroupsData groupsData = getGroupsData();
@@ -66,7 +66,7 @@ public class GroupHandler {
         this.groups = new ArrayList<>();
         this.subgroups = new ArrayList<>();
         this.instance.getUsers().clear();
-        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
+        if (instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
             loadGenders();
         }
         this.defaultGroup = new Group(this, "default");
@@ -86,7 +86,7 @@ public class GroupHandler {
                     load();
                 }
             }
-            if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
+            if (instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
                 subgroupNames.addAll(groupsData.getSection("subgroups"));
             }
         } else {
@@ -126,12 +126,12 @@ public class GroupHandler {
     }
 
     public boolean handleGenders() {
-        return FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER);
+        return instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER);
     }
 
     private void loadGenders() {
         this.genderTypes = new ArrayList<>();
-        List<String> types = FileManager.getConfig().getData().getStringList("config.gender.types");
+        List<String> types = instance.getFileManager().getConfig().getData().getStringList("config.gender.types");
         for (String name : types) {
             if (Messages.getText("gender." + name) != null) {
                 GenderType genderType = new GenderType(name);
@@ -191,6 +191,10 @@ public class GroupHandler {
 
     public ArrayList<Subgroup> getSubgroups() {
         return subgroups;
+    }
+
+    public EasyPrefix getInstance() {
+        return instance;
     }
 
     public void createGroup(String groupName) {

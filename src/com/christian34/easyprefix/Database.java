@@ -28,7 +28,7 @@ public class Database {
 
     public Database(EasyPrefix instance) {
         this.instance = instance;
-        ConfigData config = FileManager.getConfig();
+        ConfigData config = instance.getFileManager().getConfig();
         this.host = config.getString(ConfigKeys.SQL_HOST);
         this.database = config.getString(ConfigKeys.SQL_DATABASE);
         this.username = config.getString(ConfigKeys.SQL_USERNAME);
@@ -118,7 +118,7 @@ public class Database {
     }
 
     public void uploadGroups() throws SQLException {
-        FileConfiguration data = FileManager.getGroupsData().getData();
+        FileConfiguration data = this.instance.getFileManager().getGroupsData().getData();
         Set<String> groups = data.getConfigurationSection("groups").getKeys(false);
         for (String groupName : groups) {
             try {
@@ -213,7 +213,7 @@ public class Database {
     }
 
     private void uploadSubgroups() throws SQLException {
-        FileConfiguration data = FileManager.getGroupsData().getData();
+        FileConfiguration data = this.instance.getFileManager().getGroupsData().getData();
         ConfigurationSection mainSection = data.getConfigurationSection("subgroups");
         if (mainSection == null) return;
         Set<String> groups = mainSection.getKeys(false);
@@ -333,7 +333,7 @@ public class Database {
         long startTime = System.currentTimeMillis();
         Messages.log("§cUploading data to SQL...");
         Messages.log("§7loading files...");
-        FileManager.load();
+        this.instance.getFileManager().load();
         Messages.log("§7creating tables...");
         createTables();
         Messages.log("§7uploading groups...");
@@ -349,8 +349,8 @@ public class Database {
     public void downloadData() throws SQLException {
         long startTime = System.currentTimeMillis();
         Messages.log("§cDownloading data to local storage...");
-        FileManager.load();
-        GroupsData groupsData = FileManager.getGroupsData();
+        this.instance.getFileManager().load();
+        GroupsData groupsData = this.instance.getFileManager().getGroupsData();
         groupsData.load();
         groupsData.set("groups", null);
         groupsData.set("subgroups", null);

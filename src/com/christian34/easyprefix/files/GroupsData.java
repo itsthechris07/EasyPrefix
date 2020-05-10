@@ -18,16 +18,22 @@ import java.util.Set;
 public class GroupsData {
     private File file;
     private FileConfiguration data;
+    private EasyPrefix instance;
+
+    public GroupsData(EasyPrefix instance) {
+        this.instance = instance;
+    }
 
     public GroupsData load() {
-        this.file = new File(FileManager.getPluginFolder(), "groups.yml");
+        File pluginFolder = FileManager.getPluginFolder();
+        this.file = new File(pluginFolder, "groups.yml");
         if (!file.exists()) {
-            EasyPrefix.getInstance().getPlugin().saveResource("groups.yml", true);
+            this.instance.getPlugin().saveResource("groups.yml", true);
         }
         this.data = YamlConfiguration.loadConfiguration(file);
         if (data.getConfigurationSection("groups") == null) {
-            File old = new File(FileManager.getPluginFolder(), "groups.yml");
-            File backup = new File(FileManager.getPluginFolder(), "backup-groups.yml");
+            File old = new File(pluginFolder, "groups.yml");
+            File backup = new File(pluginFolder, "backup-groups.yml");
             if (old.renameTo(backup) && old.delete()) {
                 load();
             }

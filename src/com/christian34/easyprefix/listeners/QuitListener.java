@@ -2,7 +2,6 @@ package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
@@ -20,16 +19,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
  * @author Christian34
  */
 public class QuitListener implements Listener {
+    private EasyPrefix instance;
+
+    public QuitListener(EasyPrefix instance) {
+        this.instance = instance;
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
-        ConfigData configData = FileManager.getConfig();
+        ConfigData configData = this.instance.getFileManager().getConfig();
         if (!configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_QUIT)) {
-            EasyPrefix.getInstance().unloadUser(e.getPlayer());
+            this.instance.unloadUser(e.getPlayer());
             return;
         }
 
-        User user = EasyPrefix.getInstance().getUser(e.getPlayer());
+        User user = this.instance.getUser(e.getPlayer());
         if (configData.getBoolean(ConfigData.ConfigKeys.HIDE_JOIN_QUIT)) {
             e.setQuitMessage(null);
         } else {
@@ -62,7 +66,7 @@ public class QuitListener implements Listener {
                 Messages.log("&cCouldn't play sound '" + soundOption[0] + "'. Please use valid sounds!");
             }
         }
-        EasyPrefix.getInstance().unloadUser(e.getPlayer());
+        this.instance.unloadUser(e.getPlayer());
     }
 
 

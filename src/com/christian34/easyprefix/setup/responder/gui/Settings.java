@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.setup.responder.gui;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.Button;
@@ -39,7 +39,7 @@ public class Settings {
         lang.setLore(lore);
         inventory.addItem(lang);
 
-        ConfigData configData = FileManager.getConfig();
+        ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
         boolean useCp = configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX);
         String cpText = Messages.getText(Message.BTN_SWITCH_CP).replace("%active%", (useCp) ? Messages.getText(Message.ENABLED) : Messages.getText(Message.DISABLED));

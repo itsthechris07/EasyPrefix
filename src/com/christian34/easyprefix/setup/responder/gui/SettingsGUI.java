@@ -2,7 +2,6 @@ package com.christian34.easyprefix.setup.responder.gui;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -157,7 +156,7 @@ public class SettingsGUI {
     public void openColorsPage() {
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETTINGS_TITLE).replace("%page%", Messages.getText(Message.SETTINGS_TITLE_FORMATTINGS)), 5);
         int colorSlot = 9;
-        boolean showAll = FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.GUI_SHOW_ALL_CHATCOLORS);
+        boolean showAll = EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.GUI_SHOW_ALL_CHATCOLORS);
         for (Color color : Color.values()) {
             if (color.equals(Color.UNDEFINED)) continue;
             if (showAll || user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {
@@ -235,7 +234,7 @@ public class SettingsGUI {
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETTINGS_TITLE).replace("%page%", Messages.getText(Message.SETTINGS_TITLE_MAIN)), 3);
         Button prefix = new Button(Material.CHEST, Messages.getText(Message.BTN_MY_PREFIXES)).setSlot(2, 3).setLore(Messages.getText(Message.LORE_CHANGE_PREFIX, user), " ");
         Button formattings = new Button(Material.CHEST, Messages.getText(Message.BTN_MY_FORMATTINGS)).setSlot(2, 7).setLore(Messages.getText(Message.LORE_CHANGE_CHATCOLOR, user), " ");
-        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
+        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
             Button gender = new Button(Button.playerHead(user.getName()), Messages.getText(Message.CHANGE_GENDER)).setSlot(2, 5).setLore(Messages.getText(Message.LORE_CHANGE_GENDER), " ");
             inventory.addItem(gender);
         } else {

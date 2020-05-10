@@ -3,7 +3,6 @@ package com.christian34.easyprefix.user;
 import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -54,7 +53,8 @@ public class User {
     public void load() {
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
-        if (!hasPermission("EasyPrefix.Color.all") && FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {
+        ConfigData configData = this.instance.getFileManager().getConfig();
+        if (!hasPermission("EasyPrefix.Color.all") && configData.getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {
             for (Color color : Color.values()) {
                 if (player.hasPermission("EasyPrefix.Color." + color.name())) colors.add(color);
             }
@@ -113,7 +113,7 @@ public class User {
                 saveData("group", null);
             }
         }
-        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
+        if (configData.getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
             if (subgroupName != null) {
                 if (groupHandler.isSubgroup(subgroupName) && hasPermission("EasyPrefix.subgroup." + subgroupName)) {
                     this.subgroup = groupHandler.getSubgroup(subgroupName);

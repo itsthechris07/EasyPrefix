@@ -2,7 +2,6 @@ package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.messages.Messages;
@@ -34,12 +33,12 @@ public class Group extends EasyGroup {
 
     public Group(GroupHandler groupHandler, String name) {
         this.NAME = name;
-        this.groupsData = FileManager.getGroupsData();
+        this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
         this.groupHandler = groupHandler;
 
         String prefix = "", suffix = "", chatColor = "", chatFormatting = "", joinMsg = "", quitMsg = "";
 
-        Database db = EasyPrefix.getInstance().getSqlDatabase();
+        Database db = groupHandler.getInstance().getSqlDatabase();
         if (db != null) {
             try {
                 String sql = "SELECT `prefix`,`suffix`,`chat_color`,`chat_formatting`,`join_msg`,`quit_msg` FROM `%p%groups` WHERE `group` = '" + name + "'";
@@ -160,7 +159,7 @@ public class Group extends EasyGroup {
     }
 
     private void saveData(String key, Object value) {
-        Database db = EasyPrefix.getInstance().getSqlDatabase();
+        Database db = this.groupHandler.getInstance().getSqlDatabase();
         if (value instanceof String) value = ((String) value).replace("§", "&");
         if (db == null) {
             key = key.replace("_", "-");
@@ -178,7 +177,7 @@ public class Group extends EasyGroup {
             }
         }
         /* todo reload current group, to improve performance */
-        EasyPrefix.getInstance().getGroupHandler().load();
+        this.groupHandler.getInstance().getGroupHandler().load();
     }
 
     @Override
@@ -277,7 +276,7 @@ public class Group extends EasyGroup {
 
     @Override
     public void delete() {
-        EasyPrefix instance = EasyPrefix.getInstance();
+        EasyPrefix instance = this.groupHandler.getInstance();
         if (instance.getSqlDatabase() == null) {
             groupsData.setAndSave("groups." + getName(), null);
         } else {

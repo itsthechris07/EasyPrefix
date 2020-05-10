@@ -16,15 +16,19 @@ import java.util.ArrayList;
 public class ConfigData {
     private File file;
     private FileConfiguration data;
+    private EasyPrefix instance;
+
+    public ConfigData(EasyPrefix instance) {
+        this.instance = instance;
+    }
 
     public ConfigData load() {
-        EasyPrefix instance = EasyPrefix.getInstance();
         this.file = new File(FileManager.getPluginFolder(), "config.yml");
         if (!file.exists()) {
-            instance.getPlugin().saveResource("config.yml", true);
+            this.instance.getPlugin().saveResource("config.yml", true);
         } else {
             try {
-                ConfigUpdater.update(instance, "config.yml", file, new ArrayList<>());
+                ConfigUpdater.update(this.instance, "config.yml", file, new ArrayList<>());
             } catch(IOException e) {
                 e.printStackTrace();
             }

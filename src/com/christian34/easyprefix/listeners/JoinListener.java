@@ -2,7 +2,6 @@ package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
@@ -31,7 +30,7 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        ConfigData configData = FileManager.getConfig();
+        ConfigData configData = this.instance.getFileManager().getConfig();
         if (!configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_QUIT)) return;
         User user = instance.getUser(e.getPlayer());
 
@@ -80,7 +79,7 @@ public class JoinListener implements Listener {
                     user.sendMessage(instance.getUpdater().UPDATE_MSG);
                 }
             }
-            if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.FORCE_GENDER)) {
+            if (this.instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.FORCE_GENDER)) {
                 if (user.getGenderType() == null) {
                     String prefix = Messages.getText("info.prefix");
                     if (prefix == null) prefix = Messages.getPrefix();

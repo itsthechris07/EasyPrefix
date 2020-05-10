@@ -2,7 +2,6 @@ package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.user.User;
@@ -31,7 +30,7 @@ public class Subgroup extends EasyGroup {
     public Subgroup(GroupHandler groupHandler, String name) {
         this.NAME = name;
         this.groupHandler = groupHandler;
-        Database db = EasyPrefix.getInstance().getSqlDatabase();
+        Database db = groupHandler.getInstance().getSqlDatabase();
         if (db != null) {
             try {
                 ResultSet result = db.getValue("SELECT `prefix`, `suffix` FROM `%p%subgroups` WHERE `group` = '" + name + "'");
@@ -43,7 +42,7 @@ public class Subgroup extends EasyGroup {
                 e.printStackTrace();
             }
         } else {
-            this.groupsData = FileManager.getGroupsData();
+            this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
             this.prefix = groupsData.getData().getString(getFilePath() + "prefix");
             this.suffix = groupsData.getData().getString(getFilePath() + "suffix");
         }

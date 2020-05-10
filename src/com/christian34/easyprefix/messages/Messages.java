@@ -3,7 +3,6 @@ package com.christian34.easyprefix.messages;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigUpdater;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
 import com.sun.istack.internal.NotNull;
@@ -27,17 +26,17 @@ import java.util.List;
  */
 public class Messages {
     private static FileConfiguration data;
-    private static List<String> languages = Arrays.asList("en_EN", "de_DE", "it_IT");
     private static String language;
+    private final static List<String> LANGUAGES = Arrays.asList("en_EN", "de_DE", "it_IT");
 
     public static String getLanguage() {
         return language;
     }
 
     public static void setLanguage(String lang) {
-        if (languages.contains(lang)) {
+        if (LANGUAGES.contains(lang)) {
             language = lang;
-            FileManager.getConfig().set(ConfigData.ConfigKeys.LANG.toString(), lang);
+            EasyPrefix.getInstance().getFileManager().getConfig().set(ConfigData.ConfigKeys.LANG.toString(), lang);
             load();
         }
     }
@@ -55,10 +54,10 @@ public class Messages {
 
     public static void load() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("EasyPrefix");
-        ConfigData config = FileManager.getConfig();
+        ConfigData config = EasyPrefix.getInstance().getFileManager().getConfig();
         language = config.getData().getString("config.lang");
         String path = "plugins/EasyPrefix";
-        if (language == null || !languages.contains(language)) {
+        if (language == null || !LANGUAGES.contains(language)) {
             language = "en_EN";
             config.set("config.lang", "en_EN");
         }
