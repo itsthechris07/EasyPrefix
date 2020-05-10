@@ -19,6 +19,10 @@ public class FileManager {
         load();
     }
 
+    public static File getPluginFolder() {
+        return new File("plugins/EasyPrefix");
+    }
+
     public void load() {
         File userFolder = new File(getPluginFolder() + "/user");
         if (!userFolder.exists()) userFolder.mkdirs();
@@ -33,10 +37,6 @@ public class FileManager {
 
     public GroupsData getGroupsData() {
         return groupsData;
-    }
-
-    public static File getPluginFolder() {
-        return new File("plugins/EasyPrefix");
     }
 
 }

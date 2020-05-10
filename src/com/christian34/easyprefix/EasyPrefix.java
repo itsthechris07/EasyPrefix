@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -38,6 +39,10 @@ public class EasyPrefix extends JavaPlugin {
     private VaultManager vaultManager = null;
     private Updater updater;
     private FileManager fileManager;
+
+    public static EasyPrefix getInstance() {
+        return instance;
+    }
 
     public void onDisable() {
         if (getSqlDatabase() != null) getSqlDatabase().close();
@@ -65,24 +70,18 @@ public class EasyPrefix extends JavaPlugin {
         mainCmd.setTabCompleter(new TabComplete(this));
         registerEvents();
         if (!cfg.getBoolean(ConfigData.ConfigKeys.ENABLED)) {
-            Messages.log("§cPlugin has been disabled! §7Please enable it in \"config.yml\"");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             this.vaultManager = new VaultManager(this);
-            if (vaultManager.hook()) {
-                Messages.log("&aConnected to Vault...");
-            } else {
-                Messages.log("&cCouldn't connect to Vault!");
-            }
         }
 
         this.updater = new Updater(this);
         hookMetrics();
         Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
-        Messages.log("§bIf you like the plugin or you have suggestions, please write a review " + "on spigotmc.org!");
+        Messages.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
     }
 
     public boolean formatChat() {
@@ -141,9 +140,8 @@ public class EasyPrefix extends JavaPlugin {
             } catch(SQLException ignored) {
             }
             this.database = new Database(this);
-        } else {
-            this.database = null;
-        }
+        } else this.database = null;
+
         Messages.load();
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
@@ -151,9 +149,10 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
-        getServer().getPluginManager().registerEvents(new JoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new QuitListener(this), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new ChatListener(this), this);
+        pluginManager.registerEvents(new JoinListener(this), this);
+        pluginManager.registerEvents(new QuitListener(this), this);
     }
 
     private void hookMetrics() {
@@ -161,10 +160,8 @@ public class EasyPrefix extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (PlaceholderAPI.isEnabled()) ? "installed" : "not installed"));
         metrics.addCustomChart(new Metrics.SimplePie("lang", Messages::getLanguage));
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getSqlDatabase() != null) ? "true" : "false"));
-    }
-
-    public static EasyPrefix getInstance() {
-        return instance;
+        metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
+        metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) ? "true" : "false"));
     }
 
 }

@@ -25,9 +25,9 @@ import java.util.List;
  * @author Christian34
  */
 public class Messages {
+    private final static List<String> LANGUAGES = Arrays.asList("en_EN", "de_DE", "it_IT");
     private static FileConfiguration data;
     private static String language;
-    private final static List<String> LANGUAGES = Arrays.asList("en_EN", "de_DE", "it_IT");
 
     public static String getLanguage() {
         return language;

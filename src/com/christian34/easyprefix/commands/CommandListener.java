@@ -243,23 +243,7 @@ public class CommandListener implements Listener, CommandExecutor {
                 }
             }
         }
-        sender.sendMessage(" ");
-        sender.sendMessage("§7---------------=== §5§lEasyPrefix §7===---------------");
-        sender.sendMessage(" ");
-        sender.sendMessage("§7/§5EasyPrefix §f| §7main command");
-        sender.sendMessage("§7/§5EasyPrefix settings §f| §7manage your prefixes");
-        sender.sendMessage("§7/§5EasyPrefix setup §f| §7opens setup gui");
-        sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
-        sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
-        sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
-        if (EasyPrefix.getInstance().getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
-            sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
-        }
-        sender.sendMessage(" ");
-        sender.sendMessage("§7------------------------------------------------");
-        sender.sendMessage(" ");
-        sender.sendMessage("§7Version: " + EasyPrefix.getInstance().getPlugin().getDescription().getVersion());
-        sender.sendMessage("§7EasyPrefix by §5§lChristian34");
+        sender.sendMessage("\n§7---------------=== §5§lEasyPrefix §7===---------------\n \n" + "§7/§5EasyPrefix §f| §7main command\n" + "§7/§5EasyPrefix settings §f| §7manage your prefixes\n" + "§7/§5EasyPrefix setup §f| §7opens setup gui\n" + "§7/§5EasyPrefix reload §f| §7reloads the plugin\n" + "§7/§5EasyPrefix user <Player> §f| §7player info\n" + "§7/§5EasyPrefix group <Group> §f| §7group info" + ((EasyPrefix.getInstance().getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) ? "\n§7/§5EasyPrefix database §f| §7sql configuration" : "") + "\n \n§7------------------------------------------------\n \n" + "§7Version: " + EasyPrefix.getInstance().getPlugin().getDescription().getVersion() + "\n§7EasyPrefix by §5§lChristian34");
         return false;
     }
 

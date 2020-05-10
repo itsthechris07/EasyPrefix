@@ -51,7 +51,7 @@ config:
   gender:
     enabled: true
     # force a player to select a gender
-    force-gender: true
+    force-gender: false
     # you must add it also in your messages file (en_EN.yml, de_DE.yml, it_IT.yml)
     types:
       - female

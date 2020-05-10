@@ -36,12 +36,10 @@ public class JoinListener implements Listener {
 
         if (configData.getBoolean(ConfigData.ConfigKeys.HIDE_JOIN_QUIT)) {
             e.setJoinMessage(null);
-        } else {
-            if (e.getJoinMessage() != null) {
-                Group group = user.getGroup();
-                String joinMsg = group.getJoinMessage(user);
-                e.setJoinMessage(joinMsg);
-            }
+        } else if (e.getJoinMessage() != null) {
+            Group group = user.getGroup();
+            String joinMsg = group.getJoinMessage(user);
+            e.setJoinMessage(joinMsg);
         }
         if (configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_SOUND)) {
             String cfg = configData.getString(ConfigData.ConfigKeys.JOIN_SOUND);
@@ -66,8 +64,6 @@ public class JoinListener implements Listener {
                 Messages.log("&cCouldn't play sound '" + soundOption[0] + "'. Please use valid sounds!");
             }
         }
-
-
     }
 
     @EventHandler
