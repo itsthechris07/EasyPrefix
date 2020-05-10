@@ -10,15 +10,12 @@ import com.christian34.easyprefix.setup.CustomInventory;
 import com.christian34.easyprefix.setup.responder.GuiRespond;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
-import com.christian34.easyprefix.utils.Reflection;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Material;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * EasyPrefix 2020.
@@ -124,11 +121,9 @@ public class GroupProfile {
         Button chatColor = null;
         if (VersionController.getMinorVersion() < 13) {
             try {
-                Class material = Reflection.getClass("org.bukkit", "Material");
-                Field field = Objects.requireNonNull(material).getDeclaredField("INK_SACK");
-                chatColor = new Button(Material.valueOf(field.getName()), Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);
-            } catch(NoSuchFieldException e) {
-                e.printStackTrace();
+                chatColor = new Button(Material.valueOf("INK_SACK"), Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);
+            } catch(Exception e) {
+                chatColor = new Button(Material.BARRIER, Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);
             }
         } else {
             chatColor = new Button(Material.LIME_DYE, Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);

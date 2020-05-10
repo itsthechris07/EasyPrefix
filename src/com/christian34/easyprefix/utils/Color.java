@@ -6,9 +6,6 @@ import com.christian34.easyprefix.setup.Button;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Field;
-import java.util.Objects;
-
 /**
  * EasyPrefix 2020.
  *
@@ -58,20 +55,18 @@ public enum Color {
         if (VersionController.getMinorVersion() >= 13) {
             return new Button(new ItemStack(getNewTerracotta(this), 1), toString());
         } else {
-            Field field = Reflection.getField(Objects.requireNonNull(Reflection.getClass("org.bukkit", "Material")), "STAINED_CLAY");
-            assert field != null;
-            return new Button(new ItemStack(Material.valueOf(field.getName()), 1, getByte()), toString());
+            try {
+                return new Button(new ItemStack(Material.valueOf("STAINED_CLAY"), 1, getByte()), toString());
+            } catch(Exception ignored) {
+                return new Button(new ItemStack(Material.valueOf("INK_SACK")), toString());
+            }
         }
     }
 
     private Material getNewTerracotta(Color color) {
         switch (color) {
-            case BLACK:
-                return Material.BLACK_TERRACOTTA;
             case YELLOW:
                 return Material.YELLOW_TERRACOTTA;
-            case BLUE:
-                return Material.CYAN_TERRACOTTA;
             case LIGHT_PURPLE:
                 return Material.MAGENTA_TERRACOTTA;
             case DARK_PURPLE:
@@ -88,8 +83,6 @@ public enum Color {
                 return Material.LIGHT_GRAY_TERRACOTTA;
             case DARK_AQUA:
                 return Material.LIGHT_BLUE_TERRACOTTA;
-            case AQUA:
-                return Material.CYAN_TERRACOTTA;
             case WHITE:
                 return Material.WHITE_TERRACOTTA;
             case DARK_RED:
@@ -98,6 +91,10 @@ public enum Color {
                 return Material.ORANGE_TERRACOTTA;
             case RED:
                 return Material.PINK_TERRACOTTA;
+            case BLUE:
+            case AQUA:
+                return Material.CYAN_TERRACOTTA;
+            case BLACK:
             default:
                 return Material.BLACK_TERRACOTTA;
         }

@@ -11,13 +11,15 @@ public class FileManager {
     private static ConfigData configData;
     private static GroupsData groupsData;
 
+    /*
+        todo remove static
+     */
     public static void load() {
         File userFolder = new File(getPluginFolder() + "/user");
-        if (!userFolder.exists()) {
-            userFolder.mkdirs();
-        }
+        if (!userFolder.exists()) userFolder.mkdirs();
         configData = new ConfigData().load();
-        groupsData = new GroupsData().load();
+        groupsData = new GroupsData();
+        if (!configData.getBoolean(ConfigData.ConfigKeys.USE_SQL)) groupsData.load();
     }
 
     public static ConfigData getConfig() {

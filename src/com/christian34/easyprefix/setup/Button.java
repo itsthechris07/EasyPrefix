@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.setup;
 
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.utils.Reflection;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -9,11 +8,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * EasyPrefix 2020.
@@ -74,9 +71,7 @@ public class Button {
             return itemStack;
         } else {
             try {
-                Class material = Reflection.getClass("org.bukkit", "Material");
-                Field field = Objects.requireNonNull(material).getDeclaredField("SKULL_ITEM");
-                ItemStack itemStack = new ItemStack(Material.valueOf(field.getName()), 1, (short) 3);
+                ItemStack itemStack = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
                 SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                 if (meta != null) {
                     meta.setOwner(owningPlayer);

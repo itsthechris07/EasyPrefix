@@ -1,11 +1,12 @@
 package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.ConfigData.Values;
+import com.christian34.easyprefix.files.ConfigData.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.UserData;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -22,28 +23,22 @@ import java.util.UUID;
 public class Database {
     private String host, database, username, tablePrefix, password;
     private Connection connection;
+    private EasyPrefix instance;
     private int port;
 
-    public Database() {
+    public Database(EasyPrefix instance) {
+        this.instance = instance;
         ConfigData config = FileManager.getConfig();
-        this.host = config.getString(Values.SQL_HOST);
-        this.database = config.getString(Values.SQL_DATABASE);
-        this.username = config.getString(Values.SQL_USERNAME);
-        this.password = config.getString(Values.SQL_PASSWORD);
-        this.tablePrefix = config.getString(Values.SQL_TABLE_PREFIX);
-        this.port = config.getInt(Values.SQL_PORT);
+        this.host = config.getString(ConfigKeys.SQL_HOST);
+        this.database = config.getString(ConfigKeys.SQL_DATABASE);
+        this.username = config.getString(ConfigKeys.SQL_USERNAME);
+        this.password = config.getString(ConfigKeys.SQL_PASSWORD);
+        this.tablePrefix = config.getString(ConfigKeys.SQL_TABLE_PREFIX);
+        this.port = config.getInt(ConfigKeys.SQL_PORT);
         if (tablePrefix == null || tablePrefix.isEmpty()) {
             this.tablePrefix = "";
         } else if (!this.tablePrefix.endsWith("_")) this.tablePrefix += "_";
         connect();
-    }
-
-    public String getTablePrefix() {
-        return tablePrefix;
-    }
-
-    public Connection getConnection() {
-        return connection;
     }
 
     public void close() {
@@ -75,14 +70,17 @@ public class Database {
         }
     }
 
-    public void update(String statement) {
+    public ResultSet getValue(String statement) {
         try {
             if (connection.isClosed()) connect();
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
+            return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch(SQLException e) {
+            Messages.log("§cCouldn't get value from statement '" + statement + "'!");
+            Messages.log("§c" + e.getMessage());
             e.printStackTrace();
         }
+        return null;
     }
 
     public boolean exists(String statement) {
@@ -99,17 +97,17 @@ public class Database {
         return false;
     }
 
-    public ResultSet getValue(String statement) {
-        try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
-            return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
-        } catch(SQLException e) {
-            Messages.log("§cCouldn't get value from statement '" + statement + "'!");
-            Messages.log("§c" + e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+    public void update(String statement) {
+        Bukkit.getScheduler().runTaskAsynchronously(this.instance, () -> {
+            try {
+                if (connection.isClosed()) connect();
+                Statement stmt = connection.createStatement();
+                stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
+                stmt.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void createTables() {
@@ -117,15 +115,6 @@ public class Database {
         update("CREATE TABLE IF NOT EXISTS `%p%groups` (`group` VARCHAR(64) not null, UNIQUE(`group`), prefix VARCHAR(128) default NULL null, suffix VARCHAR(128) default NULL null, chat_color CHAR(2) default NULL null, chat_formatting CHAR(2) default NULL null, join_msg VARCHAR(255) default NULL null, quit_msg VARCHAR(255) default NULL null)ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update("CREATE TABLE IF NOT EXISTS `%p%genders` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT(1) NOT NULL , `group_name` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update("CREATE TABLE IF NOT EXISTS `%p%subgroups` ( `group` VARCHAR(64) NOT NULL , UNIQUE(`group`), `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null ) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
-    }
-
-    public PreparedStatement prepareStatement(String sql) {
-        try {
-            sql = sql.replace("%p%", getTablePrefix());
-            return getConnection().prepareStatement(sql);
-        } catch(SQLException e) {
-            return null;
-        }
     }
 
     public void uploadGroups() throws SQLException {
@@ -338,7 +327,6 @@ public class Database {
                 }
             }
         }
-
     }
 
     public void uploadData() throws SQLException {
@@ -418,6 +406,23 @@ public class Database {
 
         long ms = System.currentTimeMillis() - startTime;
         Messages.log("§aDownload took " + ms + " ms!");
+    }
+
+    public String getTablePrefix() {
+        return tablePrefix;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public PreparedStatement prepareStatement(String sql) {
+        try {
+            sql = sql.replace("%p%", getTablePrefix());
+            return getConnection().prepareStatement(sql);
+        } catch(SQLException e) {
+            return null;
+        }
     }
 
 }

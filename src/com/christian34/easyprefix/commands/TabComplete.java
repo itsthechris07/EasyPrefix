@@ -30,7 +30,11 @@ public class TabComplete implements TabCompleter {
         if (!cmd.getName().equalsIgnoreCase("easyprefix")) return null;
         ArrayList<String> matches = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = Arrays.asList("reload", "set", "setup", "user", "database", "group");
+            List<String> list = new ArrayList<>(Arrays.asList("reload", "set", "setup", "user", "group"));
+            if (this.instance.getSqlDatabase() != null) list.add("database");
+            if (sender.hasPermission("EasyPrefix.settings")) {
+                list.add("settings");
+            }
             if (!args[0].isEmpty()) {
                 for (String match : list) {
                     if (match.toLowerCase().startsWith(args[0].toLowerCase())) matches.add(match);
@@ -39,14 +43,12 @@ public class TabComplete implements TabCompleter {
                 if (sender.hasPermission("EasyPrefix.admin")) {
                     matches.addAll(list);
                 }
-                if (sender.hasPermission("EasyPrefix.settings")) {
-                    matches.add("settings");
-                }
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("user")) {
                 return null;
             } else if (args[0].equalsIgnoreCase("database")) {
+                if (this.instance.getSqlDatabase() == null) return matches;
                 List<String> list = Arrays.asList("upload", "download");
                 if (!args[1].isEmpty()) {
                     for (String match : list) {
@@ -80,6 +82,8 @@ public class TabComplete implements TabCompleter {
                 } else {
                     matches.addAll(list);
                 }
+            } else if (args[0].equalsIgnoreCase("group")) {
+                matches.add("info");
             }
         } else if (args.length == 4) {
             if (args[0].equalsIgnoreCase("user")) {

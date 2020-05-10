@@ -39,7 +39,7 @@ public class Group extends EasyGroup {
 
         String prefix = "", suffix = "", chatColor = "", chatFormatting = "", joinMsg = "", quitMsg = "";
 
-        Database db = EasyPrefix.getInstance().getDatabase();
+        Database db = EasyPrefix.getInstance().getSqlDatabase();
         if (db != null) {
             try {
                 String sql = "SELECT `prefix`,`suffix`,`chat_color`,`chat_formatting`,`join_msg`,`quit_msg` FROM `%p%groups` WHERE `group` = '" + name + "'";
@@ -160,7 +160,7 @@ public class Group extends EasyGroup {
     }
 
     private void saveData(String key, Object value) {
-        Database db = EasyPrefix.getInstance().getDatabase();
+        Database db = EasyPrefix.getInstance().getSqlDatabase();
         if (value instanceof String) value = ((String) value).replace("§", "&");
         if (db == null) {
             key = key.replace("_", "-");
@@ -278,10 +278,10 @@ public class Group extends EasyGroup {
     @Override
     public void delete() {
         EasyPrefix instance = EasyPrefix.getInstance();
-        if (instance.getDatabase() == null) {
+        if (instance.getSqlDatabase() == null) {
             groupsData.setAndSave("groups." + getName(), null);
         } else {
-            Database db = instance.getDatabase();
+            Database db = instance.getSqlDatabase();
             db.update("DELETE FROM `%p%groups` WHERE `group` = '" + getName() + "'");
         }
         instance.getGroupHandler().getGroups().remove(this);

@@ -37,7 +37,7 @@ public class Messages {
     public static void setLanguage(String lang) {
         if (languages.contains(lang)) {
             language = lang;
-            FileManager.getConfig().set(ConfigData.Values.LANG.toString(), lang);
+            FileManager.getConfig().set(ConfigData.ConfigKeys.LANG.toString(), lang);
             load();
         }
     }

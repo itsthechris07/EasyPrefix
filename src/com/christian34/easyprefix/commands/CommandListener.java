@@ -84,13 +84,15 @@ public class CommandListener implements Listener, CommandExecutor {
                 sender.sendMessage(" ");
                 sender.sendMessage("§7------------=== §5§lEasyPrefix DEBUG §7===------------");
                 sender.sendMessage("§5Groups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
-                sender.sendMessage("§5Users cached: §7" + EasyPrefix.getInstance().getUsers().size());
+                sender.sendMessage("§5Users cached: §7" + this.instance.getUsers().size());
                 sender.sendMessage("§5Genders cached: §7" + groupHandler.getGenderTypes().size());
                 sender.sendMessage("§5Bukkit Version: §7" + Bukkit.getVersion());
+                sender.sendMessage("§5Java Version: §7" + System.getProperty("java.version"));
                 sender.sendMessage("§5Version Name: §7" + Bukkit.getBukkitVersion());
+                sender.sendMessage("§5Storage: §7" + ((this.instance.getSqlDatabase() != null) ? "MySQL" : "local"));
                 sender.sendMessage("§5active EventHandler: §7" + HandlerList.getRegisteredListeners(EasyPrefix.getInstance().getPlugin()).size());
                 return true;
-            } else if (args[0].equalsIgnoreCase("database") && EasyPrefix.getInstance().getDatabase() != null && sender.hasPermission("easyprefix.admin")) {
+            } else if (args[0].equalsIgnoreCase("database") && EasyPrefix.getInstance().getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
                 sender.sendMessage("§7---------------=== §5§lEasyPrefix §7===---------------");
                 sender.sendMessage(" ");
                 sender.sendMessage("§7/§5EasyPrefix database upload §f| §7upload groups and users to database (will override database!)");
@@ -209,12 +211,12 @@ public class CommandListener implements Listener, CommandExecutor {
                         return true;
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("database") && EasyPrefix.getInstance().getDatabase() != null) {
+            } else if (args[0].equalsIgnoreCase("database") && EasyPrefix.getInstance().getSqlDatabase() != null) {
                 if (sender.hasPermission("easyprefix.admin")) {
                     if (args[1].equalsIgnoreCase("upload")) {
                         sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while.");
                         try {
-                            EasyPrefix.getInstance().getDatabase().uploadData();
+                            EasyPrefix.getInstance().getSqlDatabase().uploadData();
                             EasyPrefix.getInstance().reload();
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
                         } catch(SQLException e) {
@@ -225,7 +227,7 @@ public class CommandListener implements Listener, CommandExecutor {
                     } else if (args[1].equalsIgnoreCase("download")) {
                         sender.sendMessage(Messages.getPrefix() + "§7Downloading data to local storage This could take a while.");
                         try {
-                            EasyPrefix.getInstance().getDatabase().downloadData();
+                            EasyPrefix.getInstance().getSqlDatabase().downloadData();
                             EasyPrefix.getInstance().reload();
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been downloaded!");
                         } catch(SQLException e) {
@@ -250,7 +252,7 @@ public class CommandListener implements Listener, CommandExecutor {
         sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
         sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
         sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
-        if (EasyPrefix.getInstance().getDatabase() != null && sender.hasPermission("easyprefix.admin")) {
+        if (EasyPrefix.getInstance().getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
             sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
         }
         sender.sendMessage(" ");

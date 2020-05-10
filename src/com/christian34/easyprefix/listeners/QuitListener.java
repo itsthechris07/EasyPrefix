@@ -23,9 +23,14 @@ public class QuitListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
-        User user = EasyPrefix.getInstance().getUser(e.getPlayer());
         ConfigData configData = FileManager.getConfig();
-        if (configData.getBoolean(ConfigData.Values.HIDE_JOIN_QUIT)) {
+        if (!configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_QUIT)) {
+            EasyPrefix.getInstance().unloadUser(e.getPlayer());
+            return;
+        }
+
+        User user = EasyPrefix.getInstance().getUser(e.getPlayer());
+        if (configData.getBoolean(ConfigData.ConfigKeys.HIDE_JOIN_QUIT)) {
             e.setQuitMessage(null);
         } else {
             if (e.getQuitMessage() != null) {
@@ -34,15 +39,15 @@ public class QuitListener implements Listener {
                 e.setQuitMessage(quitMsg);
             }
         }
-        if (configData.getBoolean(ConfigData.Values.USE_QUIT_SOUND)) {
-            String cfg = configData.getString(ConfigData.Values.QUIT_SOUND);
+        if (configData.getBoolean(ConfigData.ConfigKeys.USE_QUIT_SOUND)) {
+            String cfg = configData.getString(ConfigData.ConfigKeys.QUIT_SOUND);
             String[] soundOption = cfg.replace(" ", "").split(";");
             try {
                 Sound sound = Sound.valueOf(soundOption[0]);
                 float volume = Integer.parseInt(soundOption[1]);
                 float pitch = Integer.parseInt(soundOption[2]);
                 if (soundOption.length == 3) {
-                    String receiver = configData.getString(ConfigData.Values.JOIN_QUIT_SOUND_RECEIVER);
+                    String receiver = configData.getString(ConfigData.ConfigKeys.JOIN_QUIT_SOUND_RECEIVER);
                     if (receiver.equals("all")) {
                         for (Player target : Bukkit.getOnlinePlayers()) {
                             target.playSound(target.getLocation(), sound, volume, pitch);
@@ -59,5 +64,6 @@ public class QuitListener implements Listener {
         }
         EasyPrefix.getInstance().unloadUser(e.getPlayer());
     }
+
 
 }

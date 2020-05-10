@@ -31,7 +31,7 @@ public class Subgroup extends EasyGroup {
     public Subgroup(GroupHandler groupHandler, String name) {
         this.NAME = name;
         this.groupHandler = groupHandler;
-        Database db = EasyPrefix.getInstance().getDatabase();
+        Database db = EasyPrefix.getInstance().getSqlDatabase();
         if (db != null) {
             try {
                 ResultSet result = db.getValue("SELECT `prefix`, `suffix` FROM `%p%subgroups` WHERE `group` = '" + name + "'");
@@ -80,7 +80,7 @@ public class Subgroup extends EasyGroup {
     }
 
     private void saveData(String key, Object value) {
-        Database db = EasyPrefix.getInstance().getDatabase();
+        Database db = EasyPrefix.getInstance().getSqlDatabase();
         if (value instanceof String) value = ((String) value).replace("§", "&");
         if (db == null) {
             key = key.replace("_", "-");
@@ -176,10 +176,10 @@ public class Subgroup extends EasyGroup {
     @Override
     public void delete() {
         EasyPrefix instance = EasyPrefix.getInstance();
-        if (instance.getDatabase() == null) {
+        if (instance.getSqlDatabase() == null) {
             groupsData.setAndSave("subgroups." + getName(), null);
         } else {
-            Database db = instance.getDatabase();
+            Database db = instance.getSqlDatabase();
             db.update("DELETE FROM `%p%subgroups` WHERE `group` = '" + getName() + "'");
         }
         /* todo grouphandler unregister function */

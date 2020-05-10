@@ -41,7 +41,7 @@ public class RainbowEffect {
         if (rainbowColors == null || rainbowColors.isEmpty()) {
             ArrayList<ChatColor> enabledColors = new ArrayList<>();
             ConfigData configData = FileManager.getConfig();
-            List<String> colors = configData.getData().getStringList(ConfigData.Values.COLOR_RAINBOW_COLORS.toString());
+            List<String> colors = configData.getData().getStringList(ConfigData.ConfigKeys.COLOR_RAINBOW_COLORS.toString());
             for (String color : colors) {
                 try {
                     enabledColors.add(ChatColor.valueOf(color));

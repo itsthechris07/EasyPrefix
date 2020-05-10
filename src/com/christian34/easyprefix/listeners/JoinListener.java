@@ -31,9 +31,11 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        User user = instance.getUser(e.getPlayer());
         ConfigData configData = FileManager.getConfig();
-        if (configData.getBoolean(ConfigData.Values.HIDE_JOIN_QUIT)) {
+        if (!configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_QUIT)) return;
+        User user = instance.getUser(e.getPlayer());
+
+        if (configData.getBoolean(ConfigData.ConfigKeys.HIDE_JOIN_QUIT)) {
             e.setJoinMessage(null);
         } else {
             if (e.getJoinMessage() != null) {
@@ -42,15 +44,15 @@ public class JoinListener implements Listener {
                 e.setJoinMessage(joinMsg);
             }
         }
-        if (configData.getBoolean(ConfigData.Values.USE_JOIN_SOUND)) {
-            String cfg = configData.getString(ConfigData.Values.JOIN_SOUND);
+        if (configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_SOUND)) {
+            String cfg = configData.getString(ConfigData.ConfigKeys.JOIN_SOUND);
             String[] soundOption = cfg.replace(" ", "").split(";");
             try {
                 Sound sound = Sound.valueOf(soundOption[0]);
                 float volume = Integer.parseInt(soundOption[1]);
                 float pitch = Integer.parseInt(soundOption[2]);
                 if (soundOption.length == 3) {
-                    String receiver = configData.getString(ConfigData.Values.JOIN_QUIT_SOUND_RECEIVER);
+                    String receiver = configData.getString(ConfigData.ConfigKeys.JOIN_QUIT_SOUND_RECEIVER);
                     if (receiver.equals("all")) {
                         for (Player target : Bukkit.getOnlinePlayers()) {
                             target.playSound(target.getLocation(), sound, volume, pitch);
@@ -66,13 +68,19 @@ public class JoinListener implements Listener {
             }
         }
 
+
+    }
+
+    @EventHandler
+    public void notifyOnJoin(PlayerJoinEvent event) {
+        User user = this.instance.getUser(event.getPlayer());
         Bukkit.getScheduler().runTaskAsynchronously(instance.getPlugin(), () -> {
             if (user.getPlayer().hasPermission("easyprefix.admin")) {
                 if (instance.getUpdater().checkForUpdates()) {
                     user.sendMessage(instance.getUpdater().UPDATE_MSG);
                 }
             }
-            if (configData.getBoolean(ConfigData.Values.FORCE_GENDER)) {
+            if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.FORCE_GENDER)) {
                 if (user.getGenderType() == null) {
                     String prefix = Messages.getText("info.prefix");
                     if (prefix == null) prefix = Messages.getPrefix();

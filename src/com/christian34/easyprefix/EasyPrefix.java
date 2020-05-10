@@ -12,7 +12,6 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Metrics;
-import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
 import com.christian34.easyprefix.vault.VaultManager;
 import org.bukkit.Bukkit;
@@ -36,11 +35,13 @@ public class EasyPrefix extends JavaPlugin {
     private Database database;
     private GroupHandler groupHandler;
     private VaultManager vaultManager = null;
-
     private Updater updater;
 
-    public Updater getUpdater() {
-        return updater;
+    public void onDisable() {
+        if (getSqlDatabase() != null) getSqlDatabase().close();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player != null) player.closeInventory();
+        }
     }
 
     public void onEnable() {
@@ -50,9 +51,10 @@ public class EasyPrefix extends JavaPlugin {
         FileManager.load();
         ConfigData cfg = FileManager.getConfig();
         Messages.load();
-        if (cfg.getBoolean(ConfigData.Values.USE_SQL)) {
-            this.database = new Database();
+        if (cfg.getBoolean(ConfigData.ConfigKeys.USE_SQL)) {
+            this.database = new Database(this);
         }
+        PlaceholderAPI.setEnabled(Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI"));
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
         PluginCommand mainCmd = getCommand("EasyPrefix");
@@ -60,7 +62,7 @@ public class EasyPrefix extends JavaPlugin {
         mainCmd.setExecutor(new CommandListener(this));
         mainCmd.setTabCompleter(new TabComplete(this));
         registerEvents();
-        if (!cfg.getBoolean(ConfigData.Values.ENABLED)) {
+        if (!cfg.getBoolean(ConfigData.ConfigKeys.ENABLED)) {
             Messages.log("§cPlugin has been disabled! §7Please enable it in \"config.yml\"");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
@@ -76,22 +78,13 @@ public class EasyPrefix extends JavaPlugin {
         }
 
         this.updater = new Updater(this);
-
-        PlaceholderAPI.setEnabled(Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI"));
         hookMetrics();
         Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Messages.log("§bIf you like the plugin or you have suggestions, please write a review " + "on spigotmc.org!");
     }
 
-    public void onDisable() {
-        if (getDatabase() != null) getDatabase().close();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player != null) player.closeInventory();
-        }
-    }
-
     public boolean formatChat() {
-        return !Bukkit.getServer().getPluginManager().isPluginEnabled("MultiChatSpigot");
+        return FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_CHAT);
     }
 
     public VaultManager getVaultManager() {
@@ -103,44 +96,50 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public User getUser(Player player) {
-        for (User crntUser : users) {
-            if (crntUser.getPlayer().getName().equals(player.getName())) return crntUser;
+        for (User user : users) {
+            if (user.getPlayer().getName().equals(player.getName())) return user;
         }
         User newUser = new User(player);
         users.add(newUser);
         return newUser;
     }
 
-    public void unloadUser(final Player player) {
-        users.removeIf(crntUser -> crntUser.getPlayer().getName().equals(player.getName()));
-    }
-
     public ArrayList<User> getUsers() {
         return users;
     }
 
-    public void reload() {
-        FileManager.load();
-        if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_SQL) && this.database != null) {
-            try {
-                getDatabase().getConnection().close();
-            } catch(SQLException ignored) {
-            }
-            this.database = new Database();
-        } else {
-            this.database = null;
-        }
-        Messages.load();
-        RainbowEffect.getRainbowColors().clear();
-        this.groupHandler = new GroupHandler(this);
-    }
-
-    public Database getDatabase() {
+    public Database getSqlDatabase() {
         return database;
     }
 
     public Plugin getPlugin() {
         return plugin;
+    }
+
+    public Updater getUpdater() {
+        return updater;
+    }
+
+    public void unloadUser(final Player player) {
+        users.removeIf(crntUser -> crntUser.getPlayer().getName().equals(player.getName()));
+    }
+
+    public void reload() {
+        //   FileManager.load();
+        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SQL) && this.database != null) {
+            try {
+                getSqlDatabase().getConnection().close();
+            } catch(SQLException ignored) {
+            }
+            this.database = new Database(this);
+        } else {
+            this.database = null;
+        }
+      /*  Messages.load();
+        RainbowEffect.getRainbowColors().clear();
+        this.groupHandler = new GroupHandler(this);
+        this.groupHandler.load();*/
+        onEnable();
     }
 
     private void registerEvents() {
@@ -153,7 +152,7 @@ public class EasyPrefix extends JavaPlugin {
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (PlaceholderAPI.isEnabled()) ? "installed" : "not installed"));
         metrics.addCustomChart(new Metrics.SimplePie("lang", Messages::getLanguage));
-        metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getDatabase() != null) ? "true" : "false"));
+        metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getSqlDatabase() != null) ? "true" : "false"));
     }
 
     public static EasyPrefix getInstance() {

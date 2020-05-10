@@ -8,7 +8,7 @@
 config:
   enabled: true
   # do not modify the version
-  version: 1.6.3
+  version: 1.6.5
   # default language (en_EN, de_DE, it_IT)
   lang: en_EN
   # connect multiple servers
@@ -29,7 +29,7 @@ config:
     hide-messages: false
     # modify or enable/disable the sounds when a player joins/quits the game
     sound:
-      # define who receives the sound | "all" for all online player; "player" for the player who joined/quit
+      # define who receives the sound | "all" for all online players; "player" for the player who joined/quit
       receiver: all
       join:
         enabled: true
@@ -59,7 +59,7 @@ config:
       - intersex
   # settings for the gui
   gui:
-    # Specifies if all colors and formattings should be visible, even if the player has no permissions for it.
+    # specifies if all colors and formattings should be visible, even if the player has no permissions for it.
     show-all-chatcolors: true
   # settings for chat appearance
   chat:
@@ -67,6 +67,9 @@ config:
     duplicate-white-spaces: false
     # allow easyprefix to handle colors and formattings
     handle-colors: true
+    # set to false, if you use other chat plugins like EssentialsChat or MultiChat
+    # false requires vault!
+    handle-chat: true
     color:
       # requires permission EasyPrefix.color.rainbow
       rainbow:

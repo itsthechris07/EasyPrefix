@@ -34,7 +34,7 @@ public class GroupHandler {
         this.instance = instance;
         this.groupsData = FileManager.getGroupsData();
 
-        if (EasyPrefix.getInstance().getDatabase() == null) {
+        if (EasyPrefix.getInstance().getSqlDatabase() == null) {
             GroupsData groupsData = getGroupsData();
             FileConfiguration fileData = groupsData.getData();
             if (fileData.getString("groups.default.prefix") == null) {
@@ -54,7 +54,7 @@ public class GroupHandler {
             }
             groupsData.save();
         } else {
-            Database database = EasyPrefix.getInstance().getDatabase();
+            Database database = EasyPrefix.getInstance().getSqlDatabase();
             if (!database.exists("SELECT `prefix` FROM `%p%groups` WHERE `group` = 'default'")) {
                 database.update("INSERT INTO `%p%groups`(`group`, `prefix`, `suffix`, `chat_color`, `join_msg`, `quit_msg`) " + "VALUES ('default','&7','&f:','&7','&8» %ep_user_prefix%%player% &7joined the game','&8« %ep_user_prefix%%player% &7left the game')");
                 Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" + " with: /easyprefix database upload");
@@ -66,7 +66,7 @@ public class GroupHandler {
         this.groups = new ArrayList<>();
         this.subgroups = new ArrayList<>();
         this.instance.getUsers().clear();
-        if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_GENDER)) {
+        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
             loadGenders();
         }
         this.defaultGroup = new Group(this, "default");
@@ -75,7 +75,7 @@ public class GroupHandler {
         ArrayList<String> groupNames = new ArrayList<>();
         ArrayList<String> subgroupNames = new ArrayList<>();
 
-        if (EasyPrefix.getInstance().getDatabase() == null) {
+        if (EasyPrefix.getInstance().getSqlDatabase() == null) {
             GroupsData groupsData = getGroupsData();
             Set<String> groupsList = getGroupsData().getSection("groups");
             groupNames = new ArrayList<>(groupsList);
@@ -86,11 +86,11 @@ public class GroupHandler {
                     load();
                 }
             }
-            if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_SUBGROUPS)) {
+            if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
                 subgroupNames.addAll(groupsData.getSection("subgroups"));
             }
         } else {
-            Database database = EasyPrefix.getInstance().getDatabase();
+            Database database = EasyPrefix.getInstance().getSqlDatabase();
             ResultSet groupsResult = database.getValue("SELECT `group` FROM `%p%groups`");
             try {
                 while (groupsResult.next()) {
@@ -126,7 +126,7 @@ public class GroupHandler {
     }
 
     public boolean handleGenders() {
-        return FileManager.getConfig().getBoolean(ConfigData.Values.USE_GENDER);
+        return FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER);
     }
 
     private void loadGenders() {
@@ -194,7 +194,7 @@ public class GroupHandler {
     }
 
     public void createGroup(String groupName) {
-        if (EasyPrefix.getInstance().getDatabase() == null) {
+        if (EasyPrefix.getInstance().getSqlDatabase() == null) {
             String path = "groups." + groupName + ".";
             getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");
             getGroupsData().set(path + "suffix", "&f:");
@@ -202,7 +202,7 @@ public class GroupHandler {
             getGroupsData().set(path + "chat-formatting", "&o");
             getGroupsData().save();
         } else {
-            Database database = EasyPrefix.getInstance().getDatabase();
+            Database database = EasyPrefix.getInstance().getSqlDatabase();
             database.update("INSERT INTO `%p%groups`(`group`) VALUES ('" + groupName + "')");
         }
         this.groups.add(new Group(this, groupName));

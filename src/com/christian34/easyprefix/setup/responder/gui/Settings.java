@@ -41,13 +41,13 @@ public class Settings {
 
         ConfigData configData = FileManager.getConfig();
 
-        boolean useCp = configData.getBoolean(ConfigData.Values.CUSTOM_PREFIX);
+        boolean useCp = configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX);
         String cpText = Messages.getText(Message.BTN_SWITCH_CP).replace("%active%", (useCp) ? Messages.getText(Message.ENABLED) : Messages.getText(Message.DISABLED));
         Button customPrefix = new Button(Material.BEACON, cpText).setSlot(2, 5);
         customPrefix.setLore(Messages.getText(Message.LORE_SWITCH_CP));
         inventory.addItem(customPrefix);
 
-        boolean useGender = configData.getBoolean(ConfigData.Values.USE_GENDER);
+        boolean useGender = configData.getBoolean(ConfigData.ConfigKeys.USE_GENDER);
         String genderText = Messages.getText(Message.BTN_SWITCH_GENDER).replace("%active%", (useGender) ? Messages.getText(Message.ENABLED) : Messages.getText(Message.DISABLED));
         Button gender = new Button(Material.CHAINMAIL_HELMET, genderText).setSlot(2, 7);
         gender.setLore(Messages.getText(Message.LORE_SWITCH_GENDER));
@@ -71,10 +71,10 @@ public class Settings {
                 Messages.setLanguage(nextLang);
                 open();
             } else if (respond.equals(customPrefix)) {
-                configData.set(ConfigData.Values.CUSTOM_PREFIX.toString(), !useCp);
+                configData.set(ConfigData.ConfigKeys.CUSTOM_PREFIX.toString(), !useCp);
                 open();
             } else if (respond.equals(gender)) {
-                configData.set(ConfigData.Values.USE_GENDER.toString(), !useGender);
+                configData.set(ConfigData.ConfigKeys.USE_GENDER.toString(), !useGender);
                 open();
             }
         });

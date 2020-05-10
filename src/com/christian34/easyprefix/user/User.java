@@ -46,14 +46,14 @@ public class User {
         this.player = player;
         this.name = player.getName();
         this.uniqueId = player.getUniqueId();
-        if (EasyPrefix.getInstance().getDatabase() == null) this.userData = new UserData(player.getUniqueId());
+        if (EasyPrefix.getInstance().getSqlDatabase() == null) this.userData = new UserData(player.getUniqueId());
         load();
     }
 
     public void load() {
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
-        if (!hasPermission("EasyPrefix.Color.all") && FileManager.getConfig().getBoolean(ConfigData.Values.HANDLE_COLORS)) {
+        if (!hasPermission("EasyPrefix.Color.all") && FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {
             for (Color color : Color.values()) {
                 if (player.hasPermission("EasyPrefix.Color." + color.name())) colors.add(color);
             }
@@ -64,7 +64,7 @@ public class User {
         }
         String groupName = null, subgroupName = null, chatColor = null, chatFormatting = null, cstmPrefix = null, cstmSuffix = null, gender = null;
         boolean forceGroup = false;
-        Database db = EasyPrefix.getInstance().getDatabase();
+        Database db = EasyPrefix.getInstance().getSqlDatabase();
         if (db != null) {
             String stmt = "SELECT `group`,`force_group`,`subgroup`,`custom_prefix`,`custom_suffix`,`gender`," + "`chat_color`,`chat_formatting` FROM `" + db.getTablePrefix() + "users` WHERE `uuid` = '" + player.getUniqueId().toString() + "'";
             try {
@@ -112,7 +112,7 @@ public class User {
                 saveData("group", null);
             }
         }
-        if (FileManager.getConfig().getBoolean(ConfigData.Values.USE_SUBGROUPS)) {
+        if (FileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
             if (subgroupName != null) {
                 if (groupHandler.isSubgroup(subgroupName) && hasPermission("EasyPrefix.subgroup." + subgroupName)) {
                     this.subgroup = groupHandler.getSubgroup(subgroupName);
@@ -337,7 +337,7 @@ public class User {
     }
 
     private void saveData(String key, Object value) {
-        Database db = EasyPrefix.getInstance().getDatabase();
+        Database db = EasyPrefix.getInstance().getSqlDatabase();
         if (db == null) {
             key = key.replace("_", "-");
             getUserData().setAndSave(key, value);

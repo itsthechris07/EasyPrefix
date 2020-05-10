@@ -94,7 +94,7 @@ public abstract class EasyGroup {
             if (!PlaceholderAPI.isEnabled()) {
                 String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user, false) : "";
                 String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user, false) : "";
-                text = text.replace("%ep_user_prefix%", user.getPrefix()).replace("%ep_user_suffix%", user.getSuffix()).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
+                text = text.replace("%ep_user_prefix%", user.getGroup().getPrefix(null, false)).replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false)).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
             } else {
                 text = PlaceholderAPI.setPlaceholder(user.getPlayer(), text);
             }

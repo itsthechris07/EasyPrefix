@@ -6,7 +6,6 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.Button;
 import com.christian34.easyprefix.setup.CustomInventory;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.Reflection;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,11 +18,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -39,7 +36,7 @@ public class GuiRespond {
     private Consumer<Button> buttonClick;
     private User holder;
     private CustomInventory customInventory;
-    private ConcurrentHashMap<String, Button> buttons = new ConcurrentHashMap<>();
+    private HashMap<String, Button> buttons = new HashMap<>();
     private HashMap<Integer, Collection<Button>> pages = new HashMap<>();
     private int page = 1;
     private int maxPage;
@@ -55,19 +52,19 @@ public class GuiRespond {
         addGlassFrame();
         int count = 1;
         int pageCounter = 1;
-        Collection<Button> temp = new ArrayList<>();
+        Collection<Button> buttonsPerPage = new ArrayList<>();
         for (Button button : customInventory.getButtons()) {
             if (!(count <= 27)) {
-                pages.put(pageCounter, temp);
-                temp = new ArrayList<>();
+                pages.put(pageCounter, buttonsPerPage);
+                buttonsPerPage = new ArrayList<>();
                 pageCounter = pageCounter + 1;
                 count = 1;
             }
-            temp.add(button);
+            buttonsPerPage.add(button);
             count++;
         }
-        pages.put(pageCounter, temp);
-        maxPage = pages.size();
+        this.pages.put(pageCounter, buttonsPerPage);
+        this.maxPage = pages.size();
         openPage(1);
         holder.getPlayer().openInventory(inventory);
     }
@@ -127,25 +124,11 @@ public class GuiRespond {
 
     private void addGlassFrame() {
         ItemStack[] contents = inventory.getContents();
-        Field field;
         ItemStack glass;
-        Class material = Reflection.getClass("org.bukkit", "Material");
         if (VersionController.getMinorVersion() < 13) {
-            try {
-                field = material.getDeclaredField("STAINED_GLASS_PANE");
-            } catch(NoSuchFieldException e) {
-                e.printStackTrace();
-                return;
-            }
-            glass = new ItemStack(Material.valueOf(field.getName()), 1, (byte) 15);
+            glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);
         } else {
-            try {
-                field = material.getDeclaredField("GRAY_STAINED_GLASS_PANE");
-            } catch(NoSuchFieldException e) {
-                e.printStackTrace();
-                return;
-            }
-            glass = new ItemStack(Material.valueOf(field.getName()), 1);
+            glass = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"), 1);
         }
 
         ItemMeta meta = glass.getItemMeta();

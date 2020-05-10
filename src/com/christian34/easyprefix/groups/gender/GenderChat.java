@@ -33,8 +33,8 @@ public class GenderChat {
         this.groupHandler = instance.getGroupHandler();
         this.prefixes = new HashMap<>();
         this.suffixes = new HashMap<>();
-        if (instance.getDatabase() != null) {
-            Database database = instance.getDatabase();
+        if (instance.getSqlDatabase() != null) {
+            Database database = instance.getSqlDatabase();
             try {
                 String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%genders` WHERE `type` = " + type + " AND " + "`group_name` = '" + easyGroup.getName() + "'";
                 ResultSet result = database.getValue(sql);

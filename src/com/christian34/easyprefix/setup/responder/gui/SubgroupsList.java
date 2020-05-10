@@ -53,12 +53,17 @@ public class SubgroupsList {
                 //  if (!Gender.getTypes().contains(subgroup.getName().toLowerCase())) {
                 lore.add(Messages.getText(Message.LORE_PERMISSION).replace("%value%", "EasyPrefix.subgroup." + subgroup.getName()));
             }
-            Button button;
-            if (VersionController.getMinorVersion() < 12) {
-                button = new Button(Material.CHEST, prefixColor + subgroup.getName(), lore);
-            } else {
-                button = new Button(Material.WRITABLE_BOOK, prefixColor + subgroup.getName(), lore);
+
+            Material sgBtn = Material.BARRIER;
+            try {
+                if (VersionController.getMinorVersion() < 12) {
+                    sgBtn = Material.CHEST;
+                } else {
+                    sgBtn = Material.WRITABLE_BOOK;
+                }
+            } catch(Exception ignored) {
             }
+            Button button = new Button(sgBtn, prefixColor + subgroup.getName(), lore);
             inventory.addItem(button.setSlot(counter));
             counter++;
         }
