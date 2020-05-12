@@ -11,15 +11,13 @@ import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Material;
 
-import java.util.List;
-
 /**
  * EasyPrefix 2020.
  *
  * @author Christian34
  */
 public class Settings {
-    private User user;
+    private final User user;
 
     public Settings(User user) {
         this.user = user;
@@ -35,8 +33,7 @@ public class Settings {
         } else {
             lang = new Button(Material.OAK_SIGN, langName).setSlot(2, 3);
         }
-        List<String> lore = Messages.getList(Message.LORE_CHANGE_LANG);
-        lang.setLore(lore);
+        lang.setLore(Messages.getList(Message.LORE_CHANGE_LANG));
         inventory.addItem(lang);
 
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();

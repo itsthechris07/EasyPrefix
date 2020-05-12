@@ -2,15 +2,21 @@ package com.christian34.easyprefix.setup;
 
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.VersionController;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * EasyPrefix 2020.
@@ -19,7 +25,7 @@ import java.util.List;
  */
 public class Button {
     private final ItemStack ITEMSTACK;
-    private HashMap<String, String> DATA = new HashMap<>();
+    private final HashMap<String, String> DATA = new HashMap<>();
     private int slot;
 
     public Button(Material material, String displayName, List<String> lore) {
@@ -121,11 +127,23 @@ public class Button {
         return DATA.get(key);
     }
 
-    public Button setLore(String... lines) {
-        ItemMeta itemMeta = getItemMeta();
-        itemMeta.setLore(Arrays.asList(lines));
-        this.ITEMSTACK.setItemMeta(itemMeta);
-        return this;
+    public static ItemStack getCustomPlayerHead(String base, Material alternative) {
+        try {
+            ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
+            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+
+            GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+            profile.getProperties().put("textures", new Property("textures", base));
+
+            Field profileField = skullMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(skullMeta, profile);
+
+            skull.setItemMeta(skullMeta);
+            return skull;
+        } catch(Exception ignored) {
+            return new ItemStack(alternative, 1);
+        }
     }
 
     public void setLore(List<String> lore) {
@@ -140,6 +158,24 @@ public class Button {
 
     public void addEnchantment() {
         this.ITEMSTACK.addUnsafeEnchantment(Enchantment.LUCK, 1);
+    }
+
+    public Button setLore(String... lines) {
+        ArrayList<String> lore = new ArrayList<>();
+        for (String line : lines) {
+            if (line.length() > 35) {
+                String color = ChatColor.getLastColors(line.substring(0, 35));
+                Bukkit.broadcastMessage(color.replace("§", "&"));
+                lore.add(line.substring(0, 35));
+                lore.add(color + line.substring(35));
+            } else {
+                lore.add(line);
+            }
+        }
+        ItemMeta itemMeta = getItemMeta();
+        itemMeta.setLore(lore);
+        this.ITEMSTACK.setItemMeta(itemMeta);
+        return this;
     }
 
 }

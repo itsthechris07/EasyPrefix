@@ -19,7 +19,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  * @author Christian34
  */
 public class ChatListener implements Listener {
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public ChatListener(EasyPrefix instance) {
         this.instance = instance;
@@ -27,7 +27,6 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
-        if (e.isCancelled()) return;
         if (!this.instance.formatChat()) return;
         User user = instance.getUser(e.getPlayer());
         String prefix = user.getPrefix();
@@ -71,7 +70,6 @@ public class ChatListener implements Listener {
             format = format.replaceAll("\\s+", " ");
         }
         e.setFormat(format.replace("%", "%%"));
-
     }
 
 }

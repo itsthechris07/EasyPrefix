@@ -13,7 +13,6 @@ import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +23,7 @@ import java.util.List;
  */
 public class GroupProfile {
     private final String DIVIDER = "§7-------------------------";
-    private User user;
+    private final User user;
 
     public GroupProfile(User user, EasyGroup easyGroup) {
         this.user = user;
@@ -37,68 +36,25 @@ public class GroupProfile {
 
     public void openGroupProfile(Group group) {
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 4);
+
         Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(2, 3);
         String prefix = group.getPrefix(null, false);
-        if (prefix.length() > 25) {
-            List<String> lore = new ArrayList<>();
-            lore.add(this.DIVIDER);
-            lore.add(Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + prefix.substring(0, 25));
-            lore.add("§f" + prefix.substring(26) + "§7»");
-            lore.add(" ");
-            lore.add(Messages.getText(Message.LORE_EDIT, user));
-            prefixBtn.setLore(lore);
-        } else {
-            prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + prefix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
-        }
+        prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + prefix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(prefixBtn);
 
         Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(2, 5);
         String suffix = group.getSuffix(null, false);
-
-        if (suffix.length() > 25) {
-            List<String> lore = new ArrayList<>();
-            lore.add(this.DIVIDER);
-            lore.add(Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + suffix.substring(0, 25));
-            lore.add("§f" + suffix.substring(26) + "§7»");
-            lore.add(" ");
-            lore.add(Messages.getText(Message.LORE_EDIT, user));
-            suffixBtn.setLore(lore);
-        } else {
-            suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + suffix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
-        }
-
+        suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + suffix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(suffixBtn);
 
-
-        Button joinBtn = new Button(Material.BLAZE_ROD, "§aJoin Message", null).setSlot(3, 4);
+        Button joinBtn = new Button(Button.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2VkZDIwYmU5MzUyMDk0OWU2Y2U3ODlkYzRmNDNlZmFlYjI4YzcxN2VlNmJmY2JiZTAyNzgwMTQyZjcxNiJ9fX0=", Material.BLAZE_ROD), "§aJoin Message", null).setSlot(3, 4);
         String joinMsg = group.getJoinMessageText();
-        if (joinMsg.length() > 25) {
-            List<String> lore = new ArrayList<>();
-            lore.add(this.DIVIDER);
-            lore.add(Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + joinMsg.substring(0, 25));
-            lore.add("§f" + joinMsg.substring(26) + "§7»");
-            lore.add(" ");
-            lore.add(Messages.getText(Message.LORE_EDIT, user));
-            joinBtn.setLore(lore);
-        } else {
-            joinBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + joinMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
-        }
-
+        joinBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + joinMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(joinBtn);
 
-        Button quitBtn = new Button(Material.STICK, "§aQuit Message", null).setSlot(3, 6);
+        Button quitBtn = new Button(Button.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ4YTk5ZGIyYzM3ZWM3MWQ3MTk5Y2Q1MjYzOTk4MWE3NTEzY2U5Y2NhOTYyNmEzOTM2Zjk2NWIxMzExOTMifX19", Material.STICK), "§aQuit Message", null).setSlot(3, 6);
         String quitMsg = group.getQuitMessageText();
-        if (quitMsg.length() > 25) {
-            List<String> lore = new ArrayList<>();
-            lore.add(this.DIVIDER);
-            lore.add(Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + quitMsg.substring(0, 25));
-            lore.add("§f" + quitMsg.substring(26) + "§7»");
-            lore.add(" ");
-            lore.add(Messages.getText(Message.LORE_EDIT, user));
-            quitBtn.setLore(lore);
-        } else {
-            quitBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + quitMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
-        }
+        quitBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + quitMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(quitBtn);
 
         String groupChatColor = "-";

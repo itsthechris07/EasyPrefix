@@ -146,6 +146,7 @@ public class EasyPrefix extends JavaPlugin {
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
+
     }
 
     private void registerEvents() {
