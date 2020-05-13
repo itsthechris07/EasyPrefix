@@ -5,8 +5,6 @@ import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigUpdater;
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,7 +12,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,28 +50,24 @@ public class Messages {
     }
 
     public static void load() {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("EasyPrefix");
-        ConfigData config = EasyPrefix.getInstance().getFileManager().getConfig();
-        language = config.getData().getString("config.lang");
-        String path = "plugins/EasyPrefix";
-        if (language == null || !LANGUAGES.contains(language)) {
-            language = "en_EN";
-            config.set("config.lang", "en_EN");
-        }
-        File file = new File(path, language + ".yml");
-        if (!file.exists()) {
-            plugin.saveResource(language + ".yml", false);
-        } else {
-            try {
-                ConfigUpdater.update(EasyPrefix.getInstance(), language + ".yml", file, new ArrayList<>());
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-        data = YamlConfiguration.loadConfiguration(file);
         try {
+            Plugin plugin = Bukkit.getPluginManager().getPlugin("EasyPrefix");
+            ConfigData config = EasyPrefix.getInstance().getFileManager().getConfig();
+            language = config.getData().getString("config.lang");
+            String path = "plugins/EasyPrefix";
+            if (!LANGUAGES.contains(language)) {
+                setLanguage("en_EN");
+            }
+            File file = new File(path, language + ".yml");
+            if (!file.exists()) {
+                plugin.saveResource(language + ".yml", false);
+            } else {
+                ConfigUpdater.update(EasyPrefix.getInstance(), language + ".yml", file, new ArrayList<>());
+            }
+            data = YamlConfiguration.loadConfiguration(file);
             data.save(file);
-        } catch(IOException ignored) {
+        } catch(Exception ignored) {
+            setLanguage("en_EN");
         }
     }
 
@@ -86,14 +79,22 @@ public class Messages {
         return temp;
     }
 
-    @Nullable
-    public static String getText(@NotNull String path) {
+    public static String getText(String path) {
         return translate(data.getString(path));
     }
 
     public static String getText(Message message) {
         if (message != null) {
             return translate(data.getString(message.toString()));
+        }
+        return null;
+    }
+
+    public static String getAndSet(Message message, String value) {
+        if (message != null) {
+            String text = translate(data.getString(message.toString()));
+            if (text == null) return null;
+            return text.replace("%value%", value);
         }
         return null;
     }

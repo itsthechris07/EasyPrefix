@@ -3,11 +3,11 @@ package com.christian34.easyprefix.vault;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
-import com.sun.istack.internal.Nullable;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
 
 /**
  * EasyPrefix 2020.
@@ -158,7 +158,6 @@ public class ChatProvider extends Chat {
 
     }
 
-    @Nullable
     private User getUser(String username) {
         Player player = Bukkit.getPlayer(username);
         if (player == null) return null;

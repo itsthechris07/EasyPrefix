@@ -33,7 +33,7 @@ gui:
   cancelBtn: '&cNo'
   customPrefixBtn: '&aPrefisso personalizzato'
   inputCancelled: '&cIl setup è stato cancellato!'
-  inputSaved: '&aL''impostazione è stata salvata!'
+  inputSaved: '&aL´impostazione è stata salvata!'
   settingsTitle: '&5Chat &8» %page%'
   currentValue: '&7Attuale: &f'
   title:
@@ -54,7 +54,7 @@ gui:
       - ' '
       - '&7Clicca per usare il colore'
       - '&7con questa formattazione'
-      - '&5(non è compatibile con l''effetto arcobaleno)'
+      - '&5(non è compatibile con l´effetto arcobaleno)'
     lang:
       - 'Cliccami per cambiare la lingua'
       - 'Disponibili: English, Deutsch, Italiano'

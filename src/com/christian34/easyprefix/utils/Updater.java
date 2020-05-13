@@ -20,7 +20,7 @@ public class Updater {
     private final String ERR_MSG = "§cUpdate checker failed!";
     private String spigotPluginVersion;
     private boolean available = false;
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public Updater(EasyPrefix instance) {
         this.instance = instance;

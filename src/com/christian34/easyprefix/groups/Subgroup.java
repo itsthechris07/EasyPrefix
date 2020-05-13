@@ -1,16 +1,14 @@
 package com.christian34.easyprefix.groups;
 
-import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.database.DataStatement;
+import com.christian34.easyprefix.database.Database;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
+import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.ChatFormatting;
-import com.christian34.easyprefix.utils.Color;
-import com.sun.istack.internal.Nullable;
 import org.bukkit.ChatColor;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -21,10 +19,10 @@ import java.sql.SQLException;
  */
 public class Subgroup extends EasyGroup {
     private final String NAME;
+    private final GroupHandler groupHandler;
     private String prefix, suffix;
     private ChatColor groupColor;
     private GroupsData groupsData;
-    private GroupHandler groupHandler;
     private GenderChat genderChat = null;
 
     public Subgroup(GroupHandler groupHandler, String name) {
@@ -53,13 +51,11 @@ public class Subgroup extends EasyGroup {
 
         if (prefix == null) {
             this.prefix = "";
-            saveData("prefix", "");
         } else {
             this.prefix = prefix.replace("§", "&");
         }
         if (suffix == null) {
             this.suffix = "";
-            saveData("suffix", "");
         } else {
             this.suffix = suffix.replace("§", "&");
         }
@@ -87,13 +83,12 @@ public class Subgroup extends EasyGroup {
         } else {
             key = key.replace("-", "_");
             String sql = "UPDATE `%p%groups` SET `" + key + "`=? WHERE `group`=?";
-            PreparedStatement stmt = db.prepareStatement(sql);
-            try {
-                stmt.setObject(1, value);
-                stmt.setString(2, getName());
-                stmt.executeUpdate();
-            } catch(SQLException e) {
-                e.printStackTrace();
+            DataStatement statement = new DataStatement(sql);
+            statement.setObject(1, value);
+            statement.setObject(2, getName());
+            if (!statement.execute()) {
+                Messages.log("§cCouldn't save data to database!");
+                statement.getException().printStackTrace();
             }
         }
         EasyPrefix.getInstance().getGroupHandler().load();
@@ -148,26 +143,6 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
-    @Nullable
-    public Color getChatColor() {
-        return null;
-    }
-
-    @Override
-    public void setChatColor(Color color) {
-    }
-
-    @Override
-    @Nullable
-    public ChatFormatting getChatFormatting() {
-        return null;
-    }
-
-    @Override
-    public void setChatFormatting(ChatFormatting chatFormatting) {
-    }
-
-    @Override
     public String getFilePath() {
         return "subgroups." + getName() + ".";
     }
@@ -181,7 +156,6 @@ public class Subgroup extends EasyGroup {
             Database db = instance.getSqlDatabase();
             db.update("DELETE FROM `%p%subgroups` WHERE `group` = '" + getName() + "'");
         }
-        /* todo grouphandler unregister function */
         instance.getGroupHandler().getSubgroups().remove(this);
         instance.getUsers().clear();
     }

@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
  * @author Christian34
  */
 public class Command_User extends EasyCommand {
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public Command_User(EasyPrefix instance) {
         this.instance = instance;

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class CustomInventory {
     private final String TITLE;
     private final int LINES;
-    private ArrayList<Button> buttons = new ArrayList<>();
+    private final ArrayList<Button> buttons = new ArrayList<>();
 
     public CustomInventory(String title, int lines) {
         this.TITLE = title;

@@ -13,7 +13,7 @@ import com.christian34.easyprefix.user.User;
  * @author Christian34
  */
 public class CreateGroupPage {
-    private User user;
+    private final User user;
 
     public CreateGroupPage(User user) {
         this.user = user;
@@ -23,24 +23,19 @@ public class CreateGroupPage {
     private void open() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         new ChatRespond(user, Messages.getText(Message.CHAT_GROUP), (answer) -> {
-            if (answer.equals("cancelled")) {
-                user.sendMessage(Messages.getText(Message.SETUP_CANCELLED, user));
-                return null;
-            } else {
-                if (answer.split(" ").length == 1) {
-                    if (groupHandler.isGroup(answer)) {
-                        user.sendMessage(Messages.getText(Message.GROUP_EXISTS, user));
-                        return "error";
-                    } else {
-                        groupHandler.createGroup(answer.replace(" ", ""));
-                        user.sendMessage(Messages.getText(Message.GROUP_CREATED, user));
-                        return "correct";
-                    }
+            if (answer.split(" ").length == 1) {
+                if (groupHandler.isGroup(answer)) {
+                    user.sendMessage(Messages.getText(Message.GROUP_EXISTS, user));
+                    return ChatRespond.Respond.ERROR;
                 } else {
-                    return "incorrect";
+                    groupHandler.createGroup(answer.replace(" ", ""));
+                    user.sendMessage(Messages.getText(Message.GROUP_CREATED, user));
+                    return ChatRespond.Respond.ACCEPTED;
                 }
+            } else {
+                return ChatRespond.Respond.WRONG_INPUT;
             }
-        }).setAllowedEntriesText("Please type in one word without spaces!");
+        }).setErrorText("Please type in one word without spaces!");
     }
 
 }

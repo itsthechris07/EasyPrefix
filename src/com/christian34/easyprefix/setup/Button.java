@@ -4,7 +4,6 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.VersionController;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -28,42 +27,45 @@ public class Button {
     private final HashMap<String, String> DATA = new HashMap<>();
     private int slot;
 
-    public Button(Material material, String displayName, List<String> lore) {
-        this.ITEMSTACK = new ItemStack(material, 1);
-        ItemMeta meta = ITEMSTACK.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(displayName);
-            meta.setLore(lore);
-        }
-        this.ITEMSTACK.setItemMeta(meta);
-    }
-
     public Button(ItemStack itemStack, String displayName, List<String> lore) {
         this.ITEMSTACK = itemStack;
         ItemMeta meta = itemStack.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(displayName);
-            meta.setLore(lore);
+            if (lore != null) meta.setLore(lore);
         }
         this.ITEMSTACK.setItemMeta(meta);
+    }
+
+    public Button(Material material, String displayName, List<String> lore) {
+        this(new ItemStack(material, 1), displayName, lore);
     }
 
     public Button(ItemStack itemStack, String displayName) {
-        this.ITEMSTACK = itemStack;
-        ItemMeta meta = itemStack.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(displayName);
-        }
-        this.ITEMSTACK.setItemMeta(meta);
+        this(itemStack, displayName, null);
     }
 
     public Button(Material material, String displayName) {
-        this.ITEMSTACK = new ItemStack(material, 1);
-        ItemMeta meta = ITEMSTACK.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(displayName);
+        this(new ItemStack(material, 1), displayName, null);
+    }
+
+    public static ItemStack getCustomPlayerHead(String base, Material alternative) {
+        try {
+            ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
+            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+
+            GameProfile profile = new GameProfile(UUID.randomUUID(), "");
+            profile.getProperties().put("textures", new Property("textures", base));
+
+            Field profileField = skullMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(skullMeta, profile);
+
+            skull.setItemMeta(skullMeta);
+            return skull;
+        } catch(Exception ignored) {
+            return new ItemStack(alternative, 1);
         }
-        this.ITEMSTACK.setItemMeta(meta);
     }
 
     public static ItemStack playerHead(String owningPlayer) {
@@ -89,6 +91,10 @@ public class Button {
                 return new ItemStack(Material.BARRIER);
             }
         }
+    }
+
+    public Material getMaterial() {
+        return this.ITEMSTACK.getType();
     }
 
     public int getSlot() {
@@ -127,25 +133,6 @@ public class Button {
         return DATA.get(key);
     }
 
-    public static ItemStack getCustomPlayerHead(String base, Material alternative) {
-        try {
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
-            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-
-            GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-            profile.getProperties().put("textures", new Property("textures", base));
-
-            Field profileField = skullMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(skullMeta, profile);
-
-            skull.setItemMeta(skullMeta);
-            return skull;
-        } catch(Exception ignored) {
-            return new ItemStack(alternative, 1);
-        }
-    }
-
     public void setLore(List<String> lore) {
         ItemMeta itemMeta = getItemMeta();
         itemMeta.setLore(lore);
@@ -156,16 +143,11 @@ public class Button {
         return this.ITEMSTACK.getItemMeta();
     }
 
-    public void addEnchantment() {
-        this.ITEMSTACK.addUnsafeEnchantment(Enchantment.LUCK, 1);
-    }
-
     public Button setLore(String... lines) {
         ArrayList<String> lore = new ArrayList<>();
-        for (String line : lines) {
+        for (final String line : lines) {
             if (line.length() > 35) {
                 String color = ChatColor.getLastColors(line.substring(0, 35));
-                Bukkit.broadcastMessage(color.replace("§", "&"));
                 lore.add(line.substring(0, 35));
                 lore.add(color + line.substring(35));
             } else {
@@ -176,6 +158,10 @@ public class Button {
         itemMeta.setLore(lore);
         this.ITEMSTACK.setItemMeta(itemMeta);
         return this;
+    }
+
+    public void addEnchantment() {
+        this.ITEMSTACK.addUnsafeEnchantment(Enchantment.LUCK, 1);
     }
 
 }

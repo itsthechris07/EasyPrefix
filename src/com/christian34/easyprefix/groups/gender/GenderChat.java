@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.groups.gender;
 
-import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.database.Database;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
@@ -19,11 +19,11 @@ import java.util.Set;
  * @author Christian34
  */
 public class GenderChat {
-    private EasyGroup easyGroup;
-    private EasyPrefix instance;
-    private GroupHandler groupHandler;
-    private HashMap<GenderType, String> prefixes;
-    private HashMap<GenderType, String> suffixes;
+    private final EasyGroup easyGroup;
+    private final EasyPrefix instance;
+    private final GroupHandler groupHandler;
+    private final HashMap<GenderType, String> prefixes;
+    private final HashMap<GenderType, String> suffixes;
 
     public GenderChat(EasyGroup easyGroup) {
         this.easyGroup = easyGroup;

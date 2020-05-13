@@ -22,26 +22,28 @@ import java.util.function.Function;
 public class ChatRespond {
     private final ListenUp LISTENER = new ListenUp();
     private final User RESPONDER;
-    private final Function<String, String> ANSWER;
+    private final Function<String, Respond> ANSWER;
     private final String TEXT;
-    private String textAllowedEntries;
+    private final EasyPrefix instance;
     private BukkitTask bukkitTask;
+    private String errorText;
 
-    public ChatRespond(User responder, String text, Function<String, String> function) {
+    public ChatRespond(User responder, String text, Function<String, Respond> function) {
         this.RESPONDER = responder;
         this.TEXT = text;
         this.ANSWER = function;
-        Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
+        this.instance = EasyPrefix.getInstance();
         sendMessage();
+        Bukkit.getPluginManager().registerEvents(LISTENER, instance);
         startTimer();
     }
 
-    public void setAllowedEntriesText(String message) {
-        this.textAllowedEntries = message;
+    public void setErrorText(String message) {
+        this.errorText = message;
     }
 
     private void startTimer() {
-        this.bukkitTask = Bukkit.getScheduler().runTaskLater(EasyPrefix.getInstance().getPlugin(), () -> {
+        this.bukkitTask = Bukkit.getScheduler().runTaskLater(instance, () -> {
             try {
                 RESPONDER.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
             } catch(Exception ignored) {
@@ -63,25 +65,30 @@ public class ChatRespond {
         }
     }
 
+    public enum Respond {
+        ACCEPTED, CANCELLED, WRONG_INPUT, ERROR
+    }
+
     private class ListenUp implements Listener {
 
         @EventHandler
         public void onChatEvent(AsyncPlayerChatEvent e) {
             if (!e.getPlayer().equals(RESPONDER.getPlayer())) return;
+            User user = EasyPrefix.getInstance().getUser(e.getPlayer());
             if (e.getMessage().equals("quit") || e.getMessage().equals("cancel")) {
-                ANSWER.apply("cancelled");
+                user.sendMessage(Messages.getText(Message.SETUP_CANCELLED, user));
                 exit();
             } else {
-                String respond = ANSWER.apply(e.getMessage());
+                Respond respond = ANSWER.apply(e.getMessage());
                 switch (respond) {
-                    case "correct":
-                    case "cancel":
+                    case ACCEPTED:
+                    case CANCELLED:
                         exit();
                         break;
-                    case "incorrect":
-                        RESPONDER.sendMessage(Messages.getText(Message.CHAT_INPUT_WRONGENTRY).replace("%allowed_inputs%", textAllowedEntries).replace("%newline%", "\n"));
+                    case WRONG_INPUT:
+                        RESPONDER.sendMessage(Messages.getText(Message.CHAT_INPUT_WRONGENTRY).replace("%allowed_inputs%", errorText).replace("%newline%", "\n"));
                         break;
-                    case "error":
+                    case ERROR:
                         break;
                     default:
                         sendMessage();
@@ -90,7 +97,6 @@ public class ChatRespond {
             }
             e.setCancelled(true);
         }
-
     }
 
 }

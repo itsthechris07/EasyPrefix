@@ -2,9 +2,6 @@ package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.ChatFormatting;
-import com.christian34.easyprefix.utils.Color;
-import com.sun.istack.internal.Nullable;
 import org.bukkit.ChatColor;
 
 /**
@@ -49,28 +46,6 @@ public abstract class EasyGroup {
     public abstract ChatColor getGroupColor();
 
     /**
-     * @return Color returns chatcolor
-     */
-    @Nullable
-    public abstract Color getChatColor();
-
-    /**
-     * @param color target color
-     */
-    public abstract void setChatColor(Color color);
-
-    /**
-     * @return ChatFormatting returns formatting for chat
-     */
-    @Nullable
-    public abstract ChatFormatting getChatFormatting();
-
-    /**
-     * @param chatFormatting target formatting
-     */
-    public abstract void setChatFormatting(ChatFormatting chatFormatting);
-
-    /**
      * @return String returns the key for group in FileConfiguration
      */
     public abstract String getFilePath();
@@ -103,6 +78,22 @@ public abstract class EasyGroup {
 
         text = ChatColor.translateAlternateColorCodes('&', text);
         return text;
+    }
+
+    public ChatColor getGroupColor(String prefix) {
+        ChatColor color = null;
+        if (prefix.contains("&")) {
+            if (!prefix.startsWith("&")) {
+                String temp = prefix;
+                while (!temp.startsWith("&") && temp.length() > 0) {
+                    temp = temp.substring(1);
+                }
+                color = ChatColor.getByChar(temp.substring(1, 2));
+            } else {
+                color = ChatColor.getByChar(prefix.substring(1, 2));
+            }
+        }
+        return (color == null) ? ChatColor.DARK_PURPLE : color;
     }
 
 }

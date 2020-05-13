@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
  * @author Christian34
  */
 public class JoinListener implements Listener {
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public JoinListener(EasyPrefix instance) {
         this.instance = instance;
@@ -75,7 +75,7 @@ public class JoinListener implements Listener {
                     user.sendMessage(instance.getUpdater().UPDATE_MSG);
                 }
             }
-            if (this.instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.FORCE_GENDER)) {
+            if (this.instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER) && this.instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.FORCE_GENDER)) {
                 if (user.getGenderType() == null) {
                     String prefix = Messages.getText("info.prefix");
                     if (prefix == null) prefix = Messages.getPrefix();

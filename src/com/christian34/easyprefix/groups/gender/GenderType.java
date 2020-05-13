@@ -8,7 +8,8 @@ import com.christian34.easyprefix.messages.Messages;
  * @author Christian34
  */
 public class GenderType {
-    private String name, displayName;
+    private final String name;
+    private final String displayName;
 
     public GenderType(String name) {
         this.name = name.toLowerCase();

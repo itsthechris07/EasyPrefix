@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class SettingsGUI {
     private final User user;
-    private GroupHandler groupHandler;
+    private final GroupHandler groupHandler;
 
     public SettingsGUI(User user) {
         this.user = user;
@@ -45,7 +45,7 @@ public class SettingsGUI {
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETTINGS_TITLE).replace("%page%", Messages.getText(Message.TITLE_GENDER)), 3);
         String genderName = "n/A";
         if (user.getGenderType() != null) genderName = user.getGenderType().getDisplayName();
-        Button crntGender = new Button(Button.playerHead(user.getName()), genderName).setSlot(2, 5);
+        Button crntGender = new Button(Button.playerHead(user.getPlayer().getName()), genderName).setSlot(2, 5);
         crntGender.setLore(" ", Messages.getText(Message.LORE_CHANGE_GENDER));
         inventory.addItem(crntGender);
         new GuiRespond(getUser(), inventory, (btn) -> {
@@ -96,14 +96,15 @@ public class SettingsGUI {
             }
         } catch(Exception ignored) {
         }
-        Button subgroups = new Button(subgroupsMaterial, Messages.getText(Message.BTN_SUBGROUPS)).setSlot(5, 5);
         if (user.getAvailableSubgroups().size() > 0) {
+            Button subgroups = new Button(subgroupsMaterial, Messages.getText(Message.BTN_SUBGROUPS)).setSlot(5, 5);
             inventory.addItem(subgroups);
         }
-        Button custom = new Button(Material.NETHER_STAR, Messages.getText(Message.BTN_CUSTOM_PREFIX)).setSlot(counter);
-        if (user.getPlayer().hasPermission("easyprefix.settings.custom")) {
+        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX) && user.getPlayer().hasPermission("easyprefix.settings" + ".custom")) {
+            Button custom = new Button(Material.NETHER_STAR, Messages.getText(Message.BTN_CUSTOM_PREFIX)).setSlot(counter);
             inventory.addItem(custom);
         }
+        Material finalSubgroupsMaterial = subgroupsMaterial;
         new GuiRespond(user, inventory, (btn) -> {
             if (btn.getDisplayName().equals(Messages.getText(Message.BTN_BACK))) {
                 openMainPage();
@@ -112,7 +113,7 @@ public class SettingsGUI {
             } else if (groupHandler.isGroup(btn.getDisplayName().substring(2))) {
                 user.setGroup(groupHandler.getGroup(btn.getDisplayName().substring(2)), false);
                 openGroupsPage();
-            } else if (btn.equals(subgroups)) {
+            } else if (btn.getMaterial().equals(finalSubgroupsMaterial)) {
                 openSubgroupsPage();
             }
         });
@@ -139,8 +140,6 @@ public class SettingsGUI {
         new GuiRespond(user, inventory, (btn) -> {
             if (btn.getDisplayName().equals(Messages.getText(Message.BTN_BACK))) {
                 openMainPage();
-            } else if (btn.getDisplayName().equals(Messages.getText(Message.BTN_CUSTOM_PREFIX))) {
-                openCustomPrefixPage();
             } else if (groupHandler.isSubgroup(btn.getDisplayName().substring(2))) {
                 Subgroup subgroup = groupHandler.getSubgroup(btn.getDisplayName().substring(2));
                 if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
@@ -235,7 +234,7 @@ public class SettingsGUI {
         Button prefix = new Button(Material.CHEST, Messages.getText(Message.BTN_MY_PREFIXES)).setSlot(2, 3).setLore(Messages.getText(Message.LORE_CHANGE_PREFIX, user), " ");
         Button formattings = new Button(Material.CHEST, Messages.getText(Message.BTN_MY_FORMATTINGS)).setSlot(2, 7).setLore(Messages.getText(Message.LORE_CHANGE_CHATCOLOR, user), " ");
         if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
-            Button gender = new Button(Button.playerHead(user.getName()), Messages.getText(Message.CHANGE_GENDER)).setSlot(2, 5).setLore(Messages.getText(Message.LORE_CHANGE_GENDER), " ");
+            Button gender = new Button(Button.playerHead(user.getPlayer().getName()), Messages.getText(Message.CHANGE_GENDER)).setSlot(2, 5).setLore(Messages.getText(Message.LORE_CHANGE_GENDER), " ");
             inventory.addItem(gender);
         } else {
             prefix.setSlot(2, 4);
@@ -278,25 +277,15 @@ public class SettingsGUI {
             } else {
                 if (name.equals(Messages.getText(Message.BTN_CHANGE_PREFIX))) {
                     new ChatRespond(user, Messages.getText(Message.CHAT_INPUT_PREFIX).replace("%prefix%", user.getPrefix().replace("§", "&")), (answer) -> {
-                        if (answer.equals("cancelled")) {
-                            getUser().sendMessage(Messages.getText(Message.INPUT_CANCELLED));
-                            return null;
-                        } else {
-                            user.setPrefix(answer);
-                            getUser().sendMessage(Messages.getText(Message.INPUT_SAVED));
-                            return "correct";
-                        }
+                        user.setPrefix(answer);
+                        getUser().sendMessage(Messages.getText(Message.INPUT_SAVED));
+                        return ChatRespond.Respond.ACCEPTED;
                     });
                 } else if (name.equals(Messages.getText(Message.BTN_CHANGE_SUFFIX))) {
                     new ChatRespond(user, Messages.getText(Message.CHAT_INPUT_SUFFIX).replace("%suffix%", user.getSuffix().replace("§", "&")), (answer) -> {
-                        if (answer.equals("cancelled")) {
-                            getUser().sendMessage(Messages.getText(Message.INPUT_CANCELLED));
-                            return null;
-                        } else {
-                            user.setSuffix(answer);
-                            getUser().sendMessage(Messages.getText(Message.INPUT_SAVED));
-                            return "correct";
-                        }
+                        user.setSuffix(answer);
+                        getUser().sendMessage(Messages.getText(Message.INPUT_SAVED));
+                        return ChatRespond.Respond.ACCEPTED;
                     });
                 }
             }

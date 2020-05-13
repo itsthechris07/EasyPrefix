@@ -2,6 +2,7 @@ package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandListener;
 import com.christian34.easyprefix.commands.TabComplete;
+import com.christian34.easyprefix.database.Database;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.GroupHandler;

@@ -15,7 +15,7 @@ import org.bukkit.Material;
  * @author Christian34
  */
 public class WelcomePage {
-    private User user;
+    private final User user;
 
     public WelcomePage(User user) {
         this.user = user;

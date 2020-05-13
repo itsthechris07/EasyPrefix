@@ -1,5 +1,6 @@
-package com.christian34.easyprefix;
+package com.christian34.easyprefix.database;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigData.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
@@ -21,23 +22,25 @@ import java.util.UUID;
  * @author Christian34
  */
 public class Database {
-    private String host, database, username, tablePrefix, password;
+    private final String host, database, username, tablePrefix, password;
+    private final int port;
     private Connection connection;
-    private EasyPrefix instance;
-    private int port;
+    private final EasyPrefix instance;
 
     public Database(EasyPrefix instance) {
+        String tablePrefix1;
         this.instance = instance;
         ConfigData config = instance.getFileManager().getConfig();
         this.host = config.getString(ConfigKeys.SQL_HOST);
         this.database = config.getString(ConfigKeys.SQL_DATABASE);
         this.username = config.getString(ConfigKeys.SQL_USERNAME);
         this.password = config.getString(ConfigKeys.SQL_PASSWORD);
-        this.tablePrefix = config.getString(ConfigKeys.SQL_TABLE_PREFIX);
+        tablePrefix1 = config.getString(ConfigKeys.SQL_TABLE_PREFIX);
         this.port = config.getInt(ConfigKeys.SQL_PORT);
-        if (tablePrefix == null || tablePrefix.isEmpty()) {
-            this.tablePrefix = "";
-        } else if (!this.tablePrefix.endsWith("_")) this.tablePrefix += "_";
+        if (tablePrefix1 == null || tablePrefix1.isEmpty()) {
+            tablePrefix1 = "";
+        } else if (!tablePrefix1.endsWith("_")) tablePrefix1 += "_";
+        this.tablePrefix = tablePrefix1;
         connect();
     }
 
@@ -118,7 +121,10 @@ public class Database {
     }
 
     public void uploadGroups() throws SQLException {
-        FileConfiguration data = this.instance.getFileManager().getGroupsData().getData();
+        GroupsData groupsData = this.instance.getFileManager().getGroupsData();
+        groupsData.load();
+        FileConfiguration data = groupsData.getData();
+
         Set<String> groups = data.getConfigurationSection("groups").getKeys(false);
         for (String groupName : groups) {
             try {
@@ -127,42 +133,33 @@ public class Database {
                 stmt.setString(1, groupName);
                 stmt.executeUpdate();
                 Messages.log("§7Uploaded group '" + groupName + "' to database!");
-            } catch(SQLIntegrityConstraintViolationException ignored) {
+            } catch(Exception ignored) {
             }
 
             String sql = "UPDATE `%p%groups` SET `prefix`= ?,`suffix`= ?,`chat_color`= ?,`chat_formatting`= ?," + "`join_msg`= ?,`quit_msg`= ? WHERE `group` = ?";
             PreparedStatement stmt = prepareStatement(sql);
+            DataStatement statement = new DataStatement(sql);
 
             String prefix = data.getString("groups." + groupName + ".prefix");
-            if (prefix != null) {
-                stmt.setString(1, prefix);
-            } else stmt.setNull(1, Types.VARCHAR);
+            statement.setObject(1, prefix);
 
             String suffix = data.getString("groups." + groupName + ".suffix");
-            if (suffix != null) {
-                stmt.setString(2, suffix);
-            } else stmt.setNull(2, Types.VARCHAR);
+            statement.setObject(2, suffix);
 
             String chatcolor = data.getString("groups." + groupName + ".chat-color");
-            if (chatcolor != null) {
-                stmt.setString(3, chatcolor);
-            } else stmt.setNull(3, Types.VARCHAR);
+            statement.setObject(3, chatcolor);
 
             String chatformatting = data.getString("groups." + groupName + ".chat-formatting");
-            if (chatformatting != null) {
-                if (chatformatting.equalsIgnoreCase("%rainbow%")) chatformatting = "%r";
-                stmt.setString(4, chatformatting);
-            } else stmt.setNull(4, Types.VARCHAR);
+            if (chatformatting != null && chatformatting.equalsIgnoreCase("%rainbow%")) {
+                chatformatting = "%r";
+            }
+            statement.setObject(4, chatformatting);
 
             String joinMessage = data.getString("groups." + groupName + ".join-msg");
-            if (joinMessage != null) {
-                stmt.setString(5, joinMessage);
-            } else stmt.setNull(5, Types.VARCHAR);
+            statement.setObject(5, joinMessage);
 
             String quitMessage = data.getString("groups." + groupName + ".quit-msg");
-            if (quitMessage != null) {
-                stmt.setString(6, quitMessage);
-            } else stmt.setNull(6, Types.VARCHAR);
+            statement.setObject(6, quitMessage);
 
             ConfigurationSection section = data.getConfigurationSection("groups." + groupName + ".genders");
             if (section != null) {
@@ -206,8 +203,10 @@ public class Database {
                 stmt2.setString(1, groupName);
                 stmt2.executeUpdate();
             }
-            stmt.setString(7, groupName);
-            stmt.executeUpdate();
+            statement.setObject(7, groupName);
+            if (!statement.execute()) {
+                Messages.log("Error:\n" + statement.getException().getMessage());
+            }
         }
 
     }
@@ -218,28 +217,17 @@ public class Database {
         if (mainSection == null) return;
         Set<String> groups = mainSection.getKeys(false);
         for (String groupName : groups) {
-            try {
-                PreparedStatement stmt = prepareStatement("INSERT INTO `%p%subgroups`(`group`) VALUES (?)");
-                stmt.setString(1, groupName);
-                stmt.executeUpdate();
+            DataStatement statement = new DataStatement("INSERT INTO `%p%subgroups`(`group`) VALUES (?)");
+            statement.setObject(1, groupName);
+            if (statement.execute()) {
                 Messages.log("§7Uploaded subgroup '" + groupName + "' to database!");
-            } catch(SQLIntegrityConstraintViolationException ignored) {
             }
 
-            String sql = "UPDATE `%p%subgroups` SET `prefix`= ?,`suffix`= ? WHERE `group` = ?";
-            PreparedStatement stmt = prepareStatement(sql);
-
-            String prefix = data.getString("subgroups." + groupName + ".prefix");
-            if (prefix != null) {
-                stmt.setString(1, prefix);
-            } else stmt.setNull(1, Types.VARCHAR);
-
-            String suffix = data.getString("subgroups." + groupName + ".suffix");
-            if (suffix != null) {
-                stmt.setString(2, suffix);
-            } else stmt.setNull(2, Types.VARCHAR);
-            stmt.setString(3, groupName);
-            stmt.executeUpdate();
+            DataStatement stmt = new DataStatement("UPDATE `%p%subgroups` SET `prefix`= ?,`suffix`= ? WHERE `group` = ?");
+            stmt.setObject(1, data.getString("subgroups." + groupName + ".prefix"));
+            stmt.setObject(2, data.getString("subgroups." + groupName + ".suffix"));
+            stmt.setObject(3, groupName);
+            stmt.execute();
 
             ConfigurationSection section = data.getConfigurationSection("subgroups." + groupName + ".genders");
             if (section != null) {

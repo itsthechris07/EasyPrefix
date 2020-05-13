@@ -70,8 +70,11 @@ public class Settings {
             } else if (respond.equals(customPrefix)) {
                 configData.set(ConfigData.ConfigKeys.CUSTOM_PREFIX.toString(), !useCp);
                 open();
+                EasyPrefix.getInstance().reload();
             } else if (respond.equals(gender)) {
-                configData.set(ConfigData.ConfigKeys.USE_GENDER.toString(), !useGender);
+                boolean use = !useGender;
+                configData.set(ConfigData.ConfigKeys.USE_GENDER.toString(), use);
+                EasyPrefix.getInstance().reload();
                 open();
             }
         });

@@ -1,14 +1,13 @@
 package com.christian34.easyprefix.groups;
 
-import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.database.Database;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
-import com.sun.istack.internal.Nullable;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -23,12 +22,12 @@ import java.sql.SQLException;
  */
 public class Group extends EasyGroup {
     private final String NAME;
+    private final GroupsData groupsData;
+    private final GroupHandler groupHandler;
     private String prefix, suffix, joinMessage, quitMessage;
     private ChatColor groupColor;
-    private GroupsData groupsData;
     private Color chatColor;
     private ChatFormatting chatFormatting;
-    private GroupHandler groupHandler;
     private GenderChat genderChat = null;
 
     public Group(GroupHandler groupHandler, String name) {
@@ -88,29 +87,15 @@ public class Group extends EasyGroup {
             if (this.chatFormatting == null) setChatFormatting(null);
         }
 
-        if (chatColor == null || chatColor.isEmpty() && (this.chatFormatting != null && this.chatFormatting != ChatFormatting.RAINBOW)) {
+        if (chatColor == null || chatColor.isEmpty() || chatColor.length() < 2 && (this.chatFormatting != null && this.chatFormatting != ChatFormatting.RAINBOW)) {
             setChatColor(Color.GRAY);
             chatColor = "&7";
         }
 
-        chatColor = chatColor.substring(1, 2);
-        this.chatColor = Color.getByCode(chatColor);
+        this.chatColor = Color.getByCode(chatColor.substring(1, 2));
         if (this.chatColor == null) setChatColor(Color.GRAY);
 
-
-    /*    if (prefix.contains("§")) {
-            if (!prefix.startsWith("§")) {
-                String temp = prefix;
-                while (!temp.startsWith("§") && temp.length() > 0) {
-                    temp = temp.substring(1);
-                }
-                this.groupColor = ChatColor.getByChar(temp.substring(1, 2));
-            } else {
-                this.groupColor = ChatColor.getByChar(getPrefix().substring(1, 2));
-            }
-        }*/
-        if (getGroupColor() == null) groupColor = ChatColor.DARK_PURPLE;
-
+        this.groupColor = getGroupColor(prefix);
         this.joinMessage = joinMessage;
         this.quitMessage = quitMessage;
     }
@@ -147,7 +132,6 @@ public class Group extends EasyGroup {
         }
         return quitMessage;
     }
-
 
     public void setQuitMessage(String quitMessage) {
         this.quitMessage = quitMessage.replace("§", "&");
@@ -229,11 +213,27 @@ public class Group extends EasyGroup {
     }
 
     @Override
+    public String getFilePath() {
+        return "groups." + NAME + ".";
+    }
+
+    @Override
+    public void delete() {
+        EasyPrefix instance = this.groupHandler.getInstance();
+        if (instance.getSqlDatabase() == null) {
+            groupsData.setAndSave("groups." + getName(), null);
+        } else {
+            Database db = instance.getSqlDatabase();
+            db.update("DELETE FROM `%p%groups` WHERE `group` = '" + getName() + "'");
+        }
+        instance.getGroupHandler().getGroups().remove(this);
+        instance.getUsers().clear();
+    }
+
     public Color getChatColor() {
         return chatColor;
     }
 
-    @Override
     public void setChatColor(Color color) {
         this.chatColor = color;
         String value = null;
@@ -250,13 +250,10 @@ public class Group extends EasyGroup {
         saveData("chat-color", value);
     }
 
-    @Override
-    @Nullable
     public ChatFormatting getChatFormatting() {
         return chatFormatting;
     }
 
-    @Override
     public void setChatFormatting(ChatFormatting chatFormatting) {
         this.chatFormatting = chatFormatting;
         String value = null;
@@ -267,24 +264,6 @@ public class Group extends EasyGroup {
             } else value = chatFormatting.getCode().replace("§", "&");
         }
         saveData("chat-formatting", value);
-    }
-
-    @Override
-    public String getFilePath() {
-        return "groups." + NAME + ".";
-    }
-
-    @Override
-    public void delete() {
-        EasyPrefix instance = this.groupHandler.getInstance();
-        if (instance.getSqlDatabase() == null) {
-            groupsData.setAndSave("groups." + getName(), null);
-        } else {
-            Database db = instance.getSqlDatabase();
-            db.update("DELETE FROM `%p%groups` WHERE `group` = '" + getName() + "'");
-        }
-        instance.getGroupHandler().getGroups().remove(this);
-        instance.getUsers().clear();
     }
 
 }

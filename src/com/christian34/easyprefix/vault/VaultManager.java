@@ -14,7 +14,7 @@ import static org.bukkit.Bukkit.getServer;
  * @author Christian34
  */
 public class VaultManager {
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
     private Chat chat = null;
 
     public VaultManager(EasyPrefix instance) {

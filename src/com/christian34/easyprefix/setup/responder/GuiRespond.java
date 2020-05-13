@@ -30,26 +30,24 @@ import java.util.function.Consumer;
  */
 public class GuiRespond {
     private final ListenUp LISTENER = new ListenUp();
+    private final Consumer<Button> buttonClick;
+    private final User holder;
+    private final int maxPage;
+    private final Button btnNextPage = new Button(new ItemStack(Material.ARROW), Messages.getText(Message.PAGE_NEXT));
+    private final Button btnPreviousPage = new Button(new ItemStack(Material.ARROW), Messages.getText(Message.PAGE_PREVIOUS));
     private boolean preventClose;
-    private boolean isTriggerd;
+    private boolean waitingForRespond;
     private Inventory inventory;
-    private Consumer<Button> buttonClick;
-    private User holder;
     private CustomInventory customInventory;
     private HashMap<String, Button> buttons = new HashMap<>();
     private HashMap<Integer, Collection<Button>> pages = new HashMap<>();
     private int page = 1;
-    private int maxPage;
-    private Button btnNextPage = new Button(new ItemStack(Material.ARROW), Messages.getText(Message.PAGE_NEXT));
-    private Button btnPreviousPage = new Button(new ItemStack(Material.ARROW), Messages.getText(Message.PAGE_PREVIOUS));
 
     public GuiRespond(User holder, CustomInventory customInventory, Consumer<Button> consumer) {
         this.holder = holder;
         this.customInventory = customInventory;
         this.inventory = Bukkit.createInventory(holder.getPlayer(), 9 * customInventory.getLines(), customInventory.getTitle());
-        Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
         this.buttonClick = consumer;
-        addGlassFrame();
         int count = 1;
         int pageCounter = 1;
         Collection<Button> buttonsPerPage = new ArrayList<>();
@@ -65,8 +63,9 @@ public class GuiRespond {
         }
         this.pages.put(pageCounter, buttonsPerPage);
         this.maxPage = pages.size();
-        openPage(1);
         holder.getPlayer().openInventory(inventory);
+        openPage(1);
+        Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
     }
 
     private void openPage(int page) {
@@ -156,35 +155,39 @@ public class GuiRespond {
                 return;
             ItemStack clickedItem = e.getCurrentItem();
             String name = clickedItem.getItemMeta().getDisplayName();
-            if (e.getClickedInventory().equals(inventory)) {
-                if (buttons.containsKey(name)) {
-                    Button clickedButton = buttons.get(name);
-                    if (clickedButton.equals(btnNextPage)) {
-                        openPage(page + 1);
-                    } else if (clickedButton.equals(btnPreviousPage)) {
-                        openPage(page - 1);
-                    } else {
-                        isTriggerd = true;
-                        try {
-                            buttonClick.accept(buttons.get(name));
-                        } catch(Exception ex) {
-                            e.getWhoClicked().closeInventory();
-                            e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
-                            Messages.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
-                            Messages.log("&c------ ERROR ------");
-                            ex.printStackTrace();
-                            Messages.log("&c------ END OF ERROR ------");
-                        }
-                    }
-                }
-                e.setCancelled(true);
+            if (!e.getClickedInventory().equals(inventory)) {
+                return;
             }
+            if (!buttons.containsKey(name)) {
+                e.setCancelled(true);
+                return;
+            }
+
+            Button clickedButton = buttons.get(name);
+            if (clickedButton.equals(btnNextPage)) {
+                openPage(page + 1);
+            } else if (clickedButton.equals(btnPreviousPage)) {
+                openPage(page - 1);
+            } else {
+                waitingForRespond = true;
+                try {
+                    buttonClick.accept(buttons.get(name));
+                } catch(Exception ex) {
+                    e.getWhoClicked().closeInventory();
+                    e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
+                    Messages.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
+                    Messages.log("&c------ ERROR ------");
+                    ex.printStackTrace();
+                    Messages.log("&c------ END OF ERROR ------");
+                }
+            }
+            e.setCancelled(true);
         }
 
         @EventHandler
         public void onInventoryClose(InventoryCloseEvent e) {
             if (e.getInventory().equals(inventory)) {
-                if (preventClose && !isTriggerd) {
+                if (preventClose && !waitingForRespond) {
                     Bukkit.getScheduler().runTaskLater(EasyPrefix.getInstance().getPlugin(), () -> holder.getPlayer().openInventory(inventory), 1);
                 } else {
                     closeInventory();

@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
  * @author Christian34
  */
 public class QuitListener implements Listener {
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public QuitListener(EasyPrefix instance) {
         this.instance = instance;

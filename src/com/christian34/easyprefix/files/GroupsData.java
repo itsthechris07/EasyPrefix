@@ -18,7 +18,7 @@ import java.util.Set;
 public class GroupsData {
     private File file;
     private FileConfiguration data;
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public GroupsData(EasyPrefix instance) {
         this.instance = instance;

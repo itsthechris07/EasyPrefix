@@ -19,7 +19,7 @@ import java.util.List;
  * @author Christian34
  */
 public class TabComplete implements TabCompleter {
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public TabComplete(EasyPrefix instance) {
         this.instance = instance;

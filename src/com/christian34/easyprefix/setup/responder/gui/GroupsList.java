@@ -22,7 +22,7 @@ import java.util.List;
  * @author Christian34
  */
 public class GroupsList {
-    private User user;
+    private final User user;
 
     public GroupsList(User user) {
         this.user = user;
@@ -44,17 +44,16 @@ public class GroupsList {
             }
             lore.add(line.toString());
             if (prefix.length() > 25) {
-                lore.add(Messages.getText(Message.LORE_PREFIX).replace("%value%", "§7«§f" + prefix.substring(0, 25)));
+                lore.add(Messages.getAndSet(Message.LORE_PREFIX, "§7«§f" + prefix.substring(0, 25)));
                 lore.add("§f" + prefix.substring(26) + "§7»");
             } else {
-                lore.add(Messages.getText(Message.LORE_PREFIX).replace("%value%", "§7«§f" + prefix + "§7»"));
+                lore.add(Messages.getAndSet(Message.LORE_PREFIX, "§7«§f" + prefix + "§7»"));
             }
-            lore.add(Messages.getText(Message.LORE_SUFFIX).replace("%value%", "§7«§f" + suffix + "§7»"));
+            lore.add(Messages.getAndSet(Message.LORE_SUFFIX, "§7«§f" + suffix + "§7»"));
 
-            String groupChatColor = "-";
-            if (group.getChatColor() != null) {
-                groupChatColor = group.getChatColor().getCode();
-                if (group.getChatFormatting() != null && !group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+            String groupChatColor = (group.getChatColor() != null) ? group.getChatColor().getCode() : "-";
+            if (group.getChatColor() != null && group.getChatFormatting() != null) {
+                if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                     groupChatColor += group.getChatFormatting().getCode();
                 }
             } else {
@@ -63,8 +62,8 @@ public class GroupsList {
                 }
             }
 
-            lore.add(Messages.getText(Message.LORE_COLOR).replace("%value%", groupChatColor.replace("§", "&")));
-            lore.add(Messages.getText(Message.LORE_PERMISSION).replace("%value%", "EasyPrefix.group." + group.getName()));
+            lore.add(Messages.getAndSet(Message.LORE_COLOR, groupChatColor.replace("§", "&")));
+            lore.add(Messages.getAndSet(Message.LORE_PERMISSION, "EasyPrefix.group." + group.getName()));
             inventory.addItem(new Button(Material.CHEST, prefixColor + group.getName(), lore).setSlot(counter));
             counter++;
         }

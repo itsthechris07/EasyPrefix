@@ -21,8 +21,8 @@ import java.util.List;
  * @author Christian34
  */
 public class EditGroup {
-    private User user;
-    private EasyGroup easyGroup;
+    private final User user;
+    private final EasyGroup easyGroup;
 
     public EditGroup(User user, EasyGroup easyGroup) {
         this.user = user;
@@ -31,61 +31,43 @@ public class EditGroup {
 
     public void editPrefix() {
         new ChatRespond(user, Messages.getText(Message.SET_PREFIX).replace("%name%", easyGroup.getName()).replace("%prefix%", easyGroup.getPrefix(null, false)), (answer) -> {
-            if (answer.equals("cancelled")) {
-                user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
-                return null;
-            } else {
-                easyGroup.setPrefix(answer);
-                user.sendMessage(Messages.getText(Message.INPUT_SAVED));
-                return "correct";
-            }
+            easyGroup.setPrefix(answer);
+            user.sendMessage(Messages.getText(Message.INPUT_SAVED));
+            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
     public void editSuffix() {
         new ChatRespond(user, Messages.getText(Message.CHAT_INPUT_SUFFIX).replace("%suffix%", easyGroup.getSuffix(null, false)), (answer) -> {
-            if (answer.equals("cancelled")) {
-                user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
-                return null;
-            } else {
-                easyGroup.setSuffix(answer);
-                user.sendMessage(Messages.getText(Message.INPUT_SAVED));
-                return "correct";
-            }
+            easyGroup.setSuffix(answer);
+            user.sendMessage(Messages.getText(Message.INPUT_SAVED));
+            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
     public void editJoinMessage() {
         if (!(easyGroup instanceof Group)) return;
         Group group = (Group) easyGroup;
-        new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: &7" + group.getJoinMessageText(), (answer) -> {
-            if (answer.equals("cancelled")) {
-                user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
-                return null;
-            } else {
-                group.setJoinMessage(answer);
-                user.sendMessage(Messages.getText(Message.INPUT_SAVED));
-                return "correct";
-            }
+        new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: §7" + group.getJoinMessageText(), (answer) -> {
+            group.setJoinMessage(answer);
+            user.sendMessage(Messages.getText(Message.INPUT_SAVED));
+            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
     public void editQuitMessage() {
         if (!(easyGroup instanceof Group)) return;
         Group group = (Group) easyGroup;
-        new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: &7" + group.getJoinMessageText(), (answer) -> {
-            if (answer.equals("cancelled")) {
-                user.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
-                return null;
-            } else {
-                group.setQuitMessage(answer);
-                user.sendMessage(Messages.getText(Message.INPUT_SAVED));
-                return "correct";
-            }
+        new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: §7" + group.getQuitMessageText(), (answer) -> {
+            group.setQuitMessage(answer);
+            user.sendMessage(Messages.getText(Message.INPUT_SAVED));
+            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
     public void editChatColor() {
+        if (!(easyGroup instanceof Group)) return;
+        Group group = (Group) easyGroup;
         CustomInventory inventory = new CustomInventory(easyGroup.getGroupColor() + easyGroup.getName() + " §8» " + Messages.getText(Message.SETTINGS_TITLE_FORMATTINGS), 5);
         int slot = 9;
         for (Color color : Color.getValues()) {
@@ -94,7 +76,7 @@ public class EditGroup {
             Button button = color.toTerracotta().setSlot(slot);
             button.setDisplayName(color.toString());
             button.setData("color", color.name());
-            if (easyGroup.getChatColor() != null && easyGroup.getChatColor().equals(color)) button.addEnchantment();
+            if (group.getChatColor() != null && group.getChatColor().equals(color)) button.addEnchantment();
             inventory.addItem(button);
             slot++;
         }
@@ -103,7 +85,7 @@ public class EditGroup {
             List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
             Button button = new Button(Material.BOOKSHELF, chatFormatting.toString(), lore).setSlot(slot);
             button.setData("formatting", chatFormatting.name());
-            if (easyGroup.getChatFormatting() != null && easyGroup.getChatFormatting().equals(chatFormatting))
+            if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting))
                 button.addEnchantment();
             inventory.addItem(button);
             slot++;
@@ -116,24 +98,24 @@ public class EditGroup {
                 if (respond.getData("color") != null) {
                     Color color = Color.valueOf(respond.getData("color"));
                     if (!color.equals(Color.UNDEFINED)) {
-                        if (easyGroup.getChatColor() != null && easyGroup.getChatColor().equals(color)) {
+                        if (group.getChatColor() != null && group.getChatColor().equals(color)) {
                             return;
                         }
-                        easyGroup.setChatColor(color);
+                        group.setChatColor(color);
                         editChatColor();
                     }
                 } else if (respond.getData("formatting") != null) {
                     ChatFormatting formatting = ChatFormatting.valueOf(respond.getData("formatting"));
                     if (!formatting.equals(ChatFormatting.UNDEFINED)) {
-                        if (easyGroup.getChatFormatting() != null && easyGroup.getChatFormatting().equals(formatting)) {
-                            if (!easyGroup.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+                        if (group.getChatFormatting() != null && group.getChatFormatting().equals(formatting)) {
+                            if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                                 formatting = null;
                             }
                         }
-                        if (formatting != null && !formatting.equals(ChatFormatting.RAINBOW) && easyGroup.getChatColor() == null) {
+                        if (formatting != null && !formatting.equals(ChatFormatting.RAINBOW) && group.getChatColor() == null) {
                             return;
                         }
-                        easyGroup.setChatFormatting(formatting);
+                        group.setChatFormatting(formatting);
                         editChatColor();
                     }
                 }
@@ -143,12 +125,12 @@ public class EditGroup {
 
     public void deleteConfirmation() {
         CustomInventory inventory = new CustomInventory(Messages.getText(Message.SETUP_GROUP_TITLE_DELETE).replace("%group%", easyGroup.getName()), 3);
-        Button yes = Color.GREEN.toTerracotta().setSlot(2, 4);
-        yes.setDisplayName(Messages.getText(Message.BTN_CONFIRM));
-        inventory.addItem(yes);
-        Button cancel = Color.RED.toTerracotta().setSlot(2, 6);
-        cancel.setDisplayName(Messages.getText(Message.BTN_CANCEL));
-        inventory.addItem(cancel);
+        Button btnConfirm = Color.GREEN.toTerracotta().setSlot(2, 4);
+        btnConfirm.setDisplayName(Messages.getText(Message.BTN_CONFIRM));
+        inventory.addItem(btnConfirm);
+        Button btnCancel = Color.RED.toTerracotta().setSlot(2, 6);
+        btnCancel.setDisplayName(Messages.getText(Message.BTN_CANCEL));
+        inventory.addItem(btnCancel);
         new GuiRespond(user, inventory, (button) -> {
             if (button.getDisplayName().equals(Messages.getText(Message.BTN_CONFIRM))) {
                 easyGroup.delete();

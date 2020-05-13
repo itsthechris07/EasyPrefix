@@ -29,7 +29,7 @@ public class GroupProfile {
         this.user = user;
         if (easyGroup instanceof Group) {
             openGroupProfile((Group) easyGroup);
-        } else if (easyGroup instanceof Subgroup) {
+        } else {
             openSubgroupProfile((Subgroup) easyGroup);
         }
     }
@@ -38,23 +38,19 @@ public class GroupProfile {
         CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 4);
 
         Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(2, 3);
-        String prefix = group.getPrefix(null, false);
-        prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + prefix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + group.getPrefix(null, false) + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(prefixBtn);
 
         Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(2, 5);
-        String suffix = group.getSuffix(null, false);
-        suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + suffix + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + group.getSuffix(null, false) + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(suffixBtn);
 
         Button joinBtn = new Button(Button.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2VkZDIwYmU5MzUyMDk0OWU2Y2U3ODlkYzRmNDNlZmFlYjI4YzcxN2VlNmJmY2JiZTAyNzgwMTQyZjcxNiJ9fX0=", Material.BLAZE_ROD), "§aJoin Message", null).setSlot(3, 4);
-        String joinMsg = group.getJoinMessageText();
-        joinBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + joinMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        joinBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + group.getJoinMessageText() + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(joinBtn);
 
         Button quitBtn = new Button(Button.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ4YTk5ZGIyYzM3ZWM3MWQ3MTk5Y2Q1MjYzOTk4MWE3NTEzY2U5Y2NhOTYyNmEzOTM2Zjk2NWIxMzExOTMifX19", Material.STICK), "§aQuit Message", null).setSlot(3, 6);
-        String quitMsg = group.getQuitMessageText();
-        quitBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + quitMsg + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
+        quitBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + group.getQuitMessageText() + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(quitBtn);
 
         String groupChatColor = "-";
@@ -74,17 +70,17 @@ public class GroupProfile {
             inventory.addItem(new Button(Material.BARRIER, Messages.getText(Message.BTN_DELETE)).setSlot(inventory.getLines() * 9 - 1));
         }
         List<String> loreChatColor = Arrays.asList(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + groupChatColor.replace("§", "&"), " ", Messages.getText(Message.LORE_EDIT, user));
-        Button chatColor = null;
+        Material btnMaterial;
         if (VersionController.getMinorVersion() < 13) {
             try {
-                chatColor = new Button(Material.valueOf("INK_SACK"), Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);
+                btnMaterial = Material.valueOf("INK_SACK");
             } catch(Exception e) {
-                chatColor = new Button(Material.BARRIER, Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);
+                btnMaterial = Material.BARRIER;
             }
         } else {
-            chatColor = new Button(Material.LIME_DYE, Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor);
+            btnMaterial = Material.LIME_DYE;
         }
-        chatColor = chatColor.setSlot(2, 7);
+        Button chatColor = new Button(btnMaterial, Messages.getText(Message.BTN_CHANGE_CHATCOLOR), loreChatColor).setSlot(2, 7);
         inventory.addItem(chatColor);
         new GuiRespond(user, inventory, (respond) -> {
             String name = respond.getDisplayName();
@@ -110,12 +106,12 @@ public class GroupProfile {
     }
 
     private void openSubgroupProfile(Subgroup subgroup) {
-        CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 5);
-        Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(3, 3);
+        CustomInventory inventory = new CustomInventory("§5EasyPrefix §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 3);
+        Button prefixBtn = new Button(Material.IRON_INGOT, Messages.getText(Message.BTN_CHANGE_PREFIX)).setSlot(2, 4);
 
         prefixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + subgroup.getPrefix(null, false) + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(prefixBtn);
-        Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(3, 5);
+        Button suffixBtn = new Button(Material.GOLD_INGOT, Messages.getText(Message.BTN_CHANGE_SUFFIX)).setSlot(2, 6);
         suffixBtn.setLore(this.DIVIDER, Messages.getText(Message.LORE_GROUP_DETAIL, user) + "§7«§f" + subgroup.getSuffix(null, false) + "§7»", " ", Messages.getText(Message.LORE_EDIT, user));
         inventory.addItem(suffixBtn);
 

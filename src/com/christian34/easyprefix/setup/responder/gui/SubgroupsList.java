@@ -22,7 +22,7 @@ import java.util.List;
  * @author Christian34
  */
 public class SubgroupsList {
-    private User user;
+    private final User user;
 
     public SubgroupsList(User user) {
         this.user = user;

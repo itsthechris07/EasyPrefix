@@ -1,13 +1,12 @@
 package com.christian34.easyprefix.groups;
 
-import com.christian34.easyprefix.Database;
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.database.Database;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Messages;
-import com.sun.istack.internal.Nullable;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -23,11 +22,11 @@ import java.util.Set;
  * @author Christian34
  */
 public class GroupHandler {
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
     private ArrayList<Group> groups;
     private ArrayList<Subgroup> subgroups;
-    private ArrayList<GenderType> genderTypes;
-    private GroupsData groupsData;
+    private final GroupsData groupsData;
+    private ArrayList<GenderType> genderTypes = new ArrayList<>();
     private Group defaultGroup;
 
     public GroupHandler(EasyPrefix instance) {
@@ -129,7 +128,7 @@ public class GroupHandler {
         return instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER);
     }
 
-    private void loadGenders() {
+    public void loadGenders() {
         this.genderTypes = new ArrayList<>();
         List<String> types = instance.getFileManager().getConfig().getData().getStringList("config.gender.types");
         for (String name : types) {
@@ -163,7 +162,6 @@ public class GroupHandler {
         return defaultGroup;
     }
 
-    @Nullable
     public Subgroup getSubgroup(String subgroupName) {
         for (Subgroup group : subgroups) {
             if (group.getName().equalsIgnoreCase(subgroupName)) return group;
@@ -212,7 +210,6 @@ public class GroupHandler {
         this.groups.add(new Group(this, groupName));
     }
 
-    @Nullable
     private GroupsData getGroupsData() {
         return groupsData;
     }

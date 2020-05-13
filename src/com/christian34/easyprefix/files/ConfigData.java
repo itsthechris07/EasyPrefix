@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class ConfigData {
     private File file;
     private FileConfiguration data;
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public ConfigData(EasyPrefix instance) {
         this.instance = instance;

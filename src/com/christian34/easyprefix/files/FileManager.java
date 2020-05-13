@@ -12,7 +12,7 @@ import java.io.File;
 public class FileManager {
     private static ConfigData configData;
     private static GroupsData groupsData;
-    private EasyPrefix instance;
+    private final EasyPrefix instance;
 
     public FileManager(EasyPrefix instance) {
         this.instance = instance;
