@@ -78,7 +78,7 @@ public class Group extends EasyGroup {
         }
     }
 
-    private void applyData(String prefix, String suffix, String chatColor, String chatFormatting, String joinMessage, String quitMessage) throws Exception {
+    private void applyData(String prefix, String suffix, String chatColor, String chatFormatting, String joinMessage, String quitMessage) {
         this.prefix = prefix.replace("§", "&");
         this.suffix = suffix.replace("§", "&");
 
@@ -171,7 +171,7 @@ public class Group extends EasyGroup {
 
     @Override
     public String getPrefix(User user, boolean translate) {
-        String prefix = "";
+        String prefix;
         if (this.groupHandler.handleGenders() && user != null) {
             prefix = this.genderChat.getPrefix(user.getGenderType());
             if (prefix == null) prefix = this.prefix;
@@ -190,7 +190,7 @@ public class Group extends EasyGroup {
 
     @Override
     public String getSuffix(User user, boolean translate) {
-        String suffix = "";
+        String suffix;
         if (this.groupHandler.handleGenders() && user != null) {
             suffix = this.genderChat.getSuffix(user.getGenderType());
             if (suffix == null) suffix = this.suffix;

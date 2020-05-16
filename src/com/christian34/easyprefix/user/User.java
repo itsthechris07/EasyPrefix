@@ -49,7 +49,7 @@ public class User {
         if (this.instance.getSqlDatabase() == null) this.userData = new UserData(player.getUniqueId());
     }
 
-    public void load() {
+    public void login() {
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
         ConfigData configData = this.instance.getFileManager().getConfig();

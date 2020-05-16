@@ -18,14 +18,13 @@ import org.bukkit.entity.Player;
  *
  * @author Christian34
  */
-public class Command_User extends EasyCommand {
+public class Command_User {
     private final EasyPrefix instance;
 
     public Command_User(EasyPrefix instance) {
         this.instance = instance;
     }
 
-    @Override
     public boolean handleCommand(CommandSender sender, Command command, String[] args) {
         Player player = Bukkit.getPlayer(args[1]);
         GroupHandler groupHandler = instance.getGroupHandler();
@@ -34,18 +33,16 @@ public class Command_User extends EasyCommand {
             return true;
         }
         User target = new User(player);
-        target.load();
+        target.login();
         if (args.length >= 3) {
             if (args[2].equalsIgnoreCase("reload")) {
                 Bukkit.getScheduler().runTaskLaterAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
-                    target.load();
+                    target.login();
                     sender.sendMessage(Messages.getMessage(Message.SUCCESS));
                 }, 20L);
                 return true;
             } else if (args[2].equalsIgnoreCase("info")) {
-                sender.sendMessage(" ");
-                sender.sendMessage("§7--------------=== §5§l" + target.getPlayer().getName() + " §7===--------------");
-                sender.sendMessage(" ");
+                sender.sendMessage(" \n§7--------------=== §5§l" + target.getPlayer().getName() + " §7===--------------\n ");
                 sender.sendMessage("§5Group§f: §7" + target.getGroup().getName());
                 String subgroup = (target.getSubgroup() != null) ? target.getSubgroup().getName() : "-";
                 sender.sendMessage("§5Subgroup§f: §7" + subgroup);
@@ -57,8 +54,7 @@ public class Command_User extends EasyCommand {
                 if (target.getGenderType() != null) {
                     sender.sendMessage("§5Gender§f: §7" + target.getGenderType().getDisplayName() + "§7/§7" + target.getGenderType().getName());
                 }
-                sender.sendMessage(" ");
-                sender.sendMessage("§7-----------------------------------------------");
+                sender.sendMessage(" \n§7-----------------------------------------------\n ");
                 return true;
             } else if (args[2].equalsIgnoreCase("setgroup")) {
                 if (args.length == 4) {
@@ -105,7 +101,6 @@ public class Command_User extends EasyCommand {
         return false;
     }
 
-    @Override
     public String getPermission() {
         return "EasyPrefix.admin";
     }

@@ -101,7 +101,7 @@ public class Subgroup extends EasyGroup {
 
     @Override
     public String getPrefix(User user, boolean translate) {
-        String prefix = "";
+        String prefix;
         if (this.groupHandler.handleGenders() && user != null) {
             prefix = this.genderChat.getPrefix(user.getGenderType());
             if (prefix == null) prefix = this.prefix;
@@ -120,7 +120,7 @@ public class Subgroup extends EasyGroup {
 
     @Override
     public String getSuffix(User user, boolean translate) {
-        String suffix = "";
+        String suffix;
         if (this.groupHandler.handleGenders() && user != null) {
             suffix = this.genderChat.getSuffix(user.getGenderType());
             if (suffix == null) suffix = this.suffix;

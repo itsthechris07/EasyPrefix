@@ -104,7 +104,7 @@ public class EasyPrefix extends JavaPlugin {
             }
         }
         User newUser = new User(player);
-        newUser.load();
+        newUser.login();
         users.add(newUser);
         return newUser;
     }
@@ -138,7 +138,7 @@ public class EasyPrefix extends JavaPlugin {
         if (this.fileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SQL) && this.database != null) {
             try {
                 getSqlDatabase().getConnection().close();
-            } catch(SQLException ignored) {
+            } catch (SQLException ignored) {
             }
             this.database = new Database(this);
         } else this.database = null;
