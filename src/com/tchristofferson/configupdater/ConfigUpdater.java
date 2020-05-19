@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.files;
+package com.tchristofferson.configupdater;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
  * Read the new file and scan for comments and ignored sections, if ignored section is found it is treated as a comment.
  * Read and write each line of the new config, if the old config has value for the given key it writes that value in the new config.
  * If a key has an attached comment above it, it is written first.
- *
  * @author tchristofferson
  */
 public class ConfigUpdater {
@@ -175,7 +174,8 @@ public class ConfigUpdater {
 
         outer:
         for (String line : lines) {
-            if (line != null && line.trim().startsWith("-")) continue;
+            if (line != null && line.trim().startsWith("-"))
+                continue;
 
             if (line == null || line.trim().equals("") || line.trim().startsWith("#")) {
                 builder.append(line).append("\n");

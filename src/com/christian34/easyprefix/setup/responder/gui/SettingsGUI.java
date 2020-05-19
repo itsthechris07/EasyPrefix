@@ -100,7 +100,7 @@ public class SettingsGUI {
             Button subgroups = new Button(subgroupsMaterial, Messages.getText(Message.BTN_SUBGROUPS)).setSlot(5, 5);
             inventory.addItem(subgroups);
         }
-        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX) && user.getPlayer().hasPermission("easyprefix.settings" + ".custom")) {
+        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX) && user.getPlayer().hasPermission("easyprefix.settings.custom")) {
             Button custom = new Button(Material.NETHER_STAR, Messages.getText(Message.BTN_CUSTOM_PREFIX)).setSlot(counter);
             inventory.addItem(custom);
         }
