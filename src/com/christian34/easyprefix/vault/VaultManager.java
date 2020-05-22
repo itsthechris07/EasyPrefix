@@ -29,7 +29,6 @@ public class VaultManager {
         chat = new ChatProvider(null);
         Bukkit.getServicesManager().register(Chat.class, chat, this.instance, ServicePriority.Highest);
 
-
         RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
         if (rsp != null) {
             chat = rsp.getProvider();

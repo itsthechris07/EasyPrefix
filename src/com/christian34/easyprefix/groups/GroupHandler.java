@@ -23,9 +23,9 @@ import java.util.Set;
  */
 public class GroupHandler {
     private final EasyPrefix instance;
+    private final GroupsData groupsData;
     private ArrayList<Group> groups;
     private ArrayList<Subgroup> subgroups;
-    private final GroupsData groupsData;
     private ArrayList<GenderType> genderTypes = new ArrayList<>();
     private Group defaultGroup;
 
@@ -96,7 +96,7 @@ public class GroupHandler {
                     String value = groupsResult.getString("group");
                     if (!value.equals("default")) groupNames.add(value);
                 }
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return;
             }
@@ -107,7 +107,7 @@ public class GroupHandler {
                     String value = subgroupsResult.getString("group");
                     subgroupNames.add(value);
                 }
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return;
             }

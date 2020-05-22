@@ -16,9 +16,9 @@ import java.util.Set;
  * @author Christian34
  */
 public class GroupsData {
+    private final EasyPrefix instance;
     private File file;
     private FileConfiguration data;
-    private final EasyPrefix instance;
 
     public GroupsData(EasyPrefix instance) {
         this.instance = instance;
@@ -44,7 +44,7 @@ public class GroupsData {
     public void save() {
         try {
             data.save(file);
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         load();

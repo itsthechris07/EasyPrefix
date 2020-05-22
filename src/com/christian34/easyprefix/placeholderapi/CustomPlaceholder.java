@@ -2,7 +2,6 @@ package com.christian34.easyprefix.placeholderapi;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -53,7 +52,7 @@ class CustomPlaceholder extends PlaceholderExpansion {
                     }
                 } else {
                     if (user.getChatFormatting() != null && user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                        color = Messages.getText(Message.FORMATTING_RAINBOW);
+                        color = Message.FORMATTING_RAINBOW.toString();
                     } else {
                         color = user.getGroup().getChatColor().getCode();
                         if (user.getGroup().getChatFormatting() != null) {

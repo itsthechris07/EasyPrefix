@@ -60,7 +60,7 @@ public class JoinListener implements Listener {
                 } else {
                     Messages.log("&cCouldn't play sound on player join. Please check up the sound configuration.");
                 }
-            } catch(IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException ignored) {
                 Messages.log("&cCouldn't play sound '" + soundOption[0] + "'. Please use valid sounds!");
             }
         }
@@ -79,8 +79,8 @@ public class JoinListener implements Listener {
                 if (user.getGenderType() == null) {
                     String prefix = Messages.getText("info.prefix");
                     if (prefix == null) prefix = Messages.getPrefix();
-                    TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Messages.getText(Message.NOTIFY_GENDER_TEXT)));
-                    TextComponent change = new TextComponent(TextComponent.fromLegacyText(Messages.getText(Message.NOTIFY_GENDER_BTN)));
+                    TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Message.NOTIFY_GENDER_TEXT.toString()));
+                    TextComponent change = new TextComponent(TextComponent.fromLegacyText(Message.NOTIFY_GENDER_BTN.toString()));
                     change.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ep gui settings gender"));
                     msg.addExtra(change);
                     user.getPlayer().spigot().sendMessage(msg);

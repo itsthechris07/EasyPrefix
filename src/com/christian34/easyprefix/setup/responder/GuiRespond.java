@@ -3,8 +3,7 @@ package com.christian34.easyprefix.setup.responder;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.setup.Button;
-import com.christian34.easyprefix.setup.CustomInventory;
+import com.christian34.easyprefix.setup.responder.gui.Icon;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Bukkit;
@@ -17,11 +16,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.function.Consumer;
 
 /**
  * EasyPrefix 2020.
@@ -29,98 +26,130 @@ import java.util.function.Consumer;
  * @author Christian34
  */
 public class GuiRespond {
-    private final ListenUp LISTENER = new ListenUp();
-    private final Consumer<Button> buttonClick;
     private final User holder;
-    private final int maxPage;
-    private final Button btnNextPage = new Button(new ItemStack(Material.ARROW), Messages.getText(Message.PAGE_NEXT));
-    private final Button btnPreviousPage = new Button(new ItemStack(Material.ARROW), Messages.getText(Message.PAGE_PREVIOUS));
+    private final Icon nextPage, prevPage;
+    private final int guiLines;
+    private final int maxSlots;
+    private ListenUp LISTENER = new ListenUp();
     private boolean preventClose;
-    private boolean waitingForRespond;
     private Inventory inventory;
-    private CustomInventory customInventory;
-    private HashMap<String, Button> buttons = new HashMap<>();
-    private HashMap<Integer, Collection<Button>> pages = new HashMap<>();
     private int page = 1;
+    private Icon closeInventoryIcon;
+    private ArrayList<GuiPage> pages = new ArrayList<>();
 
-    public GuiRespond(User holder, CustomInventory customInventory, Consumer<Button> consumer) {
+    public GuiRespond(User holder, String title, int lines) {
         this.holder = holder;
-        this.customInventory = customInventory;
-        this.inventory = Bukkit.createInventory(holder.getPlayer(), 9 * customInventory.getLines(), customInventory.getTitle());
-        this.buttonClick = consumer;
-        int count = 1;
-        int pageCounter = 1;
-        Collection<Button> buttonsPerPage = new ArrayList<>();
-        for (Button button : customInventory.getButtons()) {
-            if (!(count <= 27)) {
-                pages.put(pageCounter, buttonsPerPage);
-                buttonsPerPage = new ArrayList<>();
-                pageCounter = pageCounter + 1;
-                count = 1;
-            }
-            buttonsPerPage.add(button);
-            count++;
-        }
-        this.pages.put(pageCounter, buttonsPerPage);
-        this.maxPage = pages.size();
-        holder.getPlayer().openInventory(inventory);
-        openPage(1);
+        this.guiLines = lines;
+        this.inventory = Bukkit.createInventory(holder.getPlayer(), lines * 9, title);
+        this.maxSlots = (guiLines - 2) * 9;
+        this.nextPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_NEXT.toString()).setSlot(lines, 6);
+        this.prevPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_PREVIOUS.toString()).setSlot(lines, 4);
         Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
     }
 
-    private void openPage(int page) {
-        this.page = page;
+    public void openInventory() {
+        addGlassFrame();
+        openPage(1);
+        this.holder.getPlayer().openInventory(this.inventory);
+    }
+
+    public void openPage(int pageId) {
         clearInventory();
-        for (Button button : this.pages.get(page)) {
-            addButton(button, button.getSlot() - (page - 1) * 27);
-        }
-        showBackButton();
-        if (this.page != this.maxPage) {
-            addButton(this.btnNextPage, customInventory.getLines() * 9 - 4);
-        }
-        if (this.page > 1) {
-            addButton(this.btnPreviousPage, customInventory.getLines() * 9 - 6);
-        }
-    }
-
-    public void preventClose(Boolean preventClose) {
-        this.preventClose = preventClose;
-        if (preventClose) addGlassFrame();
-    }
-
-    private void addButton(Button button, int slot) {
+        GuiPage page = getPage(pageId);
+        int slotItr = 9;
         ItemStack[] contents = inventory.getContents();
-        contents[slot] = button.getItemStack();
-        buttons.put(button.getDisplayName(), button);
+        for (Icon icon : page.getIcons()) {
+            int slot = (icon.getSlot() == 0) ? slotItr : icon.getSlot();
+            contents[slot] = icon.getItemStack();
+            slotItr++;
+        }
+        if (pages.size() > 1) {
+            if (pageId < pages.size()) {
+                contents[nextPage.getSlot()] = nextPage.getItemStack();
+            }
+            if (pageId > 1) {
+                contents[prevPage.getSlot()] = prevPage.getItemStack();
+            }
+        }
         inventory.setContents(contents);
+        this.page = pageId;
+    }
+
+    public Icon addIcon(ItemStack itemStack, String displayName, int line, int slot) {
+        Icon icon = new Icon(itemStack, displayName).setSlot(line, slot);
+        getPage(1).getIcons().add(icon);
+        return icon;
+    }
+
+    public Icon addIcon(Material material, String displayName, int line, int slot) {
+        return addIcon(new ItemStack(material), displayName, line, slot);
+    }
+
+    public Icon addIcon(Material material, Message displayName, int line, int slot) {
+        return addIcon(new ItemStack(material), displayName.toString(), line, slot);
+    }
+
+    public Icon addIcon(ItemStack itemStack, Message displayName, int line, int slot) {
+        return addIcon(itemStack, displayName.toString(), line, slot);
+    }
+
+    /**
+     * for pages
+     *
+     * @param itemStack   itemStack
+     * @param displayName meta name
+     * @return Icon
+     */
+    public Icon addIcon(ItemStack itemStack, String displayName) {
+        Icon icon = new Icon(itemStack, displayName);
+        int pageId = 1;
+
+        while (getPage(pageId).getIcons().size() == maxSlots) {
+            pageId++;
+        }
+
+        GuiPage page = getPage(pageId);
+        page.getIcons().add(icon);
+
+        return icon;
+    }
+
+    public GuiPage getPage(int page) {
+        for (GuiPage p : this.pages) {
+            if (p.getPage() == page) return p;
+        }
+        GuiPage newPage = new GuiPage(page);
+        this.pages.add(newPage);
+        return newPage;
+    }
+
+    public void preventClose(boolean preventClose) {
+        this.preventClose = preventClose;
+    }
+
+    public Icon addCloseButton() {
+        Icon icon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.toString()).setSlot(guiLines, 1);
+        getPage(1).getIcons().add(icon);
+        this.closeInventoryIcon = icon;
+        return icon;
     }
 
     private void clearInventory() {
         ItemStack[] contents = inventory.getContents();
-        for (int i = 0; i <= customInventory.getLines() * 9 - 1; i++) {
+        for (int i = 9; i <= (guiLines - 1) * 9 - 1; i++) {
             contents[i] = new ItemStack(Material.AIR);
         }
         inventory.setContents(contents);
-        addGlassFrame();
     }
 
-    private void showBackButton() {
-        ItemStack[] contents = inventory.getContents();
-        int slot = customInventory.getLines() * 9 - 9;
-        Button button = new Button(Button.playerHead("MHF_ArrowLeft"), Messages.getText(Message.BTN_BACK), null);
-        contents[slot] = button.getItemStack();
-        buttons.put(button.getDisplayName(), button);
-        inventory.setContents(contents);
-    }
-
-    private void closeInventory() {
-        this.buttons = null;
-        this.customInventory = null;
+    private void unregister() {
+        HandlerList.unregisterAll(LISTENER);
         this.inventory = null;
         this.pages = null;
-        HandlerList.unregisterAll(LISTENER);
+        this.LISTENER = null;
     }
 
+    @SuppressWarnings("deprecation")
     private void addGlassFrame() {
         ItemStack[] contents = inventory.getContents();
         ItemStack glass;
@@ -134,7 +163,7 @@ public class GuiRespond {
         if (meta != null) meta.setDisplayName("§0 ");
         glass.setItemMeta(meta);
 
-        int[] rows = {1, customInventory.getLines()};
+        int[] rows = {1, this.guiLines};
         for (int row : rows) {
             int counter = 0;
             if (row != 1) {
@@ -147,50 +176,94 @@ public class GuiRespond {
         inventory.setContents(contents);
     }
 
+    private static class GuiPage {
+        private final int page;
+        private final ArrayList<Icon> icons = new ArrayList<>();
+
+        public GuiPage(int page) {
+            this.page = page;
+        }
+
+        public int getPage() {
+            return page;
+        }
+
+        public ArrayList<Icon> getIcons() {
+            return icons;
+        }
+
+        public Icon getIcon(ItemStack itemStack) {
+            for (Icon icon : icons) {
+                String itemName = itemStack.getType().name();
+                if (itemName.equals("PLAYER_HEAD") || itemName.equals("SKULL_ITEM")) {
+                    SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                    if (meta == null) return null;
+                    if (icon.getDisplayName().equals(meta.getDisplayName())) return icon;
+                } else {
+                    if (icon.getItemStack().equals(itemStack)) {
+                        return icon;
+                    } else {
+                        ItemMeta meta = itemStack.getItemMeta();
+                        if (meta == null) return null;
+                        if (icon.getDisplayName().equals(meta.getDisplayName())) return icon;
+                    }
+                }
+            }
+            return null;
+        }
+
+    }
+
     private class ListenUp implements Listener {
 
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void onInventoryClick(InventoryClickEvent e) {
             if (e.getCurrentItem() == null || e.getCurrentItem().getItemMeta() == null || e.getClickedInventory() == null)
                 return;
-            ItemStack clickedItem = e.getCurrentItem();
-            String name = clickedItem.getItemMeta().getDisplayName();
-            if (!e.getClickedInventory().equals(inventory)) {
+            e.setCancelled(true);
+
+            String displayName = e.getCurrentItem().getItemMeta().getDisplayName();
+            Icon clickedIcon = getPage(page).getIcon(e.getCurrentItem());
+
+            if (closeInventoryIcon != null && displayName.equals(closeInventoryIcon.getDisplayName())) {
+                if (closeInventoryIcon.getClickAction() == null) {
+                    e.getWhoClicked().closeInventory();
+                    unregister();
+                    return;
+                } else {
+                    clickedIcon = closeInventoryIcon;
+                }
+            } else if (displayName.equals(nextPage.getDisplayName())) {
+                openPage(page + 1);
                 return;
-            }
-            if (!buttons.containsKey(name)) {
-                e.setCancelled(true);
+            } else if (displayName.equals(prevPage.getDisplayName())) {
+                openPage(page - 1);
                 return;
             }
 
-            Button clickedButton = buttons.get(name);
-            if (clickedButton.equals(btnNextPage)) {
-                openPage(page + 1);
-            } else if (clickedButton.equals(btnPreviousPage)) {
-                openPage(page - 1);
-            } else {
-                waitingForRespond = true;
-                try {
-                    buttonClick.accept(buttons.get(name));
-                } catch(Exception ex) {
-                    e.getWhoClicked().closeInventory();
-                    e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
-                    Messages.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
-                    Messages.log("&c------ ERROR ------");
-                    ex.printStackTrace();
-                    Messages.log("&c------ END OF ERROR ------");
-                }
+            if (clickedIcon == null || clickedIcon.getClickAction() == null) return;
+
+            try {
+                preventClose = false;
+                clickedIcon.getClickAction().execute();
+            } catch (Exception ex) {
+                e.getWhoClicked().closeInventory();
+                e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
+                Messages.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
+                Messages.log("&c------ ERROR ------");
+                ex.printStackTrace();
+                Messages.log("&c------ END OF ERROR ------");
             }
-            e.setCancelled(true);
+
         }
 
         @EventHandler
         public void onInventoryClose(InventoryCloseEvent e) {
             if (e.getInventory().equals(inventory)) {
-                if (preventClose && !waitingForRespond) {
+                if (preventClose) {
                     Bukkit.getScheduler().runTaskLater(EasyPrefix.getInstance().getPlugin(), () -> holder.getPlayer().openInventory(inventory), 1);
                 } else {
-                    closeInventory();
+                    unregister();
                 }
             }
         }

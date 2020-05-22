@@ -11,7 +11,6 @@ import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -28,12 +27,12 @@ import java.util.UUID;
  */
 public class User {
     private final Player player;
+    private final UUID uniqueId;
+    private final EasyPrefix instance;
     private UserData userData;
     private ArrayList<Color> colors;
     private ArrayList<ChatFormatting> chatFormattings;
     private Group group;
-    private final UUID uniqueId;
-    private final EasyPrefix instance;
     private Subgroup subgroup;
     private Color chatColor;
     private ChatFormatting chatFormatting;
@@ -84,7 +83,7 @@ public class User {
                     st.setString(1, uniqueId.toString());
                     st.executeUpdate();
                 }
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return;
             }
@@ -164,7 +163,6 @@ public class User {
     }
 
     public void setPrefix(String prefix) {
-        Bukkit.broadcastMessage("");
         saveData("custom-prefix", prefix);
         if (prefix != null) {
             prefix = prefix.replace("&", "§");

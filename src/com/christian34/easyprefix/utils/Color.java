@@ -1,10 +1,9 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.setup.Button;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * EasyPrefix 2020.
@@ -44,23 +43,31 @@ public enum Color {
 
     @Override
     public String toString() {
-        return getCode() + Messages.getText(name);
+        return getCode() + name.toString();
     }
 
     public String getCode() {
         return "§" + code;
     }
 
-    public Button toTerracotta() {
+    @SuppressWarnings("deprecation")
+    public ItemStack toItemStack() {
+        ItemStack item;
         if (VersionController.getMinorVersion() >= 13) {
-            return new Button(new ItemStack(getNewTerracotta(this), 1), toString());
+            item = new ItemStack(getNewTerracotta(this), 1);
         } else {
             try {
-                return new Button(new ItemStack(Material.valueOf("STAINED_CLAY"), 1, getByte()), toString());
-            } catch(Exception ignored) {
-                return new Button(new ItemStack(Material.valueOf("INK_SACK")), toString());
+                item = new ItemStack(Material.valueOf("STAINED_CLAY"), 1, getByte());
+            } catch (Exception ignored) {
+                item = new ItemStack(Material.valueOf("INK_SACK"));
             }
         }
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(toString());
+        }
+        item.setItemMeta(meta);
+        return item;
     }
 
     private Material getNewTerracotta(Color color) {

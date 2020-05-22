@@ -17,7 +17,7 @@ public abstract class EasyGroup {
     public abstract String getName();
 
     /**
-     * @param user
+     * @param user      target user
      * @param translate set colors/formattings and placeholders
      * @return String
      */
@@ -29,9 +29,9 @@ public abstract class EasyGroup {
     public abstract void setPrefix(String prefix);
 
     /**
-     * @param user
-     * @param translate
-     * @return
+     * @param user      target user
+     * @param translate set placeholders and formattings
+     * @return suffix
      */
     public abstract String getSuffix(User user, boolean translate);
 
@@ -58,8 +58,8 @@ public abstract class EasyGroup {
     /**
      * apply colors/formattings and placeholders to prefix or suffix
      *
-     * @param text
-     * @param user
+     * @param text text to translate
+     * @param user user for placeholderapi
      * @return String
      */
     public String translate(String text, User user) {

@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.sql.*;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,8 +25,8 @@ import java.util.UUID;
 public class Database {
     private final String host, database, username, tablePrefix, password;
     private final int port;
-    private Connection connection;
     private final EasyPrefix instance;
+    private Connection connection;
 
     public Database(EasyPrefix instance) {
         String tablePrefix1;
@@ -45,29 +46,29 @@ public class Database {
     }
 
     public void close() {
-        synchronized(this) {
+        synchronized (this) {
             try {
                 if (getConnection() != null && !getConnection().isClosed()) {
                     getConnection().close();
                 }
-            } catch(SQLException ignored) {
+            } catch (SQLException ignored) {
             }
         }
     }
 
     private void connect() {
-        synchronized(this) {
+        synchronized (this) {
             try {
                 if (connection != null && !connection.isClosed()) return;
                 Class.forName("com.mysql.jdbc.Driver");
                 connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
                 createTables();
-            } catch(SQLSyntaxErrorException e) {
+            } catch (SQLSyntaxErrorException e) {
                 Messages.log("§cDatabase '" + database + "' does not exist!");
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 Messages.log("§cAccess denied for user '" + this.username + "'@'" + this.host + "'");
                 Messages.log("§cPlease check if the sql server is running and you entered the right username and password.");
-            } catch(ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 Messages.log("§cYour installation does not support sql!");
             }
         }
@@ -78,7 +79,7 @@ public class Database {
             if (connection.isClosed()) connect();
             Statement stmt = connection.createStatement();
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             Messages.log("§cCouldn't get value from statement '" + statement + "'!");
             Messages.log("§c" + e.getMessage());
             e.printStackTrace();
@@ -92,7 +93,7 @@ public class Database {
             Statement stmt = connection.createStatement();
             ResultSet result = stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
             return result.next();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             Messages.log("§cCouldn't get value from statement '" + statement + "'!");
             Messages.log("§c" + e.getMessage());
             e.printStackTrace();
@@ -107,7 +108,7 @@ public class Database {
                 Statement stmt = connection.createStatement();
                 stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
                 stmt.close();
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
@@ -125,7 +126,7 @@ public class Database {
         groupsData.load();
         FileConfiguration data = groupsData.getData();
 
-        Set<String> groups = data.getConfigurationSection("groups").getKeys(false);
+        Set<String> groups = Objects.requireNonNull(data.getConfigurationSection("groups")).getKeys(false);
         for (String groupName : groups) {
             try {
                 String sql = "INSERT INTO `%p%groups`(`group`) VALUES (?)";
@@ -133,11 +134,10 @@ public class Database {
                 stmt.setString(1, groupName);
                 stmt.executeUpdate();
                 Messages.log("§7Uploaded group '" + groupName + "' to database!");
-            } catch(Exception ignored) {
+            } catch (Exception ignored) {
             }
 
             String sql = "UPDATE `%p%groups` SET `prefix`= ?,`suffix`= ?,`chat_color`= ?,`chat_formatting`= ?," + "`join_msg`= ?,`quit_msg`= ? WHERE `group` = ?";
-            PreparedStatement stmt = prepareStatement(sql);
             DataStatement statement = new DataStatement(sql);
 
             String prefix = data.getString("groups." + groupName + ".prefix");
@@ -295,7 +295,7 @@ public class Database {
                     stmt.setString(1, uuid.toString());
                     try {
                         stmt.executeUpdate();
-                    } catch(SQLIntegrityConstraintViolationException ignored) {
+                    } catch (SQLIntegrityConstraintViolationException ignored) {
                     }
                     String sql = "UPDATE `%p%users` SET `group`=?,`force_group`=?,`subgroup`=?,`custom_prefix`=?," + "`custom_suffix`=?,`gender`=?,`chat_color`=?,`chat_formatting`=? WHERE `uuid` ='" + uuid.toString() + "'";
                     stmt = prepareStatement(sql);
@@ -309,7 +309,7 @@ public class Database {
                     stmt.setString(8, chatFormatting);
                     try {
                         stmt.executeUpdate();
-                    } catch(SQLIntegrityConstraintViolationException ex) {
+                    } catch (SQLIntegrityConstraintViolationException ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -408,7 +408,7 @@ public class Database {
         try {
             sql = sql.replace("%p%", getTablePrefix());
             return getConnection().prepareStatement(sql);
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             return null;
         }
     }

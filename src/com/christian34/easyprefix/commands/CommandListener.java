@@ -6,8 +6,8 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.setup.responder.gui.SettingsGUI;
-import com.christian34.easyprefix.setup.responder.gui.WelcomePage;
+import com.christian34.easyprefix.setup.responder.gui.pages.GuiSettings;
+import com.christian34.easyprefix.setup.responder.gui.pages.GuiSetup;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -61,7 +61,7 @@ public class CommandListener implements Listener, CommandExecutor {
             } else if (args[0].equalsIgnoreCase("setup")) {
                 if (user != null) {
                     if (sender.hasPermission("EasyPrefix.admin")) {
-                        new WelcomePage(user);
+                        new GuiSetup(user).mainPage();
                         return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS, user));
@@ -74,7 +74,7 @@ public class CommandListener implements Listener, CommandExecutor {
             } else if (args[0].equalsIgnoreCase("settings")) {
                 if (user != null) {
                     if (sender.hasPermission("EasyPrefix.settings")) {
-                        new SettingsGUI(user);
+                        new GuiSettings(user).mainPage();
                         return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS, user));
@@ -127,7 +127,7 @@ public class CommandListener implements Listener, CommandExecutor {
                             userData.set("user.group", group.getName());
                             try {
                                 userData.save(userFile);
-                            } catch(IOException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             sender.sendMessage(Messages.getMessage(Message.SUCCESS));
@@ -172,7 +172,7 @@ public class CommandListener implements Listener, CommandExecutor {
             } else if (args[0].equalsIgnoreCase("user")) {
                 Command_User easyCommand = new Command_User(this.instance);
                 if (sender.hasPermission(easyCommand.getPermission())) {
-                    if (!easyCommand.handleCommand(sender, cmd, args)) {
+                    if (!easyCommand.handleCommand(sender, args)) {
                         sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix User §7===--------------\n ");
                         sender.sendMessage("§7/§5EasyPrefix user <Player> info §f| §7get information about the player");
                         sender.sendMessage("§7/§5EasyPrefix user <Player> update §f| §7update player data");
@@ -190,14 +190,15 @@ public class CommandListener implements Listener, CommandExecutor {
             } else if (args[0].equalsIgnoreCase("gui")) {
                 if (args.length > 2) {
                     if (args[1].equalsIgnoreCase("settings")) {
+                        GuiSettings gui = new GuiSettings(user);
                         if (args[2].equalsIgnoreCase("gender")) {
-                            new SettingsGUI(user).openGenderPage();
+                            gui.openGenderPage();
                         } else if (args[2].equalsIgnoreCase("group")) {
-                            new SettingsGUI(user).openGroupsPage();
+                            gui.openGroupsPage();
                         } else if (args[2].equalsIgnoreCase("subgroups")) {
-                            new SettingsGUI(user).openSubgroupsPage();
+                            gui.openSubgroupsPage();
                         } else if (args[2].equalsIgnoreCase("color")) {
-                            new SettingsGUI(user).openColorsPage();
+                            gui.openColorsPage();
                         }
                         return true;
                     }
@@ -210,7 +211,7 @@ public class CommandListener implements Listener, CommandExecutor {
                             EasyPrefix.getInstance().getSqlDatabase().uploadData();
                             EasyPrefix.getInstance().reload();
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
-                        } catch(SQLException e) {
+                        } catch (SQLException e) {
                             e.printStackTrace();
                             return false;
                         }
@@ -221,7 +222,7 @@ public class CommandListener implements Listener, CommandExecutor {
                             EasyPrefix.getInstance().getSqlDatabase().downloadData();
                             EasyPrefix.getInstance().reload();
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been downloaded!");
-                        } catch(SQLException e) {
+                        } catch (SQLException e) {
                             e.printStackTrace();
                             return false;
                         }

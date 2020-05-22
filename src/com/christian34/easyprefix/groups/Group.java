@@ -50,7 +50,7 @@ public class Group extends EasyGroup {
                     joinMsg = result.getString("join_msg");
                     quitMsg = result.getString("quit_msg");
                 }
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
@@ -72,7 +72,7 @@ public class Group extends EasyGroup {
 
         try {
             applyData(prefix, suffix, chatColor, chatFormatting, joinMsg, quitMsg);
-        } catch(Exception e) {
+        } catch (Exception e) {
             Messages.log("§cCouldn't load group " + name + "!");
             e.printStackTrace();
         }
@@ -156,7 +156,7 @@ public class Group extends EasyGroup {
                 stmt.setObject(1, value);
                 stmt.setString(2, NAME);
                 stmt.executeUpdate();
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }

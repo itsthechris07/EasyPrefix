@@ -28,7 +28,7 @@ public class UserData {
         if (!file.exists()) {
             try {
                 file.createNewFile();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -51,7 +51,7 @@ public class UserData {
     public void save() {
         try {
             fileData.save(file);
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         load();

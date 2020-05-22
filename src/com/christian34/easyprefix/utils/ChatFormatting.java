@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 
 /**
  * EasyPrefix 2020.
@@ -40,9 +39,9 @@ public enum ChatFormatting {
     @Override
     public String toString() {
         if (code.equals("r")) {
-            return getCode() + RainbowEffect.addRainbowEffect(Messages.getText(name));
+            return getCode() + RainbowEffect.addRainbowEffect(name.toString());
         } else {
-            return getCode() + Messages.getText(name);
+            return getCode() + name.toString();
         }
     }
 

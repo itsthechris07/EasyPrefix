@@ -16,6 +16,10 @@ public enum Message {
 
     @Override
     public String toString() {
+        return Messages.getText(message);
+    }
+
+    public String getPath() {
         return message;
     }
 

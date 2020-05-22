@@ -18,9 +18,9 @@ import java.net.URL;
 public class Updater {
     public final String UPDATE_MSG = "§7A new update is available at: §bhttps://www.spigotmc" + ".org/resources/44580/updates";
     private final String ERR_MSG = "§cUpdate checker failed!";
+    private final EasyPrefix instance;
     private String spigotPluginVersion;
     private boolean available = false;
-    private final EasyPrefix instance;
 
     public Updater(EasyPrefix instance) {
         this.instance = instance;
@@ -32,7 +32,7 @@ public class Updater {
                 HttpsURLConnection connection = (HttpsURLConnection) new URL("https://api.spigotmc.org/legacy/update" + ".php?resource=44580").openConnection();
                 connection.setRequestMethod("GET");
                 spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + ERR_MSG);
                 return;
             }

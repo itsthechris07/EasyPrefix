@@ -37,7 +37,6 @@ public class EasyPrefix extends JavaPlugin {
     private Plugin plugin;
     private Database database;
     private GroupHandler groupHandler;
-    private VaultManager vaultManager = null;
     private Updater updater;
     private FileManager fileManager;
 
@@ -76,7 +75,8 @@ public class EasyPrefix extends JavaPlugin {
         }
 
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            this.vaultManager = new VaultManager(this);
+            VaultManager vaultManager = new VaultManager(this);
+            vaultManager.hook();
         }
 
         this.updater = new Updater(this);
@@ -89,10 +89,6 @@ public class EasyPrefix extends JavaPlugin {
         return this.fileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_CHAT);
     }
 
-    public VaultManager getVaultManager() {
-        return vaultManager;
-    }
-
     public GroupHandler getGroupHandler() {
         return groupHandler;
     }
@@ -103,10 +99,10 @@ public class EasyPrefix extends JavaPlugin {
                 return user;
             }
         }
-        User newUser = new User(player);
-        newUser.login();
-        users.add(newUser);
-        return newUser;
+        User user = new User(player);
+        user.login();
+        users.add(user);
+        return user;
     }
 
     public ArrayList<User> getUsers() {

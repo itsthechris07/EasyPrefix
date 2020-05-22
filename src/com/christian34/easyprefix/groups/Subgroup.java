@@ -36,7 +36,7 @@ public class Subgroup extends EasyGroup {
                     this.prefix = result.getString("prefix");
                     this.suffix = result.getString("suffix");
                 }
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {

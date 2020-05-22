@@ -45,8 +45,8 @@ public class ChatRespond {
     private void startTimer() {
         this.bukkitTask = Bukkit.getScheduler().runTaskLater(instance, () -> {
             try {
-                RESPONDER.sendMessage(Messages.getText(Message.INPUT_CANCELLED));
-            } catch(Exception ignored) {
+                RESPONDER.sendMessage(Message.INPUT_CANCELLED.toString());
+            } catch (Exception ignored) {
             }
             exit();
         }, 20 * 60 * 3);
@@ -76,7 +76,7 @@ public class ChatRespond {
             if (!e.getPlayer().equals(RESPONDER.getPlayer())) return;
             User user = EasyPrefix.getInstance().getUser(e.getPlayer());
             if (e.getMessage().equals("quit") || e.getMessage().equals("cancel")) {
-                user.sendMessage(Messages.getText(Message.SETUP_CANCELLED, user));
+                user.sendMessage(Message.SETUP_CANCELLED.toString());
                 exit();
             } else {
                 Respond respond = ANSWER.apply(e.getMessage());
@@ -86,7 +86,7 @@ public class ChatRespond {
                         exit();
                         break;
                     case WRONG_INPUT:
-                        RESPONDER.sendMessage(Messages.getText(Message.CHAT_INPUT_WRONGENTRY).replace("%allowed_inputs%", errorText).replace("%newline%", "\n"));
+                        RESPONDER.sendMessage(Message.CHAT_INPUT_WRONGENTRY.toString().replace("%allowed_inputs%", errorText).replace("%newline%", "\n"));
                         break;
                     case ERROR:
                         break;

@@ -49,7 +49,7 @@ public class GenderChat {
                         Messages.log("error GC_01");
                     }
                 }
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {

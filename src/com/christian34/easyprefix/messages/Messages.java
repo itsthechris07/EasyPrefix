@@ -66,14 +66,14 @@ public class Messages {
             }
             data = YamlConfiguration.loadConfiguration(file);
             data.save(file);
-        } catch(Exception ignored) {
+        } catch (Exception ignored) {
             setLanguage("en_EN");
         }
     }
 
     public static List<String> getList(Message message) {
         List<String> temp = new ArrayList<>();
-        for (String msg : data.getStringList(message.toString())) {
+        for (String msg : data.getStringList(message.getPath())) {
             temp.add(translate(msg));
         }
         return temp;
@@ -85,38 +85,26 @@ public class Messages {
 
     public static String getText(Message message) {
         if (message != null) {
-            return translate(data.getString(message.toString()));
+            return translate(data.getString(message.getPath()));
         }
         return null;
     }
 
     public static String getAndSet(Message message, String value) {
         if (message != null) {
-            String text = translate(data.getString(message.toString()));
+            String text = translate(data.getString(message.getPath()));
             if (text == null) return null;
             return text.replace("%value%", value);
         }
         return null;
     }
 
-    public static String getText(Message message, User user) {
-        String text = "";
-        if (message != null) {
-            text = translate(data.getString(message.toString()));
-        }
-        if (PlaceholderAPI.isEnabled()) {
-            return PlaceholderAPI.setPlaceholder(user.getPlayer(), text);
-        } else {
-            return text;
-        }
-    }
-
     public static String getMessage(Message message) {
-        return getPrefix() + translate(data.getString(message.toString()));
+        return getPrefix() + translate(data.getString(message.getPath()));
     }
 
     public static String getMessage(Message message, User user) {
-        String text = translate(data.getString(message.toString()));
+        String text = translate(data.getString(message.getPath()));
         if (PlaceholderAPI.isEnabled()) {
             return getPrefix() + PlaceholderAPI.setPlaceholder(user.getPlayer(), text);
         } else {

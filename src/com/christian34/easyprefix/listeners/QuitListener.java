@@ -62,7 +62,7 @@ public class QuitListener implements Listener {
                 } else {
                     Messages.log("&cCouldn't play sound on player quit. Please check up the sound configuration.");
                 }
-            } catch(IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException ignored) {
                 Messages.log("&cCouldn't play sound '" + soundOption[0] + "'. Please use valid sounds!");
             }
         }

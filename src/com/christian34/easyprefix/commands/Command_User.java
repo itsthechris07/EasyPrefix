@@ -9,7 +9,6 @@ import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,7 +24,7 @@ public class Command_User {
         this.instance = instance;
     }
 
-    public boolean handleCommand(CommandSender sender, Command command, String[] args) {
+    public boolean handleCommand(CommandSender sender, String[] args) {
         Player player = Bukkit.getPlayer(args[1]);
         GroupHandler groupHandler = instance.getGroupHandler();
         if (player == null) {

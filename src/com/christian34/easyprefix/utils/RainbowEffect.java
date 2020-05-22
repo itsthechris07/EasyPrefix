@@ -45,7 +45,7 @@ public class RainbowEffect {
             for (String color : colors) {
                 try {
                     enabledColors.add(ChatColor.valueOf(color));
-                } catch(Exception ignored) {
+                } catch (Exception ignored) {
                 }
             }
             rainbowColors = enabledColors;

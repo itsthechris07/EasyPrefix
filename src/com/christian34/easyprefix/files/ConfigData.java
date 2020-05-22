@@ -15,9 +15,9 @@ import java.util.ArrayList;
  * @author Christian34
  */
 public class ConfigData {
+    private final EasyPrefix instance;
     private File file;
     private FileConfiguration data;
-    private final EasyPrefix instance;
 
     public ConfigData(EasyPrefix instance) {
         this.instance = instance;
@@ -30,7 +30,7 @@ public class ConfigData {
         } else {
             try {
                 ConfigUpdater.update(this.instance, "config.yml", file, new ArrayList<>());
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -42,7 +42,7 @@ public class ConfigData {
         try {
             data.options().copyDefaults(true);
             data.save(file);
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         load();
