@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.christian34.easyprefix</groupId>
     <artifactId>EasyPrefix</artifactId>
-    <version>1.6.5_ALPHA-2</version>
+    <version>1.6.5_BETA-2</version>
     <build>
         <plugins>
             <plugin>
