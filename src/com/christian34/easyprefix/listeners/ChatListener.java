@@ -64,11 +64,7 @@ public class ChatListener implements Listener {
         }
 
         e.setMessage(msg);
-
         String format = prefix + user.getPlayer().getDisplayName() + suffix + " " + chatColor + e.getMessage();
-        if (!instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.DUPLICATE_WHITE_SPACES)) {
-            format = format.replaceAll("\\s+", " ");
-        }
         e.setFormat(format.replace("%", "%%"));
     }
 

@@ -34,9 +34,15 @@ public class Icon {
         itemStack.setItemMeta(itemMeta);
     }
 
+    @SuppressWarnings("deprecation")
     public static ItemStack getCustomPlayerHead(String base, Material alternative) {
         try {
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
+            ItemStack skull;
+            if (VersionController.getMinorVersion() > 12) {
+                skull = new ItemStack(Material.valueOf("PLAYER_HEAD"), 1);
+            } else {
+                skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
+            }
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 
             GameProfile profile = new GameProfile(UUID.randomUUID(), "");
@@ -55,27 +61,23 @@ public class Icon {
 
     @SuppressWarnings("deprecation")
     public static ItemStack playerHead(String owningPlayer) {
+        ItemStack itemStack;
         if (VersionController.getMinorVersion() >= 13) {
-            ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
+            itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
+        } else {
+            itemStack = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
+        }
+
+        try {
             SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
             if (meta != null) {
                 meta.setOwner(owningPlayer);
             }
             itemStack.setItemMeta(meta);
             return itemStack;
-        } else {
-            try {
-                ItemStack itemStack = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
-                SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
-                if (meta != null) {
-                    meta.setOwner(owningPlayer);
-                }
-                itemStack.setItemMeta(meta);
-                return itemStack;
-            } catch (Exception ex) {
-                Messages.log("&cWarning: You're using an unsupported version. Please upgrade to Spigot 1.13 or higher!");
-                return new ItemStack(Material.BARRIER);
-            }
+        } catch (Exception ignored) {
+            Messages.log("&cWarning: You're using an unsupported version. Please upgrade to Spigot 1.13 or higher!");
+            return new ItemStack(Material.BARRIER);
         }
     }
 

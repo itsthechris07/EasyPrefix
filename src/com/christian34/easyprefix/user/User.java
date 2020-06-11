@@ -207,7 +207,7 @@ public class User {
                 setChatFormatting(null);
             }
         } else {
-            if (chatFormatting != null && !chatFormatting.equals(ChatFormatting.RAINBOW)) {
+            if (!(chatFormatting != null && chatFormatting.equals(ChatFormatting.RAINBOW))) {
                 setChatFormatting(null);
             }
         }
@@ -347,7 +347,7 @@ public class User {
             statement.setObject(1, value);
             statement.setObject(2, getPlayer().getUniqueId().toString());
             if (!statement.execute()) {
-                Messages.log("Couldn't send data to database!");
+                Messages.log("Couldn't save data to database!");
                 statement.getException().printStackTrace();
             }
         }

@@ -1,4 +1,3 @@
-# by magic235
 info:
   noperms: '&cNon hai il permesso di usare questo comando.'
   playerNotFound: '&cIl giocatore non è stato trovato!'
@@ -60,6 +59,7 @@ gui:
       - 'Disponibili: English, Deutsch, Italiano'
     switchCustomPrefixes: '&5Attiva/Disattiva i prefissi e i suffissi personalizzati'
     switchGender: '&5Attiva/Disattiva il genere dei giocatori'
+    switchColors: '&5Translate color and formatting codes'
   changeGender: '&aCambia genere'
   changeGender2: '&7Cliccami per cambiare il tuo genere'
   changeLangBtn: '&aLingua &7(&a%lang%&7)'
@@ -67,6 +67,7 @@ gui:
   groupsBtn: '&5Gruppi'
   subgroupsBtn: '&5Sottogruppi'
   switchGenderBtn: '&aGenere &7(&a%active%&7)'
+  switchColorsBtn: '&ahandle colors &7(&a%active%&7)'
   next: '&eProssimo'
   previous: '&eIndietro'
 chat:
@@ -108,3 +109,4 @@ gender:
   male: '&9Maschio'
   intersex: '&eIntersex'
 # newgender: "&fNewGender"
+# by magic235

@@ -19,17 +19,13 @@ import java.util.Set;
  * @author Christian34
  */
 public class GenderChat {
-    private final EasyGroup easyGroup;
-    private final EasyPrefix instance;
-    private final GroupHandler groupHandler;
     private final HashMap<GenderType, String> prefixes;
     private final HashMap<GenderType, String> suffixes;
 
     public GenderChat(EasyGroup easyGroup) {
-        this.easyGroup = easyGroup;
         int type = (easyGroup instanceof Group) ? 0 : 1;
-        this.instance = EasyPrefix.getInstance();
-        this.groupHandler = instance.getGroupHandler();
+        EasyPrefix instance = EasyPrefix.getInstance();
+        GroupHandler groupHandler = instance.getGroupHandler();
         this.prefixes = new HashMap<>();
         this.suffixes = new HashMap<>();
         if (instance.getSqlDatabase() != null) {
@@ -37,9 +33,10 @@ public class GenderChat {
             try {
                 String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%genders` WHERE `type` = " + type + " AND " + "`group_name` = '" + easyGroup.getName() + "'";
                 ResultSet result = database.getValue(sql);
+                if (result == null) return;
                 while (result.next()) {
                     String genderName = result.getString("gender");
-                    GenderType genderType = this.groupHandler.getGender(genderName);
+                    GenderType genderType = groupHandler.getGender(genderName);
                     if (genderType != null) {
                         String prefix = result.getString("prefix");
                         if (prefix != null) prefixes.put(genderType, prefix);
@@ -53,11 +50,11 @@ public class GenderChat {
                 e.printStackTrace();
             }
         } else {
-            GroupsData groupsData = this.instance.getFileManager().getGroupsData();
+            GroupsData groupsData = instance.getFileManager().getGroupsData();
             Set<String> set = groupsData.getSection(easyGroup.getFilePath() + "genders");
             if (!set.isEmpty()) {
                 for (String genderName : set) {
-                    GenderType genderType = this.groupHandler.getGender(genderName);
+                    GenderType genderType = groupHandler.getGender(genderName);
                     if (genderType == null) {
                         Messages.log("error GC_02: " + genderName);
                         continue;

@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Message;
@@ -10,18 +9,13 @@ import com.christian34.easyprefix.setup.responder.gui.pages.GuiSettings;
 import com.christian34.easyprefix.setup.responder.gui.pages.GuiSetup;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -86,6 +80,7 @@ public class CommandListener implements Listener, CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("debug") && sender.hasPermission("easyprefix.admin.debug")) {
                 sender.sendMessage(" \n§7------------=== §5§lEasyPrefix DEBUG §7===------------");
+                sender.sendMessage("§5Version: §7" + this.instance.getPlugin().getDescription().getVersion());
                 sender.sendMessage("§5Groups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
                 sender.sendMessage("§5Users cached: §7" + this.instance.getUsers().size());
                 sender.sendMessage("§5Genders cached: §7" + groupHandler.getGenderTypes().size());
@@ -93,9 +88,9 @@ public class CommandListener implements Listener, CommandExecutor {
                 sender.sendMessage("§5Java Version: §7" + System.getProperty("java.version"));
                 sender.sendMessage("§5Version Name: §7" + Bukkit.getBukkitVersion());
                 sender.sendMessage("§5Storage: §7" + ((this.instance.getSqlDatabase() != null) ? "MySQL" : "local"));
-                sender.sendMessage("§5active EventHandler: §7" + HandlerList.getRegisteredListeners(EasyPrefix.getInstance().getPlugin()).size());
+                sender.sendMessage("§5active EventHandler: §7" + HandlerList.getRegisteredListeners(this.instance.getPlugin()).size());
                 return true;
-            } else if (args[0].equalsIgnoreCase("database") && EasyPrefix.getInstance().getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
+            } else if (args[0].equalsIgnoreCase("database") && this.instance.getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
                 sender.sendMessage("§7---------------=== §5§lEasyPrefix §7===---------------\n ");
                 sender.sendMessage("§7/§5EasyPrefix database upload §f| §7upload groups and users to database (will override database!)");
                 sender.sendMessage("§7/§5EasyPrefix database download §f| §7download groups and users to local " + "storage" + " " + "(will" + " override files and settings!)");
@@ -103,45 +98,7 @@ public class CommandListener implements Listener, CommandExecutor {
                 return true;
             }
         } else if (args.length >= 2) {
-            if (args[0].equalsIgnoreCase("set")) {
-                if (sender.hasPermission("EasyPrefix.admin")) {
-                    if (!(args.length == 3)) {
-                        sender.sendMessage(Messages.getPrefix() + "§7Usage: /easyprefix set <Player> <Prefix>");
-                        return false;
-                    } else if (!groupHandler.isGroup(args[2])) {
-                        sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
-                        return false;
-                    }
-                    Player targetPlayer = Bukkit.getPlayer(args[1]);
-                    Group group = groupHandler.getGroup(args[2]);
-                    if (targetPlayer != null) {
-                        User target = EasyPrefix.getInstance().getUser(targetPlayer);
-                        target.setGroup(group, true);
-                        sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                        return true;
-                    } else {
-                        OfflinePlayer op = Bukkit.getOfflinePlayer(args[1]);
-                        File userFile = new File(FileManager.getPluginFolder() + "/user", op.getUniqueId() + ".yml");
-                        if (op.hasPlayedBefore() && userFile.exists()) {
-                            FileConfiguration userData = YamlConfiguration.loadConfiguration(userFile);
-                            userData.set("user.group", group.getName());
-                            try {
-                                userData.save(userFile);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                            return true;
-                        } else {
-                            sender.sendMessage(Messages.getMessage(Message.PLAYER_NOT_FOUND));
-                            return false;
-                        }
-                    }
-                } else {
-                    sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                    return false;
-                }
-            } else if (args[0].equalsIgnoreCase("group")) {
+            if (args[0].equalsIgnoreCase("group")) {
                 if (sender.hasPermission("EasyPrefix.admin")) {
                     Group group;
                     if (groupHandler.isGroup(args[1])) {
@@ -203,13 +160,13 @@ public class CommandListener implements Listener, CommandExecutor {
                         return true;
                     }
                 }
-            } else if (args[0].equalsIgnoreCase("database") && EasyPrefix.getInstance().getSqlDatabase() != null) {
+            } else if (args[0].equalsIgnoreCase("database") && this.instance.getSqlDatabase() != null) {
                 if (sender.hasPermission("easyprefix.admin")) {
                     if (args[1].equalsIgnoreCase("upload")) {
                         sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while.");
                         try {
-                            EasyPrefix.getInstance().getSqlDatabase().uploadData();
-                            EasyPrefix.getInstance().reload();
+                            this.instance.getSqlDatabase().uploadData();
+                            this.instance.reload();
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
                         } catch (SQLException e) {
                             e.printStackTrace();
@@ -219,8 +176,8 @@ public class CommandListener implements Listener, CommandExecutor {
                     } else if (args[1].equalsIgnoreCase("download")) {
                         sender.sendMessage(Messages.getPrefix() + "§7Downloading data to local storage This could take a while.");
                         try {
-                            EasyPrefix.getInstance().getSqlDatabase().downloadData();
-                            EasyPrefix.getInstance().reload();
+                            this.instance.getSqlDatabase().downloadData();
+                            this.instance.reload();
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been downloaded!");
                         } catch (SQLException e) {
                             e.printStackTrace();
@@ -242,11 +199,11 @@ public class CommandListener implements Listener, CommandExecutor {
         sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
         sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
         sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
-        if (EasyPrefix.getInstance().getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
+        if (this.instance.getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
             sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
         }
         sender.sendMessage(" \n§7------------------------------------------------\n ");
-        sender.sendMessage("§7Version: " + EasyPrefix.getInstance().getPlugin().getDescription().getVersion());
+        sender.sendMessage("§7Version: " + this.instance.getPlugin().getDescription().getVersion());
         sender.sendMessage("§7EasyPrefix by §5§lChristian34");
         return false;
     }

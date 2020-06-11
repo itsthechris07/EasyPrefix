@@ -7,7 +7,6 @@ import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.UserData;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -29,19 +28,18 @@ public class Database {
     private Connection connection;
 
     public Database(EasyPrefix instance) {
-        String tablePrefix1;
         this.instance = instance;
         ConfigData config = instance.getFileManager().getConfig();
         this.host = config.getString(ConfigKeys.SQL_HOST);
         this.database = config.getString(ConfigKeys.SQL_DATABASE);
         this.username = config.getString(ConfigKeys.SQL_USERNAME);
         this.password = config.getString(ConfigKeys.SQL_PASSWORD);
-        tablePrefix1 = config.getString(ConfigKeys.SQL_TABLE_PREFIX);
+        String tPrefix = config.getString(ConfigKeys.SQL_TABLE_PREFIX);
         this.port = config.getInt(ConfigKeys.SQL_PORT);
-        if (tablePrefix1 == null || tablePrefix1.isEmpty()) {
-            tablePrefix1 = "";
-        } else if (!tablePrefix1.endsWith("_")) tablePrefix1 += "_";
-        this.tablePrefix = tablePrefix1;
+        if (tPrefix == null || tPrefix.isEmpty()) {
+            tPrefix = "";
+        } else if (!tPrefix.endsWith("_")) tPrefix += "_";
+        this.tablePrefix = tPrefix;
         connect();
     }
 
@@ -78,20 +76,19 @@ public class Database {
         try {
             if (connection.isClosed()) connect();
             Statement stmt = connection.createStatement();
-            return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
+            statement = statement.replace("%p%", getTablePrefix());
+            return stmt.executeQuery(statement);
         } catch (SQLException e) {
-            Messages.log("§cCouldn't get value from statement '" + statement + "'!");
-            Messages.log("§c" + e.getMessage());
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public boolean exists(String statement) {
         try {
             if (connection.isClosed()) connect();
             Statement stmt = connection.createStatement();
-            ResultSet result = stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
+            statement = statement.replace("%p%", getTablePrefix());
+            ResultSet result = stmt.executeQuery(statement);
             return result.next();
         } catch (SQLException e) {
             Messages.log("§cCouldn't get value from statement '" + statement + "'!");
@@ -102,16 +99,24 @@ public class Database {
     }
 
     public void update(String statement) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.instance, () -> {
-            try {
-                if (connection.isClosed()) connect();
-                Statement stmt = connection.createStatement();
-                stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+        try {
+            if (connection.isClosed()) connect();
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addConstraint(String statement) {
+        try {
+            if (connection.isClosed()) connect();
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
+            stmt.close();
+        } catch (SQLException e) {
+        }
     }
 
     private void createTables() {
@@ -119,6 +124,9 @@ public class Database {
         update("CREATE TABLE IF NOT EXISTS `%p%groups` (`group` VARCHAR(64) not null, UNIQUE(`group`), prefix VARCHAR(128) default NULL null, suffix VARCHAR(128) default NULL null, chat_color CHAR(2) default NULL null, chat_formatting CHAR(2) default NULL null, join_msg VARCHAR(255) default NULL null, quit_msg VARCHAR(255) default NULL null)ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update("CREATE TABLE IF NOT EXISTS `%p%genders` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT(1) NOT NULL , `group_name` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update("CREATE TABLE IF NOT EXISTS `%p%subgroups` ( `group` VARCHAR(64) NOT NULL , UNIQUE(`group`), `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null ) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
+
+        addConstraint("ALTER TABLE `%p%users` ADD CONSTRAINT `group` FOREIGN KEY (`group`) REFERENCES `%p%groups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
+        addConstraint("ALTER TABLE `%p%users` ADD CONSTRAINT `subgroup` FOREIGN KEY (`subgroup`) REFERENCES `%p%subgroups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
     }
 
     public void uploadGroups() throws SQLException {
@@ -133,6 +141,7 @@ public class Database {
                 PreparedStatement stmt = prepareStatement(sql);
                 stmt.setString(1, groupName);
                 stmt.executeUpdate();
+                stmt.close();
                 Messages.log("§7Uploaded group '" + groupName + "' to database!");
             } catch (Exception ignored) {
             }
@@ -175,6 +184,7 @@ public class Database {
                     stmt2.setString(2, gender);
                     stmt2.setString(3, groupName);
                     ResultSet result = stmt2.executeQuery();
+                    stmt2.close();
                     String sql3;
                     PreparedStatement stmt3;
                     if (!result.next()) {
@@ -195,6 +205,7 @@ public class Database {
                         stmt3.setString(4, gender);
                         stmt3.setString(5, groupName);
                         stmt3.executeUpdate();
+                        stmt3.close();
                     }
                 }
             } else {
@@ -202,6 +213,7 @@ public class Database {
                 PreparedStatement stmt2 = prepareStatement(sql2);
                 stmt2.setString(1, groupName);
                 stmt2.executeUpdate();
+                stmt2.close();
             }
             statement.setObject(7, groupName);
             if (!statement.execute()) {

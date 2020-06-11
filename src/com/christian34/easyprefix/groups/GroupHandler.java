@@ -13,7 +13,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -130,14 +130,11 @@ public class GroupHandler {
 
     public void loadGenders() {
         this.genderTypes = new ArrayList<>();
-        List<String> types = instance.getFileManager().getConfig().getData().getStringList("config.gender.types");
+        ConfigData config = instance.getFileManager().getConfig();
+        Set<String> types = Objects.requireNonNull(config.getData().getConfigurationSection("config.gender.types")).getKeys(false);
         for (String name : types) {
-            if (Messages.getText("gender." + name) != null) {
-                GenderType genderType = new GenderType(name);
-                this.genderTypes.add(genderType);
-            } else {
-                Messages.log("&cCouldn't recognize gender '" + name + "'. " + "Please add a name to the language file. " + "If you're not sure what to do, please have a look to GitHub.");
-            }
+            GenderType genderType = new GenderType(name);
+            this.genderTypes.add(genderType);
         }
     }
 
@@ -196,7 +193,8 @@ public class GroupHandler {
     }
 
     public void createGroup(String groupName) {
-        if (EasyPrefix.getInstance().getSqlDatabase() == null) {
+        Database database = EasyPrefix.getInstance().getSqlDatabase();
+        if (database == null) {
             String path = "groups." + groupName + ".";
             getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");
             getGroupsData().set(path + "suffix", "&f:");
@@ -204,10 +202,9 @@ public class GroupHandler {
             getGroupsData().set(path + "chat-formatting", "&o");
             getGroupsData().save();
         } else {
-            Database database = EasyPrefix.getInstance().getSqlDatabase();
             database.update("INSERT INTO `%p%groups`(`group`) VALUES ('" + groupName + "')");
         }
-        this.groups.add(new Group(this, groupName));
+        load();
     }
 
     private GroupsData getGroupsData() {

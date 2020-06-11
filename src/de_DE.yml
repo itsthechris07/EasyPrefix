@@ -42,6 +42,7 @@ gui:
   changeLangBtn: "&aSprache &7(&a%lang%&7)"
   switchCustomPrefixBtn: "&aBenutzerdefinierte Präfixe &7(&a%active%&7)"
   switchGenderBtn: "&aGeschlechter &7(&a%active%&7)"
+  switchColorsBtn: "&aChatfarben &7(&a%active%&7)"
   next: '&eWeiter'
   previous: '&eZurück'
   title:
@@ -68,6 +69,7 @@ gui:
       - "&5(Ist nicht mit dem Regenbogen-Effekt kompatibel)"
     switchCustomPrefixes: "&5Aktiviere/Deaktiviere benutzerdefinierte Präfixe/Suffixe"
     switchGender: "&5Aktiviere/Deaktiviere geschlechterspezische Präfixe"
+    switchColors: "&5Farben und Formatierungen setzen"
 chat:
   header:
     - "&7----------------=== &5&lEasyPrefix &7===----------------"
@@ -101,9 +103,3 @@ colors:
     strikethrough: "Durchgestrichen"
     underline: "Unterstrichen"
     rainbow: "Regenbogen"
-# you must define a name for each genders
-gender:
-  female: "&5Weiblich"
-  male: "&9Männlich"
-  intersex: "&eIntersex"
-# newgender: "&fNewGender"

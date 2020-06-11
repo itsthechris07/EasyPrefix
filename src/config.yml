@@ -51,20 +51,24 @@ config:
   gender:
     enabled: true
     # force a player to select a gender
+    # true shows a message to select a gender on join
     force-gender: false
-    # you must add it also in your messages file (en_EN.yml, de_DE.yml, it_IT.yml)
     types:
-      - female
-      - male
-      - intersex
+      female:
+        displayname: '&5Female'
+      male:
+        displayname: '&9Male'
+      # yes, this is a thing (biologically proven) - please respect it #loveislove <3
+      intersex:
+        displayname: '&eIntersex'
+      # newgender:
+      # displayname: 'name'
   # settings for the gui
   gui:
     # specifies if all colors and formattings should be visible, even if the player has no permissions for it.
     show-all-chatcolors: true
   # settings for chat appearance
   chat:
-    # false removes all duplicate spaces
-    duplicate-white-spaces: false
     # allow easyprefix to handle colors and formattings
     handle-colors: true
     # set to false, if you use other chat plugins like EssentialsChat or MultiChat

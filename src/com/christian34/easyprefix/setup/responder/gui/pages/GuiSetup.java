@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class GuiSetup extends Page {
         GuiRespond guiRespond = new GuiRespond(user, Message.SETTINGS_TITLE_MAIN.toString(), 3);
         guiRespond.addIcon(Material.CHEST, Message.BTN_GROUPS.toString(), 2, 3).addClickAction(this::groupsList);
 
-        guiRespond.addIcon(Material.NETHER_STAR, Message.SETTINGS_TITLE_MAIN.toString(), 2, 5).addClickAction(this::userSettingsGui);
+        guiRespond.addIcon(Material.NETHER_STAR, Message.SETTINGS_TITLE_MAIN.toString(), 2, 5).addClickAction(this::pluginSettingsGui);
 
         Material icon = (VersionController.getMinorVersion() < 12) ? Material.valueOf("CHEST") : Material.valueOf("WRITABLE_BOOK");
         guiRespond.addIcon(icon, Message.BTN_SUBGROUPS.toString(), 2, 7).addClickAction(this::openSubgroupsList);
@@ -52,11 +53,11 @@ public class GuiSetup extends Page {
         return this;
     }
 
-    public GuiSetup userSettingsGui() {
+    public GuiSetup pluginSettingsGui() {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
         Material langMaterial = (VersionController.getMinorVersion() < 12) ? Material.valueOf("SIGN") : Material.valueOf("OAK_SIGN");
         String langName = Message.BTN_CHANGE_LANG.toString().replace("%lang%", Messages.langToName());
-        guiRespond.addIcon(langMaterial, langName, 2, 3).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).addClickAction(() -> {
+        guiRespond.addIcon(langMaterial, langName, 2, 2).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).addClickAction(() -> {
             String crntLang = Messages.getLanguage();
             String nextLang = "en_EN";
             switch (crntLang) {
@@ -68,25 +69,46 @@ public class GuiSetup extends Page {
                     break;
             }
             Messages.setLanguage(nextLang);
-            userSettingsGui();
+            pluginSettingsGui();
         });
 
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
         boolean useCp = configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX);
         String cpText = Message.BTN_SWITCH_CP.toString().replace("%active%", (useCp) ? Message.ENABLED.toString() : Message.DISABLED.toString());
-        guiRespond.addIcon(Material.BEACON, cpText, 2, 5).setLore(Messages.getList(Message.LORE_SWITCH_CP)).addClickAction(() -> {
+        guiRespond.addIcon(Material.BEACON, cpText, 2, 4).setLore(Collections.singletonList(Message.LORE_SWITCH_CP.toString())).addClickAction(() -> {
             configData.set(ConfigData.ConfigKeys.CUSTOM_PREFIX.toString(), !useCp);
             EasyPrefix.getInstance().reload();
-            userSettingsGui();
+            pluginSettingsGui();
         });
 
         boolean useGender = configData.getBoolean(ConfigData.ConfigKeys.USE_GENDER);
         String genderText = Message.BTN_SWITCH_GENDER.toString().replace("%active%", (useGender) ? Message.ENABLED.toString() : Message.DISABLED.toString());
-        guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 7).setLore(Messages.getList(Message.LORE_SWITCH_GENDER)).addClickAction(() -> {
+        guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 6).setLore(Collections.singletonList(Message.LORE_SWITCH_GENDER.toString())).addClickAction(() -> {
             boolean use = !useGender;
             configData.set(ConfigData.ConfigKeys.USE_GENDER.toString(), use);
             EasyPrefix.getInstance().reload();
-            userSettingsGui();
+            pluginSettingsGui();
+        });
+
+
+        Material btnMaterial;
+        if (VersionController.getMinorVersion() < 13) {
+            try {
+                btnMaterial = Material.valueOf("INK_SACK");
+            } catch (Exception ignored) {
+                btnMaterial = Material.BARRIER;
+            }
+        } else {
+            btnMaterial = Material.LIME_DYE;
+        }
+
+        boolean useColors = configData.getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS);
+        String colorsText = Message.BTN_SWITCH_COLOR.toString().replace("%active%", (useColors) ? Message.ENABLED.toString() : Message.DISABLED.toString());
+        guiRespond.addIcon(btnMaterial, colorsText, 2, 8).setLore(Collections.singletonList(Message.LORE_SWITCH_COLOR.toString())).addClickAction(() -> {
+            boolean use = !useColors;
+            configData.set(ConfigData.ConfigKeys.HANDLE_COLORS.toString(), use);
+            EasyPrefix.getInstance().reload();
+            pluginSettingsGui();
         });
 
         guiRespond.addCloseButton().addClickAction(this::mainPage);

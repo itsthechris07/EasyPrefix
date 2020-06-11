@@ -1,6 +1,10 @@
 package com.christian34.easyprefix.groups.gender;
 
-import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.files.ConfigData;
+import org.bukkit.ChatColor;
+
+import java.util.Objects;
 
 /**
  * EasyPrefix 2020.
@@ -13,7 +17,8 @@ public class GenderType {
 
     public GenderType(String name) {
         this.name = name.toLowerCase();
-        this.displayName = Messages.getText("gender." + name);
+        ConfigData config = EasyPrefix.getInstance().getFileManager().getConfig();
+        this.displayName = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getData().getString("config.gender.types." + name + ".displayname")));
     }
 
     public String getName() {

@@ -40,6 +40,7 @@ public class DataStatement {
     public boolean execute() {
         try {
             preparedStatement.executeUpdate();
+            preparedStatement.close();
             return true;
         } catch (SQLException ex) {
             this.exception = ex;

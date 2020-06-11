@@ -87,13 +87,15 @@ public class Group extends EasyGroup {
             if (this.chatFormatting == null) setChatFormatting(null);
         }
 
-        if (chatColor == null || chatColor.isEmpty() || chatColor.length() < 2 && (this.chatFormatting != null && this.chatFormatting != ChatFormatting.RAINBOW)) {
-            setChatColor(Color.GRAY);
-            chatColor = "&7";
+        if (chatColor == null || chatColor.length() < 2) {
+            if (this.chatFormatting != null && this.chatFormatting.equals(ChatFormatting.RAINBOW)) {
+                this.chatColor = Color.GRAY;
+            } else {
+                setChatColor(Color.GRAY);
+            }
+        } else {
+            this.chatColor = Color.getByCode(chatColor.substring(1, 2));
         }
-
-        this.chatColor = Color.getByCode(chatColor.substring(1, 2));
-        if (this.chatColor == null) setChatColor(Color.GRAY);
 
         this.groupColor = getGroupColor(prefix);
         this.joinMessage = joinMessage;
@@ -160,7 +162,7 @@ public class Group extends EasyGroup {
                 e.printStackTrace();
             }
         }
-        /* todo reload current group, to improve performance */
+        System.out.print(this.getName() + ": " + key + ": " + value);
         this.groupHandler.getInstance().getGroupHandler().load();
     }
 
@@ -243,7 +245,7 @@ public class Group extends EasyGroup {
                 setChatFormatting(null);
             }
         } else {
-            if (chatFormatting != null && !chatFormatting.equals(ChatFormatting.RAINBOW)) {
+            if (!(chatFormatting != null && chatFormatting.equals(ChatFormatting.RAINBOW))) {
                 setChatFormatting(null);
             }
         }

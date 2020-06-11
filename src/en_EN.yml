@@ -42,6 +42,7 @@ gui:
   changeLangBtn: '&aLanguage &7(&a%lang%&7)'
   switchCustomPrefixBtn: '&aCustom Prefix &7(&a%active%&7)'
   switchGenderBtn: '&aGender &7(&a%active%&7)'
+  switchColorsBtn: "&ahandle colors &7(&a%active%&7)"
   next: '&eNext'
   previous: '&ePrevious'
   title:
@@ -68,6 +69,7 @@ gui:
       - '&5(not compatible with rainbow effect)'
     switchCustomPrefixes: '&5Enable/Disable custom prefixes and suffixes'
     switchGender: '&5Enable/Disable players sex'
+    switchColors: "&5Translate color and formatting codes"
 chat:
   header:
     - '&7----------------=== &5&lEasyPrefix &7===----------------'
@@ -101,9 +103,3 @@ colors:
     strikethrough: 'Strikethrough'
     underline: 'Underline'
     rainbow: 'Rainbow'
-# you must define a name for each genders
-gender:
-  female: '&5Female'
-  male: '&9Male'
-  intersex: '&eIntersex'
-# newgender: "&fNewGender"

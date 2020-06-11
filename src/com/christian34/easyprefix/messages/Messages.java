@@ -83,13 +83,6 @@ public class Messages {
         return translate(data.getString(path));
     }
 
-    public static String getText(Message message) {
-        if (message != null) {
-            return translate(data.getString(message.getPath()));
-        }
-        return null;
-    }
-
     public static String getAndSet(Message message, String value) {
         if (message != null) {
             String text = translate(data.getString(message.getPath()));
