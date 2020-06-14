@@ -75,10 +75,10 @@ public class GuiModifyingGroups extends Page {
         for (Color color : Color.getValues()) {
             if (line == 3 && slot == 1) slot++;
             ItemStack itemStack = color.toItemStack();
-            if (group.getChatColor() != null && group.getChatColor().equals(color))
+            if (group.getChatColor() != null && group.getChatColor().equals(color) && (group.getChatFormatting() == null || !group.getChatFormatting().equals(ChatFormatting.RAINBOW)))
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
 
-            guiRespond.addIcon(itemStack, Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, slot).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, slot).addClickAction(() -> {
                 group.setChatColor(color);
                 editChatColor(easyGroup);
             });

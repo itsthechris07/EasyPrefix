@@ -62,7 +62,7 @@ config:
       intersex:
         displayname: '&eIntersex'
       # newgender:
-      # displayname: 'name'
+      #   displayname: 'name'
   # settings for the gui
   gui:
     # specifies if all colors and formattings should be visible, even if the player has no permissions for it.

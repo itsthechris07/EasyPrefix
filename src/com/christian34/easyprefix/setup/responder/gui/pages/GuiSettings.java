@@ -122,7 +122,7 @@ public class GuiSettings extends Page {
                 } else {
                     subgroupsMaterial = Material.WRITABLE_BOOK;
                 }
-            } catch (Exception ignored) {
+            } catch(Exception ignored) {
             }
             guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).addClickAction(this::openSubgroupsPage);
         }
@@ -171,14 +171,11 @@ public class GuiSettings extends Page {
             }
             if (line == 3 && slot == 1) slot++;
             ItemStack itemStack = color.toItemStack();
-            if (user.getChatColor() != null && user.getChatColor().equals(color) && !(user.getChatFormatting() != null && user.getChatFormatting().equals(ChatFormatting.RAINBOW)))
+            if (user.getChatColor() != null && user.getChatColor().equals(color) && (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)))
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
 
-            guiRespond.addIcon(itemStack, Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, slot).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, +slot).addClickAction(() -> {
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {
-                    if (user.getChatColor() != null && user.getChatColor().equals(color)) {
-                        return;
-                    }
                     user.setChatColor(color);
                     openColorsPage();
                 } else {
@@ -224,7 +221,9 @@ public class GuiSettings extends Page {
             slot++;
         }
 
-        guiRespond.addCloseButton().addClickAction(this::mainPage);
+        guiRespond.addCloseButton().
+
+                addClickAction(this::mainPage);
         guiRespond.openInventory();
         return this;
     }

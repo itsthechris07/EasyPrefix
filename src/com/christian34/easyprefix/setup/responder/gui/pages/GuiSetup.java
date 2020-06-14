@@ -229,7 +229,7 @@ public class GuiSetup extends Page {
 
     public GuiSetup openGroupProfile(Group group) {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 4);
-        Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, Message.LORE_GROUP_DETAIL, 2, 3);
+        Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 3);
         prefixIcon.setLore(Arrays.asList(this.DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getPrefix(null, false) + "§7»", " ", Message.LORE_EDIT.toString()));
         prefixIcon.addClickAction(() -> new GuiModifyingGroups(user).editPrefix(group));
 
