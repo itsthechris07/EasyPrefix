@@ -66,9 +66,13 @@ public class GuiRespond {
         if (pages.size() > 1) {
             if (pageId < pages.size()) {
                 contents[nextPage.getSlot()] = nextPage.getItemStack();
+            } else {
+                contents[nextPage.getSlot()] = getPlaceholder();
             }
             if (pageId > 1) {
                 contents[prevPage.getSlot()] = prevPage.getItemStack();
+            } else {
+                contents[prevPage.getSlot()] = getPlaceholder();
             }
         }
         inventory.setContents(contents);
@@ -149,19 +153,9 @@ public class GuiRespond {
         this.LISTENER = null;
     }
 
-    @SuppressWarnings("deprecation")
     private void addGlassFrame() {
         ItemStack[] contents = inventory.getContents();
-        ItemStack glass;
-        if (VersionController.getMinorVersion() < 13) {
-            glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);
-        } else {
-            glass = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"), 1);
-        }
-
-        ItemMeta meta = glass.getItemMeta();
-        if (meta != null) meta.setDisplayName("§0 ");
-        glass.setItemMeta(meta);
+        ItemStack glass = getPlaceholder();
 
         int[] rows = {1, this.guiLines};
         for (int row : rows) {
@@ -174,6 +168,18 @@ public class GuiRespond {
             }
         }
         inventory.setContents(contents);
+    }
+
+    @SuppressWarnings("deprecation")
+    private ItemStack getPlaceholder() {
+        ItemStack glass = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"), 1);
+        if (VersionController.getMinorVersion() < 13) {
+            glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);
+        }
+        ItemMeta meta = glass.getItemMeta();
+        if (meta != null) meta.setDisplayName("§0 ");
+        glass.setItemMeta(meta);
+        return glass;
     }
 
     private static class GuiPage {
@@ -246,7 +252,7 @@ public class GuiRespond {
             try {
                 preventClose = false;
                 clickedIcon.getClickAction().execute();
-            } catch (Exception ex) {
+            } catch(Exception ex) {
                 e.getWhoClicked().closeInventory();
                 e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
                 Messages.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");

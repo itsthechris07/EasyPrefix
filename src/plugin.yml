@@ -1,8 +1,8 @@
 name: EasyPrefix
-version: 1.6.5
+version: 1.6.5-R1
 author: Christian34
 main: com.christian34.easyprefix.EasyPrefix
-api-version: "1.15"
+api-version: "1.13"
 softdepend:
   - PlaceholderAPI
   - Vault

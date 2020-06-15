@@ -59,7 +59,7 @@ public class Database {
             try {
                 if (connection != null && !connection.isClosed()) return;
                 Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false", username, password);
+                connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&useUnicode=true&characterEncoding=utf-8", username, password);
                 createTables();
             } catch (SQLSyntaxErrorException e) {
                 Messages.log("§cDatabase '" + database + "' does not exist!");
