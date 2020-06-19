@@ -21,10 +21,12 @@ gui:
   myFormattingsBtn: '&3Formattazioni chat'
   resetBtn: '&4Reset'
   deleteBtn: '&4Cancella'
+  groupsBtn: '&5Gruppi'
+  subgroupsBtn: '&5Sottogruppi'
+  changeGender: '&aCambia genere'
+  changeGender2: '&7Cliccami per cambiare il tuo genere'
   changeChatColor: '&aCambia il colore della chat'
-  changeChatColor2: '&7Cliccami per cambiare il tuo colore principale'
   changePrefix: '&aCambia prefisso'
-  changePrefix2: '&7Cliccami per cambiare il tuo prefisso'
   changeSuffix: '&aCambia suffisso'
   clickToEdit: '&5Clicca per modificare'
   addGroupBtn: '&2Aggiungi gruppo'
@@ -35,12 +37,17 @@ gui:
   inputSaved: '&aL´impostazione è stata salvata!'
   settingsTitle: '&5Chat &8» %page%'
   currentValue: '&7Attuale: &f'
+  changeLangBtn: '&aLingua &7(&a%lang%&7)'
+  switchCustomPrefixBtn: '&aPrefisso personalizzato &7(&a%active%&7)'
+  switchGenderBtn: '&aGenere &7(&a%active%&7)'
+  switchColorsBtn: '&ahandle colors &7(&a%active%&7)'
+  next: '&eProssimo'
+  previous: '&eIndietro'
   title:
     groups: '&8Gruppi'
-    settings: '&8Impostazioni'
-    prefixes: '&8Prefissi'
+    settings: '&5Impostazioni'
+    layout: '&8Layout'
     formattings: '&8Formattazioni'
-    customPrefix: '&8Personalizzato'
     deleteGroup: '&4Cancellare %group%?'
     gender: '&8Genere'
     subgroups: '&8Sottogruppi'
@@ -60,16 +67,6 @@ gui:
     switchCustomPrefixes: '&5Attiva/Disattiva i prefissi e i suffissi personalizzati'
     switchGender: '&5Attiva/Disattiva il genere dei giocatori'
     switchColors: '&5Translate color and formatting codes'
-  changeGender: '&aCambia genere'
-  changeGender2: '&7Cliccami per cambiare il tuo genere'
-  changeLangBtn: '&aLingua &7(&a%lang%&7)'
-  switchCustomPrefixBtn: '&aPrefisso personalizzato &7(&a%active%&7)'
-  groupsBtn: '&5Gruppi'
-  subgroupsBtn: '&5Sottogruppi'
-  switchGenderBtn: '&aGenere &7(&a%active%&7)'
-  switchColorsBtn: '&ahandle colors &7(&a%active%&7)'
-  next: '&eProssimo'
-  previous: '&eIndietro'
 chat:
   header:
     - '&7----------------=== &5&lEasyPrefix &7===----------------'
@@ -80,6 +77,8 @@ chat:
   suffix: '&5Quale suffisso vuoi impostare?%newline%&5Attuale: &7"%suffix%"'
   group: '&5Che nome vuoi dare al gruppo?'
   wrongEntry: '&cInput errato!%newline%&7%allowed_inputs%'
+  playerPrefix: '&7[&5Chat&7] &aYour prefix has been set to %prefix%'
+  playerSuffix: '&7[&5Chat&7] &aYour suffix has been set to %suffix%'
 colors:
   black: Nero
   blue: Blu scuro
@@ -90,8 +89,6 @@ colors:
   gold: Oro
   lightgray: Grigio
   gray: Grigio scuro
-  lightblue: Blu
-  lime: Verde
   aqua: Turchese
   red: Rosso
   magenta: Rosa
@@ -103,10 +100,4 @@ colors:
     strikethrough: Barrato
     underline: Sottolineato
     rainbow: Arcobaleno
-# you must define a name for each genders
-gender:
-  female: '&5Femmina'
-  male: '&9Maschio'
-  intersex: '&eIntersex'
-# newgender: "&fNewGender"
 # by magic235
