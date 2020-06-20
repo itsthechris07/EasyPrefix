@@ -90,7 +90,8 @@ public class GuiSettings extends Page {
     }
 
     public GuiSettings openGroupsPage() {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_PREFIXES), 5);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
+        ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
         for (Group group : user.getAvailableGroups()) {
             ChatColor prefixColor = group.getGroupColor();
@@ -110,8 +111,8 @@ public class GuiSettings extends Page {
             });
         }
 
-        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX) && user.getPlayer().hasPermission("easyprefix.settings.custom")) {
-            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX.toString()).addClickAction(this::openCustomPrefixPage);
+        if (configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) && user.hasPermission("easyprefix.custom.gui")) {
+            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9).addClickAction(this::openCustomPrefixPage);
         }
 
         if (user.getAvailableSubgroups().size() > 0) {
@@ -122,7 +123,7 @@ public class GuiSettings extends Page {
                 } else {
                     subgroupsMaterial = Material.WRITABLE_BOOK;
                 }
-            } catch(Exception ignored) {
+            } catch (Exception ignored) {
             }
             guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).addClickAction(this::openSubgroupsPage);
         }
@@ -133,7 +134,7 @@ public class GuiSettings extends Page {
     }
 
     public GuiSettings openSubgroupsPage() {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_PREFIXES), 5);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
         for (Subgroup subgroup : user.getAvailableSubgroups()) {
             List<String> lore = new ArrayList<>();
             ItemStack book = new ItemStack(Material.BOOK);
@@ -197,11 +198,14 @@ public class GuiSettings extends Page {
                 continue;
             }
             List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
+            if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
+                lore.remove(lore.size() - 1);
+            }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
-            guiRespond.addIcon(itemStack, chatFormatting.toString(), line, slot).setLore(lore).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).addClickAction(() -> {
                 ChatFormatting formatting = chatFormatting;
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + formatting.name().toLowerCase())) {
                     if (user.getChatFormatting() != null && user.getChatFormatting().equals(formatting)) {
@@ -229,27 +233,33 @@ public class GuiSettings extends Page {
     }
 
     public GuiSettings openCustomPrefixPage() {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_PREFIXES), 5);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 3);
         final String divider = "§7--------------------";
 
         String loreDetail = Message.LORE_GROUP_DETAIL.toString();
         String loreEdit = Message.LORE_EDIT.toString();
 
         List<String> prefixLore = Arrays.asList(divider, loreDetail + user.getPrefix().replace("§", "&"), " ", loreEdit);
-        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 3, 4).setLore(prefixLore).addClickAction(() -> new ChatRespond(user, Message.CHAT_INPUT_PREFIX.toString().replace("%prefix%", user.getPrefix().replace("§", "&")), (answer) -> {
-            user.setPrefix(answer);
-            user.sendMessage(Message.INPUT_SAVED.toString());
-            return ChatRespond.Respond.ACCEPTED;
-        }));
+
+        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).addClickAction(() -> {
+            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.toString().replace("%prefix%", user.getPrefix().replace("§", "&")));
+            responder.getInput((respond) -> {
+                user.setPrefix(respond);
+                user.sendMessage(Message.INPUT_SAVED.toString());
+            });
+        });
 
         List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ", loreEdit);
-        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 3, 6).setLore(suffixLore).addClickAction(() -> new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", user.getSuffix().replace("§", "&")), (answer) -> {
-            user.setSuffix(answer);
-            user.sendMessage(Message.INPUT_SAVED.toString());
-            return ChatRespond.Respond.ACCEPTED;
-        }));
 
-        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 5, 9).addClickAction(() -> {
+        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).addClickAction(() -> {
+            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", user.getSuffix().replace("§", "&")));
+            responder.getInput((respond) -> {
+                user.setSuffix(respond);
+                user.sendMessage(Message.INPUT_SAVED.toString());
+            });
+        });
+
+        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 3, 9).addClickAction(() -> {
             user.setPrefix(null);
             user.setSuffix(null);
             openCustomPrefixPage();

@@ -45,7 +45,7 @@ public class GuiSetup extends Page {
 
         guiRespond.addIcon(Material.NETHER_STAR, Message.SETTINGS_TITLE_MAIN.toString(), 2, 5).addClickAction(this::pluginSettingsGui);
 
-        Material icon = (VersionController.getMinorVersion() < 12) ? Material.valueOf("CHEST") : Material.valueOf("WRITABLE_BOOK");
+        Material icon = (VersionController.getMinorVersion() <= 12) ? Material.valueOf("CHEST") : Material.valueOf("WRITABLE_BOOK");
         guiRespond.addIcon(icon, Message.BTN_SUBGROUPS.toString(), 2, 7).addClickAction(this::openSubgroupsList);
 
         guiRespond.addCloseButton();
@@ -55,6 +55,8 @@ public class GuiSetup extends Page {
 
     public GuiSetup pluginSettingsGui() {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
+        ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
+
         Material langMaterial = (VersionController.getMinorVersion() < 12) ? Material.valueOf("SIGN") : Material.valueOf("OAK_SIGN");
         String langName = Message.BTN_CHANGE_LANG.toString().replace("%lang%", Messages.langToName());
         guiRespond.addIcon(langMaterial, langName, 2, 2).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).addClickAction(() -> {
@@ -72,11 +74,10 @@ public class GuiSetup extends Page {
             pluginSettingsGui();
         });
 
-        ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
-        boolean useCp = configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_PREFIX);
+        boolean useCp = configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT);
         String cpText = Message.BTN_SWITCH_CP.toString().replace("%active%", (useCp) ? Message.ENABLED.toString() : Message.DISABLED.toString());
         guiRespond.addIcon(Material.BEACON, cpText, 2, 4).setLore(Collections.singletonList(Message.LORE_SWITCH_CP.toString())).addClickAction(() -> {
-            configData.set(ConfigData.ConfigKeys.CUSTOM_PREFIX.toString(), !useCp);
+            configData.set(ConfigData.ConfigKeys.CUSTOM_LAYOUT.toString(), !useCp);
             EasyPrefix.getInstance().reload();
             pluginSettingsGui();
         });
@@ -89,7 +90,6 @@ public class GuiSetup extends Page {
             EasyPrefix.getInstance().reload();
             pluginSettingsGui();
         });
-
 
         Material btnMaterial;
         if (VersionController.getMinorVersion() < 13) {
@@ -118,20 +118,26 @@ public class GuiSetup extends Page {
 
     public GuiSetup createGroup() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
-        new ChatRespond(user, Message.CHAT_GROUP.toString(), (answer) -> {
-            if (answer.split(" ").length == 1) {
-                if (groupHandler.isGroup(answer)) {
-                    user.sendMessage(Message.GROUP_EXISTS.toString());
-                    return ChatRespond.Respond.ERROR;
-                } else {
-                    groupHandler.createGroup(answer.replace(" ", ""));
-                    user.sendMessage(Message.GROUP_CREATED.toString());
-                    return ChatRespond.Respond.ACCEPTED;
-                }
-            } else {
-                return ChatRespond.Respond.WRONG_INPUT;
+        ChatRespond responder = new ChatRespond(user, Message.CHAT_GROUP.toString());
+
+        responder.addInputReader((answer) -> {
+            if (answer.split(" ").length != 1) {
+                user.sendMessage("§cPlease enter one word!");
+                return false;
             }
-        }).setErrorText("Please type in one word without spaces!");
+
+            if (groupHandler.isGroup(answer)) {
+                user.sendMessage(Message.GROUP_EXISTS.toString());
+                return false;
+            }
+
+            return true;
+        });
+
+        responder.getInput((respond) -> {
+            groupHandler.createGroup(respond);
+            user.sendMessage(Message.GROUP_CREATED.toString());
+        });
         return this;
     }
 

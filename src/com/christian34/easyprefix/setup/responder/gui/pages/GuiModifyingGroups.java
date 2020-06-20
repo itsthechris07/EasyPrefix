@@ -31,38 +31,34 @@ public class GuiModifyingGroups extends Page {
     }
 
     public void editPrefix(EasyGroup easyGroup) {
-        new ChatRespond(user, Message.SET_PREFIX.toString().replace("%name%", easyGroup.getName()).replace("%prefix%", easyGroup.getPrefix(null, false)), (answer) -> {
-            easyGroup.setPrefix(answer);
+        ChatRespond responder = new ChatRespond(user, Message.SET_PREFIX.toString().replace("%prefix%", easyGroup.getPrefix(null, false)));
+        responder.getInput((respond) -> {
+            easyGroup.setPrefix(respond);
             user.sendMessage(Message.INPUT_SAVED.toString());
-            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
     public void editSuffix(EasyGroup easyGroup) {
-        new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", easyGroup.getSuffix(null, false)), (answer) -> {
-            easyGroup.setSuffix(answer);
+        ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", easyGroup.getSuffix(null, false)));
+        responder.getInput((respond) -> {
+            easyGroup.setSuffix(respond);
             user.sendMessage(Message.INPUT_SAVED.toString());
-            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
-    public void editJoinMessage(EasyGroup easyGroup) {
-        if (!(easyGroup instanceof Group)) return;
-        Group group = (Group) easyGroup;
-        new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: §7" + group.getJoinMessageText(), (answer) -> {
-            group.setJoinMessage(answer);
+    public void editJoinMessage(Group group) {
+        ChatRespond responder = new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: §7" + group.getJoinMessageText());
+        responder.getInput((respond) -> {
+            group.setJoinMessage(respond);
             user.sendMessage(Message.INPUT_SAVED.toString());
-            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
-    public void editQuitMessage(EasyGroup easyGroup) {
-        if (!(easyGroup instanceof Group)) return;
-        Group group = (Group) easyGroup;
-        new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: §7" + group.getQuitMessageText(), (answer) -> {
-            group.setQuitMessage(answer);
+    public void editQuitMessage(Group group) {
+        ChatRespond responder = new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: §7" + group.getQuitMessageText());
+        responder.getInput((respond) -> {
+            group.setQuitMessage(respond);
             user.sendMessage(Message.INPUT_SAVED.toString());
-            return ChatRespond.Respond.ACCEPTED;
         });
     }
 
@@ -93,11 +89,14 @@ public class GuiModifyingGroups extends Page {
 
         for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
             List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
+            if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
+                lore.remove(lore.size() - 1);
+            }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
-            guiRespond.addIcon(itemStack, chatFormatting.toString(), line, slot).setLore(lore).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).addClickAction(() -> {
                 ChatFormatting formatting = chatFormatting;
                 if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
                     if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
@@ -119,7 +118,6 @@ public class GuiModifyingGroups extends Page {
 
     public void deleteConfirmation(EasyGroup easyGroup) {
         GuiRespond guiRespond = new GuiRespond(user, Message.SETUP_GROUP_TITLE_DELETE.toString().replace("%group%", easyGroup.getName()), 3);
-
         guiRespond.addIcon(Color.GREEN.toItemStack(), Message.BTN_CONFIRM, 2, 4).addClickAction(() -> {
             easyGroup.delete();
             new GuiSetup(user).groupsList();

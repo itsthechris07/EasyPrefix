@@ -12,7 +12,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * EasyPrefix 2020.
@@ -22,24 +23,19 @@ import java.util.function.Function;
 public class ChatRespond {
     private final ListenUp LISTENER = new ListenUp();
     private final User RESPONDER;
-    private final Function<String, Respond> ANSWER;
     private final String TEXT;
     private final EasyPrefix instance;
     private BukkitTask bukkitTask;
-    private String errorText;
+    private Predicate<String> inputReader;
+    private Consumer<String> text;
 
-    public ChatRespond(User responder, String text, Function<String, Respond> function) {
+    public ChatRespond(User responder, String text) {
         this.RESPONDER = responder;
         this.TEXT = text;
-        this.ANSWER = function;
         this.instance = EasyPrefix.getInstance();
-        sendMessage();
         Bukkit.getPluginManager().registerEvents(LISTENER, instance);
+        sendMessage();
         startTimer();
-    }
-
-    public void setErrorText(String message) {
-        this.errorText = message;
     }
 
     private void startTimer() {
@@ -49,7 +45,7 @@ public class ChatRespond {
             } catch (Exception ignored) {
             }
             exit();
-        }, 20 * 60 * 3);
+        }, 20 * 60);
     }
 
     private void exit() {
@@ -65,8 +61,14 @@ public class ChatRespond {
         }
     }
 
-    public enum Respond {
-        ACCEPTED, CANCELLED, WRONG_INPUT, ERROR
+    public ChatRespond addInputReader(Predicate<String> respond) {
+        this.inputReader = respond;
+        return this;
+    }
+
+    public ChatRespond getInput(Consumer<String> consumer) {
+        this.text = consumer;
+        return this;
     }
 
     private class ListenUp implements Listener {
@@ -74,26 +76,24 @@ public class ChatRespond {
         @EventHandler
         public void onChatEvent(AsyncPlayerChatEvent e) {
             if (!e.getPlayer().equals(RESPONDER.getPlayer())) return;
-            User user = EasyPrefix.getInstance().getUser(e.getPlayer());
+            User user = instance.getUser(e.getPlayer());
             if (e.getMessage().equals("quit") || e.getMessage().equals("cancel")) {
                 user.sendMessage(Message.SETUP_CANCELLED.toString());
                 exit();
             } else {
-                Respond respond = ANSWER.apply(e.getMessage());
-                switch (respond) {
-                    case ACCEPTED:
-                    case CANCELLED:
+                if (inputReader != null) {
+                    if (inputReader.test(e.getMessage())) {
+                        text.accept(e.getMessage());
                         exit();
-                        break;
-                    case WRONG_INPUT:
-                        RESPONDER.sendMessage(Message.CHAT_INPUT_WRONGENTRY.toString().replace("%allowed_inputs%", errorText).replace("%newline%", "\n"));
-                        break;
-                    case ERROR:
-                        break;
-                    default:
-                        sendMessage();
-                        break;
+                    } else {
+
+                    }
+                } else {
+                    text.accept(e.getMessage());
+                    exit();
                 }
+
+
             }
             e.setCancelled(true);
         }
