@@ -51,7 +51,7 @@ public class Messages {
 
     public static void load() {
         try {
-            Plugin plugin = Bukkit.getPluginManager().getPlugin("EasyPrefix");
+            Plugin plugin = EasyPrefix.getInstance().getPlugin();
             ConfigData config = EasyPrefix.getInstance().getFileManager().getConfig();
             language = config.getData().getString("config.lang");
             String path = "plugins/EasyPrefix";

@@ -32,18 +32,11 @@ public class CommandListener implements Listener, CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        User user = null;
-        if (sender instanceof Player) {
-            user = this.instance.getUser((Player) sender);
-        }
+        User user = (sender instanceof Player) ? this.instance.getUser((Player) sender) : null;
         GroupHandler groupHandler = this.instance.getGroupHandler();
+
         if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("clear")) {
-                for (int i = 0; i < 5; i++) {
-                    sender.sendMessage(" ");
-                }
-                return true;
-            } else if (args[0].equalsIgnoreCase("reload")) {
+            if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("EasyPrefix.admin")) {
                     this.instance.reload();
                     sender.sendMessage(Messages.getMessage(Message.RELOAD_COMPLETE));
@@ -127,9 +120,9 @@ public class CommandListener implements Listener, CommandExecutor {
                     return false;
                 }
             } else if (args[0].equalsIgnoreCase("user")) {
-                Command_User easyCommand = new Command_User(this.instance);
-                if (sender.hasPermission(easyCommand.getPermission())) {
-                    if (!easyCommand.handleCommand(sender, args)) {
+                EasyCommand userCommand = new Command_User();
+                if (sender.hasPermission(userCommand.getPermission())) {
+                    if (!userCommand.handleCommand(sender, args)) {
                         sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix User §7===--------------\n ");
                         sender.sendMessage("§7/§5EasyPrefix user <Player> info §f| §7get information about the player");
                         sender.sendMessage("§7/§5EasyPrefix user <Player> update §f| §7update player data");
@@ -144,6 +137,10 @@ public class CommandListener implements Listener, CommandExecutor {
                     sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
                     return false;
                 }
+            } else if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
+                EasyCommand layoutCommand = new Command_Custom();
+                layoutCommand.handleCommand(sender, args);
+                return true;
             } else if (args[0].equalsIgnoreCase("gui")) {
                 if (args.length > 2) {
                     if (args[1].equalsIgnoreCase("settings")) {
@@ -174,7 +171,7 @@ public class CommandListener implements Listener, CommandExecutor {
                         }
                         return true;
                     } else if (args[1].equalsIgnoreCase("download")) {
-                        sender.sendMessage(Messages.getPrefix() + "§7Downloading data to local storage This could take a while.");
+                        sender.sendMessage(Messages.getPrefix() + "§7Downloading data to local storage. This could take a while.");
                         try {
                             this.instance.getSqlDatabase().downloadData();
                             this.instance.reload();
@@ -194,13 +191,23 @@ public class CommandListener implements Listener, CommandExecutor {
         }
         sender.sendMessage(" \n§7---------------=== §5§lEasyPrefix §7===---------------\n ");
         sender.sendMessage("§7/§5EasyPrefix §f| §7main command");
-        sender.sendMessage("§7/§5EasyPrefix settings §f| §7manage your prefixes");
-        sender.sendMessage("§7/§5EasyPrefix setup §f| §7opens setup gui");
-        sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
-        sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
-        sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
-        if (this.instance.getSqlDatabase() != null && sender.hasPermission("easyprefix.admin")) {
-            sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
+        if (sender.hasPermission("EasyPrefix.settings")) {
+            sender.sendMessage("§7/§5EasyPrefix settings §f| §7manage your prefixes");
+        }
+        if (sender.hasPermission("EasyPrefix.admin")) {
+            sender.sendMessage("§7/§5EasyPrefix setup §f| §7opens setup gui");
+            sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
+            sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
+            sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
+            if (this.instance.getSqlDatabase() != null) {
+                sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
+            }
+        }
+        if (sender.hasPermission("easyprefix.custom.prefix")) {
+            sender.sendMessage("§7/§5EasyPrefix setprefix <Prefix> §f| §7set prefix");
+        }
+        if (sender.hasPermission("easyprefix.custom.suffix")) {
+            sender.sendMessage("§7/§5EasyPrefix setsuffix <Suffix> §f| §7set suffix");
         }
         sender.sendMessage(" \n§7------------------------------------------------\n ");
         sender.sendMessage("§7Version: " + this.instance.getPlugin().getDescription().getVersion());

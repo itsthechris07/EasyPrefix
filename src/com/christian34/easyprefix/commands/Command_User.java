@@ -12,20 +12,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.Timestamp;
+
 /**
  * EasyPrefix 2020.
  *
  * @author Christian34
  */
-public class Command_User {
-    private final EasyPrefix instance;
-
-    public Command_User(EasyPrefix instance) {
-        this.instance = instance;
-    }
+public class Command_User implements EasyCommand {
 
     public boolean handleCommand(CommandSender sender, String[] args) {
         Player player = Bukkit.getPlayer(args[1]);
+        EasyPrefix instance = EasyPrefix.getInstance();
         GroupHandler groupHandler = instance.getGroupHandler();
         if (player == null) {
             sender.sendMessage(Messages.getMessage(Message.PLAYER_NOT_FOUND));
@@ -45,8 +43,16 @@ public class Command_User {
                 sender.sendMessage("§5Group§f: §7" + target.getGroup().getName());
                 String subgroup = (target.getSubgroup() != null) ? target.getSubgroup().getName() : "-";
                 sender.sendMessage("§5Subgroup§f: §7" + subgroup);
-                sender.sendMessage("§5Prefix§f: §8«§7" + target.getPrefix().replace("§", "&") + "§8»");
-                sender.sendMessage("§5Suffix§f: §8«§7" + target.getSuffix().replace("§", "&") + "§8»");
+                sender.sendMessage("§5Prefix§f: §8«§7" + target.getPrefix().replace("§", "&") + "§8»"
+                        + (target.hasCustomPrefix() ? " §7(§5customized§7)" : ""));
+                if (target.hasCustomPrefix()) {
+                    sender.sendMessage(" §7↳ §5last update§f: §7" + new Timestamp(target.getLastPrefixUpdate()).toString());
+                }
+                sender.sendMessage("§5Suffix§f: §8«§7" + target.getSuffix().replace("§", "&") + "§8»"
+                        + (target.hasCustomSuffix() ? " §7(§5customized§7)" : ""));
+                if (target.hasCustomSuffix()) {
+                    sender.sendMessage(" §7↳ §5last update§f: §7" + new Timestamp(target.getLastSuffixUpdate()).toString());
+                }
                 String cc = (target.getChatColor() != null) ? target.getChatColor().getCode() : "-";
                 if (target.getChatFormatting() != null) cc = cc + target.getChatFormatting().getCode();
                 sender.sendMessage("§5Chatcolor§f: §7" + cc.replace("§", "&"));

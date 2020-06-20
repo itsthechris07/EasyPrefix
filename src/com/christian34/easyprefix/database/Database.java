@@ -109,13 +109,13 @@ public class Database {
         }
     }
 
-    public void addConstraint(String statement) {
+    public void alterTable(String statement) {
         try {
             if (connection.isClosed()) connect();
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
     }
 
@@ -125,8 +125,10 @@ public class Database {
         update("CREATE TABLE IF NOT EXISTS `%p%genders` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT(1) NOT NULL , `group_name` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update("CREATE TABLE IF NOT EXISTS `%p%subgroups` ( `group` VARCHAR(64) NOT NULL , UNIQUE(`group`), `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null ) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
 
-        addConstraint("ALTER TABLE `%p%users` ADD CONSTRAINT `group` FOREIGN KEY (`group`) REFERENCES `%p%groups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
-        addConstraint("ALTER TABLE `%p%users` ADD CONSTRAINT `subgroup` FOREIGN KEY (`subgroup`) REFERENCES `%p%subgroups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
+        alterTable("ALTER TABLE `%p%users` ADD `custom_prefix_update` TIMESTAMP NULL DEFAULT NULL AFTER `custom_prefix`;");
+        alterTable("ALTER TABLE `%p%users` ADD `custom_suffix_update` TIMESTAMP NULL DEFAULT NULL AFTER `custom_suffix`;");
+        alterTable("ALTER TABLE `%p%users` ADD CONSTRAINT `group` FOREIGN KEY (`group`) REFERENCES `%p%groups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
+        alterTable("ALTER TABLE `%p%users` ADD CONSTRAINT `subgroup` FOREIGN KEY (`subgroup`) REFERENCES `%p%subgroups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
     }
 
     public void uploadGroups() throws SQLException {
