@@ -1,9 +1,0 @@
-/.idea/
-target
-*.iml
-*.properties
-easyprefix.xml
-module_easyprefix.xml
-/test/*
-/test/bungeecord/
-/.github/

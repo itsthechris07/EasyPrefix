@@ -4,13 +4,13 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.InputReader;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * EasyPrefix 2020.
@@ -20,14 +20,14 @@ import java.sql.Timestamp;
 public class Command_Custom implements EasyCommand {
 
     @Override
-    public boolean handleCommand(CommandSender sender, String[] args) {
+    public boolean handleCommand(CommandSender sender, List<String> args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
             return true;
         }
         User user = EasyPrefix.getInstance().getUser((Player) sender);
-        String input = InputReader.readInput(args, 1);
-        if (args[0].equalsIgnoreCase("setprefix")) {
+        String input = readInput(args);
+        if (args.get(0).equalsIgnoreCase("setprefix")) {
             if (!user.hasPermission("custom.prefix")) {
                 sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
                 return true;
@@ -37,8 +37,8 @@ public class Command_Custom implements EasyCommand {
                 user.getPlayer().sendMessage(getTimeMessage(next));
                 return true;
             }
-            if (args[1].equalsIgnoreCase("reset")) {
-                if (args.length > 2 && args[2].equalsIgnoreCase("submit")) {
+            if (args.get(1).equalsIgnoreCase("reset")) {
+                if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                     user.setPrefix(null);
                     user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString()
                             .replace("%prefix%", user.getPrefix().replace("§", "&")));
@@ -48,7 +48,7 @@ public class Command_Custom implements EasyCommand {
                 }
                 return true;
             }
-            if (!args[args.length - 1].equalsIgnoreCase("submit")) {
+            if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
                 user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_PREFIX.toString()
                         .replace("%prefix%", input), "/ep setprefix " + input + " submit"));
             } else {
@@ -57,7 +57,7 @@ public class Command_Custom implements EasyCommand {
                 user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString()
                         .replace("%prefix%", user.getPrefix().replace("§", "&")));
             }
-        } else if (args[0].equalsIgnoreCase("setsuffix")) {
+        } else if (args.get(0).equalsIgnoreCase("setsuffix")) {
             if (!user.hasPermission("custom.suffix")) {
                 sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
                 return true;
@@ -67,8 +67,8 @@ public class Command_Custom implements EasyCommand {
                 user.getPlayer().sendMessage(getTimeMessage(next));
                 return true;
             }
-            if (args[1].equalsIgnoreCase("reset")) {
-                if (args.length > 2 && args[2].equalsIgnoreCase("submit")) {
+            if (args.get(1).equalsIgnoreCase("reset")) {
+                if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                     user.setSuffix(null);
                     user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.toString()
                             .replace("%suffix%", user.getSuffix().replace("§", "&")));
@@ -78,7 +78,7 @@ public class Command_Custom implements EasyCommand {
                 }
                 return true;
             }
-            if (!args[args.length - 1].equalsIgnoreCase("submit")) {
+            if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
                 user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_SUFFIX.toString()
                         .replace("%suffix%", input), "/ep setsuffix " + input + " submit"));
             } else {
@@ -116,6 +116,25 @@ public class Command_Custom implements EasyCommand {
         int hours = (int) ((min / 60) % 24);
         String msg = Message.LAYOUT_ERROR.toString();
         return msg.replace("%h%", hours + "").replace("%m%", (minutes == 0) ? "<1" : minutes + "");
+    }
+
+    /**
+     * @param args input by user
+     * @return String translated input
+     */
+    private String readInput(List<String> args) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int counter = 1;
+        while (args.size() > counter) {
+            String arg = args.get(counter);
+            if (arg.equals("submit")) break;
+            if (counter != 1) {
+                stringBuilder.append(" ");
+            }
+            stringBuilder.append(arg);
+            counter++;
+        }
+        return stringBuilder.toString();
     }
 
 }

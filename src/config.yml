@@ -45,7 +45,15 @@ config:
     # EasyPrefix.custom.gui shows icon in /ep settings
     custom-layout:
       enabled: false
-  # groups can mixed with subgroups - please look up my github wiki for more informations
+      # cool down for changing prefix or suffix in hours
+      # can be bypassed with permission EasyPrefix.custom.bypass
+      cooldown: 0.5
+      alias:
+        # requires permission EasyPrefix.custom.prefix
+        prefix: /prefix
+        # requires permission EasyPrefix.custom.suffix
+        suffix: /suffix
+  # groups can mixed with subgroups - please look up at my github wiki for more information
   subgroups:
     # show context menu for subgroups | only visible if necessary
     enabled: true

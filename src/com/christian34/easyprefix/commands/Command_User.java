@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * EasyPrefix 2020.
@@ -21,8 +22,8 @@ import java.sql.Timestamp;
  */
 public class Command_User implements EasyCommand {
 
-    public boolean handleCommand(CommandSender sender, String[] args) {
-        Player player = Bukkit.getPlayer(args[1]);
+    public boolean handleCommand(CommandSender sender, List<String> args) {
+        Player player = Bukkit.getPlayer(args.get(1));
         EasyPrefix instance = EasyPrefix.getInstance();
         GroupHandler groupHandler = instance.getGroupHandler();
         if (player == null) {
@@ -31,14 +32,14 @@ public class Command_User implements EasyCommand {
         }
         User target = new User(player);
         target.login();
-        if (args.length >= 3) {
-            if (args[2].equalsIgnoreCase("reload")) {
+        if (args.size() >= 3) {
+            if (args.get(2).equalsIgnoreCase("reload")) {
                 Bukkit.getScheduler().runTaskLaterAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
                     target.login();
                     sender.sendMessage(Messages.getMessage(Message.SUCCESS));
                 }, 20L);
                 return true;
-            } else if (args[2].equalsIgnoreCase("info")) {
+            } else if (args.get(2).equalsIgnoreCase("info")) {
                 sender.sendMessage(" \n§7--------------=== §5§l" + target.getPlayer().getName() + " §7===--------------\n ");
                 sender.sendMessage("§5Group§f: §7" + target.getGroup().getName());
                 String subgroup = (target.getSubgroup() != null) ? target.getSubgroup().getName() : "-";
@@ -61,10 +62,10 @@ public class Command_User implements EasyCommand {
                 }
                 sender.sendMessage(" \n§7-----------------------------------------------\n ");
                 return true;
-            } else if (args[2].equalsIgnoreCase("setgroup")) {
-                if (args.length == 4) {
-                    if (groupHandler.isGroup(args[3])) {
-                        Group targetGroup = groupHandler.getGroup(args[3]);
+            } else if (args.get(2).equalsIgnoreCase("setgroup")) {
+                if (args.size() == 4) {
+                    if (groupHandler.isGroup(args.get(3))) {
+                        Group targetGroup = groupHandler.getGroup(args.get(3));
                         target.setGroup(targetGroup, true);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));
                         return true;
@@ -73,14 +74,14 @@ public class Command_User implements EasyCommand {
                         return true;
                     }
                 }
-            } else if (args[2].equalsIgnoreCase("setsubgroup")) {
-                if (args.length == 4) {
-                    if (groupHandler.isSubgroup(args[3])) {
-                        Subgroup targetGroup = groupHandler.getSubgroup(args[3]);
+            } else if (args.get(2).equalsIgnoreCase("setsubgroup")) {
+                if (args.size() == 4) {
+                    if (groupHandler.isSubgroup(args.get(3))) {
+                        Subgroup targetGroup = groupHandler.getSubgroup(args.get(3));
                         target.setSubgroup(targetGroup);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));
                         return true;
-                    } else if (args[3].equalsIgnoreCase("none")) {
+                    } else if (args.get(3).equalsIgnoreCase("none")) {
                         target.setSubgroup(null);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));
                         return true;
@@ -89,9 +90,9 @@ public class Command_User implements EasyCommand {
                         return true;
                     }
                 }
-            } else if (args[2].equalsIgnoreCase("setgender")) {
-                if (args.length == 4) {
-                    GenderType genderType = groupHandler.getGender(args[3]);
+            } else if (args.get(2).equalsIgnoreCase("setgender")) {
+                if (args.size() == 4) {
+                    GenderType genderType = groupHandler.getGender(args.get(3));
                     if (genderType != null) {
                         target.setGenderType(genderType);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));

@@ -1,6 +1,7 @@
 package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandListener;
+import com.christian34.easyprefix.commands.Command_Alias;
 import com.christian34.easyprefix.commands.TabComplete;
 import com.christian34.easyprefix.database.Database;
 import com.christian34.easyprefix.files.ConfigData;
@@ -16,13 +17,19 @@ import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
 import com.christian34.easyprefix.vault.VaultManager;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -77,6 +84,25 @@ public class EasyPrefix extends JavaPlugin {
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             VaultManager vaultManager = new VaultManager(this);
             vaultManager.hook();
+        }
+
+        if (cfg.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
+            Command_Alias cmd = new Command_Alias(EasyPrefix.getInstance());
+
+            PluginCommand prefixAlias = createPluginCommand(cfg.getString(ConfigData.ConfigKeys.PREFIX_ALIAS).replace("/", ""));
+            assert prefixAlias != null;
+            prefixAlias.setExecutor(cmd);
+            prefixAlias.setTabCompleter(new Command_Alias(EasyPrefix.getInstance()));
+
+            PluginCommand suffixAlias = createPluginCommand(cfg.getString(ConfigData.ConfigKeys.SUFFIX_ALIAS).replace("/", ""));
+            assert suffixAlias != null;
+            suffixAlias.setExecutor(cmd);
+            suffixAlias.setTabCompleter(cmd);
+
+            CommandMap commandMap = getCommandMapInstance();
+            assert commandMap != null;
+            commandMap.register(plugin.getDescription().getName(), prefixAlias);
+            commandMap.register(plugin.getDescription().getName(), suffixAlias);
         }
 
         this.updater = new Updater(this);
@@ -160,6 +186,31 @@ public class EasyPrefix extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getSqlDatabase() != null) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) ? "true" : "false"));
+    }
+
+    private PluginCommand createPluginCommand(String name) {
+        try {
+            Constructor<PluginCommand> constructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(name, this);
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private CommandMap getCommandMapInstance() {
+        if (Bukkit.getPluginManager() instanceof SimplePluginManager) {
+            SimplePluginManager spm = (SimplePluginManager) Bukkit.getPluginManager();
+            try {
+                Field field = FieldUtils.getDeclaredField(spm.getClass(), "commandMap", true);
+                return (CommandMap) field.get(spm);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Can't get the Bukkit CommandMap instance.");
+            }
+        }
+        return null;
     }
 
 }

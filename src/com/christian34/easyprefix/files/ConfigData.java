@@ -76,7 +76,7 @@ public class ConfigData {
         JOIN_QUIT_SOUND_RECEIVER("join-quit-messages.sound.receiver"), USE_QUIT_SOUND("join-quit-messages.sound.quit.enabled"),
         QUIT_SOUND("join-quit-messages.sound.quit.sound"), USE_SQL("sql.enabled"), SQL_HOST("sql.host"), SQL_PORT("sql.port"),
         SQL_DATABASE("sql.database"), SQL_USERNAME("sql.username"), SQL_PASSWORD("sql.password"), SQL_TABLE_PREFIX("sql.table-prefix"),
-        HANDLE_COLORS("chat.handle-colors");
+        HANDLE_COLORS("chat.handle-colors"), PREFIX_ALIAS("user.custom-layout.alias.prefix"), SUFFIX_ALIAS("user.custom-layout.alias.suffix");
 
         private final String KEY;
 

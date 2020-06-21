@@ -41,8 +41,8 @@ public class JoinListener implements Listener {
             String joinMsg = group.getJoinMessage(user);
             e.setJoinMessage(joinMsg);
         }
-        if (configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_SOUND)) {
-            String cfg = configData.getString(ConfigData.ConfigKeys.JOIN_SOUND);
+        if (configData.getData().getBoolean("config.join-quit-messages.sound.join.enabled")) {
+            String cfg = configData.getData().getString("config.join-quit-messages.sound.join.sound");
             String[] soundOption = cfg.replace(" ", "").split(";");
             try {
                 Sound sound = Sound.valueOf(soundOption[0]);

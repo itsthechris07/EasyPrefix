@@ -2,6 +2,8 @@ package com.christian34.easyprefix.commands;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 /**
  * EasyPrefix 2020.
  *
@@ -9,7 +11,7 @@ import org.bukkit.command.CommandSender;
  */
 public interface EasyCommand {
 
-    boolean handleCommand(CommandSender sender, String[] args);
+    boolean handleCommand(CommandSender sender, List<String> args);
 
     String getPermission();
 

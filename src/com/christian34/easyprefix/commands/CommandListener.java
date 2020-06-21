@@ -18,6 +18,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * EasyPrefix 2020.
@@ -124,7 +125,7 @@ public class CommandListener implements Listener, CommandExecutor {
             } else if (args[0].equalsIgnoreCase("user")) {
                 EasyCommand userCommand = new Command_User();
                 if (sender.hasPermission(userCommand.getPermission())) {
-                    if (!userCommand.handleCommand(sender, args)) {
+                    if (!userCommand.handleCommand(sender, Arrays.asList(args))) {
                         sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix User §7===--------------\n ");
                         sender.sendMessage("§7/§5EasyPrefix user <Player> info §f| §7get information about the player");
                         sender.sendMessage("§7/§5EasyPrefix user <Player> update §f| §7update player data");
@@ -142,7 +143,7 @@ public class CommandListener implements Listener, CommandExecutor {
             } else if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
                 if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
                     EasyCommand layoutCommand = new Command_Custom();
-                    layoutCommand.handleCommand(sender, args);
+                    layoutCommand.handleCommand(sender, Arrays.asList(args));
                     return true;
                 }
             } else if (args[0].equalsIgnoreCase("gui")) {
