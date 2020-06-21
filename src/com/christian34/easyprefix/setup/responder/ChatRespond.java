@@ -41,10 +41,6 @@ public class ChatRespond {
         }
     }
 
-    public ChatRespond(User responder) {
-        this(responder, null);
-    }
-
     private void startTimer() {
         this.bukkitTask = Bukkit.getScheduler().runTaskLater(instance, () -> {
             if (RESPONDER != null) RESPONDER.sendMessage(Message.INPUT_CANCELLED.toString());

@@ -20,7 +20,7 @@ public class GroupsData {
     private File file;
     private FileConfiguration data;
 
-    public GroupsData(EasyPrefix instance) {
+    protected GroupsData(EasyPrefix instance) {
         this.instance = instance;
     }
 

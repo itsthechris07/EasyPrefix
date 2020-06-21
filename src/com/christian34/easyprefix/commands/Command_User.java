@@ -68,11 +68,10 @@ public class Command_User implements EasyCommand {
                         Group targetGroup = groupHandler.getGroup(args.get(3));
                         target.setGroup(targetGroup, true);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                        return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
-                        return true;
                     }
+                    return true;
                 }
             } else if (args.get(2).equalsIgnoreCase("setsubgroup")) {
                 if (args.size() == 4) {
@@ -96,11 +95,10 @@ public class Command_User implements EasyCommand {
                     if (genderType != null) {
                         target.setGenderType(genderType);
                         sender.sendMessage(Messages.getMessage(Message.SUCCESS));
-                        return true;
                     } else {
                         sender.sendMessage(Messages.getPrefix() + "§cThis gender doesn't exist");
-                        return true;
                     }
+                    return true;
                 }
             }
         }

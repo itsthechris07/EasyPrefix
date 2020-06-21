@@ -1,8 +1,6 @@
 package com.christian34.easyprefix.database;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.ConfigData.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.messages.Messages;
@@ -29,13 +27,13 @@ public class Database {
 
     public Database(EasyPrefix instance) {
         this.instance = instance;
-        ConfigData config = instance.getFileManager().getConfig();
-        this.host = config.getString(ConfigKeys.SQL_HOST);
-        this.database = config.getString(ConfigKeys.SQL_DATABASE);
-        this.username = config.getString(ConfigKeys.SQL_USERNAME);
-        this.password = config.getString(ConfigKeys.SQL_PASSWORD);
-        String tPrefix = config.getString(ConfigKeys.SQL_TABLE_PREFIX);
-        this.port = config.getInt(ConfigKeys.SQL_PORT);
+        FileConfiguration config = instance.getFileManager().getConfig().getData();
+        this.host = config.getString("config.sql.host");
+        this.database = config.getString("config.sql.database");
+        this.username = config.getString("config.sql.username");
+        this.password = config.getString("config.sql.password");
+        String tPrefix = config.getString("config.sql.table-prefix");
+        this.port = config.getInt("config.sql.port");
         if (tPrefix == null || tPrefix.isEmpty()) {
             tPrefix = "";
         } else if (!tPrefix.endsWith("_")) tPrefix += "_";
@@ -267,7 +265,6 @@ public class Database {
                         stmt3.setString(3, groupName);
                         stmt3.setString(4, pref);
                         stmt3.setString(5, suf);
-                        stmt3.executeUpdate();
                     } else {
                         sql3 = "UPDATE `%p%genders` SET `prefix`=?,`suffix`=? WHERE `type` = ? AND `gender` = ? AND `group_name` = ?";
                         stmt3 = prepareStatement(sql3);
@@ -276,8 +273,8 @@ public class Database {
                         stmt3.setInt(3, 1);
                         stmt3.setString(4, gender);
                         stmt3.setString(5, groupName);
-                        stmt3.executeUpdate();
                     }
+                    stmt3.executeUpdate();
                 }
             } else {
                 String sql2 = "DELETE FROM `%p%genders` WHERE `type` = 1 AND `group_name` = ?";

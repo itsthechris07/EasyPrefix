@@ -43,37 +43,32 @@ public class CommandListener implements Listener, CommandExecutor {
                 if (sender.hasPermission("EasyPrefix.admin")) {
                     this.instance.reload();
                     sender.sendMessage(Messages.getMessage(Message.RELOAD_COMPLETE));
-                    return true;
                 } else {
                     sender.sendMessage(Messages.getMessage(Message.NO_PERMS, user));
-                    return false;
                 }
+                return true;
             } else if (args[0].equalsIgnoreCase("setup")) {
                 if (user != null) {
                     if (sender.hasPermission("EasyPrefix.admin")) {
                         new GuiSetup(user).mainPage();
-                        return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS, user));
-                        return false;
                     }
                 } else {
                     sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
-                    return false;
                 }
+                return true;
             } else if (args[0].equalsIgnoreCase("settings")) {
                 if (user != null) {
                     if (sender.hasPermission("EasyPrefix.settings")) {
                         new GuiSettings(user).openWelcomePage();
-                        return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS, user));
-                        return false;
                     }
                 } else {
                     sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
-                    return false;
                 }
+                return true;
             } else if (args[0].equalsIgnoreCase("debug") && sender.hasPermission("easyprefix.admin.debug")) {
                 sender.sendMessage(" \n§7------------=== §5§lEasyPrefix DEBUG §7===------------");
                 sender.sendMessage("§5Version: §7" + this.instance.getPlugin().getDescription().getVersion());
@@ -101,7 +96,7 @@ public class CommandListener implements Listener, CommandExecutor {
                         group = groupHandler.getGroup(args[1]);
                     } else {
                         sender.sendMessage(Messages.getPrefix() + "§cGroup was not found!");
-                        return false;
+                        return true;
                     }
                     if (args.length >= 3) {
                         if (args[2].equalsIgnoreCase("info")) {
@@ -120,7 +115,7 @@ public class CommandListener implements Listener, CommandExecutor {
                     sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix Group §7===--------------\n ");
                     sender.sendMessage("§7/§5EasyPrefix group <Group> info §f| §7get information about the group");
                     sender.sendMessage(" \n§7----------------------------------------------------\n ");
-                    return false;
+                    return true;
                 }
             } else if (args[0].equalsIgnoreCase("user")) {
                 EasyCommand userCommand = new Command_User();
@@ -133,13 +128,12 @@ public class CommandListener implements Listener, CommandExecutor {
                         sender.sendMessage("§7/§5EasyPrefix user <Player> setsubgroup <Subgroup> §f| §7set subgroup to player");
                         sender.sendMessage("§7/§5EasyPrefix user <Player> setgender <Gender> §f| §7set gender");
                         sender.sendMessage(" \n§7----------------------------------------------------\n ");
-                        return false;
+                        return true;
                     }
-                    return true;
                 } else {
                     sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                    return false;
                 }
+                return true;
             } else if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
                 if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
                     EasyCommand layoutCommand = new Command_Custom();
@@ -147,7 +141,7 @@ public class CommandListener implements Listener, CommandExecutor {
                     return true;
                 }
             } else if (args[0].equalsIgnoreCase("gui")) {
-                if (user == null) return false;
+                if (user == null) return true;
                 if (args.length > 2) {
                     if (args[1].equalsIgnoreCase("settings")) {
                         GuiSettings gui = new GuiSettings(user);
@@ -173,7 +167,7 @@ public class CommandListener implements Listener, CommandExecutor {
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            return false;
+                            return true;
                         }
                         return true;
                     } else if (args[1].equalsIgnoreCase("download")) {
@@ -184,15 +178,14 @@ public class CommandListener implements Listener, CommandExecutor {
                             sender.sendMessage(Messages.getPrefix() + "§7Files have been downloaded!");
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            return false;
+                            return true;
                         }
                         return true;
                     }
-                    return true;
                 } else {
                     sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                    return false;
                 }
+                return true;
             }
         }
         sender.sendMessage(" \n§7---------------=== §5§lEasyPrefix §7===---------------\n ");
@@ -220,7 +213,7 @@ public class CommandListener implements Listener, CommandExecutor {
         sender.sendMessage(" \n§7------------------------------------------------\n ");
         sender.sendMessage("§7Version: " + this.instance.getPlugin().getDescription().getVersion());
         sender.sendMessage("§7EasyPrefix by §5§lChristian34");
-        return false;
+        return true;
     }
 
 }
