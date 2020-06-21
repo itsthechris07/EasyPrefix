@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -23,8 +24,8 @@ import java.util.function.Predicate;
 public class ChatRespond {
     private final ListenUp LISTENER = new ListenUp();
     private final User RESPONDER;
-    private final String TEXT;
     private final EasyPrefix instance;
+    private final String TEXT;
     private BukkitTask bukkitTask;
     private Predicate<String> inputReader;
     private Consumer<String> text;
@@ -34,16 +35,19 @@ public class ChatRespond {
         this.TEXT = text;
         this.instance = EasyPrefix.getInstance();
         Bukkit.getPluginManager().registerEvents(LISTENER, instance);
-        sendMessage();
-        startTimer();
+        if (text != null) {
+            sendMessage();
+            startTimer();
+        }
+    }
+
+    public ChatRespond(User responder) {
+        this(responder, null);
     }
 
     private void startTimer() {
         this.bukkitTask = Bukkit.getScheduler().runTaskLater(instance, () -> {
-            try {
-                RESPONDER.sendMessage(Message.INPUT_CANCELLED.toString());
-            } catch (Exception ignored) {
-            }
+            if (RESPONDER != null) RESPONDER.sendMessage(Message.INPUT_CANCELLED.toString());
             exit();
         }, 20 * 60);
     }
@@ -53,7 +57,7 @@ public class ChatRespond {
         HandlerList.unregisterAll(LISTENER);
     }
 
-    private void sendMessage() {
+    public void sendMessage() {
         RESPONDER.getPlayer().closeInventory();
         List<String> messages = Messages.getList(Message.CHAT_HEADER);
         for (String msg : messages) {
@@ -61,14 +65,17 @@ public class ChatRespond {
         }
     }
 
-    public ChatRespond addInputReader(Predicate<String> respond) {
-        this.inputReader = respond;
-        return this;
+    public void sendMessage(BaseComponent baseComponent) {
+        RESPONDER.getPlayer().closeInventory();
+        RESPONDER.getPlayer().spigot().sendMessage(baseComponent);
     }
 
-    public ChatRespond getInput(Consumer<String> consumer) {
+    public void addInputReader(Predicate<String> respond) {
+        this.inputReader = respond;
+    }
+
+    public void getInput(Consumer<String> consumer) {
         this.text = consumer;
-        return this;
     }
 
     private class ListenUp implements Listener {
@@ -77,6 +84,7 @@ public class ChatRespond {
         public void onChatEvent(AsyncPlayerChatEvent e) {
             if (!e.getPlayer().equals(RESPONDER.getPlayer())) return;
             User user = instance.getUser(e.getPlayer());
+            user.getPlayer().spigot().sendMessage();
             if (e.getMessage().equals("quit") || e.getMessage().equals("cancel")) {
                 user.sendMessage(Message.SETUP_CANCELLED.toString());
                 exit();
@@ -85,15 +93,11 @@ public class ChatRespond {
                     if (inputReader.test(e.getMessage())) {
                         text.accept(e.getMessage());
                         exit();
-                    } else {
-
                     }
                 } else {
                     text.accept(e.getMessage());
                     exit();
                 }
-
-
             }
             e.setCancelled(true);
         }

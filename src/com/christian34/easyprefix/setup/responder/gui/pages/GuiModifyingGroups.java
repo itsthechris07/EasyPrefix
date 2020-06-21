@@ -74,7 +74,7 @@ public class GuiModifyingGroups extends Page {
             if (group.getChatColor() != null && group.getChatColor().equals(color) && (group.getChatFormatting() == null || !group.getChatFormatting().equals(ChatFormatting.RAINBOW)))
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
 
-            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, slot).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, slot).setClickAction(() -> {
                 group.setChatColor(color);
                 editChatColor(easyGroup);
             });
@@ -96,7 +96,7 @@ public class GuiModifyingGroups extends Page {
             if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
-            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).setClickAction(() -> {
                 ChatFormatting formatting = chatFormatting;
                 if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
                     if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
@@ -112,17 +112,17 @@ public class GuiModifyingGroups extends Page {
             slot++;
         }
 
-        guiRespond.addCloseButton().addClickAction(() -> new GuiSetup(user).openProfile(easyGroup));
+        guiRespond.addCloseButton().setClickAction(() -> new GuiSetup(user).openProfile(easyGroup));
         guiRespond.openInventory();
     }
 
     public void deleteConfirmation(EasyGroup easyGroup) {
         GuiRespond guiRespond = new GuiRespond(user, Message.SETUP_GROUP_TITLE_DELETE.toString().replace("%group%", easyGroup.getName()), 3);
-        guiRespond.addIcon(Color.GREEN.toItemStack(), Message.BTN_CONFIRM, 2, 4).addClickAction(() -> {
+        guiRespond.addIcon(Color.GREEN.toItemStack(), Message.BTN_CONFIRM, 2, 4).setClickAction(() -> {
             easyGroup.delete();
             new GuiSetup(user).groupsList();
         });
-        guiRespond.addIcon(Color.RED.toItemStack(), Message.BTN_CANCEL, 2, 6).addClickAction(() -> new GuiSetup(user).openProfile(easyGroup));
+        guiRespond.addIcon(Color.RED.toItemStack(), Message.BTN_CANCEL, 2, 6).setClickAction(() -> new GuiSetup(user).openProfile(easyGroup));
         guiRespond.preventClose(true);
         guiRespond.openInventory();
     }

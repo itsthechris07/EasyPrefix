@@ -15,10 +15,13 @@ public class InputReader {
     public static String readInput(String[] args, int counter) {
         StringBuilder stringBuilder = new StringBuilder();
         while (args.length > counter) {
+            String arg = args[counter];
+            if (arg.equals("submit")) break;
             if (counter != 1) {
                 stringBuilder.append(" ");
             }
-            stringBuilder.append(args[counter]);
+            stringBuilder.append(arg);
+
             counter++;
         }
         return stringBuilder.toString();

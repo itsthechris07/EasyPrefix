@@ -10,6 +10,7 @@ import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.setup.responder.ChatRespond;
 import com.christian34.easyprefix.setup.responder.GuiRespond;
+import com.christian34.easyprefix.setup.responder.gui.ClickAction;
 import com.christian34.easyprefix.setup.responder.gui.Icon;
 import com.christian34.easyprefix.setup.responder.gui.Page;
 import com.christian34.easyprefix.user.User;
@@ -41,18 +42,23 @@ public class GuiSettings extends Page {
         this.user = user;
     }
 
-    public GuiRespond mainPage() {
+    public GuiSettings openWelcomePage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_MAIN), 3);
-        Icon prefix = guiRespond.addIcon(Material.CHEST, Message.BTN_MY_PREFIXES, 2, 3).addClickAction(() -> {
-            if (user.getAvailableGroups().size() <= 1 && user.getAvailableSubgroups().size() > 1) {
-                openSubgroupsPage();
+        Icon prefix = guiRespond.addIcon(Material.CHEST, Message.BTN_MY_PREFIXES, 2, 3).setClickAction(() -> {
+            int userGroups = user.getAvailableGroups().size();
+            if (userGroups <= 1) {
+                if (user.getAvailableSubgroups().size() > 1) {
+                    openSubgroupsPage(this::openWelcomePage);
+                } else {
+                    openCustomLayoutPage(this::openWelcomePage);
+                }
             } else {
-                openGroupsPage();
+                openGroupsListPage();
             }
         });
-        Icon formattings = guiRespond.addIcon(Material.CHEST, Message.BTN_MY_FORMATTINGS, 2, 7).addClickAction(this::openColorsPage);
+        Icon formattings = guiRespond.addIcon(Material.CHEST, Message.BTN_MY_FORMATTINGS, 2, 7).setClickAction(this::openColorsPage);
         if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
-            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.CHANGE_GENDER, 2, 5).addClickAction(this::openGenderPage);
+            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.CHANGE_GENDER, 2, 5).setClickAction(this::openGenderSelectPage);
         } else {
             prefix.setSlot(2, 4);
             formattings.setSlot(2, 6);
@@ -60,16 +66,16 @@ public class GuiSettings extends Page {
 
         guiRespond.addCloseButton();
         guiRespond.openInventory();
-        return guiRespond;
+        return this;
     }
 
-    public GuiSettings openGenderPage() {
+    public GuiSettings openGenderSelectPage() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.TITLE_GENDER), 3);
         String genderName = "n/A";
         if (user.getGenderType() != null) genderName = user.getGenderType().getDisplayName();
         List<String> lore = Arrays.asList(" ", Message.LORE_CHANGE_GENDER.toString());
-        guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), genderName, 2, 5).setLore(lore).addClickAction(() -> {
+        guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), genderName, 2, 5).setLore(lore).setClickAction(() -> {
             if (user.getGenderType() == null) {
                 user.setGenderType(groupHandler.getGenderTypes().get(0));
             } else {
@@ -81,15 +87,15 @@ public class GuiSettings extends Page {
                 GenderType nextGenderType = groupHandler.getGenderTypes().get(index);
                 user.setGenderType(nextGenderType);
             }
-            openGenderPage();
+            openGenderSelectPage();
         });
 
-        guiRespond.addCloseButton().addClickAction(this::mainPage);
+        guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
         guiRespond.openInventory();
         return this;
     }
 
-    public GuiSettings openGroupsPage() {
+    public GuiSettings openGroupsListPage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
@@ -105,14 +111,15 @@ public class GuiSettings extends Page {
                 lore.add(Message.BTN_SELECT_PREFIX.toString());
             }
 
-            guiRespond.addIcon(itemStack, prefixColor + group.getName()).setLore(lore).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, prefixColor + group.getName()).setLore(lore).setClickAction(() -> {
                 user.setGroup(group, false);
-                openGroupsPage();
+                openGroupsListPage();
             });
         }
 
-        if (configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) && user.hasPermission("easyprefix.custom.gui")) {
-            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9).addClickAction(this::openCustomPrefixPage);
+        if (configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
+            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
+                    .setClickAction(() -> openCustomLayoutPage(this::openGroupsListPage));
         }
 
         if (user.getAvailableSubgroups().size() > 0) {
@@ -125,38 +132,10 @@ public class GuiSettings extends Page {
                 }
             } catch (Exception ignored) {
             }
-            guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).addClickAction(this::openSubgroupsPage);
+            guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).setClickAction(() -> openSubgroupsPage(this::openGroupsListPage));
         }
 
-        guiRespond.addCloseButton().addClickAction(this::mainPage);
-        guiRespond.openInventory();
-        return this;
-    }
-
-    public GuiSettings openSubgroupsPage() {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
-        for (Subgroup subgroup : user.getAvailableSubgroups()) {
-            List<String> lore = new ArrayList<>();
-            ItemStack book = new ItemStack(Material.BOOK);
-
-            if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
-                book.addUnsafeEnchantment(Enchantment.LUCK, 1);
-            } else {
-                lore.add(" ");
-                lore.add(Message.BTN_SELECT_PREFIX.toString());
-            }
-
-            guiRespond.addIcon(book, subgroup.getGroupColor() + subgroup.getName()).setLore(lore).addClickAction(() -> {
-                if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
-                    user.setSubgroup(null);
-                } else {
-                    user.setSubgroup(subgroup);
-                }
-                openSubgroupsPage();
-            });
-        }
-
-        guiRespond.addCloseButton().addClickAction(this::mainPage);
+        guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
         guiRespond.openInventory();
         return this;
     }
@@ -175,7 +154,7 @@ public class GuiSettings extends Page {
             if (user.getChatColor() != null && user.getChatColor().equals(color) && (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)))
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
 
-            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, +slot).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, +slot).setClickAction(() -> {
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {
                     user.setChatColor(color);
                     openColorsPage();
@@ -205,7 +184,7 @@ public class GuiSettings extends Page {
             if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
-            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).addClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).setClickAction(() -> {
                 ChatFormatting formatting = chatFormatting;
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + formatting.name().toLowerCase())) {
                     if (user.getChatFormatting() != null && user.getChatFormatting().equals(formatting)) {
@@ -227,12 +206,55 @@ public class GuiSettings extends Page {
 
         guiRespond.addCloseButton().
 
-                addClickAction(this::mainPage);
+                setClickAction(this::openWelcomePage);
         guiRespond.openInventory();
         return this;
     }
 
-    public GuiSettings openCustomPrefixPage() {
+    public GuiSettings openSubgroupsPage(ClickAction backAction) {
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
+        for (Subgroup subgroup : user.getAvailableSubgroups()) {
+            List<String> lore = new ArrayList<>();
+            ItemStack book = new ItemStack(Material.BOOK);
+
+            if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
+                book.addUnsafeEnchantment(Enchantment.LUCK, 1);
+            } else {
+                lore.add(" ");
+                lore.add(Message.BTN_SELECT_PREFIX.toString());
+            }
+
+            guiRespond.addIcon(book, subgroup.getGroupColor() + subgroup.getName()).setLore(lore).setClickAction(() -> {
+                if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
+                    user.setSubgroup(null);
+                } else {
+                    user.setSubgroup(subgroup);
+                }
+                openSubgroupsPage(backAction);
+            });
+        }
+
+        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
+            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
+                    .setClickAction(() -> openCustomLayoutPage(() -> openSubgroupsPage(this::openWelcomePage)));
+        }
+
+        if (backAction != null) {
+            guiRespond.addCloseButton().setClickAction(backAction);
+        } else {
+            guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
+        }
+
+        guiRespond.openInventory();
+        return this;
+    }
+
+    public GuiSettings openCustomLayoutPage(ClickAction backAction) {
+        if (!EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) || !user.hasPermission("custom.gui")) {
+            if (backAction != null) {
+                backAction.execute();
+            } else openGroupsListPage();
+        }
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 3);
         final String divider = "§7--------------------";
 
@@ -241,31 +263,30 @@ public class GuiSettings extends Page {
 
         List<String> prefixLore = Arrays.asList(divider, loreDetail + user.getPrefix().replace("§", "&"), " ", loreEdit);
 
-        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).addClickAction(() -> {
+        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).setClickAction(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.toString().replace("%prefix%", user.getPrefix().replace("§", "&")));
-            responder.getInput((respond) -> {
-                user.setPrefix(respond);
-                user.sendMessage(Message.INPUT_SAVED.toString());
-            });
+            responder.getInput((respond) -> user.getPlayer().performCommand("ep setprefix " + respond));
         });
 
         List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ", loreEdit);
 
-        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).addClickAction(() -> {
+        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).setClickAction(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", user.getSuffix().replace("§", "&")));
-            responder.getInput((respond) -> {
-                user.setSuffix(respond);
-                user.sendMessage(Message.INPUT_SAVED.toString());
-            });
+            responder.getInput((respond) -> user.getPlayer().performCommand("ep setsuffix " + respond));
         });
 
-        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 3, 9).addClickAction(() -> {
+        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 3, 9).setClickAction(() -> {
             user.setPrefix(null);
             user.setSuffix(null);
-            openCustomPrefixPage();
+            openCustomLayoutPage(backAction);
         });
 
-        guiRespond.addCloseButton().addClickAction(this::openGroupsPage);
+        if (backAction != null) {
+            guiRespond.addCloseButton().setClickAction(backAction);
+        } else {
+            guiRespond.addCloseButton().setClickAction(this::openGroupsListPage);
+        }
+
         guiRespond.openInventory();
         return this;
     }

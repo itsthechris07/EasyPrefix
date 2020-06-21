@@ -106,7 +106,7 @@ public class Icon {
         return slot;
     }
 
-    public Icon addClickAction(ClickAction clickAction) {
+    public Icon setClickAction(ClickAction clickAction) {
         this.clickAction = clickAction;
         return this;
     }

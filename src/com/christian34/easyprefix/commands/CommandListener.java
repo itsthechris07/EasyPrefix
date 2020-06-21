@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Message;
@@ -34,6 +35,7 @@ public class CommandListener implements Listener, CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         User user = (sender instanceof Player) ? this.instance.getUser((Player) sender) : null;
         GroupHandler groupHandler = this.instance.getGroupHandler();
+        ConfigData config = instance.getFileManager().getConfig();
 
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
@@ -61,7 +63,7 @@ public class CommandListener implements Listener, CommandExecutor {
             } else if (args[0].equalsIgnoreCase("settings")) {
                 if (user != null) {
                     if (sender.hasPermission("EasyPrefix.settings")) {
-                        new GuiSettings(user).mainPage();
+                        new GuiSettings(user).openWelcomePage();
                         return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS, user));
@@ -138,19 +140,22 @@ public class CommandListener implements Listener, CommandExecutor {
                     return false;
                 }
             } else if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
-                EasyCommand layoutCommand = new Command_Custom();
-                layoutCommand.handleCommand(sender, args);
-                return true;
+                if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
+                    EasyCommand layoutCommand = new Command_Custom();
+                    layoutCommand.handleCommand(sender, args);
+                    return true;
+                }
             } else if (args[0].equalsIgnoreCase("gui")) {
+                if (user == null) return false;
                 if (args.length > 2) {
                     if (args[1].equalsIgnoreCase("settings")) {
                         GuiSettings gui = new GuiSettings(user);
                         if (args[2].equalsIgnoreCase("gender")) {
-                            gui.openGenderPage();
+                            gui.openGenderSelectPage();
                         } else if (args[2].equalsIgnoreCase("group")) {
-                            gui.openGroupsPage();
+                            gui.openGroupsListPage();
                         } else if (args[2].equalsIgnoreCase("subgroups")) {
-                            gui.openSubgroupsPage();
+                            gui.openSubgroupsPage(() -> user.getPlayer().closeInventory());
                         } else if (args[2].equalsIgnoreCase("color")) {
                             gui.openColorsPage();
                         }
@@ -203,11 +208,13 @@ public class CommandListener implements Listener, CommandExecutor {
                 sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
             }
         }
-        if (sender.hasPermission("easyprefix.custom.prefix")) {
-            sender.sendMessage("§7/§5EasyPrefix setprefix <Prefix> §f| §7set prefix");
-        }
-        if (sender.hasPermission("easyprefix.custom.suffix")) {
-            sender.sendMessage("§7/§5EasyPrefix setsuffix <Suffix> §f| §7set suffix");
+        if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
+            if (sender.hasPermission("easyprefix.custom.prefix")) {
+                sender.sendMessage("§7/§5EasyPrefix setprefix <Prefix> §f| §7set prefix");
+            }
+            if (sender.hasPermission("easyprefix.custom.suffix")) {
+                sender.sendMessage("§7/§5EasyPrefix setsuffix <Suffix> §f| §7set suffix");
+            }
         }
         sender.sendMessage(" \n§7------------------------------------------------\n ");
         sender.sendMessage("§7Version: " + this.instance.getPlugin().getDescription().getVersion());

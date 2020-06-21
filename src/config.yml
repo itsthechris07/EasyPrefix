@@ -40,8 +40,10 @@ config:
         # sound_name; volume; pitch
         sound: "ENTITY_EXPERIENCE_BOTTLE_THROW; 18; 1"
   user:
-    # allow players to create custom prefixes (requires permission EasyPrefix.chat.custom)
-    custom-prefix:
+    # allow players to create custom prefixes and suffixes
+    # requires permission EasyPrefix.custom.prefix or EasyPrefix.custom.suffix
+    # EasyPrefix.custom.gui shows icon in /ep settings
+    custom-layout:
       enabled: false
   # groups can mixed with subgroups - please look up my github wiki for more informations
   subgroups:
@@ -65,7 +67,7 @@ config:
       #   displayname: 'name'
   # settings for the gui
   gui:
-    # specifies if all colors and formattings should be visible, even if the player has no permissions for it.
+    # specifies if all colors and formatting should be visible, even if the player has no permissions for it.
     show-all-chatcolors: true
   # settings for chat appearance
   chat:

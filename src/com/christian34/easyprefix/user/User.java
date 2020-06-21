@@ -17,6 +17,9 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -40,6 +43,7 @@ public class User {
     private String customPrefix;
     private String customSuffix;
     private boolean isGroupForced;
+    private long lastPrefixUpdate, lastSuffixUpdate;
 
     public User(Player player) {
         this.player = player;
@@ -48,24 +52,33 @@ public class User {
         if (this.instance.getSqlDatabase() == null) this.userData = new UserData(player.getUniqueId());
     }
 
+    public long getLastPrefixUpdate() {
+        return lastPrefixUpdate;
+    }
+
+    public long getLastSuffixUpdate() {
+        return lastSuffixUpdate;
+    }
+
     public void login() {
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
         ConfigData configData = this.instance.getFileManager().getConfig();
         if (!hasPermission("Color.all") && configData.getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {
             for (Color color : Color.values()) {
-                if (player.hasPermission("Color." + color.name())) colors.add(color);
+                if (hasPermission("Color." + color.name())) colors.add(color);
             }
             for (ChatFormatting formatting : ChatFormatting.values()) {
                 if (formatting.equals(ChatFormatting.RAINBOW)) continue;
-                if (player.hasPermission("Color." + formatting.name())) chatFormattings.add(formatting);
+                if (hasPermission("Color." + formatting.name())) chatFormattings.add(formatting);
             }
         }
         String groupName = null, subgroupName = null, chatColor = null, chatFormatting = null, cstmPrefix = null, cstmSuffix = null, gender = null;
         boolean forceGroup = false;
+        Timestamp prefixUpdate = null, suffixUpdate = null;
         Database db = this.instance.getSqlDatabase();
         if (db != null) {
-            String stmt = "SELECT `group`,`force_group`,`subgroup`,`custom_prefix`,`custom_suffix`,`gender`," + "`chat_color`,`chat_formatting` FROM `%p%users` WHERE `uuid` = '" + player.getUniqueId().toString() + "'";
+            String stmt = "SELECT `group`,`force_group`,`subgroup`,`custom_prefix`,`custom_prefix_update`," + "`custom_suffix`,`custom_suffix_update`,`gender`," + "`chat_color`,`chat_formatting` FROM " + "`%p%users` WHERE `uuid` = '" + player.getUniqueId().toString() + "'";
             try {
                 ResultSet result = db.getValue(stmt);
                 if (result.next()) {
@@ -74,7 +87,9 @@ public class User {
                     chatColor = result.getString("chat_color");
                     chatFormatting = result.getString("chat_formatting");
                     cstmPrefix = result.getString("custom_prefix");
+                    prefixUpdate = result.getTimestamp("custom_prefix_update");
                     cstmSuffix = result.getString("custom_suffix");
+                    suffixUpdate = result.getTimestamp("custom_suffix_update");
                     gender = result.getString("gender");
                     forceGroup = result.getBoolean("force_group");
                 } else {
@@ -89,6 +104,8 @@ public class User {
             }
         } else {
             FileConfiguration data = userData.getFileData();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+
             groupName = data.getString("group");
             subgroupName = data.getString("subgroup");
             chatColor = data.getString("chat-color");
@@ -97,6 +114,17 @@ public class User {
             cstmSuffix = data.getString("custom-suffix");
             gender = data.getString("gender");
             forceGroup = data.getBoolean("force-group");
+            try {
+                prefixUpdate = new Timestamp(dateFormat.parse(data.getString("custom-prefix-update")).getTime());
+                suffixUpdate = new Timestamp(dateFormat.parse(data.getString("custom-suffix-update")).getTime());
+            } catch (Exception ignored) {
+                try {
+                    prefixUpdate = new Timestamp(dateFormat.parse("2020-01-01 00:00:00.000").getTime());
+                    suffixUpdate = new Timestamp(dateFormat.parse("2020-01-01 00:00:00.000").getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         this.isGroupForced = forceGroup;
@@ -135,14 +163,25 @@ public class User {
             }
         }
 
-        if (hasPermission("settings.custom")) {
+        if (hasPermission("custom.prefix") && configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
             if (cstmPrefix != null) {
                 this.customPrefix = cstmPrefix.replace("&", "§");
             }
+        }
+
+        if (hasPermission("custom.suffix") && configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
             if (cstmSuffix != null) {
                 this.customSuffix = cstmSuffix.replace("&", "§");
             }
         }
+
+        if (prefixUpdate != null) {
+            this.lastPrefixUpdate = prefixUpdate.getTime();
+        }
+        if (suffixUpdate != null) {
+            this.lastSuffixUpdate = suffixUpdate.getTime();
+        }
+
         if (gender != null && groupHandler.handleGenders()) {
             this.genderType = groupHandler.getGender(gender);
         }
@@ -156,7 +195,7 @@ public class User {
     }
 
     public String getPrefix() {
-        if (hasPermission("settings.custom") && customPrefix != null) {
+        if (hasPermission("custom.prefix") && customPrefix != null) {
             return customPrefix;
         }
         return group.getPrefix(this, true);
@@ -171,8 +210,16 @@ public class User {
         this.instance.unloadUser(getPlayer());
     }
 
+    public boolean hasCustomPrefix() {
+        return customPrefix != null;
+    }
+
+    public boolean hasCustomSuffix() {
+        return customSuffix != null;
+    }
+
     public String getSuffix() {
-        if (hasPermission("settings.custom") && customSuffix != null) {
+        if (hasPermission("custom.suffix") && customSuffix != null) {
             return customSuffix;
         }
         return group.getSuffix(this, true);
@@ -335,7 +382,7 @@ public class User {
         player.sendMessage(Messages.getPrefix() + message);
     }
 
-    private void saveData(String key, Object value) {
+    public void saveData(String key, Object value) {
         Database db = this.instance.getSqlDatabase();
         if (db == null) {
             key = key.replace("_", "-");

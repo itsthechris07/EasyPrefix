@@ -5,6 +5,8 @@ import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.InputReader;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,35 +23,69 @@ public class Command_Custom implements EasyCommand {
     public boolean handleCommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
-            return false;
+            return true;
         }
         User user = EasyPrefix.getInstance().getUser((Player) sender);
-
+        String input = InputReader.readInput(args, 1);
         if (args[0].equalsIgnoreCase("setprefix")) {
             if (!user.hasPermission("custom.prefix")) {
                 sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                return false;
+                return true;
             }
             Timestamp next = getNextTimestamp(user.getLastPrefixUpdate());
-
-            if (next.before(new Timestamp(System.currentTimeMillis())) || user.hasPermission("custom.bypass")) {
-                user.setPrefix(InputReader.readInput(args, 1));
-                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString().replace("%prefix%", user.getPrefix()));
-            } else {
+            if (!next.before(new Timestamp(System.currentTimeMillis())) && !user.hasPermission("custom.bypass")) {
                 user.getPlayer().sendMessage(getTimeMessage(next));
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("reset")) {
+                if (args.length > 2 && args[2].equalsIgnoreCase("submit")) {
+                    user.setPrefix(null);
+                    user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString()
+                            .replace("%prefix%", user.getPrefix().replace("§", "&")));
+                } else {
+                    user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_PREFIX.toString()
+                            .replace("%prefix%", input), "/ep setprefix reset submit"));
+                }
+                return true;
+            }
+            if (!args[args.length - 1].equalsIgnoreCase("submit")) {
+                user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_PREFIX.toString()
+                        .replace("%prefix%", input), "/ep setprefix " + input + " submit"));
+            } else {
+                user.setPrefix(input);
+                user.saveData("custom-prefix-update", new Timestamp(System.currentTimeMillis()).toString());
+                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString()
+                        .replace("%prefix%", user.getPrefix().replace("§", "&")));
             }
         } else if (args[0].equalsIgnoreCase("setsuffix")) {
             if (!user.hasPermission("custom.suffix")) {
                 sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                return false;
+                return true;
             }
-            Timestamp next = getNextTimestamp(user.getLastPrefixUpdate());
-
-            if (next.before(new Timestamp(System.currentTimeMillis())) || user.hasPermission("custom.bypass")) {
-                user.setSuffix(InputReader.readInput(args, 1));
-                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.toString().replace("%suffix%", user.getSuffix()));
-            } else {
+            Timestamp next = getNextTimestamp(user.getLastSuffixUpdate());
+            if (!next.before(new Timestamp(System.currentTimeMillis())) && !user.hasPermission("custom.bypass")) {
                 user.getPlayer().sendMessage(getTimeMessage(next));
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("reset")) {
+                if (args.length > 2 && args[2].equalsIgnoreCase("submit")) {
+                    user.setSuffix(null);
+                    user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.toString()
+                            .replace("%suffix%", user.getSuffix().replace("§", "&")));
+                } else {
+                    user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_SUFFIX.toString()
+                            .replace("%suffix%", input), "/ep setsuffix reset submit"));
+                }
+                return true;
+            }
+            if (!args[args.length - 1].equalsIgnoreCase("submit")) {
+                user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_SUFFIX.toString()
+                        .replace("%suffix%", input), "/ep setsuffix " + input + " submit"));
+            } else {
+                user.setSuffix(input);
+                user.saveData("custom-suffix-update", new Timestamp(System.currentTimeMillis()).toString());
+                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.toString()
+                        .replace("%suffix%", user.getSuffix().replace("§", "&")));
             }
         }
         return true;
@@ -58,6 +94,14 @@ public class Command_Custom implements EasyCommand {
     @Override
     public String getPermission() {
         return null;
+    }
+
+    private TextComponent buildConfirmComponent(String text, String command) {
+        TextComponent msg = new TextComponent(TextComponent.fromLegacyText(text.replace("%newline%", "\n")));
+        TextComponent confirm = new TextComponent(TextComponent.fromLegacyText(" " + Message.CHAT_BTN_CONFIRM.toString() + " "));
+        confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+        msg.addExtra(confirm);
+        return msg;
     }
 
     private Timestamp getNextTimestamp(long last) {
@@ -71,7 +115,7 @@ public class Command_Custom implements EasyCommand {
         int minutes = (int) (min % 60);
         int hours = (int) ((min / 60) % 24);
         String msg = Message.LAYOUT_ERROR.toString();
-        return msg.replace("%h%", hours + "").replace("%m%", minutes + "");
+        return msg.replace("%h%", hours + "").replace("%m%", (minutes == 0) ? "<1" : minutes + "");
     }
 
 }

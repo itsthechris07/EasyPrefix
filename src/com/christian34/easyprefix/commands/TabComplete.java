@@ -30,7 +30,7 @@ public class TabComplete implements TabCompleter {
         if (!cmd.getName().equalsIgnoreCase("easyprefix")) return null;
         ArrayList<String> matches = new ArrayList<>();
         if (args.length == 1) {
-            List<String> list = new ArrayList<>(Arrays.asList("reload", "set", "setup", "user", "group"));
+            List<String> list = new ArrayList<>(Arrays.asList("reload", "set", "setup", "user", "group", "setprefix", "setsuffix"));
             if (this.instance.getSqlDatabase() != null) list.add("database");
             if (sender.hasPermission("EasyPrefix.settings")) {
                 list.add("settings");
@@ -45,6 +45,7 @@ public class TabComplete implements TabCompleter {
                 }
             }
         } else if (args.length == 2) {
+            if (!sender.hasPermission("easyprefix.admin")) return matches;
             if (args[0].equalsIgnoreCase("user")) {
                 return null;
             } else if (args[0].equalsIgnoreCase("database")) {
@@ -73,6 +74,7 @@ public class TabComplete implements TabCompleter {
                 }
             }
         } else if (args.length == 3) {
+            if (!sender.hasPermission("easyprefix.admin")) return matches;
             if (args[0].equalsIgnoreCase("user")) {
                 List<String> list = Arrays.asList("info", "reload", "setgroup", "setsubgroup", "setgender");
                 if (!args[2].isEmpty()) {
@@ -86,6 +88,7 @@ public class TabComplete implements TabCompleter {
                 matches.add("info");
             }
         } else if (args.length == 4) {
+            if (!sender.hasPermission("easyprefix.admin")) return matches;
             if (args[0].equalsIgnoreCase("user")) {
                 if (args[2].equalsIgnoreCase("setgroup")) {
                     ArrayList<Group> groups = this.instance.getGroupHandler().getGroups();
