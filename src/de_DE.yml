@@ -1,3 +1,4 @@
+#use %newline% to break lines
 info:
   noperms: "&cDu hast für diesen Befehl keine Berechtigung!"
   playerNotFound: "&cSpieler konnte nicht gefunden werden!"
@@ -76,9 +77,14 @@ chat:
   prefix: "&5Wie soll das Präfix lauten?%newline%&5Aktuell: &7\"%prefix%\""
   suffix: "&5Wie soll das Suffix lauten?%newline%&5Aktuell: &7\"%suffix%\""
   group: "&5Wie soll die neue Gruppe heißen?"
-  wrongEntry: "&cUngültige Eingabe!%newline%&7%allowed_inputs%"
   playerPrefix: '&7[&5Chat&7] &aDein Präfix wurde auf "%prefix%" geändert!'
+  confirmPlayerPrefix: '&7[&5Chat&7] &7Möchtest du dein Präfix zu »%prefix%« ändern?'
+  resetPlayerPrefix: '&7[&5Chat&7] &7Möchtest du dein Präfix wirklich zurücksetzen?'
   playerSuffix: '&7[&5Chat&7] &aDein Suffix wurde auf "%suffix%" geändert!'
+  confirmPlayerSuffix: '&7[&5Chat&7] &7Möchtest du dein Präfix zu »%suffix%« ändern?'
+  resetPlayerSuffix: '&7[&5Chat&7] &7Möchtest du wirklich dein Suffix zurücksetzen?'
+  confirmBtn: '&7[&aBestätigen&7]'
+  layoutError: '&7[&5Chat&7] &cDu hast erst vor kurzem dein Layout geändert. Bitte versuche es in %h% Stunden und %m% Minuten erneut!'
 colors:
   black: "Schwarz"
   blue: "Blau"

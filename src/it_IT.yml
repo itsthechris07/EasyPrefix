@@ -1,3 +1,4 @@
+#use %newline% to break lines
 info:
   noperms: '&cNon hai il permesso di usare questo comando.'
   playerNotFound: '&cIl giocatore non è stato trovato!'
@@ -76,9 +77,14 @@ chat:
   prefix: '&5Quale prefisso vuoi impostare?%newline%&5Attuale: &7"%prefix%"'
   suffix: '&5Quale suffisso vuoi impostare?%newline%&5Attuale: &7"%suffix%"'
   group: '&5Che nome vuoi dare al gruppo?'
-  wrongEntry: '&cInput errato!%newline%&7%allowed_inputs%'
-  playerPrefix: '&7[&5Chat&7] &aYour prefix has been set to %prefix%'
-  playerSuffix: '&7[&5Chat&7] &aYour suffix has been set to %suffix%'
+  playerPrefix: '&7[&5Chat&7] &aYour prefix has been set to »%prefix%«'
+  confirmPlayerPrefix: '&7[&5Chat&7] &7Do you want to set your prefix to »%prefix%«?'
+  resetPlayerPrefix: '&7[&5Chat&7] &7Do you want to reset your prefix?'
+  playerSuffix: '&7[&5Chat&7] &aYour suffix has been set to »%suffix%«'
+  confirmPlayerSuffix: '&7[&5Chat&7] &7Do you want to set your suffix to »%suffix%«?'
+  resetPlayerSuffix: '&7[&5Chat&7] &7Do you want to reset your suffix?'
+  confirmBtn: '&7[&aConfirm&7]'
+  layoutError: '&7[&5Chat&7] &cYou have recently changed your layout. Please try again in %h% hours %m% minutes!'
 colors:
   black: Nero
   blue: Blu scuro
