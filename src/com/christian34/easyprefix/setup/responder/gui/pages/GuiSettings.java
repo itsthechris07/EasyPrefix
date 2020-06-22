@@ -17,6 +17,7 @@ import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.VersionController;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -265,14 +266,14 @@ public class GuiSettings extends Page {
 
         guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).setClickAction(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.toString().replace("%prefix%", user.getPrefix().replace("§", "&")));
-            responder.getInput((respond) -> user.getPlayer().performCommand("ep setprefix " + respond));
+            responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> user.getPlayer().performCommand("ep setprefix " + respond)));
         });
 
         List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ", loreEdit);
 
         guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).setClickAction(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", user.getSuffix().replace("§", "&")));
-            responder.getInput((respond) -> user.getPlayer().performCommand("ep setsuffix " + respond));
+            responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> user.getPlayer().performCommand("ep setsuffix " + respond)));
         });
 
         guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 3, 9).setClickAction(() -> {

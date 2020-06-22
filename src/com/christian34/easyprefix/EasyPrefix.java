@@ -87,12 +87,12 @@ public class EasyPrefix extends JavaPlugin {
         }
 
         if (cfg.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
-            Command_Alias cmd = new Command_Alias(EasyPrefix.getInstance());
+            Command_Alias cmd = new Command_Alias(this);
 
             PluginCommand prefixAlias = createPluginCommand(cfg.getString(ConfigData.ConfigKeys.PREFIX_ALIAS).replace("/", ""));
             assert prefixAlias != null;
             prefixAlias.setExecutor(cmd);
-            prefixAlias.setTabCompleter(new Command_Alias(EasyPrefix.getInstance()));
+            prefixAlias.setTabCompleter(cmd);
 
             PluginCommand suffixAlias = createPluginCommand(cfg.getString(ConfigData.ConfigKeys.SUFFIX_ALIAS).replace("/", ""));
             assert suffixAlias != null;
@@ -100,9 +100,10 @@ public class EasyPrefix extends JavaPlugin {
             suffixAlias.setTabCompleter(cmd);
 
             CommandMap commandMap = getCommandMapInstance();
-            assert commandMap != null;
-            commandMap.register(plugin.getDescription().getName(), prefixAlias);
-            commandMap.register(plugin.getDescription().getName(), suffixAlias);
+            if (commandMap != null) {
+                commandMap.register(plugin.getDescription().getName(), prefixAlias);
+                commandMap.register(plugin.getDescription().getName(), suffixAlias);
+            }
         }
 
         this.updater = new Updater(this);
@@ -207,7 +208,6 @@ public class EasyPrefix extends JavaPlugin {
                 return (CommandMap) field.get(spm);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Can't get the Bukkit CommandMap instance.");
             }
         }
         return null;
