@@ -172,9 +172,11 @@ public class GuiRespond {
 
     @SuppressWarnings("deprecation")
     private ItemStack getPlaceholder() {
-        ItemStack glass = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"), 1);
+        ItemStack glass;
         if (VersionController.getMinorVersion() < 13) {
             glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);
+        } else {
+            glass = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"), 1);
         }
         ItemMeta meta = glass.getItemMeta();
         if (meta != null) meta.setDisplayName("§0 ");
@@ -252,7 +254,7 @@ public class GuiRespond {
             try {
                 preventClose = false;
                 clickedIcon.getClickAction().execute();
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 e.getWhoClicked().closeInventory();
                 e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
                 Messages.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");

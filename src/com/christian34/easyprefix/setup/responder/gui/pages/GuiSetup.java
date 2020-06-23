@@ -57,7 +57,7 @@ public class GuiSetup extends Page {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
-        Material langMaterial = (VersionController.getMinorVersion() < 12) ? Material.valueOf("SIGN") : Material.valueOf("OAK_SIGN");
+        Material langMaterial = (VersionController.getMinorVersion() <= 12) ? Material.valueOf("SIGN") : Material.valueOf("OAK_SIGN");
         String langName = Message.BTN_CHANGE_LANG.toString().replace("%lang%", Messages.langToName());
         guiRespond.addIcon(langMaterial, langName, 2, 2).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).setClickAction(() -> {
             String crntLang = Messages.getLanguage();

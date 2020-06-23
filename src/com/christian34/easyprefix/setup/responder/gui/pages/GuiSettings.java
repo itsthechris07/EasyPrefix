@@ -126,7 +126,7 @@ public class GuiSettings extends Page {
         if (user.getAvailableSubgroups().size() > 0) {
             Material subgroupsMaterial = Material.BARRIER;
             try {
-                if (VersionController.getMinorVersion() < 12) {
+                if (VersionController.getMinorVersion() <= 12) {
                     subgroupsMaterial = Material.valueOf("CHEST");
                 } else {
                     subgroupsMaterial = Material.WRITABLE_BOOK;

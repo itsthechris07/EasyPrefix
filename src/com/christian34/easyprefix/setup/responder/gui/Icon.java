@@ -102,13 +102,13 @@ public class Icon {
         return clickAction;
     }
 
-    public int getSlot() {
-        return slot;
-    }
-
     public Icon setClickAction(ClickAction clickAction) {
         this.clickAction = clickAction;
         return this;
+    }
+
+    public int getSlot() {
+        return slot;
     }
 
     public Icon setSlot(int line, int slot) {
