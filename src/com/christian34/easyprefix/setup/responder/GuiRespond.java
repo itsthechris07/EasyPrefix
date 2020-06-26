@@ -228,6 +228,9 @@ public class GuiRespond {
         public void onInventoryClick(InventoryClickEvent e) {
             if (e.getCurrentItem() == null || e.getCurrentItem().getItemMeta() == null || e.getClickedInventory() == null)
                 return;
+
+            if (!e.getWhoClicked().equals(holder.getPlayer()) || !e.getInventory().equals(inventory)) return;
+
             e.setCancelled(true);
 
             String displayName = e.getCurrentItem().getItemMeta().getDisplayName();
