@@ -27,9 +27,9 @@ public class Updater {
     }
 
     public boolean checkForUpdates() {
-        Bukkit.getScheduler().runTaskAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
             try {
-                HttpsURLConnection connection = (HttpsURLConnection) new URL("https://api.spigotmc.org/legacy/update" + ".php?resource=44580").openConnection();
+                HttpsURLConnection connection = (HttpsURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=44580").openConnection();
                 connection.setRequestMethod("GET");
                 spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
             } catch (IOException e) {
