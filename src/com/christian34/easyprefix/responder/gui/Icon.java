@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.setup.responder.gui;
+package com.christian34.easyprefix.responder.gui;
 
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.VersionController;

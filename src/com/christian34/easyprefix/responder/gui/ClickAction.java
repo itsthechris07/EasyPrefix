@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.setup.responder.gui;
+package com.christian34.easyprefix.responder.gui;
 
 /**
  * EasyPrefix 2020.

@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.setup.responder;
+package com.christian34.easyprefix.responder;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;

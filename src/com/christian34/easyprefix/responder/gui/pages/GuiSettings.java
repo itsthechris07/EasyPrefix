@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.setup.responder.gui.pages;
+package com.christian34.easyprefix.responder.gui.pages;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
@@ -8,11 +8,11 @@ import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.setup.responder.ChatRespond;
-import com.christian34.easyprefix.setup.responder.GuiRespond;
-import com.christian34.easyprefix.setup.responder.gui.ClickAction;
-import com.christian34.easyprefix.setup.responder.gui.Icon;
-import com.christian34.easyprefix.setup.responder.gui.Page;
+import com.christian34.easyprefix.responder.ChatRespond;
+import com.christian34.easyprefix.responder.GuiRespond;
+import com.christian34.easyprefix.responder.gui.ClickAction;
+import com.christian34.easyprefix.responder.gui.Icon;
+import com.christian34.easyprefix.responder.gui.Page;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;

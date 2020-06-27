@@ -1,12 +1,12 @@
-package com.christian34.easyprefix.setup.responder.gui.pages;
+package com.christian34.easyprefix.responder.gui.pages;
 
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.setup.responder.ChatRespond;
-import com.christian34.easyprefix.setup.responder.GuiRespond;
-import com.christian34.easyprefix.setup.responder.gui.Page;
+import com.christian34.easyprefix.responder.ChatRespond;
+import com.christian34.easyprefix.responder.GuiRespond;
+import com.christian34.easyprefix.responder.gui.Page;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;

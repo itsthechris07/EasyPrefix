@@ -110,6 +110,13 @@ public class EasyPrefix extends JavaPlugin {
         hookMetrics();
         Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Messages.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            if (formatChat() && (Bukkit.getPluginManager().isPluginEnabled("EssentialsChat") || Bukkit.getPluginManager().isPluginEnabled("MultiChat"))) {
+                Messages.log("§c--------------------------------------");
+                Messages.log("§cYou are using a different chat management plugin. To avoid errors, please set 'handle-chat' to false in config.yml");
+                Messages.log("§c--------------------------------------");
+            }
+        }, 20 * 3);
     }
 
     public boolean formatChat() {
