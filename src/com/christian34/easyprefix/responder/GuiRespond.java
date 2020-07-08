@@ -26,10 +26,10 @@ import java.util.ArrayList;
  * @author Christian34
  */
 public class GuiRespond {
-    private final User holder;
     private final Icon nextPage, prevPage;
     private final int guiLines;
     private final int maxSlots;
+    private User holder;
     private ListenUp LISTENER = new ListenUp();
     private boolean preventClose;
     private Inventory inventory;
@@ -151,6 +151,7 @@ public class GuiRespond {
         this.inventory = null;
         this.pages = null;
         this.LISTENER = null;
+        this.holder = null;
     }
 
     private void addGlassFrame() {
@@ -226,11 +227,9 @@ public class GuiRespond {
 
         @EventHandler(ignoreCancelled = true)
         public void onInventoryClick(InventoryClickEvent e) {
-            if (e.getCurrentItem() == null || e.getCurrentItem().getItemMeta() == null || e.getClickedInventory() == null)
+            if (!e.getWhoClicked().getName().equals(holder.getPlayer().getName()) || e.getClickedInventory() == null || e.getCurrentItem() == null || e.getCurrentItem().getItemMeta() == null) {
                 return;
-
-            if (!e.getWhoClicked().equals(holder.getPlayer()) || !e.getInventory().equals(inventory)) return;
-
+            }
             e.setCancelled(true);
 
             String displayName = e.getCurrentItem().getItemMeta().getDisplayName();
@@ -270,7 +269,7 @@ public class GuiRespond {
 
         @EventHandler
         public void onInventoryClose(InventoryCloseEvent e) {
-            if (e.getInventory().equals(inventory)) {
+            if (holder.getPlayer().equals(e.getPlayer()) && inventory.equals(e.getInventory())) {
                 if (preventClose) {
                     Bukkit.getScheduler().runTaskLater(EasyPrefix.getInstance().getPlugin(), () -> holder.getPlayer().openInventory(inventory), 1);
                 } else {
