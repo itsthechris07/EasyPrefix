@@ -9,10 +9,14 @@ import java.util.List;
  *
  * @author Christian34
  */
-public interface EasyCommand {
+public interface Subcommand {
 
-    boolean handleCommand(CommandSender sender, List<String> args);
+    String getName();
 
     String getPermission();
+
+    void handleCommand(CommandSender sender, List<String> args);
+
+    List<String> getTabCompletion(CommandSender sender, List<String> args);
 
 }

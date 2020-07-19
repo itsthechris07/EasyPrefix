@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,25 +18,50 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class Command_Custom implements EasyCommand {
+public class SetCommand implements Subcommand {
+    private final CommandHandler commandHandler;
+    private final EasyPrefix instance;
+
+    public SetCommand(CommandHandler commandHandler) {
+        this.commandHandler = commandHandler;
+        this.instance = commandHandler.getInstance();
+    }
 
     @Override
-    public boolean handleCommand(CommandSender sender, List<String> args) {
-        if (!(sender instanceof Player)) {
+    public String getName() {
+        return "set";
+    }
+
+    @Override
+    public String getPermission() {
+        return "custom.prefix";
+    }
+
+    @Override
+    public void handleCommand(CommandSender sender, List<String> args) {
+        User user = sender instanceof Player ? instance.getUser((Player) sender) : null;
+        if (user == null) {
             sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
-            return true;
+            return;
         }
-        User user = EasyPrefix.getInstance().getUser((Player) sender);
+
+        if (args.size() < 2) {
+            commandHandler.getSubcommand("help").handleCommand(sender, null);
+            return;
+        }
+
         String input = readInput(args);
+
         if (args.get(0).equalsIgnoreCase("setprefix")) {
             if (!user.hasPermission("custom.prefix")) {
                 sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                return true;
+                return;
             }
+
             Timestamp next = getNextTimestamp(user.getLastPrefixUpdate());
             if (!next.before(new Timestamp(System.currentTimeMillis())) && !user.hasPermission("custom.bypass")) {
                 user.getPlayer().sendMessage(getTimeMessage(next));
-                return true;
+                return;
             }
             if (args.get(1).equalsIgnoreCase("reset")) {
                 if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
@@ -46,7 +72,7 @@ public class Command_Custom implements EasyCommand {
                     user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_PREFIX.toString()
                             .replace("%prefix%", input), "/ep setprefix reset submit"));
                 }
-                return true;
+                return;
             }
             if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
                 user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_PREFIX.toString()
@@ -60,12 +86,12 @@ public class Command_Custom implements EasyCommand {
         } else if (args.get(0).equalsIgnoreCase("setsuffix")) {
             if (!user.hasPermission("custom.suffix")) {
                 sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                return true;
+                return;
             }
             Timestamp next = getNextTimestamp(user.getLastSuffixUpdate());
             if (!next.before(new Timestamp(System.currentTimeMillis())) && !user.hasPermission("custom.bypass")) {
                 user.getPlayer().sendMessage(getTimeMessage(next));
-                return true;
+                return;
             }
             if (args.get(1).equalsIgnoreCase("reset")) {
                 if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
@@ -76,7 +102,7 @@ public class Command_Custom implements EasyCommand {
                     user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_SUFFIX.toString()
                             .replace("%suffix%", input), "/ep setsuffix reset submit"));
                 }
-                return true;
+                return;
             }
             if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
                 user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_SUFFIX.toString()
@@ -88,20 +114,11 @@ public class Command_Custom implements EasyCommand {
                         .replace("%suffix%", user.getSuffix().replace("§", "&")));
             }
         }
-        return true;
     }
 
     @Override
-    public String getPermission() {
-        return null;
-    }
-
-    private TextComponent buildConfirmComponent(String text, String command) {
-        TextComponent msg = new TextComponent(TextComponent.fromLegacyText(text.replace("%newline%", "\n")));
-        TextComponent confirm = new TextComponent(TextComponent.fromLegacyText(" " + Message.CHAT_BTN_CONFIRM.toString() + " "));
-        confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
-        msg.addExtra(confirm);
-        return msg;
+    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+        return Collections.emptyList();
     }
 
     private Timestamp getNextTimestamp(long last) {
@@ -135,6 +152,14 @@ public class Command_Custom implements EasyCommand {
             counter++;
         }
         return stringBuilder.toString();
+    }
+
+    private TextComponent buildConfirmComponent(String text, String command) {
+        TextComponent msg = new TextComponent(TextComponent.fromLegacyText(text.replace("%newline%", "\n")));
+        TextComponent confirm = new TextComponent(TextComponent.fromLegacyText(" " + Message.CHAT_BTN_CONFIRM.toString() + " "));
+        confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
+        msg.addExtra(confirm);
+        return msg;
     }
 
 }
