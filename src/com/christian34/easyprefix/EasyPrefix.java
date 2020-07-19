@@ -1,9 +1,9 @@
 package com.christian34.easyprefix;
 
-import com.christian34.easyprefix.commands.CommandListener;
-import com.christian34.easyprefix.commands.Command_Alias;
-import com.christian34.easyprefix.commands.TabComplete;
+import com.christian34.easyprefix.commands.CommandHandler;
+import com.christian34.easyprefix.commands.old.Command_Alias;
 import com.christian34.easyprefix.database.Database;
+import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.GroupHandler;
@@ -11,12 +11,10 @@ import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.placeholderapi.Placeholder;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
-import com.christian34.easyprefix.vault.VaultManager;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
@@ -51,6 +49,10 @@ public class EasyPrefix extends JavaPlugin {
         return instance;
     }
 
+    public ExpansionManager getExpansionManager() {
+        return expansionManager;
+    }
+
     public void onDisable() {
         if (getSqlDatabase() != null) getSqlDatabase().close();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -80,10 +82,7 @@ public class EasyPrefix extends JavaPlugin {
             return;
         }
 
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            VaultManager vaultManager = new VaultManager(this);
-            vaultManager.hook();
-        }
+        this.expansionManager = new ExpansionManager(this);
 
         if (cfg.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
             Command_Alias cmd = new Command_Alias(this);
@@ -188,7 +187,7 @@ public class EasyPrefix extends JavaPlugin {
 
     private void hookMetrics() {
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (Placeholder.isEnabled()) ? "installed" : "not installed"));
+        metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
         metrics.addCustomChart(new Metrics.SimplePie("lang", Messages::getLanguage));
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getSqlDatabase() != null) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));

@@ -1,6 +1,6 @@
 package com.christian34.easyprefix.groups;
 
-import com.christian34.easyprefix.placeholderapi.Placeholder;
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
 
@@ -66,12 +66,12 @@ public abstract class EasyGroup {
         if (text == null) return null;
 
         if (user != null) {
-            if (!Placeholder.isEnabled()) {
+            if (!EasyPrefix.getInstance().getExpansionManager().isUsingPapi()) {
                 String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user, false) : "";
                 String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user, false) : "";
                 text = text.replace("%ep_user_prefix%", user.getGroup().getPrefix(null, false)).replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false)).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
             } else {
-                text = Placeholder.setPlaceholder(user.getPlayer(), text);
+                text = EasyPrefix.getInstance().getExpansionManager().setPapi(user.getPlayer(), text);
             }
             text = text.replace("%player%", user.getPlayer().getDisplayName());
         }

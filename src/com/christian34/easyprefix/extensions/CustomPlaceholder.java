@@ -1,6 +1,5 @@
-package com.christian34.easyprefix.placeholderapi;
+package com.christian34.easyprefix.extensions;
 
-import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
@@ -14,6 +13,11 @@ import org.bukkit.OfflinePlayer;
  * @author Christian34
  */
 class CustomPlaceholder extends PlaceholderExpansion {
+    private final ExpansionManager expansionManager;
+
+    public CustomPlaceholder(ExpansionManager expansionManager) {
+        this.expansionManager = expansionManager;
+    }
 
     @Override
     public String getIdentifier() {
@@ -32,7 +36,7 @@ class CustomPlaceholder extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer op, String identifier) {
-        User user = EasyPrefix.getInstance().getUser(op.getPlayer());
+        User user = expansionManager.getInstance().getUser(op.getPlayer());
         switch (identifier) {
             case "user_prefix":
                 return user.getPrefix();
