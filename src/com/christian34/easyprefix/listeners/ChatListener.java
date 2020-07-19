@@ -2,7 +2,7 @@ package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
+import com.christian34.easyprefix.placeholderapi.Placeholder;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -34,9 +34,9 @@ public class ChatListener implements Listener {
         String msg = e.getMessage();
         String chatColor = "";
 
-        if (PlaceholderAPI.isEnabled()) {
-            prefix = PlaceholderAPI.setPlaceholder(user.getPlayer(), prefix);
-            suffix = PlaceholderAPI.setPlaceholder(user.getPlayer(), suffix);
+        if (Placeholder.isEnabled()) {
+            prefix = Placeholder.setPlaceholder(user.getPlayer(), prefix);
+            suffix = Placeholder.setPlaceholder(user.getPlayer(), suffix);
         }
 
         if (instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {

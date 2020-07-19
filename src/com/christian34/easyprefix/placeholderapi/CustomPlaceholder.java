@@ -2,6 +2,7 @@ package com.christian34.easyprefix.placeholderapi;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
+import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -13,10 +14,6 @@ import org.bukkit.OfflinePlayer;
  * @author Christian34
  */
 class CustomPlaceholder extends PlaceholderExpansion {
-
-    static void enable() {
-        me.clip.placeholderapi.PlaceholderAPI.registerExpansion(new CustomPlaceholder());
-    }
 
     @Override
     public String getIdentifier() {
@@ -30,7 +27,7 @@ class CustomPlaceholder extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.4";
+        return "1.0.5";
     }
 
     @Override
@@ -74,8 +71,10 @@ class CustomPlaceholder extends PlaceholderExpansion {
                 if (user.getSubgroup() == null) return "";
                 String suffix = user.getSubgroup().getSuffix(user, true);
                 return (suffix == null) ? "" : suffix;
+            default:
+                Messages.log("§aWarning: You've used an invalid placeholder! (" + this.getIdentifier() + "_" + identifier + ")");
+                return null;
         }
-        return null;
     }
 
 }

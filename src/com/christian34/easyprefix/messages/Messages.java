@@ -2,7 +2,7 @@ package com.christian34.easyprefix.messages;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
+import com.christian34.easyprefix.placeholderapi.Placeholder;
 import com.christian34.easyprefix.user.User;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -98,8 +98,8 @@ public class Messages {
 
     public static String getMessage(Message message, User user) {
         String text = translate(data.getString(message.getPath()));
-        if (PlaceholderAPI.isEnabled()) {
-            return getPrefix() + PlaceholderAPI.setPlaceholder(user.getPlayer(), text);
+        if (Placeholder.isEnabled()) {
+            return getPrefix() + Placeholder.setPlaceholder(user.getPlayer(), text);
         } else {
             return getPrefix() + text;
         }

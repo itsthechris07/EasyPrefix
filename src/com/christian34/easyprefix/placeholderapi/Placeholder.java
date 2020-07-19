@@ -1,9 +1,17 @@
 package com.christian34.easyprefix.placeholderapi;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class PlaceholderAPI {
-    private static boolean enabled;
+public class Placeholder {
+    private static final boolean enabled;
+
+    static {
+        enabled = Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI");
+        if (enabled) {
+            me.clip.placeholderapi.PlaceholderAPI.registerExpansion(new CustomPlaceholder());
+        }
+    }
 
     public static String setPlaceholder(Player player, String string) {
         if (isEnabled()) {
@@ -13,11 +21,6 @@ public class PlaceholderAPI {
 
     public static boolean isEnabled() {
         return enabled;
-    }
-
-    public static void setEnabled(boolean enable) {
-        enabled = enable;
-        if (enable) CustomPlaceholder.enable();
     }
 
 }

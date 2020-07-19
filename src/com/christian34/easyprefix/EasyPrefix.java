@@ -11,7 +11,7 @@ import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.placeholderapi.PlaceholderAPI;
+import com.christian34.easyprefix.placeholderapi.Placeholder;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
@@ -68,7 +68,6 @@ public class EasyPrefix extends JavaPlugin {
         if (cfg.getBoolean(ConfigData.ConfigKeys.USE_SQL)) {
             this.database = new Database(this);
         }
-        PlaceholderAPI.setEnabled(Bukkit.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI"));
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
         PluginCommand mainCmd = getCommand("EasyPrefix");
@@ -189,7 +188,7 @@ public class EasyPrefix extends JavaPlugin {
 
     private void hookMetrics() {
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (PlaceholderAPI.isEnabled()) ? "installed" : "not installed"));
+        metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (Placeholder.isEnabled()) ? "installed" : "not installed"));
         metrics.addCustomChart(new Metrics.SimplePie("lang", Messages::getLanguage));
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getSqlDatabase() != null) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
