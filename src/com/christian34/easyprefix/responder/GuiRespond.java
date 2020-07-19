@@ -36,6 +36,7 @@ public class GuiRespond {
     private int page = 1;
     private Icon closeInventoryIcon;
     private ArrayList<GuiPage> pages = new ArrayList<>();
+    private static Icon closeIcon = null;
 
     public GuiRespond(User holder, String title, int lines) {
         this.holder = holder;
@@ -131,8 +132,15 @@ public class GuiRespond {
         this.preventClose = preventClose;
     }
 
+    private static Icon getCloseIcon() {
+        if (closeIcon == null) {
+            closeIcon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.toString());
+        }
+        return closeIcon.clone();
+    }
+
     public Icon addCloseButton() {
-        Icon icon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.toString()).setSlot(guiLines, 1);
+        Icon icon = getCloseIcon().setSlot(guiLines, 1);
         getPage(1).getIcons().add(icon);
         this.closeInventoryIcon = icon;
         return icon;
