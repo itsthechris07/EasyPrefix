@@ -4,6 +4,7 @@ import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 
@@ -17,6 +18,7 @@ class CustomPlaceholder extends PlaceholderExpansion {
 
     public CustomPlaceholder(ExpansionManager expansionManager) {
         this.expansionManager = expansionManager;
+        PlaceholderAPI.registerExpansion(this);
     }
 
     @Override
