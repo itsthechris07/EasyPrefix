@@ -5,7 +5,7 @@ import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.gui.Icon;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.VersionController;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * EasyPrefix 2020.
@@ -26,6 +27,7 @@ import java.util.ArrayList;
  * @author Christian34
  */
 public class GuiRespond {
+    private static Icon closeIcon = null;
     private final Icon nextPage, prevPage;
     private final int guiLines;
     private final int maxSlots;
@@ -36,7 +38,6 @@ public class GuiRespond {
     private int page = 1;
     private Icon closeInventoryIcon;
     private ArrayList<GuiPage> pages = new ArrayList<>();
-    private static Icon closeIcon = null;
 
     public GuiRespond(User holder, String title, int lines) {
         this.holder = holder;
@@ -46,6 +47,13 @@ public class GuiRespond {
         this.nextPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_NEXT.toString()).setSlot(lines, 6);
         this.prevPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_PREVIOUS.toString()).setSlot(lines, 4);
         Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
+    }
+
+    private static Icon getCloseIcon() {
+        if (closeIcon == null) {
+            closeIcon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.toString());
+        }
+        return closeIcon.clone();
     }
 
     public void openInventory() {
@@ -132,13 +140,6 @@ public class GuiRespond {
         this.preventClose = preventClose;
     }
 
-    private static Icon getCloseIcon() {
-        if (closeIcon == null) {
-            closeIcon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.toString());
-        }
-        return closeIcon.clone();
-    }
-
     public Icon addCloseButton() {
         Icon icon = getCloseIcon().setSlot(guiLines, 1);
         getPage(1).getIcons().add(icon);
@@ -181,13 +182,8 @@ public class GuiRespond {
 
     @SuppressWarnings("deprecation")
     private ItemStack getPlaceholder() {
-        ItemStack glass;
-        if (VersionController.getMinorVersion() < 13) {
-            glass = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (byte) 15);
-        } else {
-            glass = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"), 1);
-        }
-        ItemMeta meta = glass.getItemMeta();
+        ItemStack glass = XMaterial.GRAY_STAINED_GLASS_PANE.parseItem(true);
+        ItemMeta meta = Objects.requireNonNull(glass).getItemMeta();
         if (meta != null) meta.setDisplayName("§0 ");
         glass.setItemMeta(meta);
         return glass;

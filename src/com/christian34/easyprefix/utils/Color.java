@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.messages.Message;
-import org.bukkit.Material;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -11,16 +11,32 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author Christian34
  */
 public enum Color {
-    BLACK("0", 15, Message.COLOR_BLACK), DARK_BLUE("1", 11, Message.COLOR_DARK_BLUE), DARK_GREEN("2", 13, Message.COLOR_DARK_GREEN), DARK_AQUA("3", 9, Message.COLOR_DARK_AQUA), DARK_RED("4", 14, Message.COLOR_DARK_RED), DARK_PURPLE("5", 10, Message.COLOR_PURPLE), GOLD("6", 1, Message.COLOR_GOLD), GRAY("7", 8, Message.COLOR_LIGHT_GRAY), DARK_GRAY("8", 7, Message.COLOR_GRAY), BLUE("9", 3, Message.COLOR_DARK_BLUE), GREEN("a", 5, Message.COLOR_DARK_GREEN), AQUA("b", 3, Message.COLOR_AQUA), RED("c", 6, Message.COLOR_RED), LIGHT_PURPLE("d", 2, Message.COLOR_MAGENTA), YELLOW("e", 4, Message.COLOR_YELLOW), WHITE("f", 0, Message.COLOR_WHITE), UNDEFINED("r", 0, null);
+    BLACK("0", Message.COLOR_BLACK, XMaterial.BLACK_TERRACOTTA),
+    DARK_BLUE("1", Message.COLOR_DARK_BLUE, XMaterial.BLUE_TERRACOTTA),
+    DARK_GREEN("2", Message.COLOR_DARK_GREEN, XMaterial.GREEN_TERRACOTTA),
+    DARK_AQUA("3", Message.COLOR_DARK_AQUA, XMaterial.LIGHT_BLUE_TERRACOTTA),
+    DARK_RED("4", Message.COLOR_DARK_RED, XMaterial.RED_TERRACOTTA),
+    DARK_PURPLE("5", Message.COLOR_PURPLE, XMaterial.PURPLE_TERRACOTTA),
+    GOLD("6", Message.COLOR_GOLD, XMaterial.ORANGE_TERRACOTTA),
+    GRAY("7", Message.COLOR_LIGHT_GRAY, XMaterial.LIGHT_GRAY_TERRACOTTA),
+    DARK_GRAY("8", Message.COLOR_GRAY, XMaterial.GRAY_TERRACOTTA),
+    BLUE("9", Message.COLOR_DARK_BLUE, XMaterial.CYAN_TERRACOTTA),
+    GREEN("a", Message.COLOR_DARK_GREEN, XMaterial.LIME_TERRACOTTA),
+    AQUA("b", Message.COLOR_AQUA, XMaterial.CYAN_TERRACOTTA),
+    RED("c", Message.COLOR_RED, XMaterial.PINK_TERRACOTTA),
+    LIGHT_PURPLE("d", Message.COLOR_MAGENTA, XMaterial.MAGENTA_TERRACOTTA),
+    YELLOW("e", Message.COLOR_YELLOW, XMaterial.YELLOW_TERRACOTTA),
+    WHITE("f", Message.COLOR_WHITE, XMaterial.WHITE_TERRACOTTA),
+    UNDEFINED("r", null, XMaterial.BLACK_TERRACOTTA);
 
     private final String code;
     private final Message name;
-    private final int id;
+    private final ItemStack material;
 
-    Color(String code, int id, Message name) {
+    Color(String code, Message name, XMaterial material) {
         this.code = code;
         this.name = name;
-        this.id = id;
+        this.material = material.parseItem();
     }
 
     public static Color[] getValues() {
@@ -50,65 +66,14 @@ public enum Color {
         return "§" + code;
     }
 
-    @SuppressWarnings("deprecation")
     public ItemStack toItemStack() {
-        ItemStack item;
-        if (VersionController.getMinorVersion() >= 13) {
-            item = new ItemStack(getNewTerracotta(this), 1);
-        } else {
-            try {
-                item = new ItemStack(Material.valueOf("STAINED_CLAY"), 1, getByte());
-            } catch (Exception ignored) {
-                item = new ItemStack(Material.valueOf("INK_SACK"));
-            }
-        }
+        ItemStack item = material.clone();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(toString());
         }
         item.setItemMeta(meta);
         return item;
-    }
-
-    private Material getNewTerracotta(Color color) {
-        switch (color) {
-            case YELLOW:
-                return Material.YELLOW_TERRACOTTA;
-            case LIGHT_PURPLE:
-                return Material.MAGENTA_TERRACOTTA;
-            case DARK_PURPLE:
-                return Material.PURPLE_TERRACOTTA;
-            case GREEN:
-                return Material.LIME_TERRACOTTA;
-            case DARK_GREEN:
-                return Material.GREEN_TERRACOTTA;
-            case DARK_BLUE:
-                return Material.BLUE_TERRACOTTA;
-            case DARK_GRAY:
-                return Material.GRAY_TERRACOTTA;
-            case GRAY:
-                return Material.LIGHT_GRAY_TERRACOTTA;
-            case DARK_AQUA:
-                return Material.LIGHT_BLUE_TERRACOTTA;
-            case WHITE:
-                return Material.WHITE_TERRACOTTA;
-            case DARK_RED:
-                return Material.RED_TERRACOTTA;
-            case GOLD:
-                return Material.ORANGE_TERRACOTTA;
-            case RED:
-                return Material.PINK_TERRACOTTA;
-            case BLUE:
-            case AQUA:
-                return Material.CYAN_TERRACOTTA;
-            case BLACK:
-            default:
-                return Material.BLACK_TERRACOTTA;
-        }
-    }
-
-    private byte getByte() {
-        return (byte) id;
     }
 
 }

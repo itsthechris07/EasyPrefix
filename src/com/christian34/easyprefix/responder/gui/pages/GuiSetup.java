@@ -15,6 +15,7 @@ import com.christian34.easyprefix.responder.gui.Page;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.VersionController;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -41,11 +42,11 @@ public class GuiSetup extends Page {
 
     public GuiSetup mainPage() {
         GuiRespond guiRespond = new GuiRespond(user, Message.SETTINGS_TITLE_MAIN.toString(), 3);
-        guiRespond.addIcon(Material.CHEST, Message.BTN_GROUPS.toString(), 2, 3).setClickAction(this::groupsList);
+        guiRespond.addIcon(XMaterial.CHEST.parseMaterial(), Message.BTN_GROUPS.toString(), 2, 3).setClickAction(this::groupsList);
 
         guiRespond.addIcon(Material.NETHER_STAR, Message.SETTINGS_TITLE_MAIN.toString(), 2, 5).setClickAction(this::pluginSettingsGui);
 
-        Material icon = (VersionController.getMinorVersion() <= 12) ? Material.valueOf("CHEST") : Material.valueOf("WRITABLE_BOOK");
+        Material icon = (VersionController.getMinorVersion() <= 12) ? XMaterial.CHEST.parseMaterial() : XMaterial.WRITABLE_BOOK.parseMaterial();
         guiRespond.addIcon(icon, Message.BTN_SUBGROUPS.toString(), 2, 7).setClickAction(this::openSubgroupsList);
 
         guiRespond.addCloseButton();
@@ -57,7 +58,7 @@ public class GuiSetup extends Page {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
-        Material langMaterial = (VersionController.getMinorVersion() <= 12) ? Material.valueOf("SIGN") : Material.valueOf("OAK_SIGN");
+        Material langMaterial = XMaterial.OAK_SIGN.parseMaterial();
         String langName = Message.BTN_CHANGE_LANG.toString().replace("%lang%", Messages.langToName());
         guiRespond.addIcon(langMaterial, langName, 2, 2).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).setClickAction(() -> {
             String crntLang = Messages.getLanguage();
@@ -91,17 +92,7 @@ public class GuiSetup extends Page {
             pluginSettingsGui();
         });
 
-        Material btnMaterial;
-        if (VersionController.getMinorVersion() < 13) {
-            try {
-                btnMaterial = Material.valueOf("INK_SACK");
-            } catch (Exception ignored) {
-                btnMaterial = Material.BARRIER;
-            }
-        } else {
-            btnMaterial = Material.LIME_DYE;
-        }
-
+        Material btnMaterial = XMaterial.LIME_DYE.parseMaterial();
         boolean useColors = configData.getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS);
         String colorsText = Message.BTN_SWITCH_COLOR.toString().replace("%active%", (useColors) ? Message.ENABLED.toString() : Message.DISABLED.toString());
         guiRespond.addIcon(btnMaterial, colorsText, 2, 8).setLore(Collections.singletonList(Message.LORE_SWITCH_COLOR.toString())).setClickAction(() -> {
@@ -173,9 +164,8 @@ public class GuiSetup extends Page {
             lore.add(Messages.getAndSet(Message.LORE_COLOR, groupChatColor.replace("§", "&")));
             lore.add(Messages.getAndSet(Message.LORE_PERMISSION, "EasyPrefix.group." + group.getName()));
 
-            guiRespond.addIcon(new ItemStack(Material.CHEST), prefixColor + group.getName()).setLore(lore).setClickAction(() -> openGroupProfile(group));
+            guiRespond.addIcon(XMaterial.CHEST.parseItem(), prefixColor + group.getName()).setLore(lore).setClickAction(() -> openGroupProfile(group));
         }
-
         guiRespond.addIcon(Material.NETHER_STAR, Message.BTN_ADDGROUP, 5, 9).setClickAction(this::createGroup);
 
         guiRespond.addCloseButton().setClickAction(this::mainPage);
@@ -200,23 +190,12 @@ public class GuiSetup extends Page {
                 lore.add(Message.LORE_PREFIX.toString().replace("%value%", "§7«§f" + prefix + "§7»"));
             }
             lore.add(Message.LORE_SUFFIX.toString().replace("%value%", "§7«§f" + suffix + "§7»"));
+            lore.add(Message.LORE_PERMISSION.toString().replace("%value%", "EasyPrefix.subgroup." + subgroup.getName()));
 
-            /* todo what's happening here? */
-            if (groupHandler.getGender(subgroup.getName()) == null) {
-                //  if (!Gender.getTypes().contains(subgroup.getName().toLowerCase())) {
-                lore.add(Message.LORE_PERMISSION.toString().replace("%value%", "EasyPrefix.subgroup." + subgroup.getName()));
-            }
-
-            Material sgBtn = Material.BARRIER;
-            try {
-                if (VersionController.getMinorVersion() < 12) {
-                    sgBtn = Material.CHEST;
-                } else {
-                    sgBtn = Material.WRITABLE_BOOK;
-                }
-            } catch (Exception ignored) {
-            }
-            guiRespond.addIcon(new ItemStack(sgBtn), prefixColor + subgroup.getName()).setLore(lore).setClickAction(() -> openSubgroupProfile(subgroup));
+            ItemStack sgBtn = VersionController.getMinorVersion() <= 12
+                    ? XMaterial.CHEST.parseItem()
+                    : XMaterial.WRITABLE_BOOK.parseItem();
+            guiRespond.addIcon(sgBtn, prefixColor + subgroup.getName()).setLore(lore).setClickAction(() -> openSubgroupProfile(subgroup));
         }
 
         guiRespond.addCloseButton().setClickAction(this::mainPage);
@@ -243,11 +222,11 @@ public class GuiSetup extends Page {
         suffixIcon.setLore(Arrays.asList(this.DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getSuffix(null, false) + "§7»", " ", Message.LORE_EDIT.toString()));
         suffixIcon.setClickAction(() -> new GuiModifyingGroups(user).editSuffix(group));
 
-        Icon joinMsgIcon = guiRespond.addIcon(Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2VkZDIwYmU5MzUyMDk0OWU2Y2U3ODlkYzRmNDNlZmFlYjI4YzcxN2VlNmJmY2JiZTAyNzgwMTQyZjcxNiJ9fX0=", Material.BLAZE_ROD), "§aJoin Message", 3, 4);
+        Icon joinMsgIcon = guiRespond.addIcon(Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2VkZDIwYmU5MzUyMDk0OWU2Y2U3ODlkYzRmNDNlZmFlYjI4YzcxN2VlNmJmY2JiZTAyNzgwMTQyZjcxNiJ9fX0="), "§aJoin Message", 3, 4);
         joinMsgIcon.setLore(Arrays.asList(this.DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getJoinMessageText() + "§7»", " ", Message.LORE_EDIT.toString()));
         joinMsgIcon.setClickAction(() -> new GuiModifyingGroups(user).editJoinMessage(group));
 
-        Icon quitMsgIcon = guiRespond.addIcon(Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ4YTk5ZGIyYzM3ZWM3MWQ3MTk5Y2Q1MjYzOTk4MWE3NTEzY2U5Y2NhOTYyNmEzOTM2Zjk2NWIxMzExOTMifX19", Material.STICK), "§aQuit Message", 3, 6);
+        Icon quitMsgIcon = guiRespond.addIcon(Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ4YTk5ZGIyYzM3ZWM3MWQ3MTk5Y2Q1MjYzOTk4MWE3NTEzY2U5Y2NhOTYyNmEzOTM2Zjk2NWIxMzExOTMifX19"), "§aQuit Message", 3, 6);
         quitMsgIcon.setLore(Arrays.asList(this.DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getQuitMessageText() + "§7»", " ", Message.LORE_EDIT.toString()));
         quitMsgIcon.setClickAction(() -> new GuiModifyingGroups(user).editQuitMessage(group));
 
@@ -263,16 +242,7 @@ public class GuiSetup extends Page {
             }
         }
         List<String> loreChatColor = Arrays.asList(this.DIVIDER, Message.LORE_GROUP_DETAIL.toString() + groupChatColor.replace("§", "&"), " ", Message.LORE_EDIT.toString());
-        Material btnMaterial;
-        if (VersionController.getMinorVersion() < 13) {
-            try {
-                btnMaterial = Material.valueOf("INK_SACK");
-            } catch (Exception ignored) {
-                btnMaterial = Material.BARRIER;
-            }
-        } else {
-            btnMaterial = Material.LIME_DYE;
-        }
+        Material btnMaterial = XMaterial.LIME_DYE.parseMaterial();
 
         guiRespond.addIcon(btnMaterial, Message.BTN_CHANGE_CHATCOLOR, 2, 7).setLore(loreChatColor).setClickAction(() -> new GuiModifyingGroups(user).editChatColor(group));
 

@@ -1,10 +1,9 @@
 package com.christian34.easyprefix.responder.gui;
 
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.utils.VersionController;
+import com.cryptomorin.xseries.XMaterial;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -35,14 +34,9 @@ public class Icon implements Cloneable {
     }
 
     @SuppressWarnings("deprecation")
-    public static ItemStack getCustomPlayerHead(String base, Material alternative) {
+    public static ItemStack getCustomPlayerHead(String base) {
+        ItemStack skull = XMaterial.PLAYER_HEAD.parseItem();
         try {
-            ItemStack skull;
-            if (VersionController.getMinorVersion() > 12) {
-                skull = new ItemStack(Material.valueOf("PLAYER_HEAD"), 1);
-            } else {
-                skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
-            }
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 
             GameProfile profile = new GameProfile(UUID.randomUUID(), "");
@@ -55,18 +49,13 @@ public class Icon implements Cloneable {
             skull.setItemMeta(skullMeta);
             return skull;
         } catch (Exception ignored) {
-            return new ItemStack(alternative, 1);
+            return skull;
         }
     }
 
     @SuppressWarnings("deprecation")
     public static ItemStack playerHead(String owningPlayer) {
-        ItemStack itemStack;
-        if (VersionController.getMinorVersion() >= 13) {
-            itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
-        } else {
-            itemStack = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
-        }
+        ItemStack itemStack = XMaterial.PLAYER_HEAD.parseItem();
 
         try {
             SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
@@ -77,7 +66,7 @@ public class Icon implements Cloneable {
             return itemStack;
         } catch (Exception ignored) {
             Messages.log("&cWarning: You're using an unsupported version. Please upgrade to Spigot 1.13 or higher!");
-            return new ItemStack(Material.BARRIER);
+            return itemStack;
         }
     }
 
