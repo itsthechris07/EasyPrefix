@@ -72,11 +72,7 @@ public class EasyPrefix extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-
         this.expansionManager = new ExpansionManager(this);
-
-
-
         this.updater = new Updater(this);
         hookMetrics();
         Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
@@ -148,7 +144,6 @@ public class EasyPrefix extends JavaPlugin {
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
-
     }
 
     private void registerEvents() {
