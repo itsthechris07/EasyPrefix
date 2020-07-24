@@ -46,7 +46,7 @@ public class GuiSettings extends Page {
 
     public GuiSettings openWelcomePage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_MAIN), 3);
-        Icon prefix = guiRespond.addIcon(XMaterial.CHEST.parseMaterial(), Message.BTN_MY_PREFIXES, 2, 3).setClickAction(() -> {
+        Icon prefix = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_PREFIXES, 2, 3).setClickAction(() -> {
             int userGroups = user.getAvailableGroups().size();
             if (userGroups <= 1) {
                 if (user.getAvailableSubgroups().size() > 1) {
@@ -58,7 +58,7 @@ public class GuiSettings extends Page {
                 openGroupsListPage();
             }
         });
-        Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseMaterial(), Message.BTN_MY_FORMATTINGS, 2, 7).setClickAction(this::openColorsPage);
+        Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).setClickAction(this::openColorsPage);
         if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
             guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.CHANGE_GENDER, 2, 5).setClickAction(this::openGenderSelectPage);
         } else {
@@ -125,9 +125,9 @@ public class GuiSettings extends Page {
         }
 
         if (user.getAvailableSubgroups().size() > 0) {
-            Material subgroupsMaterial = VersionController.getMinorVersion() <= 12
-                    ? XMaterial.CHEST.parseMaterial()
-                    : XMaterial.WRITABLE_BOOK.parseMaterial();
+            ItemStack subgroupsMaterial = VersionController.getMinorVersion() <= 12
+                    ? XMaterial.CHEST.parseItem()
+                    : XMaterial.WRITABLE_BOOK.parseItem();
             guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).setClickAction(() -> openSubgroupsPage(this::openGroupsListPage));
         }
 

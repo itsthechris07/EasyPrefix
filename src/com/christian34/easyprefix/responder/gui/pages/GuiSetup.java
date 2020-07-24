@@ -42,11 +42,11 @@ public class GuiSetup extends Page {
 
     public GuiSetup mainPage() {
         GuiRespond guiRespond = new GuiRespond(user, Message.SETTINGS_TITLE_MAIN.toString(), 3);
-        guiRespond.addIcon(XMaterial.CHEST.parseMaterial(), Message.BTN_GROUPS.toString(), 2, 3).setClickAction(this::groupsList);
+        guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_GROUPS.toString(), 2, 3).setClickAction(this::groupsList);
 
         guiRespond.addIcon(Material.NETHER_STAR, Message.SETTINGS_TITLE_MAIN.toString(), 2, 5).setClickAction(this::pluginSettingsGui);
 
-        Material icon = (VersionController.getMinorVersion() <= 12) ? XMaterial.CHEST.parseMaterial() : XMaterial.WRITABLE_BOOK.parseMaterial();
+        ItemStack icon = (VersionController.getMinorVersion() <= 12) ? XMaterial.CHEST.parseItem() : XMaterial.WRITABLE_BOOK.parseItem();
         guiRespond.addIcon(icon, Message.BTN_SUBGROUPS.toString(), 2, 7).setClickAction(this::openSubgroupsList);
 
         guiRespond.addCloseButton();
@@ -58,9 +58,8 @@ public class GuiSetup extends Page {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
-        Material langMaterial = XMaterial.OAK_SIGN.parseMaterial();
         String langName = Message.BTN_CHANGE_LANG.toString().replace("%lang%", Messages.langToName());
-        guiRespond.addIcon(langMaterial, langName, 2, 2).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).setClickAction(() -> {
+        guiRespond.addIcon(XMaterial.OAK_SIGN.parseItem(), langName, 2, 2).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).setClickAction(() -> {
             String crntLang = Messages.getLanguage();
             String nextLang = "en_EN";
             switch (crntLang) {
@@ -92,10 +91,9 @@ public class GuiSetup extends Page {
             pluginSettingsGui();
         });
 
-        Material btnMaterial = XMaterial.LIME_DYE.parseMaterial();
         boolean useColors = configData.getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS);
         String colorsText = Message.BTN_SWITCH_COLOR.toString().replace("%active%", (useColors) ? Message.ENABLED.toString() : Message.DISABLED.toString());
-        guiRespond.addIcon(btnMaterial, colorsText, 2, 8).setLore(Collections.singletonList(Message.LORE_SWITCH_COLOR.toString())).setClickAction(() -> {
+        guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 8).setLore(Collections.singletonList(Message.LORE_SWITCH_COLOR.toString())).setClickAction(() -> {
             boolean use = !useColors;
             configData.set(ConfigData.ConfigKeys.HANDLE_COLORS.toString(), use);
             EasyPrefix.getInstance().reload();
@@ -242,9 +240,8 @@ public class GuiSetup extends Page {
             }
         }
         List<String> loreChatColor = Arrays.asList(this.DIVIDER, Message.LORE_GROUP_DETAIL.toString() + groupChatColor.replace("§", "&"), " ", Message.LORE_EDIT.toString());
-        Material btnMaterial = XMaterial.LIME_DYE.parseMaterial();
 
-        guiRespond.addIcon(btnMaterial, Message.BTN_CHANGE_CHATCOLOR, 2, 7).setLore(loreChatColor).setClickAction(() -> new GuiModifyingGroups(user).editChatColor(group));
+        guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), Message.BTN_CHANGE_CHATCOLOR, 2, 7).setLore(loreChatColor).setClickAction(() -> new GuiModifyingGroups(user).editChatColor(group));
 
         if (!group.getName().equals("default")) {
             guiRespond.addIcon(Material.BARRIER, Message.BTN_DELETE, 4, 9).setClickAction(() -> new GuiModifyingGroups(user).deleteConfirmation(group));

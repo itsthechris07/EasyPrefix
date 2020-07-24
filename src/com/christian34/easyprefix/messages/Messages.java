@@ -63,6 +63,7 @@ public class Messages {
             Messages.log("§cCouldn't load messages for language '" + language + "'! Please use a valid language!");
             setLanguage("en_EN");
             Messages.log("§cYour language has been set to en_EN!");
+            return;
         }
         File file = new File(path, language + ".yml");
         if (!file.exists()) {
