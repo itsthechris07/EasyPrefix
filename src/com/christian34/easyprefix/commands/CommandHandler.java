@@ -43,8 +43,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         subcommands.add(new DebugCommand(this));
         if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
             subcommands.add(new SetCommand(this));
-        }
-        if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
             this.aliasHandler = new AliasHandler(this);
         }
     }
@@ -60,20 +58,27 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        ConfigData config = instance.getFileManager().getConfig();
+
         if (cmd.getName().equalsIgnoreCase("easyprefix")) {
-            if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
-                getSubcommand("set").handleCommand(sender, Arrays.asList(args));
-                return true;
+            if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
+                if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
+                    getSubcommand("set").handleCommand(sender, Arrays.asList(args));
+                    return true;
+                }
             }
             for (Subcommand subCmd : subcommands) {
                 if (subCmd.getName().equalsIgnoreCase(args[0]) || subCmd.getName().startsWith(args[0])) {
                     if (subCmd.getPermission() == null || sender.hasPermission("easyprefix." + subCmd.getPermission())) {
                         subCmd.handleCommand(sender, Arrays.asList(args));
+                        return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
+                        return true;
                     }
                 }
             }
+            sender.sendMessage(Messages.getPrefix() + "§cCouldn't find requested command!\nType '/" + label + " help'" + " to get a command overview.");
         }
         return true;
     }

@@ -139,7 +139,7 @@ public class EasyPrefix extends JavaPlugin {
             }
             this.database = new Database(this);
         } else this.database = null;
-
+        this.commandHandler = new CommandHandler(this);
         Messages.load();
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
