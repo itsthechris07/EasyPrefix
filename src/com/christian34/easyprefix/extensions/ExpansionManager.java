@@ -35,7 +35,7 @@ public class ExpansionManager {
 
     public String setPapi(Player player, String text) {
         try {
-            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
+            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), text);
         } catch (Exception ignored) {
             return text;
         }
