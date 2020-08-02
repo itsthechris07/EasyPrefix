@@ -3,6 +3,7 @@ package com.christian34.easyprefix.extensions;
 import com.christian34.easyprefix.EasyPrefix;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * EasyPrefix 2020.
@@ -33,7 +34,8 @@ public class ExpansionManager {
         return usingPapi;
     }
 
-    public String setPapi(Player player, String text) {
+    @NotNull
+    public String setPapi(@NotNull Player player, @NotNull String text) {
         try {
             return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), text);
         } catch (Exception ignored) {
@@ -41,8 +43,8 @@ public class ExpansionManager {
         }
     }
 
-    public boolean isEnabled(String plugin) {
-        return Bukkit.getPluginManager().isPluginEnabled(plugin);
+    public boolean isEnabled(String pluginName) {
+        return Bukkit.getPluginManager().isPluginEnabled(pluginName);
     }
 
 

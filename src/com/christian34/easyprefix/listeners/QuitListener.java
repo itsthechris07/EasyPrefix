@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Messages;
@@ -28,7 +27,6 @@ public class QuitListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
-        ConfigData configData = this.instance.getFileManager().getConfig();
         if (!ConfigKeys.USE_JOIN_QUIT.toBoolean()) {
             this.instance.unloadUser(e.getPlayer());
             return;
@@ -69,6 +67,5 @@ public class QuitListener implements Listener {
         }
         this.instance.unloadUser(e.getPlayer());
     }
-
 
 }

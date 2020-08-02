@@ -31,7 +31,6 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        ConfigData configData = this.instance.getFileManager().getConfig();
         if (!ConfigKeys.USE_JOIN_QUIT.toBoolean()) return;
         User user = instance.getUser(e.getPlayer());
 
@@ -42,8 +41,11 @@ public class JoinListener implements Listener {
             String joinMsg = group.getJoinMessage(user);
             e.setJoinMessage(joinMsg);
         }
+
+        ConfigData configData = this.instance.getFileManager().getConfig();
         if (configData.getData().getBoolean("config.join-quit-messages.sound.join.enabled")) {
             String cfg = configData.getData().getString("config.join-quit-messages.sound.join.sound");
+            if (cfg == null) return;
             String[] soundOption = cfg.replace(" ", "").split(";");
             try {
                 Sound sound = Sound.valueOf(soundOption[0]);
