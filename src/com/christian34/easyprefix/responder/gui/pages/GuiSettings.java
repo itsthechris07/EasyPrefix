@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.responder.gui.pages;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -59,7 +59,7 @@ public class GuiSettings extends Page {
             }
         });
         Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).setClickAction(this::openColorsPage);
-        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
+        if (ConfigKeys.USE_GENDER.toBoolean()) {
             guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.CHANGE_GENDER, 2, 5).setClickAction(this::openGenderSelectPage);
         } else {
             prefix.setSlot(2, 4);
@@ -99,7 +99,6 @@ public class GuiSettings extends Page {
 
     public GuiSettings openGroupsListPage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
-        ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
         for (Group group : user.getAvailableGroups()) {
             ChatColor prefixColor = group.getGroupColor();
@@ -119,7 +118,7 @@ public class GuiSettings extends Page {
             });
         }
 
-        if (configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
+        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
             guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
                     .setClickAction(() -> openCustomLayoutPage(this::openGroupsListPage));
         }
@@ -138,7 +137,7 @@ public class GuiSettings extends Page {
 
     public GuiSettings openColorsPage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_FORMATTINGS), 5);
-        boolean showAll = EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.GUI_SHOW_ALL_CHATCOLORS);
+        boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
 
         int line = 2, slot = 1;
         for (Color color : Color.getValues()) {
@@ -200,9 +199,13 @@ public class GuiSettings extends Page {
             slot++;
         }
 
-        guiRespond.addCloseButton().
+        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET, 5, 9).setClickAction(() -> {
+            user.setChatColor(null);
+            user.setChatFormatting(null);
+            openColorsPage();
+        });
 
-                setClickAction(this::openWelcomePage);
+        guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
         guiRespond.openInventory();
         return this;
     }
@@ -230,7 +233,7 @@ public class GuiSettings extends Page {
             });
         }
 
-        if (EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
+        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
             guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
                     .setClickAction(() -> openCustomLayoutPage(() -> openSubgroupsPage(this::openWelcomePage)));
         }
@@ -246,7 +249,7 @@ public class GuiSettings extends Page {
     }
 
     public GuiSettings openCustomLayoutPage(ClickAction backAction) {
-        if (!EasyPrefix.getInstance().getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT) || !user.hasPermission("custom.gui")) {
+        if (!ConfigKeys.CUSTOM_LAYOUT.toBoolean() || !user.hasPermission("custom.gui")) {
             if (backAction != null) {
                 backAction.execute();
             } else openGroupsListPage();

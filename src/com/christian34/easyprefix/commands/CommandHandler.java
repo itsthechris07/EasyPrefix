@@ -2,6 +2,7 @@ package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.sun.istack.internal.NotNull;
@@ -41,7 +42,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         subcommands.add(new SettingsCommand(this));
         subcommands.add(new ReloadCommand(this));
         subcommands.add(new DebugCommand(this));
-        if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
+        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
             subcommands.add(new SetCommand(this));
             this.aliasHandler = new AliasHandler(this);
         }
@@ -61,7 +62,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         ConfigData config = instance.getFileManager().getConfig();
 
         if (cmd.getName().equalsIgnoreCase("easyprefix")) {
-            if (config.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
+            if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
                 if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
                     getSubcommand("set").handleCommand(sender, Arrays.asList(args));
                     return true;

@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.utils;
 
-import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -40,8 +39,7 @@ public class RainbowEffect {
     public static ArrayList<ChatColor> getRainbowColors() {
         if (rainbowColors == null || rainbowColors.isEmpty()) {
             ArrayList<ChatColor> enabledColors = new ArrayList<>();
-            ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
-            List<String> colors = configData.getData().getStringList(ConfigData.ConfigKeys.COLOR_RAINBOW_COLORS.toString());
+            List<String> colors = ConfigKeys.COLOR_RAINBOW_COLORS.toStringList();
             for (String color : colors) {
                 try {
                     enabledColors.add(ChatColor.valueOf(color));

@@ -50,6 +50,11 @@ public class GroupsData {
         load();
     }
 
+    public String getOrDefault(String key, String defaultValue) {
+        String val = data.getString(key);
+        return val == null ? defaultValue : val;
+    }
+
     public Set<String> getSection(String key) {
         ConfigurationSection section = getData().getConfigurationSection(key);
         if (section != null) {

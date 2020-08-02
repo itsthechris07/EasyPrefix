@@ -2,6 +2,7 @@ package com.christian34.easyprefix.responder.gui.pages;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
@@ -74,28 +75,28 @@ public class GuiSetup extends Page {
             pluginSettingsGui();
         });
 
-        boolean useCp = configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT);
+        boolean useCp = ConfigKeys.CUSTOM_LAYOUT.toBoolean();
         String cpText = Message.BTN_SWITCH_CP.toString().replace("%active%", (useCp) ? Message.ENABLED.toString() : Message.DISABLED.toString());
         guiRespond.addIcon(Material.BEACON, cpText, 2, 4).setLore(Collections.singletonList(Message.LORE_SWITCH_CP.toString())).setClickAction(() -> {
-            configData.set(ConfigData.ConfigKeys.CUSTOM_LAYOUT.toString(), !useCp);
+            configData.set(ConfigKeys.CUSTOM_LAYOUT.getPath(), !useCp);
             EasyPrefix.getInstance().reload();
             pluginSettingsGui();
         });
 
-        boolean useGender = configData.getBoolean(ConfigData.ConfigKeys.USE_GENDER);
+        boolean useGender = ConfigKeys.USE_GENDER.toBoolean();
         String genderText = Message.BTN_SWITCH_GENDER.toString().replace("%active%", (useGender) ? Message.ENABLED.toString() : Message.DISABLED.toString());
         guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 6).setLore(Collections.singletonList(Message.LORE_SWITCH_GENDER.toString())).setClickAction(() -> {
             boolean use = !useGender;
-            configData.set(ConfigData.ConfigKeys.USE_GENDER.toString(), use);
+            configData.set(ConfigKeys.USE_GENDER.getPath(), use);
             EasyPrefix.getInstance().reload();
             pluginSettingsGui();
         });
 
-        boolean useColors = configData.getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS);
+        boolean useColors = ConfigKeys.HANDLE_COLORS.toBoolean();
         String colorsText = Message.BTN_SWITCH_COLOR.toString().replace("%active%", (useColors) ? Message.ENABLED.toString() : Message.DISABLED.toString());
         guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 8).setLore(Collections.singletonList(Message.LORE_SWITCH_COLOR.toString())).setClickAction(() -> {
             boolean use = !useColors;
-            configData.set(ConfigData.ConfigKeys.HANDLE_COLORS.toString(), use);
+            configData.set(ConfigKeys.HANDLE_COLORS.getPath(), use);
             EasyPrefix.getInstance().reload();
             pluginSettingsGui();
         });

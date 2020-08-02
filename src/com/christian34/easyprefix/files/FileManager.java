@@ -28,7 +28,9 @@ public class FileManager {
         if (!userFolder.exists()) userFolder.mkdirs();
         configData = new ConfigData(this.instance).load();
         groupsData = new GroupsData(this.instance);
-        if (!configData.getBoolean(ConfigData.ConfigKeys.USE_SQL)) groupsData.load();
+        if (!configData.getData().getBoolean("config.sql.enabled")) {
+            groupsData.load();
+        }
     }
 
     public ConfigData getConfig() {

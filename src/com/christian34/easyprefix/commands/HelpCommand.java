@@ -45,7 +45,7 @@ public class HelpCommand implements Subcommand {
                 sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
             }
         }
-        if (this.instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
+        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
             if (sender.hasPermission("easyprefix.custom.prefix")) {
                 sender.sendMessage("§7/§5EasyPrefix setprefix <Prefix> §f| §7set prefix");
             }

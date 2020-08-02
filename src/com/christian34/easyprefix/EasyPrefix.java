@@ -68,7 +68,7 @@ public class EasyPrefix extends JavaPlugin {
         groupHandler.load();
         this.commandHandler = new CommandHandler(this);
         registerEvents();
-        if (!cfg.getBoolean(ConfigData.ConfigKeys.ENABLED)) {
+        if (!ConfigKeys.ENABLED.toBoolean()) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -87,7 +87,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public boolean formatChat() {
-        return this.fileManager.getConfig().getBoolean(ConfigData.ConfigKeys.HANDLE_CHAT);
+        return ConfigKeys.HANDLE_CHAT.toBoolean();
     }
 
     public GroupHandler getGroupHandler() {
@@ -159,7 +159,7 @@ public class EasyPrefix extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("lang", Messages::getLanguage));
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getSqlDatabase() != null) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
-        metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) ? "true" : "false"));
+        metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "true" : "false"));
     }
 
 }

@@ -2,6 +2,7 @@ package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
@@ -28,13 +29,13 @@ public class QuitListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
         ConfigData configData = this.instance.getFileManager().getConfig();
-        if (!configData.getBoolean(ConfigData.ConfigKeys.USE_JOIN_QUIT)) {
+        if (!ConfigKeys.USE_JOIN_QUIT.toBoolean()) {
             this.instance.unloadUser(e.getPlayer());
             return;
         }
 
         User user = this.instance.getUser(e.getPlayer());
-        if (configData.getBoolean(ConfigData.ConfigKeys.HIDE_JOIN_QUIT)) {
+        if (ConfigKeys.HIDE_JOIN_QUIT.toBoolean()) {
             e.setQuitMessage(null);
         } else {
             if (e.getQuitMessage() != null) {
@@ -43,15 +44,15 @@ public class QuitListener implements Listener {
                 e.setQuitMessage(quitMsg);
             }
         }
-        if (configData.getBoolean(ConfigData.ConfigKeys.USE_QUIT_SOUND)) {
-            String cfg = configData.getString(ConfigData.ConfigKeys.QUIT_SOUND);
+        if (ConfigKeys.USE_QUIT_SOUND.toBoolean()) {
+            String cfg = ConfigKeys.QUIT_SOUND.toString();
             String[] soundOption = cfg.replace(" ", "").split(";");
             try {
                 Sound sound = Sound.valueOf(soundOption[0]);
                 float volume = Integer.parseInt(soundOption[1]);
                 float pitch = Integer.parseInt(soundOption[2]);
                 if (soundOption.length == 3) {
-                    String receiver = configData.getString(ConfigData.ConfigKeys.JOIN_QUIT_SOUND_RECEIVER);
+                    String receiver = ConfigKeys.JOIN_QUIT_SOUND_RECEIVER.toString();
                     if (receiver.equals("all")) {
                         for (Player target : Bukkit.getOnlinePlayers()) {
                             target.playSound(target.getLocation(), sound, volume, pitch);

@@ -2,6 +2,7 @@ package com.christian34.easyprefix.messages;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.VersionController;
 import com.tchristofferson.configupdater.ConfigUpdater;
@@ -38,7 +39,7 @@ public class Messages {
     public static void setLanguage(String lang) {
         if (LANGUAGES.contains(lang)) {
             language = lang;
-            instance.getFileManager().getConfig().set(ConfigData.ConfigKeys.LANG.toString(), lang);
+            instance.getFileManager().getConfig().set(ConfigKeys.LANG.getPath(), lang);
             load();
         }
     }
@@ -57,7 +58,7 @@ public class Messages {
     public static void load() {
         Plugin plugin = instance.getPlugin();
         ConfigData config = instance.getFileManager().getConfig();
-        language = config.getData().getString("config.lang");
+        language = ConfigKeys.PLUGIN_LANG.toString();
         String path = "plugins/EasyPrefix";
         if (!LANGUAGES.contains(language)) {
             Messages.log("§cCouldn't load messages for language '" + language + "'! Please use a valid language!");
