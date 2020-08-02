@@ -2,15 +2,16 @@ package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.database.DataStatement;
-import com.christian34.easyprefix.database.Database;
+import com.christian34.easyprefix.database.Query;
+import com.christian34.easyprefix.database.SQLDatabase;
+import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.HashMap;
 
 /**
  * EasyPrefix 2020.
@@ -24,41 +25,29 @@ public class Subgroup extends EasyGroup {
     private ChatColor groupColor;
     private GroupsData groupsData;
     private GenderChat genderChat = null;
+    private final EasyPrefix instance;
 
     public Subgroup(GroupHandler groupHandler, String name) {
         this.NAME = name;
         this.groupHandler = groupHandler;
-        Database db = groupHandler.getInstance().getSqlDatabase();
-        if (db != null) {
-            try {
-                ResultSet result = db.getValue("SELECT `prefix`, `suffix` FROM `%p%subgroups` WHERE `group` = '" + name + "'");
-                while (result.next()) {
-                    this.prefix = result.getString("prefix");
-                    this.suffix = result.getString("suffix");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        this.instance = groupHandler.getInstance();
+        if (instance.getStorageType() == StorageType.SQL) {
+            SQLDatabase db = instance.getSqlDatabase();
+            HashMap<String, String> data = db.getData(new Query("subgroups").setCondition("`group` = '" + name + "'").setRow("prefix", "suffix"));
+            this.prefix = data.getOrDefault("prefix", "");
+            this.suffix = data.getOrDefault("suffix", "");
         } else {
             this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
-            this.prefix = groupsData.getData().getString(getFilePath() + "prefix");
-            this.suffix = groupsData.getData().getString(getFilePath() + "suffix");
+            this.prefix = groupsData.getOrDefault(getFilePath() + "prefix", "");
+            this.suffix = groupsData.getOrDefault(getFilePath() + "suffix", "");
         }
 
         if (groupHandler.handleGenders()) {
             this.genderChat = new GenderChat(this);
         }
 
-        if (prefix == null) {
-            this.prefix = "";
-        } else {
-            this.prefix = prefix.replace("§", "&");
-        }
-        if (suffix == null) {
-            this.suffix = "";
-        } else {
-            this.suffix = suffix.replace("§", "&");
-        }
+        this.prefix = prefix.replace("§", "&");
+        this.suffix = suffix.replace("§", "&");
 
         if (prefix.contains("&")) {
             if (!prefix.startsWith("&")) {
@@ -75,9 +64,8 @@ public class Subgroup extends EasyGroup {
     }
 
     private void saveData(String key, Object value) {
-        Database db = EasyPrefix.getInstance().getSqlDatabase();
         if (value instanceof String) value = ((String) value).replace("§", "&");
-        if (db == null) {
+        if (instance.getStorageType() == StorageType.LOCAL) {
             key = key.replace("_", "-");
             groupsData.setAndSave(getFilePath() + key, value);
         } else {
@@ -91,7 +79,7 @@ public class Subgroup extends EasyGroup {
                 statement.getException().printStackTrace();
             }
         }
-        EasyPrefix.getInstance().getGroupHandler().load();
+        instance.getGroupHandler().load();
     }
 
     @Override
@@ -149,11 +137,10 @@ public class Subgroup extends EasyGroup {
 
     @Override
     public void delete() {
-        EasyPrefix instance = EasyPrefix.getInstance();
-        if (instance.getSqlDatabase() == null) {
+        if (instance.getStorageType() == StorageType.LOCAL) {
             groupsData.setAndSave("subgroups." + getName(), null);
         } else {
-            Database db = instance.getSqlDatabase();
+            SQLDatabase db = instance.getSqlDatabase();
             db.update("DELETE FROM `%p%subgroups` WHERE `group` = '" + getName() + "'");
         }
         instance.getGroupHandler().getSubgroups().remove(this);

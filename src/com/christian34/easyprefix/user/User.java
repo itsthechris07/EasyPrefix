@@ -2,8 +2,7 @@ package com.christian34.easyprefix.user;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.database.DataStatement;
-import com.christian34.easyprefix.database.Database;
-import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -11,12 +10,8 @@ import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,24 +27,25 @@ public class User {
     private final Player player;
     private final UUID uniqueId;
     private final EasyPrefix instance;
-    private UserData userData;
     private ArrayList<Color> colors;
     private ArrayList<ChatFormatting> chatFormattings;
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
-    private ChatFormatting chatFormatting;
+    private final GroupHandler groupHandler;
     private GenderType genderType;
     private String customPrefix;
     private String customSuffix;
     private boolean isGroupForced;
     private long lastPrefixUpdate, lastSuffixUpdate;
+    private ChatFormatting chatFormatting = null;
+    private UserData userData;
 
     public User(Player player) {
         this.player = player;
         this.uniqueId = player.getUniqueId();
         this.instance = EasyPrefix.getInstance();
-        if (this.instance.getSqlDatabase() == null) this.userData = new UserData(player.getUniqueId());
+        this.groupHandler = this.instance.getGroupHandler();
     }
 
     public long getLastPrefixUpdate() {
@@ -61,10 +57,11 @@ public class User {
     }
 
     public void login() {
+        this.userData = new UserData(uniqueId);
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
-        ConfigData configData = this.instance.getFileManager().getConfig();
-        if (!hasPermission("Color.all") && configData.getBoolean(ConfigData.ConfigKeys.HANDLE_COLORS)) {
+
+        if (!hasPermission("Color.all") && ConfigKeys.HANDLE_COLORS.toBoolean()) {
             for (Color color : Color.values()) {
                 if (hasPermission("Color." + color.name())) colors.add(color);
             }
@@ -73,73 +70,23 @@ public class User {
                 if (hasPermission("Color." + formatting.name())) chatFormattings.add(formatting);
             }
         }
-        String groupName = null, subgroupName = null, chatColor = null, chatFormatting = null, cstmPrefix = null, cstmSuffix = null, gender = null;
-        boolean forceGroup = false;
-        Timestamp prefixUpdate = null, suffixUpdate = null;
-        Database db = this.instance.getSqlDatabase();
-        if (db != null) {
-            String stmt = "SELECT `group`,`force_group`,`subgroup`,`custom_prefix`,`custom_prefix_update`," + "`custom_suffix`,`custom_suffix_update`,`gender`," + "`chat_color`,`chat_formatting` FROM " + "`%p%users` WHERE `uuid` = '" + player.getUniqueId().toString() + "'";
-            try {
-                ResultSet result = db.getValue(stmt);
-                if (result.next()) {
-                    groupName = result.getString("group");
-                    subgroupName = result.getString("subgroup");
-                    chatColor = result.getString("chat_color");
-                    chatFormatting = result.getString("chat_formatting");
-                    cstmPrefix = result.getString("custom_prefix");
-                    prefixUpdate = result.getTimestamp("custom_prefix_update");
-                    cstmSuffix = result.getString("custom_suffix");
-                    suffixUpdate = result.getTimestamp("custom_suffix_update");
-                    gender = result.getString("gender");
-                    forceGroup = result.getBoolean("force_group");
-                } else {
-                    String sql = "INSERT INTO `%p%users`(`uuid`) VALUES (?)";
-                    PreparedStatement st = db.prepareStatement(sql);
-                    st.setString(1, uniqueId.toString());
-                    st.executeUpdate();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return;
-            }
-        } else {
-            FileConfiguration data = userData.getFileData();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 
-            groupName = data.getString("group");
-            subgroupName = data.getString("subgroup");
-            chatColor = data.getString("chat-color");
-            chatFormatting = data.getString("chat-formatting");
-            cstmPrefix = data.getString("custom-prefix");
-            cstmSuffix = data.getString("custom-suffix");
-            gender = data.getString("gender");
-            forceGroup = data.getBoolean("force-group");
-            try {
-                prefixUpdate = new Timestamp(dateFormat.parse(data.getString("custom-prefix-update")).getTime());
-                suffixUpdate = new Timestamp(dateFormat.parse(data.getString("custom-suffix-update")).getTime());
-            } catch (Exception ignored) {
-                try {
-                    prefixUpdate = new Timestamp(dateFormat.parse("2020-01-01 00:00:00.000").getTime());
-                    suffixUpdate = new Timestamp(dateFormat.parse("2020-01-01 00:00:00.000").getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        this.isGroupForced = userData.getBoolean("force_group");
 
-        this.isGroupForced = forceGroup;
-        GroupHandler groupHandler = this.instance.getGroupHandler();
+        String groupName = userData.getString("group");
         if (groupName == null || groupName.equals("")) {
             this.group = getGroupPerPerms();
         } else {
-            if (groupHandler.isGroup(groupName) && (hasPermission("group." + groupName) || forceGroup || groupName.equals("default"))) {
+            if (groupHandler.isGroup(groupName) && (hasPermission("group." + groupName) || isGroupForced || groupName.equals("default"))) {
                 this.group = groupHandler.getGroup(groupName);
             } else {
                 this.group = getGroupPerPerms();
                 saveData("group", null);
             }
         }
-        if (configData.getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
+
+        if (ConfigKeys.USE_SUBGROUPS.toBoolean()) {
+            String subgroupName = userData.getString("subgroup");
             if (subgroupName != null) {
                 if (groupHandler.isSubgroup(subgroupName) && hasPermission("subgroup." + subgroupName)) {
                     this.subgroup = groupHandler.getSubgroup(subgroupName);
@@ -150,38 +97,51 @@ public class User {
             }
         }
 
+        String chatColor = userData.getString("chat_color");
         if (chatColor != null && !(chatColor.length() < 2)) {
             this.chatColor = Color.getByCode(chatColor.substring(1, 2));
         }
 
+        String chatFormatting = userData.getString("chat_formatting");
         if (chatFormatting != null && chatFormatting.length() > 1) {
             if (chatFormatting.equals("%r")) {
                 this.chatFormatting = ChatFormatting.RAINBOW;
-                setChatColor(null);
             } else {
                 this.chatFormatting = ChatFormatting.getByCode(chatFormatting.substring(1, 2));
             }
         }
 
-        if (hasPermission("custom.prefix") && configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
-            if (cstmPrefix != null) {
-                this.customPrefix = cstmPrefix.replace("&", "§");
+        String customPrefix = userData.getString("custom_prefix");
+        if (hasPermission("custom.prefix") && ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
+            if (customPrefix != null) {
+                this.customPrefix = customPrefix.replace("&", "§");
             }
         }
 
-        if (hasPermission("custom.suffix") && configData.getBoolean(ConfigData.ConfigKeys.CUSTOM_LAYOUT)) {
-            if (cstmSuffix != null) {
-                this.customSuffix = cstmSuffix.replace("&", "§");
+        String customSuffix = userData.getString("custom_suffix");
+        if (hasPermission("custom.suffix") && ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
+            if (customSuffix != null) {
+                this.customSuffix = customSuffix.replace("&", "§");
             }
         }
 
-        if (prefixUpdate != null) {
-            this.lastPrefixUpdate = prefixUpdate.getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        if (userData.getString("custom_prefix_update") != null) {
+            try {
+                this.lastPrefixUpdate = new Timestamp(dateFormat.parse(userData.getString("custom_prefix_update")).getTime()).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
-        if (suffixUpdate != null) {
-            this.lastSuffixUpdate = suffixUpdate.getTime();
+        if (userData.getString("custom_suffix_update") != null) {
+            try {
+                this.lastSuffixUpdate = new Timestamp(dateFormat.parse(userData.getString("custom_suffix_update")).getTime()).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
+        String gender = userData.getString("gender");
         if (gender != null && groupHandler.handleGenders()) {
             this.genderType = groupHandler.getGender(gender);
         }
@@ -202,7 +162,7 @@ public class User {
     }
 
     public void setPrefix(String prefix) {
-        saveData("custom-prefix", prefix);
+        saveData("custom_prefix", prefix);
         if (prefix != null) {
             prefix = prefix.replace("&", "§");
         }
@@ -226,7 +186,7 @@ public class User {
     }
 
     public void setSuffix(String suffix) {
-        saveData("custom-suffix", suffix);
+        saveData("custom_suffix", suffix);
         if (suffix != null) {
             suffix = suffix.replace("&", "§");
         }
@@ -258,7 +218,7 @@ public class User {
                 setChatFormatting(null);
             }
         }
-        saveData("chat-color", value);
+        saveData("chat_color", value);
         this.instance.unloadUser(getPlayer());
     }
 
@@ -282,7 +242,7 @@ public class User {
                 value = "%r";
             } else value = chatFormatting.getCode().replace("§", "&");
         }
-        saveData("chat-formatting", value);
+        saveData("chat_formatting", value);
         this.instance.unloadUser(getPlayer());
     }
 
@@ -294,14 +254,14 @@ public class User {
         this.group = group;
         saveData("group", group.getName());
         this.customPrefix = null;
-        saveData("custom-prefix", null);
+        saveData("custom_prefix", null);
         this.customSuffix = null;
-        saveData("custom-suffix", null);
+        saveData("custom_suffix", null);
         this.chatColor = null;
-        saveData("chat-color", null);
+        saveData("chat_color", null);
         this.chatFormatting = null;
         saveData("group", group.getName());
-        saveData("force-group", force);
+        saveData("force_group", force);
         this.instance.unloadUser(getPlayer());
     }
 
@@ -374,30 +334,20 @@ public class User {
         return null;
     }
 
-    private UserData getUserData() {
-        return userData;
-    }
-
     public void sendMessage(String message) {
         player.sendMessage(Messages.getPrefix() + message);
     }
 
     public void saveData(String key, Object value) {
-        Database db = this.instance.getSqlDatabase();
-        if (db == null) {
-            key = key.replace("_", "-");
-            getUserData().setAndSave(key, value);
-        } else {
-            key = key.replace("-", "_");
-            String sql = "UPDATE `%p%users` SET `" + key + "`=? WHERE `uuid`=?";
-            DataStatement statement = new DataStatement(sql);
-            statement.setObject(1, value);
-            statement.setObject(2, getPlayer().getUniqueId().toString());
-            if (!statement.execute()) {
-                Messages.log("Couldn't save data to database!");
-                statement.getException().printStackTrace();
-            }
+        String sql = "UPDATE `%p%users` SET `" + key + "`=? WHERE `uuid`=?";
+        DataStatement statement = new DataStatement(sql);
+        statement.setObject(1, value);
+        statement.setObject(2, getPlayer().getUniqueId().toString());
+        if (!statement.execute()) {
+            Messages.log("Couldn't save data to database!");
+            statement.getException().printStackTrace();
         }
+
     }
 
 }

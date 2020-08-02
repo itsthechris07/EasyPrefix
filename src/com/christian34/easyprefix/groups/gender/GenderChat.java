@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.groups.gender;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.Database;
+import com.christian34.easyprefix.database.SQLDatabase;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
@@ -29,7 +29,7 @@ public class GenderChat {
         this.prefixes = new HashMap<>();
         this.suffixes = new HashMap<>();
         if (instance.getSqlDatabase() != null) {
-            Database database = instance.getSqlDatabase();
+            SQLDatabase database = instance.getSqlDatabase();
             try {
                 String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%genders` WHERE `type` = " + type + " AND " + "`group_name` = '" + easyGroup.getName() + "'";
                 ResultSet result = database.getValue(sql);
@@ -69,11 +69,11 @@ public class GenderChat {
     }
 
     public String getPrefix(GenderType genderType) {
-        return this.prefixes.getOrDefault(genderType, null);
+        return this.prefixes.get(genderType);
     }
 
     public String getSuffix(GenderType genderType) {
-        return this.suffixes.getOrDefault(genderType, null);
+        return this.suffixes.get(genderType);
     }
 
 }

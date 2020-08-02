@@ -1,7 +1,8 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.database.StorageType;
+import com.christian34.easyprefix.files.ConfigKeys;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -41,7 +42,7 @@ public class HelpCommand implements Subcommand {
             sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
             sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
             sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
-            if (this.instance.getSqlDatabase() != null) {
+            if (this.instance.getStorageType() == StorageType.SQL) {
                 sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
             }
         }

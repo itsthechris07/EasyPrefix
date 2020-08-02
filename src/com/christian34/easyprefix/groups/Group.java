@@ -1,19 +1,23 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.Database;
+import com.christian34.easyprefix.database.DataStatement;
+import com.christian34.easyprefix.database.Query;
+import com.christian34.easyprefix.database.SQLDatabase;
+import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * EasyPrefix 2020.
@@ -24,69 +28,57 @@ public class Group extends EasyGroup {
     private final String NAME;
     private final GroupsData groupsData;
     private final GroupHandler groupHandler;
+    private final ChatColor groupColor;
+    private final EasyPrefix instance;
     private String prefix, suffix, joinMessage, quitMessage;
-    private ChatColor groupColor;
     private Color chatColor;
     private ChatFormatting chatFormatting;
     private GenderChat genderChat = null;
 
     public Group(GroupHandler groupHandler, String name) {
         this.NAME = name;
-        this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
+        this.instance = groupHandler.getInstance();
+        this.groupsData = instance.getFileManager().getGroupsData();
         this.groupHandler = groupHandler;
 
-        String prefix = "", suffix = "", chatColor = "", chatFormatting = "", joinMsg = "", quitMsg = "";
-
-        Database db = groupHandler.getInstance().getSqlDatabase();
-        if (db != null) {
-            try {
-                String sql = "SELECT `prefix`,`suffix`,`chat_color`,`chat_formatting`,`join_msg`,`quit_msg` FROM `%p%groups` WHERE `group` = '" + name + "'";
-                ResultSet result = db.getValue(sql);
-                while (result.next()) {
-                    prefix = result.getString("prefix");
-                    suffix = result.getString("suffix");
-                    chatColor = result.getString("chat_color");
-                    chatFormatting = result.getString("chat_formatting");
-                    joinMsg = result.getString("join_msg");
-                    quitMsg = result.getString("quit_msg");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        List<String> keys = Arrays.asList("prefix", "suffix", "chat_color", "chat_formatting", "join_msg", "quit_msg");
+        HashMap<String, String> data;
+        if (instance.getStorageType() == StorageType.SQL) {
+            SQLDatabase database = instance.getSqlDatabase();
+            Query query = new Query("groups").setRow(keys).setCondition("`group` = '" + name + "'");
+            data = database.getData(query);
         } else {
-            FileConfiguration data = getGroupsData().getData();
-            prefix = data.getString(getFilePath() + "prefix");
-            suffix = data.getString(getFilePath() + "suffix");
-            chatColor = data.getString(getFilePath() + "chat-color");
-            chatFormatting = data.getString(getFilePath() + "chat-formatting");
-            joinMsg = data.getString(getFilePath() + "join-msg");
-            quitMsg = data.getString(getFilePath() + "quit-msg");
+            data = new HashMap<>();
+            for (String key : keys) {
+                data.put(key, getGroupsData().getData().getString(getFilePath() + key.replace("_", "-")));
+            }
         }
 
         if (groupHandler.handleGenders()) {
             this.genderChat = new GenderChat(this);
         }
 
-        if (prefix == null) prefix = "";
-        if (suffix == null) suffix = "";
-
-        try {
-            applyData(prefix, suffix, chatColor, chatFormatting, joinMsg, quitMsg);
-        } catch (Exception e) {
-            Messages.log("§cCouldn't load group " + name + "!");
-            e.printStackTrace();
+        this.prefix = data.get("prefix");
+        if (this.prefix == null) {
+            this.prefix = "";
+        } else {
+            this.prefix = prefix.replace("§", "&");
         }
-    }
 
-    private void applyData(String prefix, String suffix, String chatColor, String chatFormatting, String joinMessage, String quitMessage) {
-        this.prefix = prefix.replace("§", "&");
-        this.suffix = suffix.replace("§", "&");
+        this.suffix = data.get("suffix");
+        if (this.suffix == null) {
+            this.suffix = "";
+        } else {
+            this.suffix = suffix.replace("§", "&");
+        }
 
+        String chatFormatting = data.get("chat_formatting");
         if (chatFormatting != null && chatFormatting.length() == 2) {
             this.chatFormatting = ChatFormatting.getByCode(chatFormatting.substring(1, 2));
             if (this.chatFormatting == null) setChatFormatting(null);
         }
 
+        String chatColor = data.get("chat_color");
         if (chatColor == null || chatColor.length() < 2) {
             if (this.chatFormatting != null && this.chatFormatting.equals(ChatFormatting.RAINBOW)) {
                 this.chatColor = Color.GRAY;
@@ -98,8 +90,8 @@ public class Group extends EasyGroup {
         }
 
         this.groupColor = getGroupColor(prefix);
-        this.joinMessage = joinMessage;
-        this.quitMessage = quitMessage;
+        this.joinMessage = data.get("join_msg");
+        this.quitMessage = data.get("quit_msg");
     }
 
     public String getJoinMessage(User user) {
@@ -135,7 +127,7 @@ public class Group extends EasyGroup {
         return quitMessage;
     }
 
-    public void setQuitMessage(String quitMessage) {
+    public void setQuitMessage(@NotNull String quitMessage) {
         this.quitMessage = quitMessage.replace("§", "&");
         saveData("quit-msg", this.quitMessage);
     }
@@ -144,25 +136,19 @@ public class Group extends EasyGroup {
         return groupsData;
     }
 
-    private void saveData(String key, Object value) {
-        Database db = this.groupHandler.getInstance().getSqlDatabase();
-        if (value instanceof String) value = ((String) value).replace("§", "&");
-        if (db == null) {
-            key = key.replace("_", "-");
-            groupsData.setAndSave(getFilePath() + key, value);
-        } else {
-            key = key.replace("-", "_");
-            String sql = "UPDATE `%p%groups` SET `" + key + "`=? WHERE `group`=?";
-            PreparedStatement stmt = db.prepareStatement(sql);
-            try {
-                stmt.setObject(1, value);
-                stmt.setString(2, NAME);
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
+    private void saveData(@NotNull String key, @Nullable Object value) {
+        EasyPrefix instance = groupHandler.getInstance();
+        if (instance.getStorageType() == StorageType.SQL) {
+            String sql = "UPDATE `%p%groups` SET `" + key.replace("-", "_") + "`=? WHERE `group`=?";
+            DataStatement stmt = new DataStatement(sql);
+            stmt.setObject(1, value);
+            stmt.setObject(2, NAME);
+            if (!stmt.execute()) {
+                stmt.getException().printStackTrace();
             }
+        } else {
+            groupsData.setAndSave(getFilePath() + key.replace("_", "-"), value);
         }
-        System.out.print(this.getName() + ": " + key + ": " + value);
         this.groupHandler.getInstance().getGroupHandler().load();
     }
 
@@ -172,6 +158,7 @@ public class Group extends EasyGroup {
     }
 
     @Override
+    @Nonnull
     public String getPrefix(User user, boolean translate) {
         String prefix;
         if (this.groupHandler.handleGenders() && user != null) {
@@ -185,13 +172,14 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    public void setPrefix(String prefix) {
+    public void setPrefix(@NotNull String prefix) {
         this.prefix = prefix.replace("§", "&");
         saveData("prefix", this.prefix);
     }
 
     @Override
-    public String getSuffix(User user, boolean translate) {
+    @Nonnull
+    public String getSuffix(@Nullable User user, boolean translate) {
         String suffix;
         if (this.groupHandler.handleGenders() && user != null) {
             suffix = this.genderChat.getSuffix(user.getGenderType());
@@ -204,12 +192,13 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    public void setSuffix(String suffix) {
+    public void setSuffix(@NotNull String suffix) {
         this.suffix = suffix.replace("§", "&");
         saveData("suffix", this.suffix);
     }
 
     @Override
+    @NotNull
     public ChatColor getGroupColor() {
         return groupColor;
     }
@@ -222,11 +211,11 @@ public class Group extends EasyGroup {
     @Override
     public void delete() {
         EasyPrefix instance = this.groupHandler.getInstance();
-        if (instance.getSqlDatabase() == null) {
+        if (instance.getStorageType() == StorageType.LOCAL) {
             groupsData.setAndSave("groups." + getName(), null);
         } else {
-            Database db = instance.getSqlDatabase();
-            db.update("DELETE FROM `%p%groups` WHERE `group` = '" + getName() + "'");
+            SQLDatabase database = instance.getSqlDatabase();
+            database.update("DELETE FROM `%p%groups` WHERE `group` = '" + getName() + "'");
         }
         instance.getGroupHandler().getGroups().remove(this);
         instance.getUsers().clear();

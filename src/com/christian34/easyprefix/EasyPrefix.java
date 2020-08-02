@@ -1,9 +1,11 @@
 package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandHandler;
-import com.christian34.easyprefix.database.Database;
+import com.christian34.easyprefix.database.LocalDatabase;
+import com.christian34.easyprefix.database.SQLDatabase;
+import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.extensions.ExpansionManager;
-import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.listeners.ChatListener;
@@ -20,7 +22,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -32,15 +33,29 @@ public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance;
     private ArrayList<User> users;
     private Plugin plugin;
-    private Database database;
     private GroupHandler groupHandler;
     private Updater updater;
     private FileManager fileManager;
     private CommandHandler commandHandler;
     private ExpansionManager expansionManager;
+    private SQLDatabase sqlDatabase = null;
+    private StorageType storageType;
+    private LocalDatabase localDatabase = null;
 
     public static EasyPrefix getInstance() {
         return instance;
+    }
+
+    public LocalDatabase getLocalDatabase() {
+        return localDatabase;
+    }
+
+    public StorageType getStorageType() {
+        return storageType;
+    }
+
+    public SQLDatabase getSqlDatabase() {
+        return sqlDatabase;
     }
 
     public ExpansionManager getExpansionManager() {
@@ -48,7 +63,12 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void onDisable() {
-        if (getSqlDatabase() != null) getSqlDatabase().close();
+        if (sqlDatabase != null) {
+            this.sqlDatabase.close();
+        }
+        if (localDatabase != null) {
+            this.localDatabase.close();
+        }
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player != null) player.closeInventory();
         }
@@ -59,11 +79,17 @@ public class EasyPrefix extends JavaPlugin {
         this.plugin = this;
         this.users = new ArrayList<>();
         this.fileManager = new FileManager(this);
-        ConfigData cfg = this.fileManager.getConfig();
         Messages.load();
-        if (cfg.getBoolean(ConfigData.ConfigKeys.USE_SQL)) {
-            this.database = new Database(this);
+        if (ConfigKeys.USE_SQL.toBoolean()) {
+            this.sqlDatabase = new SQLDatabase(this);
+            this.storageType = StorageType.SQL;
+            this.sqlDatabase.connect();
+        } else {
+            this.localDatabase = new LocalDatabase(this);
+            this.storageType = StorageType.LOCAL;
+            this.localDatabase.connect();
         }
+
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
         this.commandHandler = new CommandHandler(this);
@@ -110,10 +136,6 @@ public class EasyPrefix extends JavaPlugin {
         return users;
     }
 
-    public Database getSqlDatabase() {
-        return database;
-    }
-
     public Plugin getPlugin() {
         return plugin;
     }
@@ -132,13 +154,11 @@ public class EasyPrefix extends JavaPlugin {
 
     public void reload() {
         this.fileManager = new FileManager(this);
-        if (this.fileManager.getConfig().getBoolean(ConfigData.ConfigKeys.USE_SQL) && this.database != null) {
-            try {
-                getSqlDatabase().getConnection().close();
-            } catch (SQLException ignored) {
-            }
-            this.database = new Database(this);
-        } else this.database = null;
+        if (storageType == StorageType.SQL) {
+            this.sqlDatabase.close();
+            this.sqlDatabase = new SQLDatabase(this);
+            this.sqlDatabase.connect();
+        }
         this.commandHandler = new CommandHandler(this);
         Messages.load();
         RainbowEffect.getRainbowColors().clear();
@@ -157,7 +177,7 @@ public class EasyPrefix extends JavaPlugin {
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
         metrics.addCustomChart(new Metrics.SimplePie("lang", Messages::getLanguage));
-        metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (getSqlDatabase() != null) ? "true" : "false"));
+        metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (storageType == StorageType.SQL) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "true" : "false"));
     }

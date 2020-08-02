@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
@@ -79,7 +80,7 @@ public class SetCommand implements Subcommand {
                         .replace("%prefix%", input), "/ep setprefix " + input + " submit"));
             } else {
                 user.setPrefix(input);
-                user.saveData("custom-prefix-update", new Timestamp(System.currentTimeMillis()).toString());
+                user.saveData("custom_prefix_update", new Timestamp(System.currentTimeMillis()).toString());
                 user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString()
                         .replace("%prefix%", user.getPrefix().replace("§", "&")));
             }
@@ -109,7 +110,7 @@ public class SetCommand implements Subcommand {
                         .replace("%suffix%", input), "/ep setsuffix " + input + " submit"));
             } else {
                 user.setSuffix(input);
-                user.saveData("custom-suffix-update", new Timestamp(System.currentTimeMillis()).toString());
+                user.saveData("custom_suffix_update", new Timestamp(System.currentTimeMillis()).toString());
                 user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.toString()
                         .replace("%suffix%", user.getSuffix().replace("§", "&")));
             }
@@ -122,7 +123,7 @@ public class SetCommand implements Subcommand {
     }
 
     private Timestamp getNextTimestamp(long last) {
-        double delay = EasyPrefix.getInstance().getFileManager().getConfig().getData().getDouble("config.user.custom-layout.cooldown");
+        double delay = ConfigKeys.CUSTOM_LAYOUT_COOLDOWN.toDouble();
         long newTime = (long) (last + (delay * 60 * 60 * 1000));
         return new Timestamp(newTime);
     }

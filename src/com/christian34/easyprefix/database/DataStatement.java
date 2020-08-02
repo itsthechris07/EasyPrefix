@@ -17,11 +17,13 @@ public class DataStatement {
 
     public DataStatement(String sqlQuery) {
         String sql = sqlQuery;
-        Database database = EasyPrefix.getInstance().getSqlDatabase();
+        EasyPrefix instance = EasyPrefix.getInstance();
+        Database database = instance.getStorageType() == StorageType.SQL ? instance.getSqlDatabase() : instance.getLocalDatabase();
         try {
             sql = sql.replace("%p%", database.getTablePrefix());
             this.preparedStatement = database.getConnection().prepareStatement(sql);
-        } catch (SQLException ignored) {
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 

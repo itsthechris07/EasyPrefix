@@ -1,8 +1,10 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.Database;
+import com.christian34.easyprefix.database.SQLDatabase;
+import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderType;
@@ -28,12 +30,13 @@ public class GroupHandler {
     private ArrayList<Subgroup> subgroups;
     private ArrayList<GenderType> genderTypes = new ArrayList<>();
     private Group defaultGroup;
+    private SQLDatabase database;
 
     public GroupHandler(EasyPrefix instance) {
         this.instance = instance;
         this.groupsData = instance.getFileManager().getGroupsData();
 
-        if (EasyPrefix.getInstance().getSqlDatabase() == null) {
+        if (instance.getStorageType() == StorageType.LOCAL) {
             GroupsData groupsData = getGroupsData();
             FileConfiguration fileData = groupsData.getData();
             if (fileData.getString("groups.default.prefix") == null) {
@@ -53,7 +56,7 @@ public class GroupHandler {
             }
             groupsData.save();
         } else {
-            Database database = EasyPrefix.getInstance().getSqlDatabase();
+            this.database = instance.getSqlDatabase();
             if (!database.exists("SELECT `prefix` FROM `%p%groups` WHERE `group` = 'default'")) {
                 database.update("INSERT INTO `%p%groups`(`group`, `prefix`, `suffix`, `chat_color`, `join_msg`, `quit_msg`) " + "VALUES ('default','&7','&f:','&7','&8» %ep_user_prefix%%player% &7joined the game','&8« %ep_user_prefix%%player% &7left the game')");
                 Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" + " with: /easyprefix database upload");
@@ -65,7 +68,7 @@ public class GroupHandler {
         this.groups = new ArrayList<>();
         this.subgroups = new ArrayList<>();
         this.instance.getUsers().clear();
-        if (instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER)) {
+        if (ConfigKeys.USE_GENDER.toBoolean()) {
             loadGenders();
         }
         this.defaultGroup = new Group(this, "default");
@@ -74,7 +77,7 @@ public class GroupHandler {
         ArrayList<String> groupNames = new ArrayList<>();
         ArrayList<String> subgroupNames = new ArrayList<>();
 
-        if (EasyPrefix.getInstance().getSqlDatabase() == null) {
+        if (instance.getStorageType() == StorageType.LOCAL) {
             GroupsData groupsData = getGroupsData();
             Set<String> groupsList = getGroupsData().getSection("groups");
             groupNames = new ArrayList<>(groupsList);
@@ -85,11 +88,10 @@ public class GroupHandler {
                     load();
                 }
             }
-            if (instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_SUBGROUPS)) {
+            if (ConfigKeys.USE_SUBGROUPS.toBoolean()) {
                 subgroupNames.addAll(groupsData.getSection("subgroups"));
             }
         } else {
-            Database database = EasyPrefix.getInstance().getSqlDatabase();
             ResultSet groupsResult = database.getValue("SELECT `group` FROM `%p%groups`");
             try {
                 while (groupsResult.next()) {
@@ -125,7 +127,7 @@ public class GroupHandler {
     }
 
     public boolean handleGenders() {
-        return instance.getFileManager().getConfig().getBoolean(ConfigData.ConfigKeys.USE_GENDER);
+        return ConfigKeys.USE_GENDER.toBoolean();
     }
 
     public void loadGenders() {
@@ -193,7 +195,6 @@ public class GroupHandler {
     }
 
     public void createGroup(String groupName) {
-        Database database = EasyPrefix.getInstance().getSqlDatabase();
         if (database == null) {
             String path = "groups." + groupName + ".";
             getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");

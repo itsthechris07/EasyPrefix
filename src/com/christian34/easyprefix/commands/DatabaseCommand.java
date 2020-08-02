@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.command.CommandSender;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,22 +42,22 @@ public class DatabaseCommand implements Subcommand {
 
         if (args.get(1).equalsIgnoreCase("upload")) {
             sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while.");
-            try {
-                this.instance.getSqlDatabase().uploadData();
+          /*  try {
+            //    this.instance.getSqlDatabase().uploadData();
                 this.instance.reload();
                 sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
             } catch (SQLException e) {
                 e.printStackTrace();
-            }
+            }*/
         } else if (args.get(1).equalsIgnoreCase("download")) {
             sender.sendMessage(Messages.getPrefix() + "§7Downloading data to local storage. This could take a while.");
-            try {
-                this.instance.getSqlDatabase().downloadData();
+         /*   try {
+            //    this.instance.getSqlDatabase().downloadData();
                 this.instance.reload();
                 sender.sendMessage(Messages.getPrefix() + "§7Files have been downloaded!");
             } catch (SQLException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
     }
