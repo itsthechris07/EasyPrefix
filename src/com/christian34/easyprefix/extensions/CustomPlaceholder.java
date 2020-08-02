@@ -4,9 +4,9 @@ import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * EasyPrefix 2020.
@@ -18,26 +18,32 @@ class CustomPlaceholder extends PlaceholderExpansion {
 
     public CustomPlaceholder(ExpansionManager expansionManager) {
         this.expansionManager = expansionManager;
-        PlaceholderAPI.registerExpansion(this);
+        register();
     }
 
     @Override
-    public String getIdentifier() {
+    public boolean canRegister() {
+        return true;
+    }
+
+    @Override
+    public @NotNull String getIdentifier() {
         return "ep";
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return "Christian34";
     }
 
     @Override
-    public String getVersion() {
-        return "1.0.5";
+    public @NotNull String getVersion() {
+        return "1.0.6";
     }
 
     @Override
-    public String onRequest(OfflinePlayer op, String identifier) {
+    public String onRequest(OfflinePlayer op, @NotNull String identifier) {
+        if (op == null) return "";
         User user = expansionManager.getInstance().getUser(op.getPlayer());
         switch (identifier) {
             case "user_prefix":

@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
  */
 public class ExpansionManager {
     private final EasyPrefix instance;
-    private CustomPlaceholder customPlaceholder;
     private ChatProvider chatProvider;
     private boolean usingPapi;
 
@@ -19,7 +18,7 @@ public class ExpansionManager {
         this.instance = instance;
         if (isEnabled("PlaceholderAPI")) {
             this.usingPapi = true;
-            this.customPlaceholder = new CustomPlaceholder(this);
+            new CustomPlaceholder(this);
         }
         if (isEnabled("Vault")) {
             this.chatProvider = new ChatProvider(this);
