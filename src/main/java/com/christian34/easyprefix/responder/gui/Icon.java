@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.responder.gui;
 
-import com.christian34.easyprefix.messages.Messages;
 import com.cryptomorin.xseries.XMaterial;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -65,7 +64,6 @@ public class Icon implements Cloneable {
             itemStack.setItemMeta(meta);
             return itemStack;
         } catch (Exception ignored) {
-            Messages.log("&cWarning: You're using an unsupported version. Please upgrade to Spigot 1.13 or higher!");
             return itemStack;
         }
     }
@@ -91,7 +89,7 @@ public class Icon implements Cloneable {
         return clickAction;
     }
 
-    public Icon setClickAction(ClickAction clickAction) {
+    public Icon onClick(ClickAction clickAction) {
         this.clickAction = clickAction;
         return this;
     }

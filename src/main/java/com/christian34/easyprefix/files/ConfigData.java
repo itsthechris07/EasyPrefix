@@ -34,6 +34,9 @@ public class ConfigData {
             }
         }
         this.data = YamlConfiguration.loadConfiguration(file);
+        if (data.getString("config.uuid") == null) {
+            //   set("config.uuid", UUID.randomUUID().toString());
+        }
         return this;
     }
 

@@ -21,11 +21,11 @@ import java.util.HashMap;
 public class Subgroup extends EasyGroup {
     private final String NAME;
     private final GroupHandler groupHandler;
+    private final EasyPrefix instance;
     private String prefix, suffix;
     private ChatColor groupColor;
     private GroupsData groupsData;
     private GenderChat genderChat = null;
-    private final EasyPrefix instance;
 
     public Subgroup(GroupHandler groupHandler, String name) {
         this.NAME = name;

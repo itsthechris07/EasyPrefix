@@ -27,12 +27,12 @@ public class User {
     private final Player player;
     private final UUID uniqueId;
     private final EasyPrefix instance;
+    private final GroupHandler groupHandler;
     private ArrayList<Color> colors;
     private ArrayList<ChatFormatting> chatFormattings;
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
-    private final GroupHandler groupHandler;
     private GenderType genderType;
     private String customPrefix;
     private String customSuffix;
@@ -347,7 +347,6 @@ public class User {
             Messages.log("Couldn't save data to database!");
             statement.getException().printStackTrace();
         }
-
     }
 
 }

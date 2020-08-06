@@ -81,7 +81,7 @@ public class ChatRespond {
             if (!e.getPlayer().equals(RESPONDER.getPlayer())) return;
             User user = instance.getUser(e.getPlayer());
             user.getPlayer().spigot().sendMessage();
-            if (e.getMessage().equals("quit") || e.getMessage().equals("cancel")) {
+            if (e.getMessage().equals("quit")) {
                 user.sendMessage(Message.SETUP_CANCELLED.toString());
                 exit();
             } else {

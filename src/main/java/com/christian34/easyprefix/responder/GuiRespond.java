@@ -189,7 +189,7 @@ public class GuiRespond {
         return glass;
     }
 
-    private static class GuiPage {
+    private class GuiPage {
         private final int page;
         private final ArrayList<Icon> icons = new ArrayList<>();
 

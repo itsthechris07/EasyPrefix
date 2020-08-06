@@ -17,7 +17,6 @@ import java.net.URL;
  */
 public class Updater {
     public final String UPDATE_MSG = "§7A new update is available at: §bhttps://www.spigotmc" + ".org/resources/44580/updates";
-    private final String ERR_MSG = "§cUpdate checker failed!";
     private final EasyPrefix instance;
     private String spigotPluginVersion;
     private boolean available = false;
@@ -33,12 +32,12 @@ public class Updater {
                 connection.setRequestMethod("GET");
                 spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
             } catch (IOException e) {
-                Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + ERR_MSG);
+                Messages.log("§cUpdate checker failed!");
                 return;
             }
-            if (!VersionController.getPluginVersion().equals(spigotPluginVersion)) {
+            if (spigotPluginVersion.split("\\.")[1].equals("7")) {
                 available = true;
-                Bukkit.getServer().getConsoleSender().sendMessage(Messages.getPrefix() + UPDATE_MSG);
+                Messages.log(UPDATE_MSG);
             }
         });
         return this.available;

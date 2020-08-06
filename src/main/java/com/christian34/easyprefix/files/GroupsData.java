@@ -31,13 +31,6 @@ public class GroupsData {
             this.instance.getPlugin().saveResource("groups.yml", true);
         }
         this.data = YamlConfiguration.loadConfiguration(file);
-        if (data.getConfigurationSection("groups") == null) {
-            File old = new File(pluginFolder, "groups.yml");
-            File backup = new File(pluginFolder, "backup-groups.yml");
-            if (old.renameTo(backup) && old.delete()) {
-                load();
-            }
-        }
         return this;
     }
 

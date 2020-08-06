@@ -5,8 +5,8 @@ import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
-import com.sun.istack.internal.NotNull;
 import org.bukkit.command.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;

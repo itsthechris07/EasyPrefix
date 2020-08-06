@@ -40,9 +40,8 @@ public enum ChatFormatting {
     public String toString() {
         if (code.equals("r")) {
             return getCode() + RainbowEffect.addRainbowEffect(name.toString());
-        } else {
-            return getCode() + name.toString();
         }
+        return getCode() + name.toString();
     }
 
     public String getCode() {

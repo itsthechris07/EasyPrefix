@@ -46,7 +46,7 @@ public class GuiSettings extends Page {
 
     public GuiSettings openWelcomePage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_MAIN), 3);
-        Icon prefix = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_PREFIXES, 2, 3).setClickAction(() -> {
+        Icon prefix = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_PREFIXES, 2, 3).onClick(() -> {
             int userGroups = user.getAvailableGroups().size();
             if (userGroups <= 1) {
                 if (user.getAvailableSubgroups().size() > 1) {
@@ -58,9 +58,9 @@ public class GuiSettings extends Page {
                 openGroupsListPage();
             }
         });
-        Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).setClickAction(this::openColorsPage);
+        Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).onClick(this::openColorsPage);
         if (ConfigKeys.USE_GENDER.toBoolean()) {
-            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.CHANGE_GENDER, 2, 5).setClickAction(this::openGenderSelectPage);
+            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.CHANGE_GENDER, 2, 5).onClick(this::openGenderSelectPage);
         } else {
             prefix.setSlot(2, 4);
             formattings.setSlot(2, 6);
@@ -77,7 +77,7 @@ public class GuiSettings extends Page {
         String genderName = "n/A";
         if (user.getGenderType() != null) genderName = user.getGenderType().getDisplayName();
         List<String> lore = Arrays.asList(" ", Message.LORE_CHANGE_GENDER.toString());
-        guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), genderName, 2, 5).setLore(lore).setClickAction(() -> {
+        guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), genderName, 2, 5).setLore(lore).onClick(() -> {
             if (user.getGenderType() == null) {
                 user.setGenderType(groupHandler.getGenderTypes().get(0));
             } else {
@@ -92,7 +92,7 @@ public class GuiSettings extends Page {
             openGenderSelectPage();
         });
 
-        guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
+        guiRespond.addCloseButton().onClick(this::openWelcomePage);
         guiRespond.openInventory();
         return this;
     }
@@ -112,7 +112,7 @@ public class GuiSettings extends Page {
                 lore.add(Message.BTN_SELECT_PREFIX.toString());
             }
 
-            guiRespond.addIcon(itemStack, prefixColor + group.getName()).setLore(lore).setClickAction(() -> {
+            guiRespond.addIcon(itemStack, prefixColor + group.getName()).setLore(lore).onClick(() -> {
                 user.setGroup(group, false);
                 openGroupsListPage();
             });
@@ -120,17 +120,17 @@ public class GuiSettings extends Page {
 
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
             guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
-                    .setClickAction(() -> openCustomLayoutPage(this::openGroupsListPage));
+                    .onClick(() -> openCustomLayoutPage(this::openGroupsListPage));
         }
 
         if (user.getAvailableSubgroups().size() > 0) {
             ItemStack subgroupsMaterial = VersionController.getMinorVersion() <= 12
                     ? XMaterial.CHEST.parseItem()
                     : XMaterial.WRITABLE_BOOK.parseItem();
-            guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).setClickAction(() -> openSubgroupsPage(this::openGroupsListPage));
+            guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).onClick(() -> openSubgroupsPage(this::openGroupsListPage));
         }
 
-        guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
+        guiRespond.addCloseButton().onClick(this::openWelcomePage);
         guiRespond.openInventory();
         return this;
     }
@@ -149,7 +149,7 @@ public class GuiSettings extends Page {
             if (user.getChatColor() != null && user.getChatColor().equals(color) && (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)))
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
 
-            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, +slot).setClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, +slot).onClick(() -> {
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {
                     user.setChatColor(color);
                     openColorsPage();
@@ -179,7 +179,7 @@ public class GuiSettings extends Page {
             if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
-            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).setClickAction(() -> {
+            guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).onClick(() -> {
                 ChatFormatting formatting = chatFormatting;
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + formatting.name().toLowerCase())) {
                     if (user.getChatFormatting() != null && user.getChatFormatting().equals(formatting)) {
@@ -199,13 +199,13 @@ public class GuiSettings extends Page {
             slot++;
         }
 
-        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET, 5, 9).setClickAction(() -> {
+        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET, 5, 9).onClick(() -> {
             user.setChatColor(null);
             user.setChatFormatting(null);
             openColorsPage();
         });
 
-        guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
+        guiRespond.addCloseButton().onClick(this::openWelcomePage);
         guiRespond.openInventory();
         return this;
     }
@@ -223,7 +223,7 @@ public class GuiSettings extends Page {
                 lore.add(Message.BTN_SELECT_PREFIX.toString());
             }
 
-            guiRespond.addIcon(book, subgroup.getGroupColor() + subgroup.getName()).setLore(lore).setClickAction(() -> {
+            guiRespond.addIcon(book, subgroup.getGroupColor() + subgroup.getName()).setLore(lore).onClick(() -> {
                 if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
                     user.setSubgroup(null);
                 } else {
@@ -235,13 +235,13 @@ public class GuiSettings extends Page {
 
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
             guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
-                    .setClickAction(() -> openCustomLayoutPage(() -> openSubgroupsPage(this::openWelcomePage)));
+                    .onClick(() -> openCustomLayoutPage(() -> openSubgroupsPage(this::openWelcomePage)));
         }
 
         if (backAction != null) {
-            guiRespond.addCloseButton().setClickAction(backAction);
+            guiRespond.addCloseButton().onClick(backAction);
         } else {
-            guiRespond.addCloseButton().setClickAction(this::openWelcomePage);
+            guiRespond.addCloseButton().onClick(this::openWelcomePage);
         }
 
         guiRespond.openInventory();
@@ -262,28 +262,28 @@ public class GuiSettings extends Page {
 
         List<String> prefixLore = Arrays.asList(divider, loreDetail + user.getPrefix().replace("§", "&"), " ", loreEdit);
 
-        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).setClickAction(() -> {
+        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).onClick(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.toString().replace("%prefix%", user.getPrefix().replace("§", "&")));
             responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> user.getPlayer().performCommand("ep setprefix " + respond)));
         });
 
         List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ", loreEdit);
 
-        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).setClickAction(() -> {
+        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).onClick(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", user.getSuffix().replace("§", "&")));
             responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> user.getPlayer().performCommand("ep setsuffix " + respond)));
         });
 
-        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 3, 9).setClickAction(() -> {
+        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 3, 9).onClick(() -> {
             user.setPrefix(null);
             user.setSuffix(null);
             openCustomLayoutPage(backAction);
         });
 
         if (backAction != null) {
-            guiRespond.addCloseButton().setClickAction(backAction);
+            guiRespond.addCloseButton().onClick(backAction);
         } else {
-            guiRespond.addCloseButton().setClickAction(this::openGroupsListPage);
+            guiRespond.addCloseButton().onClick(this::openGroupsListPage);
         }
 
         guiRespond.openInventory();

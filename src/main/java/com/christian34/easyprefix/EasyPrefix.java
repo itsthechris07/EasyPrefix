@@ -80,7 +80,7 @@ public class EasyPrefix extends JavaPlugin {
         this.users = new ArrayList<>();
         this.fileManager = new FileManager(this);
         Messages.load();
-        if (ConfigKeys.USE_SQL.toBoolean()) {
+        if (ConfigKeys.SQL_ENABLED.toBoolean()) {
             this.sqlDatabase = new SQLDatabase(this);
             this.storageType = StorageType.SQL;
             this.sqlDatabase.connect();
