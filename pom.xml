@@ -14,7 +14,6 @@
     </properties>
 
     <build>
-        <outputDirectory>target/classes</outputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,11 +44,11 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/deploy</outputDirectory>
+                            <outputDirectory>${basedir}/server/plugins</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/target</directory>
-                                    <include>${project.build.finalName}.jar</include>
+                                    <include>EasyPrefix-1.6.6.jar</include>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -60,9 +59,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
