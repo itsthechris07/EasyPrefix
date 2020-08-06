@@ -3,19 +3,18 @@ package com.christian34.easyprefix.groups;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.database.SQLDatabase;
 import com.christian34.easyprefix.database.StorageType;
-import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -117,11 +116,19 @@ public class GroupHandler {
 
         groupNames.remove("default");
         for (String name : groupNames) {
-            groups.add(new Group(this, name));
+            try {
+                groups.add(new Group(this, name));
+            } catch (Exception ex) {
+                Debug.captureException(ex);
+            }
         }
 
         for (String name : subgroupNames) {
-            subgroups.add(new Subgroup(this, name));
+            try {
+                subgroups.add(new Subgroup(this, name));
+            } catch (Exception ex) {
+                Debug.captureException(ex);
+            }
         }
 
     }
@@ -132,11 +139,12 @@ public class GroupHandler {
 
     public void loadGenders() {
         this.genderTypes = new ArrayList<>();
-        ConfigData config = instance.getFileManager().getConfig();
-        Set<String> types = Objects.requireNonNull(config.getData().getConfigurationSection("config.gender.types")).getKeys(false);
-        for (String name : types) {
-            GenderType genderType = new GenderType(name);
-            this.genderTypes.add(genderType);
+        for (String name : ConfigKeys.GENDER_TYPES.toSection()) {
+            try {
+                this.genderTypes.add(new GenderType(name));
+            } catch (Exception ex) {
+                Debug.captureException(ex);
+            }
         }
     }
 

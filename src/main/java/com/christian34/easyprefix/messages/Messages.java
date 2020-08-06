@@ -78,7 +78,6 @@ public class Messages {
             }
         }
         if (VersionController.getMinorVersion() == 8) {
-            System.out.print("111");
             try {
                 replaceInFile(file);
             } catch (IOException e) {

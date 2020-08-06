@@ -1,10 +1,10 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             mainCommand.setExecutor(this);
             mainCommand.setTabCompleter(this);
         }
-        ConfigData config = instance.getFileManager().getConfig();
         this.subcommands = new ArrayList<>();
         subcommands.add(new UserCommand(this));
         subcommands.add(new HelpCommand(this));
@@ -59,8 +58,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        ConfigData config = instance.getFileManager().getConfig();
-
         if (cmd.getName().equalsIgnoreCase("easyprefix")) {
             if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
                 if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
@@ -71,7 +68,11 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             for (Subcommand subCmd : subcommands) {
                 if (subCmd.getName().equalsIgnoreCase(args[0]) || subCmd.getName().startsWith(args[0])) {
                     if (subCmd.getPermission() == null || sender.hasPermission("easyprefix." + subCmd.getPermission())) {
-                        subCmd.handleCommand(sender, Arrays.asList(args));
+                        try {
+                            subCmd.handleCommand(sender, Arrays.asList(args));
+                        } catch (Exception ex) {
+                            Debug.captureException(ex);
+                        }
                         return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS));

@@ -3,6 +3,7 @@ package com.christian34.easyprefix.database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -74,6 +75,7 @@ public class SQLDatabase implements Database {
             Statement stmt = connection.createStatement();
             return stmt.executeQuery(query.getStatement());
         } catch (SQLException e) {
+            Debug.captureException(e);
             e.printStackTrace();
             return null;
         }
@@ -85,6 +87,7 @@ public class SQLDatabase implements Database {
             Statement stmt = connection.createStatement();
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException e) {
+            Debug.captureException(e);
             e.printStackTrace();
             return null;
         }
@@ -102,8 +105,9 @@ public class SQLDatabase implements Database {
             } else {
                 return null;
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            Debug.captureException(ex);
+            ex.printStackTrace();
         }
         return data;
     }
@@ -116,6 +120,7 @@ public class SQLDatabase implements Database {
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
         } catch (SQLException e) {
+            Debug.captureException(e);
             e.printStackTrace();
         }
     }
@@ -131,6 +136,7 @@ public class SQLDatabase implements Database {
         } catch (SQLException e) {
             Messages.log("§cCouldn't get value from statement '" + statement + "'!");
             Messages.log("§c" + e.getMessage());
+            Debug.captureException(e);
             e.printStackTrace();
         }
         return false;

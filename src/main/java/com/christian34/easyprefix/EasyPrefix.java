@@ -13,9 +13,11 @@ import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
+import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -126,8 +128,13 @@ public class EasyPrefix extends JavaPlugin {
                 return user;
             }
         }
+
         User user = new User(player);
-        user.login();
+        try {
+            user.login();
+        } catch (Exception ex) {
+            Debug.captureException(ex);
+        }
         users.add(user);
         return user;
     }
@@ -153,6 +160,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void reload() {
+        Debug.recordAction("Reloading Plugin");
         this.fileManager = new FileManager(this);
         if (storageType == StorageType.SQL) {
             this.sqlDatabase.close();
@@ -164,6 +172,7 @@ public class EasyPrefix extends JavaPlugin {
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
+        Debug.captureException(new NullArgumentException("exception"));
     }
 
     private void registerEvents() {

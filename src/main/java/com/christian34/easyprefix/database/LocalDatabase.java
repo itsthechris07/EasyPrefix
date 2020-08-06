@@ -3,6 +3,7 @@ package com.christian34.easyprefix.database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,6 +74,7 @@ public class LocalDatabase implements Database {
             Statement stmt = connection.createStatement();
             return stmt.executeQuery(query.getStatement());
         } catch (SQLException e) {
+            Debug.captureException(e);
             e.printStackTrace();
             return null;
         }
@@ -80,7 +82,7 @@ public class LocalDatabase implements Database {
 
     @Override
     public HashMap<String, String> getData(Query query) {
-        HashMap<String, String> data = new HashMap();
+        HashMap<String, String> data = new HashMap<>();
         ResultSet result = getValue(query);
         try {
             if (result.next()) {
@@ -90,8 +92,9 @@ public class LocalDatabase implements Database {
             } else {
                 return null;
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            Debug.captureException(ex);
+            ex.printStackTrace();
         }
         return data;
     }
@@ -104,6 +107,7 @@ public class LocalDatabase implements Database {
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
         } catch (SQLException e) {
+            Debug.captureException(e);
             e.printStackTrace();
         }
     }
@@ -118,6 +122,7 @@ public class LocalDatabase implements Database {
         } catch (SQLException e) {
             Messages.log("§cCouldn't get value from statement '" + statement + "'!");
             Messages.log("§c" + e.getMessage());
+            Debug.captureException(e);
             e.printStackTrace();
         }
         return false;

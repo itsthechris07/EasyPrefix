@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.io.File;
 
@@ -16,7 +17,11 @@ public class FileManager {
 
     public FileManager(EasyPrefix instance) {
         this.instance = instance;
-        load();
+        try {
+            load();
+        } catch (Exception ex) {
+            Debug.captureException(ex);
+        }
     }
 
     public static File getPluginFolder() {

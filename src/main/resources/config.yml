@@ -11,6 +11,8 @@ config:
   version: 1.6.5
   # default language (en_EN, de_DE, it_IT)
   lang: en_EN
+  # do not edit the id
+  client: id
   # connect multiple servers
   sql:
     enabled: false

@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.database;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -23,6 +24,7 @@ public class DataStatement {
             sql = sql.replace("%p%", database.getTablePrefix());
             this.preparedStatement = database.getConnection().prepareStatement(sql);
         } catch (SQLException ex) {
+            Debug.captureException(ex);
             ex.printStackTrace();
         }
     }
@@ -45,6 +47,7 @@ public class DataStatement {
             preparedStatement.close();
             return true;
         } catch (SQLException ex) {
+            Debug.captureException(ex);
             this.exception = ex;
             return false;
         }

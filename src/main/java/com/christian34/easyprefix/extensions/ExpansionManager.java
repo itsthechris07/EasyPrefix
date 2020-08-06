@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.extensions;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +19,12 @@ public class ExpansionManager {
     public ExpansionManager(EasyPrefix instance) {
         this.instance = instance;
         if (isEnabled("PlaceholderAPI")) {
+            Debug.recordAction("Hooking into PlaceholderAPI...");
             this.usingPapi = true;
             new CustomPlaceholder(this);
         }
         if (isEnabled("Vault")) {
+            Debug.recordAction("Hooking into Vault...");
             this.chatProvider = new ChatProvider(this);
         }
     }
@@ -36,9 +39,11 @@ public class ExpansionManager {
 
     @NotNull
     public String setPapi(@NotNull Player player, @NotNull String text) {
+        if (!isUsingPapi()) return text;
         try {
             return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(player.getUniqueId()), text);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Debug.captureException(ex);
             return text;
         }
     }
@@ -46,6 +51,5 @@ public class ExpansionManager {
     public boolean isEnabled(String pluginName) {
         return Bukkit.getPluginManager().isPluginEnabled(pluginName);
     }
-
 
 }

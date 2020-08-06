@@ -7,6 +7,7 @@ import com.christian34.easyprefix.database.Query;
 import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -33,13 +34,19 @@ public class UserData {
             this.database = instance.getSqlDatabase();
         } else {
             this.database = instance.getLocalDatabase();
-            updateData();
+            try {
+                updateData();
+            } catch (Exception ex) {
+                Debug.captureException(ex);
+            }
         }
         loadData();
     }
 
     void loadData() {
-        Query query = new Query("users").setRow("group", "username", "force_group", "subgroup", "custom_prefix", "custom_prefix_update", "custom_suffix", "custom_suffix_update", "gender", "chat_color", "chat_formatting").setCondition("`uuid` = '" + uniqueId.toString() + "'");
+        Query query = new Query("users").setRow("group", "username", "force_group", "subgroup", "custom_prefix",
+                "custom_prefix_update", "custom_suffix", "custom_suffix_update", "gender", "chat_color",
+                "chat_formatting").setCondition("`uuid` = '" + uniqueId.toString() + "'");
         this.data = database.getData(query);
         if (data == null) {
             database.update("INSERT INTO `%p%users`(`uuid`) VALUES ('" + this.uniqueId.toString() + "')");

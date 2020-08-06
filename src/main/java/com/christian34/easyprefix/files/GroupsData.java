@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,6 +39,7 @@ public class GroupsData {
         try {
             data.save(file);
         } catch (IOException e) {
+            Debug.captureException(e);
             e.printStackTrace();
         }
         load();

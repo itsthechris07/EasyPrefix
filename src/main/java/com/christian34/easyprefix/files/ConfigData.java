@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.utils.Debug;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -30,13 +31,11 @@ public class ConfigData {
         } else {
             try {
                 ConfigUpdater.update(this.instance, "config.yml", file, new ArrayList<>());
-            } catch (IOException ignored) {
+            } catch (IOException ex) {
+                Debug.captureException(ex);
             }
         }
         this.data = YamlConfiguration.loadConfiguration(file);
-        if (data.getString("config.uuid") == null) {
-            //   set("config.uuid", UUID.randomUUID().toString());
-        }
         return this;
     }
 
@@ -45,6 +44,7 @@ public class ConfigData {
             data.options().copyDefaults(true);
             data.save(file);
         } catch (IOException e) {
+            Debug.captureException(e);
             e.printStackTrace();
         }
         load();
