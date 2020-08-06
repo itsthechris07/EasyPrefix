@@ -17,7 +17,6 @@ import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
-import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -172,7 +171,6 @@ public class EasyPrefix extends JavaPlugin {
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
-        Debug.captureException(new NullArgumentException("exception"));
     }
 
     private void registerEvents() {
