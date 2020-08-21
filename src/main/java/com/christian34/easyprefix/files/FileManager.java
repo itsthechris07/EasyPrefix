@@ -11,9 +11,10 @@ import java.io.File;
  * @author Christian34
  */
 public class FileManager {
-    private static ConfigData configData;
-    private static GroupsData groupsData;
+    private static final File pluginFolder = new File("plugins/EasyPrefix");
     private final EasyPrefix instance;
+    private ConfigData configData;
+    private GroupsData groupsData;
 
     public FileManager(EasyPrefix instance) {
         this.instance = instance;
@@ -25,7 +26,7 @@ public class FileManager {
     }
 
     public static File getPluginFolder() {
-        return new File("plugins/EasyPrefix");
+        return pluginFolder;
     }
 
     public void load() {

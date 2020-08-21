@@ -14,9 +14,9 @@ import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
-import com.christian34.easyprefix.utils.Metrics;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -122,13 +122,12 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public User getUser(Player player) {
-        for (User user : users) {
-            if (user.getPlayer().getName().equalsIgnoreCase(player.getName())) {
-                return user;
-            }
+        User user = users.stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(null);
+        if (user != null) {
+            return user;
         }
 
-        User user = new User(player);
+        user = new User(player);
         try {
             user.login();
         } catch (Exception ex) {
@@ -181,7 +180,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     private void hookMetrics() {
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, 2646);
         metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
         metrics.addCustomChart(new Metrics.SimplePie("lang", Messages::getLanguage));
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (storageType == StorageType.SQL) ? "true" : "false"));

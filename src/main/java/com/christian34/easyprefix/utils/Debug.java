@@ -3,6 +3,7 @@ package com.christian34.easyprefix.utils;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import io.sentry.Sentry;
+import io.sentry.context.Context;
 import io.sentry.event.BreadcrumbBuilder;
 import io.sentry.event.UserBuilder;
 import org.bukkit.Bukkit;
@@ -23,12 +24,13 @@ public class Debug {
         if (client.equals("id") || components.length != 5) {
             ConfigKeys.CLIENT_ID.set(UUID.randomUUID().toString());
         }
-        Sentry.getContext().setUser(new UserBuilder().setId(ConfigKeys.CLIENT_ID.toString()).build());
-        Sentry.getContext().addTag("plugin-version", VersionController.getPluginVersion());
-        Sentry.getContext().addTag("api", Bukkit.getBukkitVersion());
-        Sentry.getContext().addTag("server", Bukkit.getVersion());
-        Sentry.getContext().addTag("java", System.getProperty("java.version"));
-        Sentry.getContext().addTag("storage", EasyPrefix.getInstance().getSqlDatabase() != null ? "MySQL" : "local");
+        Context context = Sentry.getContext();
+        context.setUser(new UserBuilder().setId(ConfigKeys.CLIENT_ID.toString()).build());
+        context.addTag("plugin-version", VersionController.getPluginVersion());
+        context.addTag("api", Bukkit.getBukkitVersion());
+        context.addTag("server", Bukkit.getVersion());
+        context.addTag("java", System.getProperty("java.version"));
+        context.addTag("storage", EasyPrefix.getInstance().getStorageType().name().toLowerCase());
     }
 
     public static void recordAction(String message) {

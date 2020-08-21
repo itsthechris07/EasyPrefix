@@ -73,11 +73,10 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                         } catch (Exception ex) {
                             Debug.captureException(ex);
                         }
-                        return true;
                     } else {
                         sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                        return true;
                     }
+                    return true;
                 }
             }
             sender.sendMessage(Messages.getPrefix() + "§cCouldn't find requested command!\nType '/" + label + " help'" + " to get a command overview.");
