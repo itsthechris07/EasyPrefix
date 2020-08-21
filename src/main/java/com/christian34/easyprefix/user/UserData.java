@@ -114,8 +114,10 @@ public class UserData {
         if (!backupDir.exists()) {
             backupDir.mkdirs();
         }
-        userDataFile.getFile().renameTo(new File(backupDir, uniqueId.toString() + ".yml"));
-        Messages.log("§aData has been updated!\n ");
+        if (userDataFile.getFile().renameTo(new File(backupDir, uniqueId.toString() + ".yml"))) {
+            userDataFile.getFile().delete();
+        }
+        Messages.log("§aData has been updated!");
     }
 
 }
