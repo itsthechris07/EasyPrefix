@@ -46,6 +46,10 @@ public class UserCommand implements Subcommand {
 
     @Override
     public void handleCommand(CommandSender sender, List<String> args) {
+        if (!(args.size() > 1)) {
+            showHelp(sender);
+            return;
+        }
         Player player = Bukkit.getPlayer(args.get(1));
         if (player == null) {
             sender.sendMessage(Messages.getMessage(Message.PLAYER_NOT_FOUND));
@@ -128,7 +132,6 @@ public class UserCommand implements Subcommand {
     private void showHelp(CommandSender sender) {
         sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix User §7===--------------\n ");
         sender.sendMessage("§7/§5EasyPrefix user <Player> info §f| §7get information about the player");
-        sender.sendMessage("§7/§5EasyPrefix user <Player> update §f| §7update player data");
         sender.sendMessage("§7/§5EasyPrefix user <Player> setgroup <Group> §f| §7force group to player");
         sender.sendMessage("§7/§5EasyPrefix user <Player> setsubgroup <Subgroup> §f| §7set subgroup to player");
         sender.sendMessage("§7/§5EasyPrefix user <Player> setgender <Gender> §f| §7set gender");
