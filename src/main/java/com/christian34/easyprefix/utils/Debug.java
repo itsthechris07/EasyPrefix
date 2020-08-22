@@ -24,13 +24,15 @@ public class Debug {
         if (client.equals("id") || components.length != 5) {
             ConfigKeys.CLIENT_ID.set(UUID.randomUUID().toString());
         }
+        EasyPrefix instance = EasyPrefix.getInstance();
         Context context = Sentry.getContext();
         context.setUser(new UserBuilder().setId(ConfigKeys.CLIENT_ID.toString()).build());
         context.addTag("plugin-version", VersionController.getPluginVersion());
         context.addTag("api", Bukkit.getBukkitVersion());
         context.addTag("server", Bukkit.getVersion());
         context.addTag("java", System.getProperty("java.version"));
-        context.addTag("storage", EasyPrefix.getInstance().getStorageType().name().toLowerCase());
+        context.addTag("storage", instance.getStorageType().name().toLowerCase());
+        context.addTag("groups", instance.getGroupHandler().getGroups().size() + "");
     }
 
     public static void recordAction(String message) {

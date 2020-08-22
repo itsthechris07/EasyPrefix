@@ -10,6 +10,8 @@ import com.christian34.easyprefix.groups.gender.GenderType;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -38,15 +40,6 @@ public class GroupHandler {
         if (instance.getStorageType() == StorageType.LOCAL) {
             GroupsData groupsData = getGroupsData();
             FileConfiguration fileData = groupsData.getData();
-            if (fileData.getString("groups.default.prefix") == null) {
-                groupsData.set("groups.default.prefix", "&7");
-            }
-            if (fileData.getString("groups.default.suffix") == null) {
-                groupsData.set("groups.default.suffix", "&f:");
-            }
-            if (fileData.getString("groups.default.chat-color") == null) {
-                groupsData.set("groups.default.chat-color", "&7");
-            }
             if (fileData.getString("groups.default.join-msg") == null) {
                 groupsData.set("groups.default.join-msg", "&8» %ep_user_prefix% %player% &8joined the game");
             }
@@ -152,6 +145,7 @@ public class GroupHandler {
         return genderTypes;
     }
 
+    @Nullable
     public GenderType getGender(String name) {
         if (name == null) return null;
         for (GenderType genderType : this.genderTypes) {
@@ -160,6 +154,7 @@ public class GroupHandler {
         return null;
     }
 
+    @NotNull
     public Group getGroup(String name) {
         for (Group crntGroup : groups) {
             if (crntGroup.getName().equalsIgnoreCase(name)) {
@@ -169,6 +164,7 @@ public class GroupHandler {
         return defaultGroup;
     }
 
+    @Nullable
     public Subgroup getSubgroup(String subgroupName) {
         for (Subgroup group : subgroups) {
             if (group.getName().equalsIgnoreCase(subgroupName)) return group;
