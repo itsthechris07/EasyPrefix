@@ -2,6 +2,7 @@ package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.messages.Messages;
 import io.sentry.Sentry;
 import io.sentry.context.Context;
 import io.sentry.event.BreadcrumbBuilder;
@@ -41,6 +42,8 @@ public class Debug {
 
     public static void captureException(Exception exception) {
         Sentry.capture(exception);
+        Messages.log("An error occured while using EasyPrefix:");
+        exception.printStackTrace();
     }
 
 }
