@@ -122,13 +122,16 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public User getUser(Player player) {
-        User user = users.stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(new User(player));
-        try {
-            user.login();
-        } catch (Exception ex) {
-            Debug.captureException(ex);
+        User user = users.stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(null);
+        if (user == null) {
+            user = new User(player);
+            try {
+                user.login();
+                users.add(user);
+            } catch (Exception ex) {
+                Debug.captureException(ex);
+            }
         }
-        users.add(user);
         return user;
     }
 
