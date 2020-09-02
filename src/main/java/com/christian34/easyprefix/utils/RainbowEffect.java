@@ -1,10 +1,10 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -32,18 +32,17 @@ public class RainbowEffect {
 
     private static ChatColor getRandomColor() {
         ArrayList<ChatColor> colors = getRainbowColors();
-        Random rand = new Random();
-        return colors.get(rand.nextInt(colors.size()));
+        return colors.get(new Random().nextInt(colors.size()));
     }
 
     public static ArrayList<ChatColor> getRainbowColors() {
         if (rainbowColors == null || rainbowColors.isEmpty()) {
             ArrayList<ChatColor> enabledColors = new ArrayList<>();
-            List<String> colors = ConfigKeys.COLOR_RAINBOW_COLORS.toStringList();
-            for (String color : colors) {
+            for (String color : ConfigKeys.COLOR_RAINBOW_COLORS.toStringList()) {
                 try {
                     enabledColors.add(ChatColor.valueOf(color));
                 } catch (Exception ignored) {
+                    Messages.log("Couldn't find color with name '" + color + "'");
                 }
             }
             rainbowColors = enabledColors;
