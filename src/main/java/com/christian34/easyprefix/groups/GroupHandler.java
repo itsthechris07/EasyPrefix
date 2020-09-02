@@ -6,7 +6,7 @@ import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
-import com.christian34.easyprefix.groups.gender.GenderType;
+import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,7 +29,7 @@ public class GroupHandler {
     private final GroupsData groupsData;
     private ArrayList<Group> groups;
     private ArrayList<Subgroup> subgroups;
-    private ArrayList<GenderType> genderTypes = new ArrayList<>();
+    private ArrayList<Gender> genders = new ArrayList<>();
     private Group defaultGroup;
     private SQLDatabase database;
 
@@ -131,45 +131,34 @@ public class GroupHandler {
     }
 
     public void loadGenders() {
-        this.genderTypes = new ArrayList<>();
+        this.genders = new ArrayList<>();
         for (String name : ConfigKeys.GENDER_TYPES.toSection()) {
             try {
-                this.genderTypes.add(new GenderType(name));
+                this.genders.add(new Gender(name));
             } catch (Exception ex) {
                 Debug.captureException(ex);
             }
         }
     }
 
-    public ArrayList<GenderType> getGenderTypes() {
-        return genderTypes;
+    public ArrayList<Gender> getGenderTypes() {
+        return genders;
     }
 
     @Nullable
-    public GenderType getGender(String name) {
+    public Gender getGender(String name) {
         if (name == null) return null;
-        for (GenderType genderType : this.genderTypes) {
-            if (genderType.getName().equalsIgnoreCase(name)) return genderType;
-        }
-        return null;
+        return genders.stream().filter(gender -> gender.getName().equalsIgnoreCase(name)).findAny().orElse(null);
     }
 
     @NotNull
     public Group getGroup(String name) {
-        for (Group crntGroup : groups) {
-            if (crntGroup.getName().equalsIgnoreCase(name)) {
-                return crntGroup;
-            }
-        }
-        return defaultGroup;
+        return groups.stream().filter(group -> group.getName().equalsIgnoreCase(name)).findAny().orElse(defaultGroup);
     }
 
     @Nullable
-    public Subgroup getSubgroup(String subgroupName) {
-        for (Subgroup group : subgroups) {
-            if (group.getName().equalsIgnoreCase(subgroupName)) return group;
-        }
-        return null;
+    public Subgroup getSubgroup(String name) {
+        return subgroups.stream().filter(subgroup -> subgroup.getName().equalsIgnoreCase(name)).findAny().orElse(null);
     }
 
     public Boolean isGroup(String groupName) {
@@ -179,9 +168,9 @@ public class GroupHandler {
         return false;
     }
 
-    public Boolean isSubgroup(String group) {
-        for (Subgroup crntGroup : subgroups) {
-            if (crntGroup.getName().equalsIgnoreCase(group)) return true;
+    public Boolean isSubgroup(String name) {
+        for (Subgroup group : subgroups) {
+            if (group.getName().equalsIgnoreCase(name)) return true;
         }
         return false;
     }

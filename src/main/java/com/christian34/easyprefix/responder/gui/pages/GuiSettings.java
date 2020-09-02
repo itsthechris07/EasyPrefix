@@ -5,7 +5,7 @@ import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
-import com.christian34.easyprefix.groups.gender.GenderType;
+import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.ChatRespond;
@@ -81,13 +81,13 @@ public class GuiSettings extends Page {
             if (user.getGenderType() == null) {
                 user.setGenderType(groupHandler.getGenderTypes().get(0));
             } else {
-                ArrayList<GenderType> genderTypes = groupHandler.getGenderTypes();
-                int index = genderTypes.indexOf(user.getGenderType());
-                if (index + 1 >= genderTypes.size()) {
+                ArrayList<Gender> genders = groupHandler.getGenderTypes();
+                int index = genders.indexOf(user.getGenderType());
+                if (index + 1 >= genders.size()) {
                     index = 0;
                 } else index++;
-                GenderType nextGenderType = groupHandler.getGenderTypes().get(index);
-                user.setGenderType(nextGenderType);
+                Gender nextGender = groupHandler.getGenderTypes().get(index);
+                user.setGenderType(nextGender);
             }
             openGenderSelectPage();
         });

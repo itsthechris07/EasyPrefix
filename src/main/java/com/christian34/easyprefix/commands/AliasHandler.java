@@ -33,23 +33,21 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
         this.prefixAlias = ConfigKeys.PREFIX_ALIAS.toString().replace("/", "");
         this.suffixAlias = ConfigKeys.SUFFIX_ALIAS.toString().replace("/", "");
         CommandMap commandMap = getCommandMapInstance();
+        if (commandMap == null) return;
+
 
         PluginCommand prefixAlias = createPluginCommand(this.prefixAlias);
         if (prefixAlias != null) {
             prefixAlias.setExecutor(this);
             prefixAlias.setTabCompleter(this);
-            if (commandMap != null) {
-                commandMap.register(instance.getDescription().getName(), prefixAlias);
-            }
+            commandMap.register(instance.getDescription().getName(), prefixAlias);
         }
 
         PluginCommand suffixAlias = createPluginCommand(this.suffixAlias);
         if (suffixAlias != null) {
             suffixAlias.setExecutor(this);
             suffixAlias.setTabCompleter(this);
-            if (commandMap != null) {
-                commandMap.register(instance.getDescription().getName(), suffixAlias);
-            }
+            commandMap.register(instance.getDescription().getName(), suffixAlias);
         }
     }
 

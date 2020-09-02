@@ -11,11 +11,11 @@ import java.util.Objects;
  *
  * @author Christian34
  */
-public class GenderType {
+public class Gender {
     private final String name;
     private final String displayName;
 
-    public GenderType(String name) {
+    public Gender(String name) {
         this.name = name.toLowerCase();
         ConfigData config = EasyPrefix.getInstance().getFileManager().getConfig();
         this.displayName = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getData().getString("config.gender.types." + name + ".displayname")));

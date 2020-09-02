@@ -6,7 +6,7 @@ import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
-import com.christian34.easyprefix.groups.gender.GenderType;
+import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -33,7 +33,7 @@ public class User {
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
-    private GenderType genderType;
+    private Gender gender;
     private String customPrefix;
     private String customSuffix;
     private boolean isGroupForced;
@@ -143,7 +143,7 @@ public class User {
 
         String gender = userData.getString("gender");
         if (gender != null && groupHandler.handleGenders()) {
-            this.genderType = groupHandler.getGender(gender);
+            this.gender = groupHandler.getGender(gender);
         }
     }
 
@@ -276,13 +276,13 @@ public class User {
         this.instance.unloadUser(getPlayer());
     }
 
-    public GenderType getGenderType() {
-        return genderType;
+    public Gender getGenderType() {
+        return gender;
     }
 
-    public void setGenderType(GenderType genderType) {
-        this.genderType = genderType;
-        saveData("gender", genderType.getName());
+    public void setGenderType(Gender gender) {
+        this.gender = gender;
+        saveData("gender", gender.getName());
         this.instance.unloadUser(getPlayer());
     }
 

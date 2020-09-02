@@ -43,5 +43,4 @@ public class Updater {
         return this.available;
     }
 
-
 }

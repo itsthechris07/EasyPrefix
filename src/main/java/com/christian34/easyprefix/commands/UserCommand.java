@@ -4,7 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
-import com.christian34.easyprefix.groups.gender.GenderType;
+import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
@@ -139,7 +139,7 @@ public class UserCommand implements Subcommand {
     }
 
     private void setGender(CommandSender sender, User targetUser, String gender) {
-        GenderType genderType = groupHandler.getGender(gender);
+        Gender genderType = groupHandler.getGender(gender);
         if (genderType != null) {
             targetUser.setGenderType(genderType);
             sender.sendMessage(Messages.getMessage(Message.SUCCESS));
@@ -176,7 +176,7 @@ public class UserCommand implements Subcommand {
                     matches.add(group.getName());
                 }
             } else if (args.get(2).equalsIgnoreCase("setgender")) {
-                for (GenderType gender : this.instance.getGroupHandler().getGenderTypes()) {
+                for (Gender gender : this.instance.getGroupHandler().getGenderTypes()) {
                     matches.add(gender.getName());
                 }
             }

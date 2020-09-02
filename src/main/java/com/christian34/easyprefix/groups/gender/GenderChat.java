@@ -19,8 +19,8 @@ import java.util.Set;
  * @author Christian34
  */
 public class GenderChat {
-    private final HashMap<GenderType, String> prefixes;
-    private final HashMap<GenderType, String> suffixes;
+    private final HashMap<Gender, String> prefixes;
+    private final HashMap<Gender, String> suffixes;
 
     public GenderChat(EasyGroup easyGroup) {
         int type = (easyGroup instanceof Group) ? 0 : 1;
@@ -36,12 +36,12 @@ public class GenderChat {
                 if (result == null) return;
                 while (result.next()) {
                     String genderName = result.getString("gender");
-                    GenderType genderType = groupHandler.getGender(genderName);
-                    if (genderType != null) {
+                    Gender gender = groupHandler.getGender(genderName);
+                    if (gender != null) {
                         String prefix = result.getString("prefix");
-                        if (prefix != null) prefixes.put(genderType, prefix);
+                        if (prefix != null) prefixes.put(gender, prefix);
                         String suffix = result.getString("suffix");
-                        if (suffix != null) suffixes.put(genderType, suffix);
+                        if (suffix != null) suffixes.put(gender, suffix);
                     } else {
                         Messages.log("error GC_01");
                     }
@@ -54,26 +54,26 @@ public class GenderChat {
             Set<String> set = groupsData.getSection(easyGroup.getFilePath() + "genders");
             if (!set.isEmpty()) {
                 for (String genderName : set) {
-                    GenderType genderType = groupHandler.getGender(genderName);
-                    if (genderType == null) {
+                    Gender gender = groupHandler.getGender(genderName);
+                    if (gender == null) {
                         Messages.log("error GC_02: " + genderName);
                         continue;
                     }
                     String prefix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + genderName + ".prefix");
-                    if (prefix != null) prefixes.put(genderType, prefix);
+                    if (prefix != null) prefixes.put(gender, prefix);
                     String suffix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + genderName + ".suffix");
-                    if (suffix != null) suffixes.put(genderType, suffix);
+                    if (suffix != null) suffixes.put(gender, suffix);
                 }
             }
         }
     }
 
-    public String getPrefix(GenderType genderType) {
-        return this.prefixes.get(genderType);
+    public String getPrefix(Gender gender) {
+        return this.prefixes.get(gender);
     }
 
-    public String getSuffix(GenderType genderType) {
-        return this.suffixes.get(genderType);
+    public String getSuffix(Gender gender) {
+        return this.suffixes.get(gender);
     }
 
 }

@@ -21,7 +21,6 @@ import java.util.List;
 public class CommandHandler implements CommandExecutor, TabCompleter {
     private final EasyPrefix instance;
     private final List<Subcommand> subcommands;
-    private AliasHandler aliasHandler;
 
     public CommandHandler(EasyPrefix instance) {
         this.instance = instance;
@@ -43,7 +42,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         subcommands.add(new DebugCommand(this));
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
             subcommands.add(new SetCommand(this));
-            this.aliasHandler = new AliasHandler(this);
+            new AliasHandler(this);
         }
     }
 

@@ -52,7 +52,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/server/plugins</outputDirectory>
+                            <outputDirectory>D:\Daten\My Games\Minecraft\Server\1.16.1 paper\plugins</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/target</directory>

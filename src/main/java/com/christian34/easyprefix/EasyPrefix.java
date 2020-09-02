@@ -122,12 +122,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public User getUser(Player player) {
-        User user = users.stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(null);
-        if (user != null) {
-            return user;
-        }
-
-        user = new User(player);
+        User user = users.stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(new User(player));
         try {
             user.login();
         } catch (Exception ex) {
@@ -154,7 +149,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void unloadUser(final Player player) {
-        users.removeIf(crntUser -> crntUser.getPlayer().getName().equals(player.getName()));
+        users.removeIf(user -> user.getPlayer().getName().equals(player.getName()));
     }
 
     public void reload() {
