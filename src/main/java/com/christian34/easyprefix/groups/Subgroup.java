@@ -5,9 +5,9 @@ import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.Data;
+import com.christian34.easyprefix.sql.DeleteStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.UpdateStatement;
-import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
@@ -136,8 +136,10 @@ public class Subgroup extends EasyGroup {
         if (instance.getStorageType() == StorageType.LOCAL) {
             groupsData.setAndSave("subgroups." + getName(), null);
         } else {
-            SQLDatabase db = instance.getSqlDatabase();
-            db.update("DELETE FROM `%p%subgroups` WHERE `group` = '" + getName() + "'");
+            DeleteStatement deleteStatement = new DeleteStatement("subgroups").addCondition("group", getName());
+            if (!deleteStatement.execute()) {
+                Messages.log("§cCouldn't delete subgroup '" + getName() + "'!");
+            }
         }
         instance.getGroupHandler().getSubgroups().remove(this);
         instance.getUsers().clear();

@@ -26,13 +26,20 @@ public class LocalDatabase implements Database {
         File file = new File(FileManager.getPluginFolder() + "/storage.db");
         if (!file.exists()) {
             try {
-                file.createNewFile();
+                if (!file.createNewFile()) return;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         connect();
-        update("CREATE TABLE IF NOT EXISTS `%p%users` (`uuid` CHAR(36) NOT NULL, `username` VARCHAR(20) NULL DEFAULT NULL, `group` VARCHAR(64) NULL DEFAULT NULL, `force_group` BOOLEAN NULL DEFAULT NULL, `subgroup` VARCHAR(64) NULL DEFAULT NULL, " + "`custom_prefix` VARCHAR(128) NULL DEFAULT NULL, `custom_prefix_update` TIMESTAMP NULL DEFAULT NULL, " + "`custom_suffix` VARCHAR(128) NULL DEFAULT NULL, `custom_suffix_update` TIMESTAMP NULL DEFAULT NULL, " + "`gender` VARCHAR(32) NULL DEFAULT NULL, `chat_color` CHAR(2) NULL DEFAULT NULL, `chat_formatting` CHAR(2) NULL DEFAULT NULL, PRIMARY KEY(`uuid`))");
+
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `" + getTablePrefix() + "users` (`uuid` CHAR(36) NOT NULL, `username` VARCHAR(20) NULL DEFAULT NULL, `group` VARCHAR(64) NULL DEFAULT NULL, `force_group` BOOLEAN NULL DEFAULT NULL, `subgroup` VARCHAR(64) NULL DEFAULT NULL, " + "`custom_prefix` VARCHAR(128) NULL DEFAULT NULL, `custom_prefix_update` TIMESTAMP NULL DEFAULT NULL, " + "`custom_suffix` VARCHAR(128) NULL DEFAULT NULL, `custom_suffix_update` TIMESTAMP NULL DEFAULT NULL, " + "`gender` VARCHAR(32) NULL DEFAULT NULL, `chat_color` CHAR(2) NULL DEFAULT NULL, `chat_formatting` CHAR(2) NULL DEFAULT NULL, PRIMARY KEY(`uuid`))");
+            stmt.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -66,19 +73,6 @@ public class LocalDatabase implements Database {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-        }
-    }
-
-    @Override
-    public void update(String statement) {
-        try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
-            stmt.close();
-        } catch (SQLException e) {
-            Debug.captureException(e);
-            e.printStackTrace();
         }
     }
 

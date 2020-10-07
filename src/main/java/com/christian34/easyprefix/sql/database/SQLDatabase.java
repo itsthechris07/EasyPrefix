@@ -80,8 +80,7 @@ public class SQLDatabase implements Database {
         }
     }
 
-    @Override
-    public void update(String statement) {
+    private void update(String statement) {
         try {
             if (connection.isClosed()) connect();
             Statement stmt = connection.createStatement();
