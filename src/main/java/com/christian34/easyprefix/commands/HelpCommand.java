@@ -1,8 +1,8 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.sql.database.StorageType;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;

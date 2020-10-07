@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.database;
+package com.christian34.easyprefix.sql.database;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;

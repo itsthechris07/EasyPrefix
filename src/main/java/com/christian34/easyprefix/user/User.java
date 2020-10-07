@@ -1,13 +1,13 @@
 package com.christian34.easyprefix.user;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.UpdateStatement;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import org.bukkit.entity.Player;

@@ -1,9 +1,6 @@
 package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandHandler;
-import com.christian34.easyprefix.database.LocalDatabase;
-import com.christian34.easyprefix.database.SQLDatabase;
-import com.christian34.easyprefix.database.StorageType;
 import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
@@ -12,6 +9,9 @@ import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.database.LocalDatabase;
+import com.christian34.easyprefix.sql.database.SQLDatabase;
+import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.RainbowEffect;

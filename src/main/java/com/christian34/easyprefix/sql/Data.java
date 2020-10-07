@@ -1,8 +1,8 @@
-package com.christian34.easyprefix.database;
+package com.christian34.easyprefix.sql;
 
 import java.util.HashMap;
 
-/*
+/**
  * EasyPrefix 2020.
  *
  * @author Christian34

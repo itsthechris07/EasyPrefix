@@ -1,12 +1,12 @@
 package com.christian34.easyprefix.groups.gender;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.SQLDatabase;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.database.SQLDatabase;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

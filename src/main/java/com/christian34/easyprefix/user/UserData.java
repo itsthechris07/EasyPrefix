@@ -1,9 +1,13 @@
 package com.christian34.easyprefix.user;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.*;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.Data;
+import com.christian34.easyprefix.sql.SelectQuery;
+import com.christian34.easyprefix.sql.UpdateStatement;
+import com.christian34.easyprefix.sql.database.Database;
+import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

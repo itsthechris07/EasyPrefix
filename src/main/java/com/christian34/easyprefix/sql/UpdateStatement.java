@@ -1,6 +1,8 @@
-package com.christian34.easyprefix.database;
+package com.christian34.easyprefix.sql;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.sql.database.Database;
+import com.christian34.easyprefix.sql.database.StorageType;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

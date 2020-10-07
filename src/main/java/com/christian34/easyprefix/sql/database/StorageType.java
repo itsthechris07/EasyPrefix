@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.database;
+package com.christian34.easyprefix.sql.database;
 
 /**
  * EasyPrefix 2020.

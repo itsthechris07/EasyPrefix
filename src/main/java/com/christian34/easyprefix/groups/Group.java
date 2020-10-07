@@ -1,10 +1,14 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.*;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.Data;
+import com.christian34.easyprefix.sql.SelectQuery;
+import com.christian34.easyprefix.sql.UpdateStatement;
+import com.christian34.easyprefix.sql.database.SQLDatabase;
+import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
