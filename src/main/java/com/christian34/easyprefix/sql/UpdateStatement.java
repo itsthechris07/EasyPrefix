@@ -39,12 +39,9 @@ public class UpdateStatement {
     private PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("UPDATE ");
         EasyPrefix instance = EasyPrefix.getInstance();
-        Database database;
-        if (instance.getStorageType() == StorageType.SQL) {
-            database = instance.getSqlDatabase();
-        } else {
-            database = instance.getLocalDatabase();
-        }
+        Database database = instance.getStorageType() == StorageType.SQL
+                ? instance.getSqlDatabase()
+                : instance.getLocalDatabase();
 
         query.append("`").append(database.getTablePrefix()).append(this.table).append("`");
 
