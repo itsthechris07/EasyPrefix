@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-/*
+/**
  * EasyPrefix 2020.
  *
  * @author Christian34
@@ -76,7 +76,13 @@ public class SelectQuery {
 
     public PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("SELECT ");
-        SQLDatabase database = EasyPrefix.getInstance().getSqlDatabase();
+        EasyPrefix instance = EasyPrefix.getInstance();
+        Database database;
+        if (instance.getStorageType() == StorageType.SQL) {
+            database = instance.getSqlDatabase();
+        } else {
+            database = instance.getLocalDatabase();
+        }
 
         for (int i = 0; i < columns.size(); i++) {
             query.append("`").append(columns.get(i)).append("`");

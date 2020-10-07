@@ -1,11 +1,12 @@
 package com.christian34.easyprefix.database;
 
 import com.christian34.easyprefix.EasyPrefix;
-import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * EasyPrefix 2020.
@@ -35,7 +36,13 @@ public class UpdateStatement {
 
     public PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("UPDATE ");
-        SQLDatabase database = EasyPrefix.getInstance().getSqlDatabase();
+        EasyPrefix instance = EasyPrefix.getInstance();
+        Database database;
+        if (instance.getStorageType() == StorageType.SQL) {
+            database = instance.getSqlDatabase();
+        } else {
+            database = instance.getLocalDatabase();
+        }
 
         query.append("`").append(database.getTablePrefix()).append(this.table).append("`");
 
@@ -61,7 +68,6 @@ public class UpdateStatement {
             i++;
         }
 
-        Bukkit.broadcastMessage(query.toString());
         PreparedStatement stmt = database.getConnection().prepareStatement(query.toString());
         i = 1;
         for (String value : values.keySet()) {
@@ -77,11 +83,18 @@ public class UpdateStatement {
     }
 
     public boolean execute() {
+        CompletableFuture<Boolean> compFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                buildStatement().executeUpdate();
+                buildStatement().close();
+                return true;
+            } catch (SQLException ex) {
+                return false;
+            }
+        });
         try {
-            buildStatement().executeUpdate();
-            buildStatement().close();
-            return true;
-        } catch (SQLException ex) {
+            return compFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
             return false;
         }
     }
