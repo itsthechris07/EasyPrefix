@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.Data;
+import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.sql.database.Database;
@@ -52,11 +53,21 @@ public class UserData {
         this.data = selectQuery.getData();
         String username = Bukkit.getOfflinePlayer(uniqueId).getName();
         if (data.isEmpty()) {
-            database.update("INSERT INTO `users`(`uuid`, `username`) VALUES ('" + uniqueId.toString() + "', '" + username + "')");
+            InsertStatement insertStatement = new InsertStatement("users")
+                    .setValue("uuid", uniqueId.toString())
+                    .setValue("username", username);
+            if (!insertStatement.execute()) {
+                Messages.log("§cCouldn't update database! Error UDDB3");
+            }
         } else {
             if (player != null && username != null) {
                 if (!username.equals(data.getString("username"))) {
-                    database.update("UPDATE `users` SET `username` = '" + player.getName() + "'");
+                    UpdateStatement updateStatement = new UpdateStatement("users")
+                            .addCondition("uuid", player.getUniqueId().toString())
+                            .setValue("username", player.getName());
+                    if (!updateStatement.execute()) {
+                        Messages.log("§cCouldn't update username for player '" + player.getName() + "'!");
+                    }
                 }
             }
         }
@@ -78,7 +89,10 @@ public class UserData {
         Messages.log("Updating " + op.getName() + "´s data...");
         if (!database.exists("SELECT `uuid` FROM `%p%users` WHERE `uuid` = '" + this.uniqueId.toString() + "'")) {
             Messages.log("Creating database for user...");
-            database.update("INSERT INTO `%p%users`(`uuid`) VALUES ('" + this.uniqueId.toString() + "')");
+            InsertStatement insertStatement = new InsertStatement("users").setValue("uuid", this.uniqueId.toString());
+            if (!insertStatement.execute()) {
+                Messages.log("Couldn't save data to database! Error UDDB4");
+            }
         }
         List<String> rows = Arrays.asList("group", "subgroup", "custom_prefix", "gender", "chat_color", "chat_formatting", "custom_suffix", "custom_prefix");
         for (String row : rows) {

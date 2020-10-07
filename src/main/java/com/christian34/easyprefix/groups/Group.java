@@ -5,9 +5,9 @@ import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.Data;
+import com.christian34.easyprefix.sql.DeleteStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.UpdateStatement;
-import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
@@ -209,8 +209,10 @@ public class Group extends EasyGroup {
         if (instance.getStorageType() == StorageType.LOCAL) {
             groupsData.setAndSave("groups." + getName(), null);
         } else {
-            SQLDatabase database = instance.getSqlDatabase();
-            database.update("DELETE FROM `%p%groups` WHERE `group` = '" + getName() + "'");
+            DeleteStatement deleteStatement = new DeleteStatement("groups").addCondition("group", getName());
+            if (!deleteStatement.execute()) {
+                Messages.log("§cCouldn't delete group '" + getName() + "'!");
+            }
         }
         instance.getGroupHandler().getGroups().remove(this);
         instance.getUsers().clear();

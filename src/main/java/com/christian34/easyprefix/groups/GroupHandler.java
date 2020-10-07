@@ -6,6 +6,7 @@ import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
@@ -50,8 +51,17 @@ public class GroupHandler {
         } else {
             this.database = instance.getSqlDatabase();
             if (!database.exists("SELECT `prefix` FROM `%p%groups` WHERE `group` = 'default'")) {
-                database.update("INSERT INTO `%p%groups`(`group`, `prefix`, `suffix`, `chat_color`, `join_msg`, `quit_msg`) " + "VALUES ('default','&7','&f:','&7','&8» %ep_user_prefix%%player% &7joined the game','&8« %ep_user_prefix%%player% &7left the game')");
-                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data" + " with: /easyprefix database upload");
+                InsertStatement insertStatement = new InsertStatement("groups")
+                        .setValue("group", "default")
+                        .setValue("prefix", "&7")
+                        .setValue("suffix", "&f:")
+                        .setValue("chat_color", "&7")
+                        .setValue("join_msg", "&8» %ep_user_prefix%%player% &7joined the game")
+                        .setValue("quit_msg", "&8« %ep_user_prefix%%player% &7left the game");
+                if (!insertStatement.execute()) {
+                    Messages.log("Couldn't upload default group to database!");
+                }
+                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data with: /easyprefix database upload");
             }
         }
     }
@@ -196,7 +206,10 @@ public class GroupHandler {
             getGroupsData().set(path + "chat-formatting", "&o");
             getGroupsData().save();
         } else {
-            database.update("INSERT INTO `%p%groups`(`group`) VALUES ('" + groupName + "')");
+            InsertStatement insertStatement = new InsertStatement("groups").setValue("group", groupName);
+            if (!insertStatement.execute()) {
+                Messages.log("Couldn't save save!");
+            }
         }
         load();
     }
