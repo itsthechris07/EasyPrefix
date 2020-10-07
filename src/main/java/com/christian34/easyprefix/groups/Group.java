@@ -1,10 +1,7 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.DataStatement;
-import com.christian34.easyprefix.database.Query;
-import com.christian34.easyprefix.database.SQLDatabase;
-import com.christian34.easyprefix.database.StorageType;
+import com.christian34.easyprefix.database.*;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.user.User;
@@ -42,43 +39,37 @@ public class Group extends EasyGroup {
         this.groupHandler = groupHandler;
 
         List<String> keys = Arrays.asList("prefix", "suffix", "chat_color", "chat_formatting", "join_msg", "quit_msg");
-        HashMap<String, String> data;
+        Data data;
         if (instance.getStorageType() == StorageType.SQL) {
-            SQLDatabase database = instance.getSqlDatabase();
-            Query query = new Query("groups").setRow(keys).setCondition("`group` = '" + name + "'");
-            data = database.getData(query);
+            SelectQuery selectQuery = new SelectQuery("groups").setColumns(keys).addCondition("group", name);
+            data = selectQuery.getData();
         } else {
-            data = new HashMap<>();
+            HashMap<String, Object> storage = new HashMap<>();
             for (String key : keys) {
-                data.put(key, getGroupsData().getData().getString(getFilePath() + key.replace("_", "-")));
+                storage.put(key, getGroupsData().getData().getString(getFilePath() + key.replace("_", "-")));
             }
+            data = new Data(storage);
         }
 
         if (groupHandler.handleGenders()) {
             this.genderChat = new GenderChat(this);
         }
 
-        this.prefix = data.get("prefix");
-        if (this.prefix == null) {
-            this.prefix = "";
-        } else {
-            this.prefix = prefix.replace("§", "&");
-        }
+        this.prefix = data.getStringOr("prefix", "");
+        this.prefix = prefix.replace("§", "&");
 
-        this.suffix = data.get("suffix");
-        if (this.suffix == null) {
-            this.suffix = "";
-        } else {
-            this.suffix = suffix.replace("§", "&");
-        }
 
-        String chatFormatting = data.get("chat_formatting");
+        this.suffix = data.getStringOr("suffix", "");
+        this.suffix = suffix.replace("§", "&");
+
+
+        String chatFormatting = data.getString("chat_formatting");
         if (chatFormatting != null && chatFormatting.length() == 2) {
             this.chatFormatting = ChatFormatting.getByCode(chatFormatting.substring(1, 2));
             if (this.chatFormatting == null) setChatFormatting(null);
         }
 
-        String chatColor = data.get("chat_color");
+        String chatColor = data.getString("chat_color");
         if (chatColor == null || chatColor.length() < 2) {
             if (this.chatFormatting != null && this.chatFormatting.equals(ChatFormatting.RAINBOW)) {
                 this.chatColor = Color.GRAY;
@@ -90,8 +81,8 @@ public class Group extends EasyGroup {
         }
 
         this.groupColor = getGroupColor(prefix);
-        this.joinMessage = data.get("join_msg");
-        this.quitMessage = data.get("quit_msg");
+        this.joinMessage = data.getString("join_msg");
+        this.quitMessage = data.getString("quit_msg");
     }
 
     public String getJoinMessage(User user) {

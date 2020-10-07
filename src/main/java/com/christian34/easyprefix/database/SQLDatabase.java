@@ -6,7 +6,6 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.*;
-import java.util.HashMap;
 
 /**
  * EasyPrefix 2020.
@@ -68,19 +67,7 @@ public class SQLDatabase implements Database {
         }
     }
 
-    @Override
-    public ResultSet getValue(Query query) {
-        try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
-            return stmt.executeQuery(query.getStatement());
-        } catch (SQLException e) {
-            Debug.captureException(e);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
+    @Deprecated
     public ResultSet getValue(String statement) {
         try {
             if (connection.isClosed()) connect();
@@ -91,25 +78,6 @@ public class SQLDatabase implements Database {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public HashMap<String, String> getData(Query query) {
-        HashMap<String, String> data = new HashMap<>();
-        ResultSet result = getValue(query);
-        try {
-            if (result.next()) {
-                for (String key : query.getRows()) {
-                    data.put(key, result.getString(key));
-                }
-            } else {
-                return null;
-            }
-        } catch (SQLException ex) {
-            Debug.captureException(ex);
-            ex.printStackTrace();
-        }
-        return data;
     }
 
     @Override
@@ -168,6 +136,7 @@ public class SQLDatabase implements Database {
         update("CREATE TABLE IF NOT EXISTS `%p%genders` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT(1) NOT NULL , `group_name` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update("CREATE TABLE IF NOT EXISTS `%p%subgroups` ( `group` VARCHAR(64) NOT NULL , UNIQUE(`group`), `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null ) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
 
+        alterTable("ALTER TABLE `%p%users` ADD `username` VARCHAR(20) NULL AFTER `uuid`; ");
         alterTable("ALTER TABLE `%p%users` ADD `custom_prefix_update` TIMESTAMP NULL DEFAULT NULL AFTER `custom_prefix`;");
         alterTable("ALTER TABLE `%p%users` ADD `username` VARCHAR(20) NULL DEFAULT NULL AFTER `uuid`;");
         alterTable("ALTER TABLE `%p%users` ADD `custom_suffix_update` TIMESTAMP NULL DEFAULT NULL AFTER `custom_suffix`;");

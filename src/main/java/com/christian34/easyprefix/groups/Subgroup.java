@@ -1,17 +1,12 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.DataStatement;
-import com.christian34.easyprefix.database.Query;
-import com.christian34.easyprefix.database.SQLDatabase;
-import com.christian34.easyprefix.database.StorageType;
+import com.christian34.easyprefix.database.*;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
-
-import java.util.HashMap;
 
 /**
  * EasyPrefix 2020.
@@ -32,10 +27,10 @@ public class Subgroup extends EasyGroup {
         this.groupHandler = groupHandler;
         this.instance = groupHandler.getInstance();
         if (instance.getStorageType() == StorageType.SQL) {
-            SQLDatabase db = instance.getSqlDatabase();
-            HashMap<String, String> data = db.getData(new Query("subgroups").setCondition("`group` = '" + name + "'").setRow("prefix", "suffix"));
-            this.prefix = data.getOrDefault("prefix", "");
-            this.suffix = data.getOrDefault("suffix", "");
+            SelectQuery selectQuery = new SelectQuery("subgroups", "prefix", "suffix").addCondition("group", name);
+            Data data = selectQuery.getData();
+            this.prefix = data.getStringOr("prefix", "");
+            this.suffix = data.getStringOr("suffix", "");
         } else {
             this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
             this.prefix = groupsData.getOrDefault(getFilePath() + "prefix", "");

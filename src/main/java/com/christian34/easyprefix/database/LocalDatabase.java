@@ -7,8 +7,10 @@ import com.christian34.easyprefix.utils.Debug;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * EasyPrefix 2020.
@@ -65,38 +67,6 @@ public class LocalDatabase implements Database {
                 ex.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public ResultSet getValue(Query query) {
-        try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
-            return stmt.executeQuery(query.getStatement());
-        } catch (SQLException e) {
-            Debug.captureException(e);
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public HashMap<String, String> getData(Query query) {
-        HashMap<String, String> data = new HashMap<>();
-        ResultSet result = getValue(query);
-        try {
-            if (result.next()) {
-                for (String key : query.getRows()) {
-                    data.put(key, result.getString(key));
-                }
-            } else {
-                return null;
-            }
-        } catch (SQLException ex) {
-            Debug.captureException(ex);
-            ex.printStackTrace();
-        }
-        return data;
     }
 
     @Override
