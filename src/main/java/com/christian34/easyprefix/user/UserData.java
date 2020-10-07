@@ -79,11 +79,11 @@ public class UserData {
         List<String> rows = Arrays.asList("group", "subgroup", "custom_prefix", "gender", "chat_color", "chat_formatting", "custom_suffix", "custom_prefix");
         for (String row : rows) {
             try {
-                DataStatement stmt = new DataStatement("UPDATE `%p%users` SET `" + row + "`=? WHERE `uuid`=?");
-                stmt.setObject(1, userDataFile.getFileData().getString(row.replace("_", "-")));
-                stmt.setObject(2, uniqueId.toString());
-                if (!stmt.execute()) {
-                    stmt.getException().printStackTrace();
+                UpdateStatement updateStatement = new UpdateStatement("users")
+                        .addCondition("uuid", uniqueId.toString())
+                        .setValue(row, userDataFile.getFileData().getString(row.replace("_", "-")));
+                if (!updateStatement.execute()) {
+                    Messages.log("Couldn't save data to database! Error UDDB1");
                 }
             } catch (Exception ex) {
                 Messages.log("§cAn exception occurred while updating " + op.getName() + "´s data...");
@@ -92,11 +92,11 @@ public class UserData {
             }
         }
         if (userDataFile.getFileData().getBoolean("force-group")) {
-            DataStatement stmt = new DataStatement("UPDATE `%p%users` SET `force_group`=? WHERE `uuid`=?");
-            stmt.setObject(1, 1);
-            stmt.setObject(2, uniqueId.toString());
-            if (!stmt.execute()) {
-                stmt.getException().printStackTrace();
+            UpdateStatement updateStatement = new UpdateStatement("users")
+                    .addCondition("uuid", uniqueId.toString())
+                    .setValue("force_group", 1);
+            if (!updateStatement.execute()) {
+                Messages.log("Couldn't save data to database! Error UDDB2");
             }
         }
         File backupDir = new File(FileManager.getPluginFolder() + "/user/backup");

@@ -64,14 +64,11 @@ public class Subgroup extends EasyGroup {
             key = key.replace("_", "-");
             groupsData.setAndSave(getFilePath() + key, value);
         } else {
-            key = key.replace("-", "_");
-            String sql = "UPDATE `%p%groups` SET `" + key + "`=? WHERE `group`=?";
-            DataStatement statement = new DataStatement(sql);
-            statement.setObject(1, value);
-            statement.setObject(2, getName());
-            if (!statement.execute()) {
-                Messages.log("§cCouldn't save data to database!");
-                statement.getException().printStackTrace();
+            UpdateStatement updateStatement = new UpdateStatement("subgroups")
+                    .addCondition("group", getName())
+                    .setValue(key.replace("-", "_"), value);
+            if (!updateStatement.execute()) {
+                Messages.log("Couldn't save data to database! Error SDB1");
             }
         }
         instance.getGroupHandler().load();

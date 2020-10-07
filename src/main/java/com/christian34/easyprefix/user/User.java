@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.user;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.database.DataStatement;
+import com.christian34.easyprefix.database.UpdateStatement;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
@@ -339,13 +339,11 @@ public class User {
     }
 
     public void saveData(String key, Object value) {
-        String sql = "UPDATE `%p%users` SET `" + key + "`=? WHERE `uuid`=?";
-        DataStatement statement = new DataStatement(sql);
-        statement.setObject(1, value);
-        statement.setObject(2, getPlayer().getUniqueId().toString());
-        if (!statement.execute()) {
-            Messages.log("Couldn't save data to database!");
-            statement.getException().printStackTrace();
+        UpdateStatement updateStatement = new UpdateStatement("users");
+        updateStatement.addCondition("uuid", getPlayer().getUniqueId().toString());
+        updateStatement.setValue(key, value);
+        if (!updateStatement.execute()) {
+            Messages.log("Couldn't save data to database! Error UDB1");
         }
     }
 

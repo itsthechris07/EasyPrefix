@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.database.*;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.GenderChat;
+import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -130,12 +131,11 @@ public class Group extends EasyGroup {
     private void saveData(@NotNull String key, @Nullable Object value) {
         EasyPrefix instance = groupHandler.getInstance();
         if (instance.getStorageType() == StorageType.SQL) {
-            String sql = "UPDATE `%p%groups` SET `" + key.replace("-", "_") + "`=? WHERE `group`=?";
-            DataStatement stmt = new DataStatement(sql);
-            stmt.setObject(1, value);
-            stmt.setObject(2, NAME);
-            if (!stmt.execute()) {
-                stmt.getException().printStackTrace();
+            UpdateStatement updateStatement = new UpdateStatement("groups")
+                    .addCondition("group", this.NAME)
+                    .setValue(key.replace("-", "_"), value);
+            if (!updateStatement.execute()) {
+                Messages.log("Couldn't save data to database! Error GDB1");
             }
         } else {
             groupsData.setAndSave(getFilePath() + key.replace("_", "-"), value);
