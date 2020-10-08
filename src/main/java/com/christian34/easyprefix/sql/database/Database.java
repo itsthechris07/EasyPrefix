@@ -13,8 +13,6 @@ public interface Database {
 
     void close();
 
-    boolean exists(String statement);
-
     String getTablePrefix();
 
     Connection getConnection();

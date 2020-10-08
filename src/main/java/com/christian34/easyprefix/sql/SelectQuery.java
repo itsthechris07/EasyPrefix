@@ -76,7 +76,7 @@ public class SelectQuery {
         });
     }
 
-    public PreparedStatement buildStatement() throws SQLException {
+    private PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("SELECT ");
         EasyPrefix instance = EasyPrefix.getInstance();
         Database database = instance.getStorageType() == StorageType.SQL

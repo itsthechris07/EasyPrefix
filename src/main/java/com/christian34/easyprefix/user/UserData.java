@@ -81,13 +81,15 @@ public class UserData {
         return data.getBoolean(key);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "deprecation"})
     private void updateData() {
         UserDataFile userDataFile = new UserDataFile(uniqueId);
         if (userDataFile.getFile() == null || userDataFile.getFileData() == null) return;
         OfflinePlayer op = Bukkit.getOfflinePlayer(uniqueId);
         Messages.log("Updating " + op.getName() + "´s data...");
-        if (!database.exists("SELECT `uuid` FROM `%p%users` WHERE `uuid` = '" + this.uniqueId.toString() + "'")) {
+
+        SelectQuery selectQuery = new SelectQuery("users", "uuid").addCondition("uuid", this.uniqueId.toString());
+        if (selectQuery.getData().isEmpty()) {
             Messages.log("Creating database for user...");
             InsertStatement insertStatement = new InsertStatement("users").setValue("uuid", this.uniqueId.toString());
             if (!insertStatement.execute()) {

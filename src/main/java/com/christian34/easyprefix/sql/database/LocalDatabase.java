@@ -3,7 +3,6 @@ package com.christian34.easyprefix.sql.database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.utils.Debug;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class LocalDatabase implements Database {
         File file = new File(FileManager.getPluginFolder() + "/storage.db");
         if (!file.exists()) {
             try {
-                if (!file.createNewFile()) return;
+                if (!file.createNewFile()) throw new RuntimeException("Couldn't create storage file!");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -74,22 +73,6 @@ public class LocalDatabase implements Database {
                 ex.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public boolean exists(String statement) {
-        try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
-            statement = statement.replace("%p%", getTablePrefix());
-            return stmt.executeQuery(statement).next();
-        } catch (SQLException e) {
-            Messages.log("§cCouldn't get value from statement '" + statement + "'!");
-            Messages.log("§c" + e.getMessage());
-            Debug.captureException(e);
-            e.printStackTrace();
-        }
-        return false;
     }
 
     @Override

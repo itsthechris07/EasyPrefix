@@ -31,9 +31,11 @@ public class FileManager {
 
     public void load() {
         File userFolder = new File(getPluginFolder() + "/user");
-        if (!userFolder.exists()) userFolder.mkdirs();
-        configData = new ConfigData(this.instance).load();
-        groupsData = new GroupsData(this.instance);
+        if (!userFolder.exists()) {
+            if (!userFolder.mkdirs()) throw new RuntimeException("Couldn't create folder 'users'!");
+        }
+        this.configData = new ConfigData(this.instance).load();
+        this.groupsData = new GroupsData(this.instance);
         if (!configData.getData().getBoolean("config.sql.enabled")) {
             groupsData.load();
         }

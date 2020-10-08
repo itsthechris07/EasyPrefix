@@ -67,7 +67,6 @@ public class SQLDatabase implements Database {
         }
     }
 
-    @Deprecated
     public ResultSet getValue(String statement) {
         try {
             if (connection.isClosed()) connect();
@@ -90,23 +89,6 @@ public class SQLDatabase implements Database {
             Debug.captureException(e);
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean exists(String statement) {
-        try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
-            statement = statement.replace("%p%", getTablePrefix());
-            ResultSet result = stmt.executeQuery(statement);
-            return result.next();
-        } catch (SQLException e) {
-            Messages.log("§cCouldn't get value from statement '" + statement + "'!");
-            Messages.log("§c" + e.getMessage());
-            Debug.captureException(e);
-            e.printStackTrace();
-        }
-        return false;
     }
 
     @Override

@@ -2,9 +2,9 @@ package com.christian34.easyprefix.groups.gender;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.ChatColor;
-
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * EasyPrefix 2020.
@@ -13,12 +13,20 @@ import java.util.Objects;
  */
 public class Gender {
     private final String name;
-    private final String displayName;
+    private String displayName = null;
 
-    public Gender(String name) {
+    public Gender(@NotNull String name) {
         this.name = name.toLowerCase();
-        ConfigData config = EasyPrefix.getInstance().getFileManager().getConfig();
-        this.displayName = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getData().getString("config.gender.types." + name + ".displayname")));
+        EasyPrefix instance = EasyPrefix.getInstance();
+        ConfigData config = instance.getFileManager().getConfig();
+
+        String displayName = config.getData().getString("config.gender.types." + name + ".displayname");
+        if (displayName == null) {
+            Messages.log("You haven't set a display name for gender '" + name + "'!");
+            instance.getGroupHandler().getGenderTypes().remove(this);
+            return;
+        }
+        this.displayName = ChatColor.translateAlternateColorCodes('&', displayName);
     }
 
     public String getName() {

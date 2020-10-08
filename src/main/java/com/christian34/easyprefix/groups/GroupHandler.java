@@ -7,6 +7,7 @@ import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.InsertStatement;
+import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
@@ -50,7 +51,8 @@ public class GroupHandler {
             groupsData.save();
         } else {
             this.database = instance.getSqlDatabase();
-            if (!database.exists("SELECT `prefix` FROM `%p%groups` WHERE `group` = 'default'")) {
+            SelectQuery selectQuery = new SelectQuery("groups", "prefix").addCondition("group", "default");
+            if (!selectQuery.getData().isEmpty()) {
                 InsertStatement insertStatement = new InsertStatement("groups")
                         .setValue("group", "default")
                         .setValue("prefix", "&7")

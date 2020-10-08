@@ -37,7 +37,6 @@ public class EasyPrefix extends JavaPlugin {
     private GroupHandler groupHandler;
     private Updater updater;
     private FileManager fileManager;
-    private CommandHandler commandHandler;
     private ExpansionManager expansionManager;
     private SQLDatabase sqlDatabase = null;
     private StorageType storageType;
@@ -93,7 +92,7 @@ public class EasyPrefix extends JavaPlugin {
 
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
-        this.commandHandler = new CommandHandler(this);
+        new CommandHandler(this);
         registerEvents();
         if (!ConfigKeys.ENABLED.toBoolean()) {
             Bukkit.getPluginManager().disablePlugin(this);
@@ -163,7 +162,7 @@ public class EasyPrefix extends JavaPlugin {
             this.sqlDatabase = new SQLDatabase(this);
             this.sqlDatabase.connect();
         }
-        this.commandHandler = new CommandHandler(this);
+        new CommandHandler(this);
         Messages.load();
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);

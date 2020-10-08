@@ -39,7 +39,7 @@ public class InsertStatement {
         return false;
     }
 
-    public PreparedStatement buildStatement() throws SQLException {
+    private PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("INSERT INTO ");
         EasyPrefix instance = EasyPrefix.getInstance();
         Database database = instance.getStorageType() == StorageType.SQL
