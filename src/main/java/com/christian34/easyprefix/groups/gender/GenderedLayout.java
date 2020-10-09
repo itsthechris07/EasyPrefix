@@ -4,12 +4,11 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
-import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
+import com.christian34.easyprefix.sql.database.StorageType;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -21,48 +20,73 @@ import java.util.Set;
 public class GenderedLayout {
     private final HashMap<Gender, String> prefixes;
     private final HashMap<Gender, String> suffixes;
+    private final EasyGroup easyGroup;
+    private final EasyPrefix instance;
+    private final String easyGroupType;
 
     public GenderedLayout(EasyGroup easyGroup) {
-        int type = (easyGroup instanceof Group) ? 0 : 1;
-        EasyPrefix instance = EasyPrefix.getInstance();
-        GroupHandler groupHandler = instance.getGroupHandler();
+        this.easyGroup = easyGroup;
+        this.instance = EasyPrefix.getInstance();
         this.prefixes = new HashMap<>();
         this.suffixes = new HashMap<>();
-        if (instance.getSqlDatabase() != null) {
+        this.easyGroupType = easyGroup instanceof Group ? "group" : "subgroup";
+
+        try {
+            load();
+        } catch (Exception ex) {
+            Messages.log("§cAn error occurred while loading a gendered layout for "
+                    + easyGroupType + " '" + easyGroup.getName() + "'!");
+            ex.printStackTrace();
+        }
+    }
+
+    private void load() throws Exception {
+        if (instance.getStorageType() == StorageType.SQL) {
             SQLDatabase database = instance.getSqlDatabase();
-            try {
-                String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%genders` WHERE `type` = " + type + " AND " + "`group_name` = '" + easyGroup.getName() + "'";
-                ResultSet result = database.getValue(sql);
-                if (result == null) return;
-                while (result.next()) {
-                    String genderName = result.getString("gender");
-                    Gender gender = groupHandler.getGender(genderName);
-                    if (gender != null) {
-                        String prefix = result.getString("prefix");
-                        if (prefix != null) prefixes.put(gender, prefix);
-                        String suffix = result.getString("suffix");
-                        if (suffix != null) suffixes.put(gender, suffix);
-                    } else {
-                        Messages.log("error GC_01");
-                    }
+            String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%" + easyGroupType + "s_gendered` " +
+                    "WHERE `group` = '" + easyGroup.getName() + "'";
+            ResultSet result = database.getValue(sql);
+            if (result == null) return;
+            while (result.next()) {
+                Gender gender = instance.getGroupHandler().getGender(result.getString("gender"));
+
+                if (gender == null) {
+                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + "'" + easyGroup.getName() + "'!");
+                    continue;
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+
+                String prefix = result.getString("prefix");
+                if (prefix != null) {
+                    prefixes.put(gender, prefix);
+                }
+
+                String suffix = result.getString("suffix");
+                if (suffix != null) {
+                    suffixes.put(gender, suffix);
+                }
             }
         } else {
             GroupsData groupsData = instance.getFileManager().getGroupsData();
             Set<String> set = groupsData.getSection(easyGroup.getFilePath() + "genders");
-            if (!set.isEmpty()) {
-                for (String genderName : set) {
-                    Gender gender = groupHandler.getGender(genderName);
-                    if (gender == null) {
-                        Messages.log("error GC_02: " + genderName);
-                        continue;
-                    }
-                    String prefix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + genderName + ".prefix");
-                    if (prefix != null) prefixes.put(gender, prefix);
-                    String suffix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + genderName + ".suffix");
-                    if (suffix != null) suffixes.put(gender, suffix);
+            if (set.isEmpty()) {
+                return;
+            }
+            for (String name : set) {
+                Gender gender = instance.getGroupHandler().getGender(name);
+
+                if (gender == null) {
+                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + "'" + easyGroup.getName() + "'!");
+                    continue;
+                }
+
+                String prefix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + name + ".prefix");
+                if (prefix != null) {
+                    prefixes.put(gender, prefix);
+                }
+
+                String suffix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + name + ".suffix");
+                if (suffix != null) {
+                    suffixes.put(gender, suffix);
                 }
             }
         }

@@ -117,8 +117,9 @@ public class SQLDatabase implements Database {
         String create = "CREATE TABLE IF NOT EXISTS ";
         update(create + "`%p%users` (`uuid` CHAR(36) NOT NULL, `username` VARCHAR(20) NULL DEFAULT NULL, `group` VARCHAR(64) NULL DEFAULT NULL, `force_group` BOOLEAN NULL DEFAULT NULL, `subgroup` VARCHAR(64) NULL DEFAULT NULL, `custom_prefix` VARCHAR(128) NULL DEFAULT NULL, `custom_suffix` VARCHAR(128) NULL DEFAULT NULL, `gender` VARCHAR(32) NULL DEFAULT NULL, `chat_color` CHAR(2) NULL DEFAULT NULL, `chat_formatting` CHAR(2) NULL DEFAULT NULL, PRIMARY KEY(`uuid`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update(create + "`%p%groups` (`group` VARCHAR(64) not null, UNIQUE(`group`), prefix VARCHAR(128) default NULL null, suffix VARCHAR(128) default NULL null, chat_color CHAR(2) default NULL null, chat_formatting CHAR(2) default NULL null, join_msg VARCHAR(255) default NULL null, quit_msg VARCHAR(255) default NULL null)ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
-        update(create + "`%p%genders` ( `id` INT NOT NULL AUTO_INCREMENT , `type` INT(1) NOT NULL , `group_name` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update(create + "`%p%subgroups` ( `group` VARCHAR(64) NOT NULL , UNIQUE(`group`), `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null ) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
+        update(create + "`%p%groups_gendered` ( `id` INT NOT NULL AUTO_INCREMENT , `group` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
+        update(create + "`%p%subgroups_gendered` ( `id` INT NOT NULL AUTO_INCREMENT , `group` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
 
         String alter = "ALTER TABLE `%p%users` ADD ";
         alterTable(alter + "`username` VARCHAR(20) NULL AFTER `uuid`; ");
@@ -127,6 +128,9 @@ public class SQLDatabase implements Database {
         alterTable(alter + "`custom_suffix_update` TIMESTAMP NULL DEFAULT NULL AFTER `custom_suffix`;");
         alterTable(alter + "CONSTRAINT `group` FOREIGN KEY (`group`) REFERENCES `%p%groups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
         alterTable(alter + "CONSTRAINT `subgroup` FOREIGN KEY (`subgroup`) REFERENCES `%p%subgroups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
+        alterTable("ALTER TABLE `%p%groups_gendered` ADD CONSTRAINT `group_name` FOREIGN KEY (`group`) REFERENCES `%p%groups`(`group`) ON DELETE CASCADE ON UPDATE CASCADE; ");
+        alterTable("ALTER TABLE `%p%subgroups_gendered` ADD CONSTRAINT `subgroup_name` FOREIGN KEY (`group`) REFERENCES `%p%subgroups`(`group`) ON DELETE CASCADE ON UPDATE CASCADE;");
+
     }
 
 }
