@@ -2,7 +2,7 @@ package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
-import com.christian34.easyprefix.groups.gender.GenderChat;
+import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.Data;
 import com.christian34.easyprefix.sql.DeleteStatement;
@@ -24,7 +24,7 @@ public class Subgroup extends EasyGroup {
     private String prefix, suffix;
     private ChatColor groupColor;
     private GroupsData groupsData;
-    private GenderChat genderChat = null;
+    private GenderedLayout genderedLayout = null;
 
     public Subgroup(GroupHandler groupHandler, String name) {
         this.NAME = name;
@@ -42,7 +42,7 @@ public class Subgroup extends EasyGroup {
         }
 
         if (groupHandler.handleGenders()) {
-            this.genderChat = new GenderChat(this);
+            this.genderedLayout = new GenderedLayout(this);
         }
 
         this.prefix = prefix.replace("§", "&");
@@ -87,7 +87,7 @@ public class Subgroup extends EasyGroup {
     public String getPrefix(User user, boolean translate) {
         String prefix;
         if (this.groupHandler.handleGenders() && user != null) {
-            prefix = this.genderChat.getPrefix(user.getGenderType());
+            prefix = this.genderedLayout.getPrefix(user.getGenderType());
             if (prefix == null) prefix = this.prefix;
         } else {
             prefix = this.prefix;
@@ -106,7 +106,7 @@ public class Subgroup extends EasyGroup {
     public String getSuffix(User user, boolean translate) {
         String suffix;
         if (this.groupHandler.handleGenders() && user != null) {
-            suffix = this.genderChat.getSuffix(user.getGenderType());
+            suffix = this.genderedLayout.getSuffix(user.getGenderType());
             if (suffix == null) suffix = this.suffix;
         } else {
             suffix = this.suffix;

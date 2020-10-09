@@ -18,11 +18,11 @@ import java.util.Set;
  *
  * @author Christian34
  */
-public class GenderChat {
+public class GenderedLayout {
     private final HashMap<Gender, String> prefixes;
     private final HashMap<Gender, String> suffixes;
 
-    public GenderChat(EasyGroup easyGroup) {
+    public GenderedLayout(EasyGroup easyGroup) {
         int type = (easyGroup instanceof Group) ? 0 : 1;
         EasyPrefix instance = EasyPrefix.getInstance();
         GroupHandler groupHandler = instance.getGroupHandler();
