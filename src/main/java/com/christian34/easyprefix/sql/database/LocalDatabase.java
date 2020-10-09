@@ -47,18 +47,20 @@ public class LocalDatabase implements Database {
     }
 
     @Override
-    public void connect() {
+    public boolean connect() {
         synchronized (this) {
             try {
-                if (connection != null && !connection.isClosed()) return;
+                if (connection != null && !connection.isClosed()) return true;
                 Class.forName("org.sqlite.JDBC");
                 connection = DriverManager.getConnection("jdbc:sqlite:" + FileManager.getPluginFolder() + "/storage" + ".db");
+                return true;
             } catch (SQLException e) {
                 Messages.log("§cCouldn't connect to local storage!");
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 Messages.log("§cYour installation does not support sqlite!");
             }
+            return false;
         }
     }
 

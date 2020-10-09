@@ -83,7 +83,9 @@ public class EasyPrefix extends JavaPlugin {
         if (ConfigKeys.SQL_ENABLED.toBoolean()) {
             this.sqlDatabase = new SQLDatabase(this);
             this.storageType = StorageType.SQL;
-            this.sqlDatabase.connect();
+            if (!this.sqlDatabase.connect()) {
+                return;
+            }
         } else {
             this.localDatabase = new LocalDatabase(this);
             this.storageType = StorageType.LOCAL;

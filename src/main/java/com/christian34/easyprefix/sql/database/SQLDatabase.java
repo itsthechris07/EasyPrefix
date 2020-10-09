@@ -37,13 +37,14 @@ public class SQLDatabase implements Database {
     }
 
     @Override
-    public void connect() {
+    public boolean connect() {
         synchronized (this) {
             try {
-                if (connection != null && !connection.isClosed()) return;
+                if (connection != null && !connection.isClosed()) return true;
                 Class.forName("com.mysql.jdbc.Driver");
                 connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&useUnicode=true&characterEncoding=utf-8", username, password);
                 updateTables();
+                return true;
             } catch (SQLSyntaxErrorException e) {
                 Messages.log("§cDatabase '" + database + "' does not exist!");
             } catch (SQLException e) {
@@ -52,6 +53,7 @@ public class SQLDatabase implements Database {
             } catch (ClassNotFoundException e) {
                 Messages.log("§cYour installation does not support sql!");
             }
+            return false;
         }
     }
 

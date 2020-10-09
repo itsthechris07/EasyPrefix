@@ -9,7 +9,7 @@ import java.sql.Connection;
  */
 public interface Database {
 
-    void connect();
+    boolean connect();
 
     void close();
 
