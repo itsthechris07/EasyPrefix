@@ -29,18 +29,6 @@ config:
     enabled: true
     # hide join/quit messages
     hide-messages: false
-    # modify or enable/disable the sounds when a player joins/quits the game
-    sound:
-      # define who receives the sound | "all" for all online players; "player" for the player who joined/quit
-      receiver: all
-      join:
-        enabled: true
-        # sound_name; volume; pitch
-        sound: "ENTITY_EXPERIENCE_ORB_PICKUP; 20; 1"
-      quit:
-        enabled: true
-        # sound_name; volume; pitch
-        sound: "ENTITY_EXPERIENCE_BOTTLE_THROW; 18; 1"
   user:
     # allow players to create custom prefixes and suffixes
     # requires permission EasyPrefix.custom.prefix or EasyPrefix.custom.suffix
