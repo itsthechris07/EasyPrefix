@@ -24,10 +24,16 @@ public class SelectQuery {
     private final String table;
     private List<String> columns;
     private Data data = null;
+    private Database database = null;
 
     public SelectQuery(String table, String... columns) {
         this.table = table;
         this.columns = new ArrayList<>(Arrays.asList(columns));
+    }
+
+    public SelectQuery setDatabase(Database database) {
+        this.database = database;
+        return this;
     }
 
     public SelectQuery setColumns(List<String> columns) {

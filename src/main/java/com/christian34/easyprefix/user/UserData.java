@@ -25,11 +25,11 @@ import java.util.UUID;
  */
 public class UserData {
     private final UUID uniqueId;
-    private final Database database;
     private final OfflinePlayer player;
+    private Database database;
     private Data data;
 
-    UserData(UUID uniqueId) {
+    public UserData(UUID uniqueId) {
         this.uniqueId = uniqueId;
         this.player = Bukkit.getOfflinePlayer(uniqueId);
         EasyPrefix instance = EasyPrefix.getInstance();
@@ -43,13 +43,20 @@ public class UserData {
                 Debug.captureException(ex);
             }
         }
-        loadData();
     }
 
-    void loadData() {
+    public Data getData() {
+        return data;
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
+
+    public void loadData() {
         SelectQuery selectQuery = new SelectQuery("users", "group", "username", "force_group", "subgroup", "custom_prefix",
                 "custom_prefix_update", "custom_suffix", "custom_suffix_update", "gender", "chat_color",
-                "chat_formatting").addCondition("uuid", uniqueId.toString());
+                "chat_formatting").addCondition("uuid", uniqueId.toString()).setDatabase(database);
         this.data = selectQuery.getData();
         String username = Bukkit.getOfflinePlayer(uniqueId).getName();
         if (data.isEmpty()) {
@@ -73,11 +80,11 @@ public class UserData {
         }
     }
 
-    String getString(String key) {
+    public String getString(String key) {
         return data.getString(key);
     }
 
-    boolean getBoolean(String key) {
+    public boolean getBoolean(String key) {
         return data.getBoolean(key);
     }
 

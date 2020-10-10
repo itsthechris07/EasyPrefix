@@ -12,6 +12,7 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.sql.migrate.DataMigration;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.RainbowEffect;
@@ -41,13 +42,25 @@ public class EasyPrefix extends JavaPlugin {
     private SQLDatabase sqlDatabase = null;
     private StorageType storageType;
     private LocalDatabase localDatabase = null;
+    private DataMigration dataMigration = null;
 
     public static EasyPrefix getInstance() {
         return instance;
     }
 
+    public DataMigration getDataMigration() {
+        if (dataMigration == null) {
+            this.dataMigration = new DataMigration(this);
+        }
+        return dataMigration;
+    }
+
     public LocalDatabase getLocalDatabase() {
         return localDatabase;
+    }
+
+    public void setLocalDatabase(LocalDatabase localDatabase) {
+        this.localDatabase = localDatabase;
     }
 
     public StorageType getStorageType() {
@@ -56,6 +69,10 @@ public class EasyPrefix extends JavaPlugin {
 
     public SQLDatabase getSqlDatabase() {
         return sqlDatabase;
+    }
+
+    public void setSqlDatabase(SQLDatabase sqlDatabase) {
+        this.sqlDatabase = sqlDatabase;
     }
 
     public ExpansionManager getExpansionManager() {
@@ -81,15 +98,14 @@ public class EasyPrefix extends JavaPlugin {
         this.fileManager = new FileManager(this);
         Messages.load();
         if (ConfigKeys.SQL_ENABLED.toBoolean()) {
-            this.sqlDatabase = new SQLDatabase(this);
+            setSqlDatabase(new SQLDatabase(this));
             this.storageType = StorageType.SQL;
             if (!this.sqlDatabase.connect()) {
                 return;
             }
         } else {
-            this.localDatabase = new LocalDatabase(this);
+            setLocalDatabase(new LocalDatabase(this));
             this.storageType = StorageType.LOCAL;
-            this.localDatabase.connect();
         }
 
         this.groupHandler = new GroupHandler(this);
@@ -169,6 +185,9 @@ public class EasyPrefix extends JavaPlugin {
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
+
+        DataMigration dataMigration = getDataMigration();
+        dataMigration.upload();
     }
 
     private void registerEvents() {

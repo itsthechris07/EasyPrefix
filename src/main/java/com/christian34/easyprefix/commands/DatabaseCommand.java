@@ -35,29 +35,14 @@ public class DatabaseCommand implements Subcommand {
 
     @Override
     public void handleCommand(CommandSender sender, List<String> args) {
-        if (this.instance.getSqlDatabase() == null) {
+        if (this.instance.getStorageType() == StorageType.LOCAL) {
             commandHandler.getSubcommand("help").handleCommand(sender, null);
             return;
         }
 
         if (args.get(1).equalsIgnoreCase("upload")) {
-            sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while.");
-          /*  try {
-            //    this.instance.getSqlDatabase().uploadData();
-                this.instance.reload();
-                sender.sendMessage(Messages.getPrefix() + "§7Files have been uploaded!");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }*/
-        } else if (args.get(1).equalsIgnoreCase("download")) {
-            sender.sendMessage(Messages.getPrefix() + "§7Downloading data to local storage. This could take a while.");
-         /*   try {
-            //    this.instance.getSqlDatabase().downloadData();
-                this.instance.reload();
-                sender.sendMessage(Messages.getPrefix() + "§7Files have been downloaded!");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }*/
+            sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while...");
+            instance.getDataMigration().upload();
         }
 
     }

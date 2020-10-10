@@ -58,6 +58,7 @@ public class User {
 
     public void login() {
         this.userData = new UserData(uniqueId);
+        userData.loadData();
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
 
