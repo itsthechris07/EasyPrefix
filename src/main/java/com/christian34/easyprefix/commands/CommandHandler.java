@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.subcommands = new ArrayList<>();
         subcommands.add(new UserCommand(this));
         subcommands.add(new HelpCommand(this));
-        if (this.instance.getSqlDatabase() != null) {
+        if (this.instance.getStorageType() == StorageType.SQL) {
             subcommands.add(new DatabaseCommand(this));
         }
         subcommands.add(new GroupCommand(this));

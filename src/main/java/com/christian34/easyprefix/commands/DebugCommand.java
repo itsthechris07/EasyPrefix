@@ -3,6 +3,7 @@ package com.christian34.easyprefix.commands;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.GroupHandler;
+import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -17,12 +18,10 @@ import java.util.List;
  * @author Christian34
  */
 public class DebugCommand implements Subcommand {
-    private final CommandHandler commandHandler;
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
 
     public DebugCommand(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
         this.instance = commandHandler.getInstance();
         this.groupHandler = instance.getGroupHandler();
     }
@@ -47,7 +46,7 @@ public class DebugCommand implements Subcommand {
         sender.sendMessage("§5Bukkit Version: §7" + Bukkit.getVersion());
         sender.sendMessage("§5Java Version: §7" + System.getProperty("java.version"));
         sender.sendMessage("§5Version Name: §7" + Bukkit.getBukkitVersion());
-        sender.sendMessage("§5Storage: §7" + ((this.instance.getSqlDatabase() != null) ? "MySQL" : "local"));
+        sender.sendMessage("§5Storage: §7" + ((this.instance.getStorageType() == StorageType.SQL) ? "MySQL" : "local"));
         sender.sendMessage("§5active EventHandler: §7" + HandlerList.getRegisteredListeners(this.instance.getPlugin()).size());
         sender.sendMessage("§5Client ID: §7" + ConfigKeys.CLIENT_ID.toString());
     }

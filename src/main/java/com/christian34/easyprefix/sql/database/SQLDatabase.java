@@ -130,7 +130,6 @@ public class SQLDatabase implements Database {
         alterTable(alter + "CONSTRAINT `subgroup` FOREIGN KEY (`subgroup`) REFERENCES `%p%subgroups`(`group`) ON DELETE SET NULL ON UPDATE CASCADE;");
         alterTable("ALTER TABLE `%p%groups_gendered` ADD CONSTRAINT `group_name` FOREIGN KEY (`group`) REFERENCES `%p%groups`(`group`) ON DELETE CASCADE ON UPDATE CASCADE; ");
         alterTable("ALTER TABLE `%p%subgroups_gendered` ADD CONSTRAINT `subgroup_name` FOREIGN KEY (`group`) REFERENCES `%p%subgroups`(`group`) ON DELETE CASCADE ON UPDATE CASCADE;");
-
     }
 
 }

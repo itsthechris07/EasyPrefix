@@ -18,12 +18,11 @@ import java.util.List;
  */
 public class GroupCommand implements Subcommand {
     private final CommandHandler commandHandler;
-    private final EasyPrefix instance;
     private final GroupHandler groupHandler;
 
     public GroupCommand(CommandHandler commandHandler) {
         this.commandHandler = commandHandler;
-        this.instance = commandHandler.getInstance();
+        EasyPrefix instance = commandHandler.getInstance();
         this.groupHandler = instance.getGroupHandler();
     }
 

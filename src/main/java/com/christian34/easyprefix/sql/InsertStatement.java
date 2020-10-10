@@ -6,6 +6,7 @@ import com.christian34.easyprefix.sql.database.StorageType;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 
 /**
@@ -27,14 +28,17 @@ public class InsertStatement {
         return this;
     }
 
-    public boolean execute() {
+    public boolean execute() throws RuntimeException {
         try {
             PreparedStatement stmt = buildStatement();
             stmt.executeUpdate();
             stmt.close();
             return true;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException ex) {
+            if (ex instanceof SQLIntegrityConstraintViolationException) {
+                throw new RuntimeException(ex.getMessage());
+            }
+            ex.printStackTrace();
         }
         return false;
     }

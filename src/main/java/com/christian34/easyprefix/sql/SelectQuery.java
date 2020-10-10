@@ -69,7 +69,7 @@ public class SelectQuery {
         return CompletableFuture.supplyAsync(() -> {
             HashMap<String, Object> map = new HashMap<>();
             try {
-                ResultSet result = buildStatement().executeQuery();
+                ResultSet result = prepareStatement().executeQuery();
                 if (result.next()) {
                     for (String key : columns) {
                         map.put(key, result.getString(key));
@@ -82,12 +82,19 @@ public class SelectQuery {
         });
     }
 
-    private PreparedStatement buildStatement() throws SQLException {
+    private PreparedStatement prepareStatement() throws SQLException {
         StringBuilder query = new StringBuilder("SELECT ");
         EasyPrefix instance = EasyPrefix.getInstance();
-        Database database = instance.getStorageType() == StorageType.SQL
-                ? instance.getSqlDatabase()
-                : instance.getLocalDatabase();
+        Database database;
+        if (this.database != null) {
+            database = this.database;
+        } else {
+            if (instance.getStorageType() == StorageType.SQL) {
+                database = instance.getSqlDatabase();
+            } else {
+                database = instance.getLocalDatabase();
+            }
+        }
 
         for (int i = 0; i < columns.size(); i++) {
             query.append("`").append(columns.get(i)).append("`");

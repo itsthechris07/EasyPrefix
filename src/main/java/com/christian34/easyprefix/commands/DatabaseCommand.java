@@ -2,10 +2,10 @@ package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.sql.database.StorageType;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,13 +44,12 @@ public class DatabaseCommand implements Subcommand {
             sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while...");
             instance.getDataMigration().upload();
         }
-
     }
 
     @Override
     public List<String> getTabCompletion(CommandSender sender, List<String> args) {
         if (args.size() == 2) {
-            List<String> matches = Arrays.asList("download", "upload");
+            List<String> matches = Collections.singletonList("upload");
             if (args.get(1).isEmpty()) {
                 return matches;
             } else {
