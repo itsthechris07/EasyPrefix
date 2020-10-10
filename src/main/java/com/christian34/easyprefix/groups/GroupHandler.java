@@ -52,7 +52,7 @@ public class GroupHandler {
         } else {
             this.database = instance.getSqlDatabase();
             SelectQuery selectQuery = new SelectQuery("groups", "prefix").addCondition("group", "default");
-            if (!selectQuery.getData().isEmpty()) {
+            if (selectQuery.getData().isEmpty()) {
                 InsertStatement insertStatement = new InsertStatement("groups")
                         .setValue("group", "default")
                         .setValue("prefix", "&7")

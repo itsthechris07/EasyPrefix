@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.sql.migrate;
 
-import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.InsertStatement;
@@ -21,13 +20,11 @@ class Uploader {
     private final DataMigration dataMigration;
     private final GroupsData groupsData;
     private final FileConfiguration data;
-    private final EasyPrefix instance;
 
     public Uploader(DataMigration dataMigration) {
         this.dataMigration = dataMigration;
         this.groupsData = dataMigration.getGroupsData();
         this.data = groupsData.getData();
-        this.instance = dataMigration.getInstance();
     }
 
     boolean sendGroups() {

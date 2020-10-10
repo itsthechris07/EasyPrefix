@@ -185,9 +185,6 @@ public class EasyPrefix extends JavaPlugin {
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
-
-        DataMigration dataMigration = getDataMigration();
-        dataMigration.upload();
     }
 
     private void registerEvents() {

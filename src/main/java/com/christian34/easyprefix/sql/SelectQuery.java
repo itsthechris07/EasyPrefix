@@ -85,14 +85,14 @@ public class SelectQuery {
     private PreparedStatement prepareStatement() throws SQLException {
         StringBuilder query = new StringBuilder("SELECT ");
         EasyPrefix instance = EasyPrefix.getInstance();
-        Database database;
+        Database db;
         if (this.database != null) {
-            database = this.database;
+            db = this.database;
         } else {
             if (instance.getStorageType() == StorageType.SQL) {
-                database = instance.getSqlDatabase();
+                db = instance.getSqlDatabase();
             } else {
-                database = instance.getLocalDatabase();
+                db = instance.getLocalDatabase();
             }
         }
 
@@ -103,7 +103,7 @@ public class SelectQuery {
             }
         }
 
-        query.append(" FROM `").append(database.getTablePrefix()).append(this.table).append("`");
+        query.append(" FROM `").append(db.getTablePrefix()).append(this.table).append("`");
 
         int i = 1;
         for (String key : conditions.keySet()) {
@@ -116,7 +116,7 @@ public class SelectQuery {
             i++;
         }
 
-        PreparedStatement stmt = database.getConnection().prepareStatement(query.toString());
+        PreparedStatement stmt = db.getConnection().prepareStatement(query.toString());
         i = 1;
         for (String value : conditions.values()) {
             stmt.setObject(i, value);

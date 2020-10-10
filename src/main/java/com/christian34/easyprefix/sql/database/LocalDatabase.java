@@ -81,14 +81,22 @@ public class LocalDatabase implements Database {
     }
 
     public ResultSet getValue(String statement) {
+        Statement stmt = null;
         try {
             if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
+            stmt = connection.createStatement();
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException e) {
             Debug.captureException(e);
             e.printStackTrace();
             return null;
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ignored) {
+                }
+            }
         }
     }
 
