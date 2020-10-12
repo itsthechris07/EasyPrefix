@@ -41,7 +41,6 @@ public class User {
     private boolean isGroupForced;
     private long lastPrefixUpdate, lastSuffixUpdate;
     private ChatFormatting chatFormatting = null;
-    private UserData userData;
 
     public User(@NotNull Player player) {
         this.player = player;
@@ -59,7 +58,7 @@ public class User {
     }
 
     public void login() {
-        this.userData = new UserData(uniqueId);
+        UserData userData = new UserData(uniqueId);
         userData.loadData();
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();

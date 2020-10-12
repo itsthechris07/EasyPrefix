@@ -122,7 +122,9 @@ public class GuiModifyingGroups extends Page {
             easyGroup.delete();
             new GuiSetup(user).groupsList();
         });
-        guiRespond.addIcon(Color.RED.toItemStack(), Message.BTN_CANCEL, 2, 6).onClick(() -> new GuiSetup(user).openProfile(easyGroup));
+        guiRespond.addIcon(Color.RED.toItemStack(), Message.BTN_CANCEL, 2, 6).onClick(() ->
+                new GuiSetup(user).openProfile(easyGroup)
+        );
         guiRespond.preventClose(true);
         guiRespond.openInventory();
     }

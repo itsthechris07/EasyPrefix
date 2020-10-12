@@ -1,8 +1,9 @@
 package com.christian34.easyprefix.messages;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.VersionController;
 import com.tchristofferson.configupdater.ConfigUpdater;
@@ -11,6 +12,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -57,16 +60,16 @@ public class Messages {
 
     public static void load() {
         Plugin plugin = instance.getPlugin();
-        ConfigData config = instance.getFileManager().getConfig();
         language = ConfigKeys.PLUGIN_LANG.toString();
-        String path = "plugins/EasyPrefix";
+
         if (!LANGUAGES.contains(language)) {
             Messages.log("§cCouldn't load messages for language '" + language + "'! Please use a valid language!");
             setLanguage("en_EN");
             Messages.log("§cYour language has been set to en_EN!");
             return;
         }
-        File file = new File(path, language + ".yml");
+
+        File file = new File(FileManager.getPluginFolder(), language + ".yml");
         if (!file.exists()) {
             plugin.saveResource(language + ".yml", false);
         } else {
@@ -88,10 +91,12 @@ public class Messages {
         data = YamlConfiguration.loadConfiguration(file);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void replaceInFile(File file) throws IOException {
+    public static void replaceInFile(@NotNull File file) throws IOException {
         File tempFile = new File("plugins/EasyPrefix", "messages.tmp");
-        tempFile.createNewFile();
+        if (!tempFile.createNewFile()) {
+            return;
+        }
+
         FileWriter writer = new FileWriter(tempFile);
 
         Reader reader = new FileReader(file);
@@ -104,11 +109,12 @@ public class Messages {
         writer.close();
         br.close();
         reader.close();
-        file.delete();
-        tempFile.renameTo(file);
+        if (!file.delete() && !tempFile.renameTo(file)) {
+            Messages.log("§cCouldn't update file messages.yml! Please consider an update to newer a newer Minecraft version.");
+        }
     }
 
-    public static List<String> getList(Message message) {
+    public static List<String> getList(@NotNull Message message) {
         List<String> temp = new ArrayList<>();
         for (String msg : data.getStringList(message.getPath())) {
             temp.add(translate(msg));
@@ -116,27 +122,30 @@ public class Messages {
         return temp;
     }
 
-    public static String getText(String path) {
+    public static String getText(@NotNull String path) {
         return translate(data.getString(path));
     }
 
-    public static String getAndSet(Message message, String value) {
-        if (message != null) {
-            String text = translate(data.getString(message.getPath()));
-            if (text == null) return null;
-            return text.replace("%value%", value);
-        }
-        return null;
+    public static String getAndSet(@NotNull Message message, @NotNull String value) {
+        String text = translate(data.getString(message.getPath()));
+        if (text == null) return null;
+        return text.replace("%value%", value);
     }
 
-    public static String getMessage(Message message) {
+    public static String getMessage(@NotNull Message message) {
         return getPrefix() + translate(data.getString(message.getPath()));
     }
 
-    public static String getMessage(Message message, User user) {
+    public static String getMessage(@NotNull Message message, @NotNull User user) {
         String text = translate(data.getString(message.getPath()));
-        if (EasyPrefix.getInstance().getExpansionManager().isUsingPapi()) {
-            return getPrefix() + EasyPrefix.getInstance().getExpansionManager().setPapi(user.getPlayer(), text);
+
+        if (text == null) {
+            throw new RuntimeException("§cCould't read message. Please report this error to github! (" + message.name() + ")");
+        }
+
+        ExpansionManager expansionManager = EasyPrefix.getInstance().getExpansionManager();
+        if (expansionManager.isUsingPapi()) {
+            return getPrefix() + expansionManager.setPapi(user.getPlayer(), text);
         } else {
             return getPrefix() + text;
         }
@@ -146,6 +155,7 @@ public class Messages {
         return "§7[§5EasyPrefix§7] ";
     }
 
+    @Nullable
     private static String translate(String text) {
         return (text != null) ? ChatColor.translateAlternateColorCodes('&', text) : null;
     }

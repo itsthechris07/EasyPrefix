@@ -3,6 +3,7 @@ package com.christian34.easyprefix.responder.gui;
 import com.cryptomorin.xseries.XMaterial;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -32,30 +33,30 @@ public class Icon implements Cloneable {
         itemStack.setItemMeta(itemMeta);
     }
 
-    @SuppressWarnings("deprecation")
     public static ItemStack getCustomPlayerHead(String base) {
         ItemStack skull = XMaterial.PLAYER_HEAD.parseItem();
+        Validate.notNull(skull);
         try {
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+            if (skullMeta == null) return skull;
 
             GameProfile profile = new GameProfile(UUID.randomUUID(), "");
             profile.getProperties().put("textures", new Property("textures", base));
 
-            Field profileField = Objects.requireNonNull(skullMeta).getClass().getDeclaredField("profile");
+            Field profileField = skullMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
             profileField.set(skullMeta, profile);
 
             skull.setItemMeta(skullMeta);
-            return skull;
         } catch (Exception ignored) {
-            return skull;
         }
+        return skull;
     }
 
     @SuppressWarnings("deprecation")
     public static ItemStack playerHead(String owningPlayer) {
         ItemStack itemStack = XMaterial.PLAYER_HEAD.parseItem();
-
+        Validate.notNull(itemStack);
         try {
             SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
             if (meta != null) {

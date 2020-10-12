@@ -108,7 +108,7 @@ public class UserCommand implements Subcommand {
 
     private void showInfo(CommandSender sender, User targetUser) {
         String subgroup = (targetUser.getSubgroup() != null) ? targetUser.getSubgroup().getName() : "-";
-        String cc = (targetUser.getChatColor() != null) ? targetUser.getChatColor().getCode() : "-";
+        String cc = targetUser.getChatColor().getCode();
 
         sender.sendMessage(" \n§7--------------=== §5§l" + targetUser.getPlayer().getName() + " §7===--------------\n ");
         sender.sendMessage("§5Group§f: §7" + targetUser.getGroup().getName());

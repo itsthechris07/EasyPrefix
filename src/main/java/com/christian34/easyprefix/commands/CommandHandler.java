@@ -25,22 +25,26 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
     public CommandHandler(EasyPrefix instance) {
         this.instance = instance;
+
         PluginCommand mainCommand = instance.getCommand("easyprefix");
         if (mainCommand != null) {
             mainCommand.setExecutor(this);
             mainCommand.setTabCompleter(this);
         }
+
         this.subcommands = new ArrayList<>();
         subcommands.add(new UserCommand(this));
         subcommands.add(new HelpCommand(this));
-        if (this.instance.getStorageType() == StorageType.SQL) {
-            subcommands.add(new DatabaseCommand(this));
-        }
         subcommands.add(new GroupCommand(this));
         subcommands.add(new SetupCommand(this));
         subcommands.add(new SettingsCommand(this));
         subcommands.add(new ReloadCommand(this));
         subcommands.add(new DebugCommand(this));
+
+        if (this.instance.getStorageType() == StorageType.SQL) {
+            subcommands.add(new DatabaseCommand(this));
+        }
+
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
             subcommands.add(new SetCommand(this));
             new AliasHandler(this);
@@ -85,7 +89,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Command cmd, @NotNull String alias, String[] args) {
         if (!cmd.getName().equalsIgnoreCase("easyprefix")) return null;
         if (args.length == 1) {
             List<String> matches = new ArrayList<>();

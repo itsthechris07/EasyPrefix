@@ -39,8 +39,8 @@ public class EasyPrefix extends JavaPlugin {
     private Updater updater;
     private FileManager fileManager;
     private ExpansionManager expansionManager;
-    private SQLDatabase sqlDatabase = null;
     private StorageType storageType;
+    private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
     private DataMigration dataMigration = null;
 
@@ -96,7 +96,7 @@ public class EasyPrefix extends JavaPlugin {
         this.plugin = this;
         this.users = new ArrayList<>();
         this.fileManager = new FileManager(this);
-        Messages.load();
+
         if (ConfigKeys.SQL_ENABLED.toBoolean()) {
             setSqlDatabase(new SQLDatabase(this));
             this.storageType = StorageType.SQL;
@@ -126,7 +126,7 @@ public class EasyPrefix extends JavaPlugin {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (formatChat() && (Bukkit.getPluginManager().isPluginEnabled("EssentialsChat") || Bukkit.getPluginManager().isPluginEnabled("MultiChat"))) {
                 Messages.log("§c--------------------------------------");
-                Messages.log("§cYou are using a different chat management plugin. To avoid errors, please set 'handle-chat' to false in config.yml");
+                Messages.log("§cYou are using a different chat management plugin. To avoid issues, please set 'handle-chat' in config.yml to false");
                 Messages.log("§c--------------------------------------");
             }
         }, 20 * 3);

@@ -88,7 +88,7 @@ public class UserData {
         return data.getBoolean(key);
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "deprecation"})
+    @SuppressWarnings("deprecation")
     private void updateData() {
         UserDataFile userDataFile = new UserDataFile(uniqueId);
         if (userDataFile.getFile() == null || userDataFile.getFileData() == null) return;
@@ -128,10 +128,14 @@ public class UserData {
         }
         File backupDir = new File(FileManager.getPluginFolder() + "/user/backup");
         if (!backupDir.exists()) {
-            backupDir.mkdirs();
+            if (!backupDir.mkdirs()) {
+                Messages.log("§cCouldn't create backup folder!");
+            }
         }
         if (userDataFile.getFile().renameTo(new File(backupDir, uniqueId.toString() + ".yml"))) {
-            userDataFile.getFile().delete();
+            if (!userDataFile.getFile().delete()) {
+                Messages.log("§cCouldn't delete user data for '" + uniqueId + "'!");
+            }
         }
         Messages.log("§aData has been updated!");
     }
