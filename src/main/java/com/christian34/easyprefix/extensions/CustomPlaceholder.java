@@ -52,21 +52,17 @@ class CustomPlaceholder extends PlaceholderExpansion {
                 return user.getSuffix();
             case "user_group":
                 return user.getGroup().getName();
+                /*
+                todo user#getChatColor is never null.
+                 */
             case "user_chatcolor":
-                String color;
-                if (user.getChatColor() != null) {
-                    color = user.getChatColor().getCode();
-                    if (user.getChatFormatting() != null) {
-                        color += user.getChatFormatting().getCode();
-                    }
-                } else {
-                    if (user.getChatFormatting() != null && user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+                String color = user.getChatColor().getCode();
+
+                if (user.getChatFormatting() != null) {
+                    if (user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                         color = Message.FORMATTING_RAINBOW.toString();
                     } else {
-                        color = user.getGroup().getChatColor().getCode();
-                        if (user.getGroup().getChatFormatting() != null) {
-                            color += user.getGroup().getChatFormatting().getCode();
-                        }
+                        color += user.getChatFormatting().getCode();
                     }
                 }
                 return color.replace("&", "§");

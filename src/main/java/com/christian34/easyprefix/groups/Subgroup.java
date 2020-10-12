@@ -22,7 +22,7 @@ public class Subgroup extends EasyGroup {
     private final GroupHandler groupHandler;
     private final EasyPrefix instance;
     private String prefix, suffix;
-    private ChatColor groupColor;
+    private final ChatColor groupColor;
     private GroupsData groupsData;
     private GenderedLayout genderedLayout = null;
 
@@ -31,7 +31,8 @@ public class Subgroup extends EasyGroup {
         this.groupHandler = groupHandler;
         this.instance = groupHandler.getInstance();
         if (instance.getStorageType() == StorageType.SQL) {
-            SelectQuery selectQuery = new SelectQuery("subgroups", "prefix", "suffix").addCondition("group", name);
+            SelectQuery selectQuery = new SelectQuery("subgroups", "prefix", "suffix")
+                    .addCondition("group", name);
             Data data = selectQuery.getData();
             this.prefix = data.getStringOr("prefix", "");
             this.suffix = data.getStringOr("suffix", "");
@@ -48,18 +49,7 @@ public class Subgroup extends EasyGroup {
         this.prefix = prefix.replace("§", "&");
         this.suffix = suffix.replace("§", "&");
 
-        if (prefix.contains("&")) {
-            if (!prefix.startsWith("&")) {
-                String temp = prefix;
-                while (!temp.startsWith("&") && temp.length() > 0) {
-                    temp = temp.substring(1);
-                }
-                groupColor = ChatColor.getByChar(temp.substring(1, 2));
-            } else {
-                groupColor = ChatColor.getByChar(prefix.substring(1, 2));
-            }
-        }
-        if (getGroupColor() == null) groupColor = ChatColor.DARK_PURPLE;
+        this.groupColor = getGroupColor(prefix);
     }
 
     private void saveData(String key, Object value) {

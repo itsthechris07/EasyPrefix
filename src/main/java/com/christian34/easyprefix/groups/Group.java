@@ -63,10 +63,8 @@ public class Group extends EasyGroup {
         this.prefix = data.getStringOr("prefix", "");
         this.prefix = prefix.replace("§", "&");
 
-
         this.suffix = data.getStringOr("suffix", "");
         this.suffix = suffix.replace("§", "&");
-
 
         String chatFormatting = data.getString("chat_formatting");
         if (chatFormatting != null && chatFormatting.length() == 2) {
@@ -238,6 +236,7 @@ public class Group extends EasyGroup {
         saveData("chat-color", value);
     }
 
+    @Nullable
     public ChatFormatting getChatFormatting() {
         return chatFormatting;
     }

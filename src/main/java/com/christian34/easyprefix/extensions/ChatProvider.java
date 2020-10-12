@@ -31,7 +31,6 @@ class ChatProvider {
         }
     }
 
-
     private class Handler extends Chat {
 
         public Handler(Permission perms) {

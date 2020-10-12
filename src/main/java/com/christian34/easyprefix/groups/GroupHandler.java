@@ -19,7 +19,6 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * EasyPrefix 2020.
@@ -83,11 +82,11 @@ public class GroupHandler {
 
         if (instance.getStorageType() == StorageType.LOCAL) {
             GroupsData groupsData = getGroupsData();
-            Set<String> groupsList = getGroupsData().getSection("groups");
-            groupNames = new ArrayList<>(groupsList);
+            groupNames = new ArrayList<>(getGroupsData().getSection("groups"));
             if (groupNames.isEmpty()) {
-                File old = new File(FileManager.getPluginFolder(), "groups.yml");
-                if (old.renameTo(new File(FileManager.getPluginFolder(), "backup-groups.yml"))) {
+                File folder = FileManager.getPluginFolder();
+                File old = new File(folder, "groups.yml");
+                if (old.renameTo(new File(folder, "backup-groups.yml"))) {
                     groupsData.load();
                     load();
                 }
@@ -135,7 +134,6 @@ public class GroupHandler {
                 Debug.captureException(ex);
             }
         }
-
     }
 
     public boolean handleGenders() {
@@ -199,7 +197,7 @@ public class GroupHandler {
         return instance;
     }
 
-    public void createGroup(String groupName) {
+    public boolean createGroup(String groupName) {
         if (database == null) {
             String path = "groups." + groupName + ".";
             getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");
@@ -210,10 +208,15 @@ public class GroupHandler {
         } else {
             InsertStatement insertStatement = new InsertStatement("groups").setValue("group", groupName);
             if (!insertStatement.execute()) {
-                Messages.log("Couldn't save save!");
+                Messages.log("Couldn't save new group!");
+                return false;
             }
         }
-        load();
+
+        Group group = new Group(this, groupName);
+        groups.add(group);
+
+        return true;
     }
 
     private GroupsData getGroupsData() {

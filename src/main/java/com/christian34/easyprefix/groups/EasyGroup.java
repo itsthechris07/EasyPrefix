@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
 
@@ -66,18 +67,23 @@ public abstract class EasyGroup {
         if (text == null) return null;
 
         if (user != null) {
-            if (!EasyPrefix.getInstance().getExpansionManager().isUsingPapi()) {
+            ExpansionManager expansionManager = EasyPrefix.getInstance().getExpansionManager();
+            if (!expansionManager.isUsingPapi()) {
                 String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user, false) : "";
                 String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user, false) : "";
-                text = text.replace("%ep_user_prefix%", user.getGroup().getPrefix(null, false)).replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false)).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", sgPrefix).replace("%ep_user_subgroup_suffix%", sgSuffix);
+                text = text
+                        .replace("%ep_user_prefix%", user.getGroup().getPrefix(null, false))
+                        .replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false))
+                        .replace("%ep_user_group%", user.getGroup().getName())
+                        .replace("%ep_user_subgroup_prefix%", sgPrefix)
+                        .replace("%ep_user_subgroup_suffix%", sgSuffix);
             } else {
-                text = EasyPrefix.getInstance().getExpansionManager().setPapi(user.getPlayer(), text);
+                text = expansionManager.setPapi(user.getPlayer(), text);
             }
             text = text.replace("%player%", user.getPlayer().getDisplayName());
         }
 
-        text = ChatColor.translateAlternateColorCodes('&', text);
-        return text;
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 
     public ChatColor getGroupColor(String prefix) {

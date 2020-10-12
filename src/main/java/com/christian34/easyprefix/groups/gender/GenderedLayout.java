@@ -51,7 +51,7 @@ public class GenderedLayout {
                 Gender gender = instance.getGroupHandler().getGender(result.getString("gender"));
 
                 if (gender == null) {
-                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + "'" + easyGroup.getName() + "'!");
+                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
                     continue;
                 }
 
@@ -75,7 +75,7 @@ public class GenderedLayout {
                 Gender gender = instance.getGroupHandler().getGender(name);
 
                 if (gender == null) {
-                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + "'" + easyGroup.getName() + "'!");
+                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
                     continue;
                 }
 

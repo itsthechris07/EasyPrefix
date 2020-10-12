@@ -42,7 +42,7 @@ public class RainbowEffect {
                 try {
                     enabledColors.add(ChatColor.valueOf(color));
                 } catch (Exception ignored) {
-                    Messages.log("Couldn't find color with name '" + color + "'");
+                    Messages.log("Couldn't find a color with name '" + color + "'!");
                 }
             }
             rainbowColors = enabledColors;

@@ -108,6 +108,8 @@ public class EasyPrefix extends JavaPlugin {
             this.storageType = StorageType.LOCAL;
         }
 
+        Messages.load();
+
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
         new CommandHandler(this);

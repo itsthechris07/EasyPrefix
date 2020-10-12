@@ -181,7 +181,6 @@ public class GuiRespond {
         inventory.setContents(contents);
     }
 
-    @SuppressWarnings("deprecation")
     private ItemStack getPlaceholder() {
         ItemStack glass = XMaterial.GRAY_STAINED_GLASS_PANE.parseItem(true);
         ItemMeta meta = Objects.requireNonNull(glass).getItemMeta();

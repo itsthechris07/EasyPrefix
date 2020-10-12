@@ -11,6 +11,8 @@ import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -41,7 +43,7 @@ public class User {
     private ChatFormatting chatFormatting = null;
     private UserData userData;
 
-    public User(Player player) {
+    public User(@NotNull Player player) {
         this.player = player;
         this.uniqueId = player.getUniqueId();
         this.instance = EasyPrefix.getInstance();
@@ -148,13 +150,14 @@ public class User {
         }
     }
 
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(@NotNull String permission) {
         if (player != null) {
             return player.hasPermission("EasyPrefix." + permission);
         }
         return true;
     }
 
+    @NotNull
     public String getPrefix() {
         if (hasPermission("custom.prefix") && customPrefix != null) {
             return customPrefix;
@@ -179,6 +182,7 @@ public class User {
         return customSuffix != null;
     }
 
+    @NotNull
     public String getSuffix() {
         if (hasPermission("custom.suffix") && customSuffix != null) {
             return customSuffix;
@@ -195,10 +199,12 @@ public class User {
         this.instance.unloadUser(getPlayer());
     }
 
+    @NotNull
     public ArrayList<Color> getColors() {
         return colors;
     }
 
+    @NotNull
     public Color getChatColor() {
         if (chatColor != null) {
             return chatColor;
@@ -206,7 +212,7 @@ public class User {
         return getGroup().getChatColor();
     }
 
-    public void setChatColor(Color color) {
+    public void setChatColor(@Nullable Color color) {
         this.chatColor = color;
         String value = null;
         if (color != null) {
@@ -227,6 +233,7 @@ public class User {
         return chatFormattings;
     }
 
+    @Nullable
     public ChatFormatting getChatFormatting() {
         if (chatFormatting != null) {
             return chatFormatting;
@@ -340,9 +347,9 @@ public class User {
     }
 
     public void saveData(String key, Object value) {
-        UpdateStatement updateStatement = new UpdateStatement("users");
-        updateStatement.addCondition("uuid", getPlayer().getUniqueId().toString());
-        updateStatement.setValue(key, value);
+        UpdateStatement updateStatement = new UpdateStatement("users")
+                .addCondition("uuid", getPlayer().getUniqueId().toString())
+                .setValue(key, value);
         if (!updateStatement.execute()) {
             Messages.log("Couldn't save data to database! Error UDB1");
         }
