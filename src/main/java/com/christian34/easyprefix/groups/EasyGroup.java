@@ -63,7 +63,7 @@ public abstract class EasyGroup {
      * @param user user for placeholderapi
      * @return String
      */
-    public String translate(String text, User user) {
+    public String translate(@Nullable String text, @Nullable User user) {
         if (text == null) return null;
 
         if (user != null) {
