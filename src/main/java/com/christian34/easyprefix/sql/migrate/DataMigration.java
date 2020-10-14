@@ -18,7 +18,6 @@ public class DataMigration {
     private final GroupsData groupsData;
     boolean connected = false;
     private LocalDatabase localDatabase;
-    private SQLDatabase sqlDatabase;
 
     public DataMigration(EasyPrefix instance) {
         this.instance = instance;
@@ -34,28 +33,19 @@ public class DataMigration {
     private void connect() {
         this.localDatabase = instance.getLocalDatabase();
         if (localDatabase == null) {
-            instance.setLocalDatabase(new LocalDatabase(instance));
+            instance.setLocalDatabase(new LocalDatabase());
             this.localDatabase = instance.getLocalDatabase();
         }
 
-        this.sqlDatabase = instance.getSqlDatabase();
+        SQLDatabase sqlDatabase = instance.getSqlDatabase();
         if (sqlDatabase == null) {
-            instance.setSqlDatabase(new SQLDatabase(instance));
-            this.sqlDatabase = instance.getSqlDatabase();
+            instance.setSqlDatabase(new SQLDatabase());
         }
         this.connected = true;
     }
 
     LocalDatabase getLocalDatabase() {
         return localDatabase;
-    }
-
-    SQLDatabase getSqlDatabase() {
-        return sqlDatabase;
-    }
-
-    EasyPrefix getInstance() {
-        return instance;
     }
 
     GroupsData getGroupsData() {
@@ -71,31 +61,31 @@ public class DataMigration {
         if (uploader.sendGroups()) {
             Messages.log("Groups has been migrated.");
         } else {
-            Messages.log("§aCouldn't migrate groups! If you think this is an error, please create an issue on github.");
+            Messages.log("§cCouldn't migrate groups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendSubgroups()) {
             Messages.log("Subgroups has been migrated.");
         } else {
-            Messages.log("§aCouldn't migrate subgroups! If you think this is an error, please create an issue on github.");
+            Messages.log("§cCouldn't migrate subgroups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendGenderedGroupsLayout()) {
             Messages.log("Layout data for groups has been migrated.");
         } else {
-            Messages.log("§aCouldn't migrate layout data for groups! If you think this is an error, please create an issue on github.");
+            Messages.log("§cCouldn't migrate layout data for groups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendGenderedSubgroupsLayout()) {
             Messages.log("Layout data for subgroups has been migrated.");
         } else {
-            Messages.log("§aCouldn't migrate layout data for subgroups! If you think this is an error, please create an issue on github.");
+            Messages.log("§cCouldn't migrate layout data for subgroups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendUsers()) {
             Messages.log("Users have been migrated.");
         } else {
-            Messages.log("§aCouldn't migrate users! If you think this is an error, please create an issue on github.");
+            Messages.log("§cCouldn't migrate users! If you think this is an error, please create an issue on github.");
         }
         Messages.log("§aData has been migrated!");
         close();

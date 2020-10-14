@@ -52,9 +52,6 @@ class CustomPlaceholder extends PlaceholderExpansion {
                 return user.getSuffix();
             case "user_group":
                 return user.getGroup().getName();
-                /*
-                todo user#getChatColor is never null.
-                 */
             case "user_chatcolor":
                 String color = user.getChatColor().getCode();
 

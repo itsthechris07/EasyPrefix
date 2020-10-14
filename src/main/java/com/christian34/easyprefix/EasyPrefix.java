@@ -98,13 +98,13 @@ public class EasyPrefix extends JavaPlugin {
         this.fileManager = new FileManager(this);
 
         if (ConfigKeys.SQL_ENABLED.toBoolean()) {
-            setSqlDatabase(new SQLDatabase(this));
+            setSqlDatabase(new SQLDatabase());
             this.storageType = StorageType.SQL;
             if (!this.sqlDatabase.connect()) {
                 return;
             }
         } else {
-            setLocalDatabase(new LocalDatabase(this));
+            setLocalDatabase(new LocalDatabase());
             this.storageType = StorageType.LOCAL;
         }
 
@@ -179,7 +179,7 @@ public class EasyPrefix extends JavaPlugin {
         this.fileManager = new FileManager(this);
         if (storageType == StorageType.SQL) {
             this.sqlDatabase.close();
-            this.sqlDatabase = new SQLDatabase(this);
+            this.sqlDatabase = new SQLDatabase();
             this.sqlDatabase.connect();
         }
         new CommandHandler(this);

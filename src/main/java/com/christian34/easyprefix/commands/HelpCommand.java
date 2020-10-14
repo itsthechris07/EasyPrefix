@@ -33,25 +33,26 @@ public class HelpCommand implements Subcommand {
     @Override
     public void handleCommand(CommandSender sender, List<String> args) {
         sender.sendMessage(" \n§7---------------=== §5§lEasyPrefix §7===---------------\n ");
-        sender.sendMessage("§7/§5EasyPrefix §f| §7main command");
+        String prefix = "§7/§5EasyPrefix ";
+        sender.sendMessage(prefix + "§f| §7main command");
         if (sender.hasPermission("EasyPrefix.settings")) {
-            sender.sendMessage("§7/§5EasyPrefix settings §f| §7manage your prefixes");
+            sender.sendMessage(prefix + "settings §f| §7manage your prefixes");
         }
         if (sender.hasPermission("EasyPrefix.admin")) {
-            sender.sendMessage("§7/§5EasyPrefix setup §f| §7opens setup gui");
-            sender.sendMessage("§7/§5EasyPrefix reload §f| §7reloads the plugin");
-            sender.sendMessage("§7/§5EasyPrefix user <Player> §f| §7player info");
-            sender.sendMessage("§7/§5EasyPrefix group <Group> §f| §7group info");
+            sender.sendMessage(prefix + "setup §f| §7opens setup gui");
+            sender.sendMessage(prefix + "reload §f| §7reloads the plugin");
+            sender.sendMessage(prefix + "user <Player> §f| §7player info");
+            sender.sendMessage(prefix + "group <Group> §f| §7group info");
             if (this.instance.getStorageType() == StorageType.SQL) {
-                sender.sendMessage("§7/§5EasyPrefix database §f| §7sql configuration");
+                sender.sendMessage(prefix + "database §f| §7sql configuration");
             }
         }
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
             if (sender.hasPermission("easyprefix.custom.prefix")) {
-                sender.sendMessage("§7/§5EasyPrefix setprefix <Prefix> §f| §7set prefix");
+                sender.sendMessage(prefix + "setprefix <Prefix> §f| §7set prefix");
             }
             if (sender.hasPermission("easyprefix.custom.suffix")) {
-                sender.sendMessage("§7/§5EasyPrefix setsuffix <Suffix> §f| §7set suffix");
+                sender.sendMessage(prefix + "setsuffix <Suffix> §f| §7set suffix");
             }
         }
         sender.sendMessage(" \n§7------------------------------------------------\n ");
@@ -63,4 +64,5 @@ public class HelpCommand implements Subcommand {
     public List<String> getTabCompletion(CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
+
 }

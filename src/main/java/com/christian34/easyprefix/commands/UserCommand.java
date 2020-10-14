@@ -131,10 +131,11 @@ public class UserCommand implements Subcommand {
 
     private void showHelp(CommandSender sender) {
         sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix User §7===--------------\n ");
-        sender.sendMessage("§7/§5EasyPrefix user <Player> info §f| §7get information about the player");
-        sender.sendMessage("§7/§5EasyPrefix user <Player> setgroup <Group> §f| §7force group to player");
-        sender.sendMessage("§7/§5EasyPrefix user <Player> setsubgroup <Subgroup> §f| §7set subgroup to player");
-        sender.sendMessage("§7/§5EasyPrefix user <Player> setgender <Gender> §f| §7set gender");
+        String prefix = "§7/§5EasyPrefix user <Player> ";
+        sender.sendMessage(prefix + "info §f| §7get information about the player");
+        sender.sendMessage(prefix + "setgroup <Group> §f| §7force group to player");
+        sender.sendMessage(prefix + "setsubgroup <Subgroup> §f| §7set subgroup to player");
+        sender.sendMessage(prefix + "setgender <Gender> §f| §7set gender");
         sender.sendMessage(" \n§7----------------------------------------------------\n ");
     }
 

@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.sql.database;
 
-import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.Debug;
@@ -15,11 +14,9 @@ import java.sql.*;
  * @author Christian34
  */
 public class LocalDatabase implements Database {
-    private final EasyPrefix instance;
     private Connection connection;
 
-    public LocalDatabase(EasyPrefix instance) {
-        this.instance = instance;
+    public LocalDatabase() {
         File file = new File(FileManager.getPluginFolder() + "/storage.db");
         if (!file.exists()) {
             try {

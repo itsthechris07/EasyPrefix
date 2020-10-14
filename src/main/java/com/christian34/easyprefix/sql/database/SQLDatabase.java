@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.sql.database;
 
-import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.Debug;
@@ -13,7 +12,6 @@ import java.sql.*;
  * @author Christian34
  */
 public class SQLDatabase implements Database {
-    private final EasyPrefix instance;
     private final String host;
     private final String database;
     private final String username;
@@ -22,8 +20,7 @@ public class SQLDatabase implements Database {
     private final int port;
     private Connection connection;
 
-    public SQLDatabase(EasyPrefix instance) {
-        this.instance = instance;
+    public SQLDatabase() {
         this.host = ConfigKeys.SQL_HOST.toString();
         this.database = ConfigKeys.SQL_DATABASE.toString();
         this.username = ConfigKeys.SQL_USERNAME.toString();
