@@ -3,10 +3,10 @@ package com.christian34.easyprefix.utils;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Messages;
+import io.sentry.HubAdapter;
+import io.sentry.IHub;
 import io.sentry.Sentry;
-import io.sentry.context.Context;
-import io.sentry.event.BreadcrumbBuilder;
-import io.sentry.event.UserBuilder;
+import io.sentry.protocol.User;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
@@ -17,32 +17,44 @@ import java.util.UUID;
  * @author Christian34
  */
 public class Debug {
+    private static final IHub hub;
 
     static {
-        Sentry.init("https://593815c87f604f2da4620b5031945126@o393387.ingest.sentry.io/5242398");
+        Sentry.init(options -> {
+            options.setDsn("https://593815c87f604f2da4620b5031945126@o393387.ingest.sentry.io/5242398");
+            options.setEnableExternalConfiguration(false);
+        });
+
+        hub = HubAdapter.getInstance();
+
         String client = ConfigKeys.CLIENT_ID.toString("id");
         String[] components = client.split("-");
         if (client.equals("id") || components.length != 5) {
             ConfigKeys.CLIENT_ID.set(UUID.randomUUID().toString());
         }
         EasyPrefix instance = EasyPrefix.getInstance();
-        Context context = Sentry.getContext();
-        context.setUser(new UserBuilder().setId(ConfigKeys.CLIENT_ID.toString()).build());
-        context.addTag("plugin-version", VersionController.getPluginVersion());
-        context.addTag("api", Bukkit.getBukkitVersion());
-        context.addTag("server", Bukkit.getVersion());
-        context.addTag("java", System.getProperty("java.version"));
-        context.addTag("storage", instance.getStorageType().name().toLowerCase());
-        context.addTag("groups", instance.getGroupHandler().getGroups().size() + "");
+
+        Sentry.configureScope(scope -> {
+            User user = new User();
+            user.setId(ConfigKeys.CLIENT_ID.toString());
+            scope.setUser(user);
+        });
+
+        hub.setTag("plugin-version", VersionController.getPluginVersion());
+        hub.setTag("api", Bukkit.getBukkitVersion());
+        hub.setTag("server", Bukkit.getVersion());
+        hub.setTag("java", System.getProperty("java.version"));
+        hub.setTag("storage", instance.getStorageType().name().toLowerCase());
+        hub.setTag("groups", instance.getGroupHandler().getGroups().size() + "");
     }
 
     public static void recordAction(String message) {
-        Sentry.getContext().recordBreadcrumb(new BreadcrumbBuilder().setMessage(message).build());
+        hub.addBreadcrumb(message);
     }
 
     public static void captureException(Exception exception) {
-        Sentry.capture(exception);
-        Messages.log("An error occured while using EasyPrefix:");
+        Sentry.captureException(exception);
+        Messages.log("An error occurred while using EasyPrefix:");
         exception.printStackTrace();
     }
 
