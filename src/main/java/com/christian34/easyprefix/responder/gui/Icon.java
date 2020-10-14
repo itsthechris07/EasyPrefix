@@ -3,7 +3,7 @@ package com.christian34.easyprefix.responder.gui;
 import com.cryptomorin.xseries.XMaterial;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.apache.commons.lang3.Validate;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -35,7 +35,7 @@ public class Icon implements Cloneable {
 
     public static ItemStack getCustomPlayerHead(String base) {
         ItemStack skull = XMaterial.PLAYER_HEAD.parseItem();
-        Validate.notNull(skull);
+        if (skull == null) return new ItemStack(Material.AIR);
         try {
             SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
             if (skullMeta == null) return skull;
@@ -56,7 +56,7 @@ public class Icon implements Cloneable {
     @SuppressWarnings("deprecation")
     public static ItemStack playerHead(String owningPlayer) {
         ItemStack itemStack = XMaterial.PLAYER_HEAD.parseItem();
-        Validate.notNull(itemStack);
+        if (itemStack == null) return new ItemStack(Material.AIR);
         try {
             SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
             if (meta != null) {
