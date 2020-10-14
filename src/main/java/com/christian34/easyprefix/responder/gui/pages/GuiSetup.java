@@ -12,7 +12,6 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.ChatRespond;
 import com.christian34.easyprefix.responder.GuiRespond;
 import com.christian34.easyprefix.responder.gui.Icon;
-import com.christian34.easyprefix.responder.gui.Page;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.VersionController;
@@ -31,17 +30,15 @@ import java.util.List;
  *
  * @author Christian34
  */
-@SuppressWarnings("UnusedReturnValue")
-public class GuiSetup extends Page {
+public class GuiSetup {
     private final User user;
     private final String DIVIDER = "§7-------------------------";
 
     public GuiSetup(User user) {
-        super(user);
         this.user = user;
     }
 
-    public GuiSetup mainPage() {
+    public void mainPage() {
         GuiRespond guiRespond = new GuiRespond(user, Message.SETTINGS_TITLE_MAIN.toString(), 3);
         guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_GROUPS.toString(), 2, 3).onClick(this::groupsList);
 
@@ -52,10 +49,9 @@ public class GuiSetup extends Page {
 
         guiRespond.addCloseButton();
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSetup pluginSettingsGui() {
+    public void pluginSettingsGui() {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
@@ -103,10 +99,9 @@ public class GuiSetup extends Page {
 
         guiRespond.addCloseButton().onClick(this::mainPage);
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSetup createGroup() {
+    public void createGroup() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         ChatRespond responder = new ChatRespond(user, Message.CHAT_GROUP.toString());
 
@@ -125,13 +120,13 @@ public class GuiSetup extends Page {
         });
 
         responder.getInput((respond) -> {
-            groupHandler.createGroup(respond);
-            user.sendMessage(Message.GROUP_CREATED.toString());
+            if (groupHandler.createGroup(respond)) {
+                user.sendMessage(Message.GROUP_CREATED.toString());
+            }
         });
-        return this;
     }
 
-    public GuiSetup groupsList() {
+    public void groupsList() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETUP_GROUPS_TITLE.toString(), 5);
         final String divider = "§7-------------------------------";
@@ -169,10 +164,9 @@ public class GuiSetup extends Page {
 
         guiRespond.addCloseButton().onClick(this::mainPage);
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSetup openSubgroupsList() {
+    public void openSubgroupsList() {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.TITLE_SUBGROUPS.toString(), 5);
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         for (final Subgroup subgroup : groupHandler.getSubgroups()) {
@@ -199,19 +193,17 @@ public class GuiSetup extends Page {
 
         guiRespond.addCloseButton().onClick(this::mainPage);
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSetup openProfile(EasyGroup easyGroup) {
+    public void openProfile(EasyGroup easyGroup) {
         if (easyGroup instanceof Group) {
             openGroupProfile((Group) easyGroup);
         } else {
             openSubgroupProfile((Subgroup) easyGroup);
         }
-        return this;
     }
 
-    public GuiSetup openGroupProfile(Group group) {
+    public void openGroupProfile(Group group) {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 4);
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 3);
         prefixIcon.setLore(Arrays.asList(this.DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getPrefix(null, false) + "§7»", " ", Message.LORE_EDIT.toString()));
@@ -250,10 +242,9 @@ public class GuiSetup extends Page {
 
         guiRespond.addCloseButton().onClick(this::groupsList);
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSetup openSubgroupProfile(Subgroup subgroup) {
+    public void openSubgroupProfile(Subgroup subgroup) {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 3);
 
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX.toString(), 2, 4);
@@ -270,7 +261,6 @@ public class GuiSetup extends Page {
 
         guiRespond.addCloseButton().onClick(this::openSubgroupsList);
         guiRespond.openInventory();
-        return this;
     }
 
 }

@@ -12,7 +12,6 @@ import com.christian34.easyprefix.responder.ChatRespond;
 import com.christian34.easyprefix.responder.GuiRespond;
 import com.christian34.easyprefix.responder.gui.ClickAction;
 import com.christian34.easyprefix.responder.gui.Icon;
-import com.christian34.easyprefix.responder.gui.Page;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -34,17 +33,15 @@ import java.util.Objects;
  *
  * @author Christian34
  */
-@SuppressWarnings("UnusedReturnValue")
-public class GuiSettings extends Page {
+public class GuiSettings {
     private final String TITLE = Message.SETTINGS_TITLE.toString();
     private final User user;
 
     public GuiSettings(User user) {
-        super(user);
         this.user = user;
     }
 
-    public GuiSettings openWelcomePage() {
+    public void openWelcomePage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_MAIN), 3);
         Icon prefix = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_PREFIXES, 2, 3).onClick(() -> {
             int userGroups = user.getAvailableGroups().size();
@@ -68,10 +65,9 @@ public class GuiSettings extends Page {
 
         guiRespond.addCloseButton();
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSettings openGenderSelectPage() {
+    public void openGenderSelectPage() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.TITLE_GENDER), 3);
         String genderName = "n/A";
@@ -94,10 +90,9 @@ public class GuiSettings extends Page {
 
         guiRespond.addCloseButton().onClick(this::openWelcomePage);
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSettings openGroupsListPage() {
+    public void openGroupsListPage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
 
         for (Group group : user.getAvailableGroups()) {
@@ -134,10 +129,9 @@ public class GuiSettings extends Page {
 
         guiRespond.addCloseButton().onClick(this::openWelcomePage);
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSettings openColorsPage() {
+    public void openColorsPage() {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_FORMATTINGS), 5);
         boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
 
@@ -209,10 +203,9 @@ public class GuiSettings extends Page {
 
         guiRespond.addCloseButton().onClick(this::openWelcomePage);
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSettings openSubgroupsPage(ClickAction backAction) {
+    public void openSubgroupsPage(ClickAction backAction) {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
         for (Subgroup subgroup : user.getAvailableSubgroups()) {
             List<String> lore = new ArrayList<>();
@@ -249,10 +242,9 @@ public class GuiSettings extends Page {
         }
 
         guiRespond.openInventory();
-        return this;
     }
 
-    public GuiSettings openCustomLayoutPage(ClickAction backAction) {
+    public void openCustomLayoutPage(ClickAction backAction) {
         if (!ConfigKeys.CUSTOM_LAYOUT.toBoolean() || !user.hasPermission("custom.gui")) {
             if (backAction != null) {
                 backAction.execute();
@@ -299,7 +291,6 @@ public class GuiSettings extends Page {
         }
 
         guiRespond.openInventory();
-        return this;
     }
 
     private String setTitle(Message sub) {

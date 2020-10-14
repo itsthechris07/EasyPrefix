@@ -6,7 +6,6 @@ import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.ChatRespond;
 import com.christian34.easyprefix.responder.GuiRespond;
-import com.christian34.easyprefix.responder.gui.Page;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -22,11 +21,10 @@ import java.util.Objects;
  *
  * @author Christian34
  */
-public class GuiModifyingGroups extends Page {
+public class GuiModifyingGroups {
     private final User user;
 
     public GuiModifyingGroups(User user) {
-        super(user);
         this.user = user;
     }
 
