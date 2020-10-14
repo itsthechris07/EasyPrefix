@@ -15,11 +15,11 @@ import com.christian34.easyprefix.utils.Color;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * EasyPrefix 2020.
@@ -31,20 +31,19 @@ public class Group extends EasyGroup {
     private final GroupsData groupsData;
     private final GroupHandler groupHandler;
     private final ChatColor groupColor;
-    private final EasyPrefix instance;
     private String prefix, suffix, joinMessage, quitMessage;
     private Color chatColor;
     private ChatFormatting chatFormatting;
     private GenderedLayout genderedLayout = null;
 
-    public Group(GroupHandler groupHandler, String name) {
+    public Group(GroupHandler groupHandler, @NotNull String name) {
         this.NAME = name;
-        this.instance = groupHandler.getInstance();
+        EasyPrefix instance = groupHandler.getInstance();
         this.groupsData = instance.getFileManager().getGroupsData();
         this.groupHandler = groupHandler;
 
-        List<String> keys = Arrays.asList("prefix", "suffix", "chat_color", "chat_formatting", "join_msg", "quit_msg");
         Data data;
+        List<String> keys = Arrays.asList("prefix", "suffix", "chat_color", "chat_formatting", "join_msg", "quit_msg");
         if (instance.getStorageType() == StorageType.SQL) {
             SelectQuery selectQuery = new SelectQuery("groups").setColumns(keys).addCondition("group", name);
             data = selectQuery.getData();
@@ -88,13 +87,15 @@ public class Group extends EasyGroup {
         this.quitMessage = data.getString("quit_msg");
     }
 
+    @NotNull
     public String getJoinMessage(User user) {
         if (this.joinMessage == null || this.joinMessage.isEmpty()) {
             this.joinMessage = this.groupHandler.getGroup("default").getJoinMessageText();
         }
-        return translate(joinMessage, user);
+        return Objects.requireNonNull(translate(joinMessage, user));
     }
 
+    @NotNull
     public String getJoinMessageText() {
         if (this.joinMessage == null || this.joinMessage.isEmpty()) {
             this.joinMessage = this.groupHandler.getGroup("default").getJoinMessageText();
@@ -102,18 +103,20 @@ public class Group extends EasyGroup {
         return joinMessage;
     }
 
-    public void setJoinMessage(String joinMessage) {
+    public void setJoinMessage(@NotNull String joinMessage) {
         this.joinMessage = joinMessage.replace("§", "&");
         saveData("join-msg", this.joinMessage);
     }
 
-    public String getQuitMessage(User user) {
+    @NotNull
+    public String getQuitMessage(@NotNull User user) {
         if (this.quitMessage == null || this.quitMessage.isEmpty()) {
             this.quitMessage = this.groupHandler.getGroup("default").getQuitMessageText();
         }
-        return translate(quitMessage, user);
+        return Objects.requireNonNull(translate(quitMessage, user));
     }
 
+    @NotNull
     public String getQuitMessageText() {
         if (this.quitMessage == null || this.quitMessage.isEmpty()) {
             this.quitMessage = this.groupHandler.getGroup("default").getQuitMessageText();
@@ -146,13 +149,14 @@ public class Group extends EasyGroup {
     }
 
     @Override
+    @NotNull
     public String getName() {
         return NAME;
     }
 
     @Override
-    @Nonnull
-    public String getPrefix(User user, boolean translate) {
+    @NotNull
+    public String getPrefix(@Nullable User user, boolean translate) {
         String prefix;
         if (this.groupHandler.handleGenders() && user != null) {
             prefix = this.genderedLayout.getPrefix(user.getGenderType());
@@ -171,7 +175,7 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public String getSuffix(@Nullable User user, boolean translate) {
         String suffix;
         if (this.groupHandler.handleGenders() && user != null) {

@@ -5,6 +5,8 @@ import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
 
+import javax.annotation.Nullable;
+
 /**
  * EasyPrefix 2020.
  *
