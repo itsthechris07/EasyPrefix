@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -99,31 +100,31 @@ public class User {
             }
         }
 
-        String chatColor = userData.getString("chat_color");
-        if (chatColor != null && !(chatColor.length() < 2)) {
-            this.chatColor = Color.getByCode(chatColor.substring(1, 2));
+        String color = userData.getString("chat_color");
+        if (color != null && color.length() > 1) {
+            this.chatColor = Color.getByCode(color.substring(1, 2));
         }
 
-        String chatFormatting = userData.getString("chat_formatting");
-        if (chatFormatting != null && chatFormatting.length() > 1) {
-            if (chatFormatting.equals("%r")) {
+        String formatting = userData.getString("chat_formatting");
+        if (formatting != null && formatting.length() > 1) {
+            if (formatting.equals("%r")) {
                 this.chatFormatting = ChatFormatting.RAINBOW;
             } else {
-                this.chatFormatting = ChatFormatting.getByCode(chatFormatting.substring(1, 2));
+                this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
             }
         }
 
-        String customPrefix = userData.getString("custom_prefix");
+        String cstmPrefix = userData.getString("custom_prefix");
         if (hasPermission("custom.prefix") && ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-            if (customPrefix != null) {
-                this.customPrefix = customPrefix.replace("&", "§");
+            if (cstmPrefix != null) {
+                this.customPrefix = cstmPrefix.replace("&", "§");
             }
         }
 
-        String customSuffix = userData.getString("custom_suffix");
+        String cstmSuffix = userData.getString("custom_suffix");
         if (hasPermission("custom.suffix") && ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-            if (customSuffix != null) {
-                this.customSuffix = customSuffix.replace("&", "§");
+            if (cstmSuffix != null) {
+                this.customSuffix = cstmSuffix.replace("&", "§");
             }
         }
 
@@ -143,9 +144,9 @@ public class User {
             }
         }
 
-        String gender = userData.getString("gender");
-        if (gender != null && groupHandler.handleGenders()) {
-            this.gender = groupHandler.getGender(gender);
+        String genderName = userData.getString("gender");
+        if (genderName != null && groupHandler.handleGenders()) {
+            this.gender = groupHandler.getGender(genderName);
         }
     }
 
@@ -199,7 +200,7 @@ public class User {
     }
 
     @NotNull
-    public ArrayList<Color> getColors() {
+    public List<Color> getColors() {
         return colors;
     }
 
@@ -228,7 +229,7 @@ public class User {
         this.instance.unloadUser(getPlayer());
     }
 
-    public ArrayList<ChatFormatting> getChatFormattings() {
+    public List<ChatFormatting> getChatFormattings() {
         return chatFormattings;
     }
 
@@ -240,7 +241,7 @@ public class User {
         return getGroup().getChatFormatting();
     }
 
-    public void setChatFormatting(ChatFormatting chatFormatting) {
+    public void setChatFormatting(@Nullable ChatFormatting chatFormatting) {
         this.chatFormatting = chatFormatting;
         String value = null;
         if (chatFormatting != null) {
@@ -297,7 +298,7 @@ public class User {
         return player;
     }
 
-    public ArrayList<Group> getAvailableGroups() {
+    public List<Group> getAvailableGroups() {
         ArrayList<Group> availableGroups = new ArrayList<>();
         for (Group targetGroup : this.instance.getGroupHandler().getGroups()) {
             if (player.hasPermission("EasyPrefix.group." + targetGroup.getName())) {
@@ -305,13 +306,13 @@ public class User {
             }
         }
         if (this.isGroupForced) {
-            Group group = getGroup();
-            if (!availableGroups.contains(group)) availableGroups.add(group);
+            Group currentGroup = getGroup();
+            if (!availableGroups.contains(currentGroup)) availableGroups.add(currentGroup);
         }
         return availableGroups;
     }
 
-    public ArrayList<Subgroup> getAvailableSubgroups() {
+    public List<Subgroup> getAvailableSubgroups() {
         ArrayList<Subgroup> availableGroups = new ArrayList<>();
         for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
             if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())) {
@@ -322,7 +323,6 @@ public class User {
     }
 
     private Group getGroupPerPerms() {
-        GroupHandler groupHandler = this.instance.getGroupHandler();
         for (Group group : groupHandler.getGroups()) {
             if (group.getName().equals("default")) continue;
             if (player.hasPermission("EasyPrefix.group." + group.getName())) {
