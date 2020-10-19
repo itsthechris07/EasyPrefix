@@ -16,7 +16,7 @@ import java.util.UUID;
  *
  * @author Christian34
  */
-public class Debug {
+public final class Debug {
     private static final IHub hub;
 
     static {
@@ -46,6 +46,9 @@ public class Debug {
         hub.setTag("java", System.getProperty("java.version"));
         hub.setTag("storage", instance.getStorageType().name().toLowerCase());
         hub.setTag("groups", instance.getGroupHandler().getGroups().size() + "");
+    }
+
+    private Debug() {
     }
 
     public static void recordAction(String message) {
