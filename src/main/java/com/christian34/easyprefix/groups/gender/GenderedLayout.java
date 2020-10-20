@@ -67,7 +67,7 @@ public class GenderedLayout {
             }
         } else {
             GroupsData groupsData = instance.getFileManager().getGroupsData();
-            Set<String> set = groupsData.getSection(easyGroup.getFilePath() + "genders");
+            Set<String> set = groupsData.getSection(easyGroup.getFileKey() + "genders");
             if (set.isEmpty()) {
                 return;
             }
@@ -79,12 +79,12 @@ public class GenderedLayout {
                     continue;
                 }
 
-                String prefix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + name + ".prefix");
+                String prefix = groupsData.getData().getString(easyGroup.getFileKey() + "genders." + name + ".prefix");
                 if (prefix != null) {
                     prefixes.put(gender, prefix);
                 }
 
-                String suffix = groupsData.getData().getString(easyGroup.getFilePath() + "genders." + name + ".suffix");
+                String suffix = groupsData.getData().getString(easyGroup.getFileKey() + "genders." + name + ".suffix");
                 if (suffix != null) {
                     suffixes.put(gender, suffix);
                 }
