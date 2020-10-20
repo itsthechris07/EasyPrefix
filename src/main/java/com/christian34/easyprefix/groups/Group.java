@@ -50,7 +50,7 @@ public class Group extends EasyGroup {
         } else {
             HashMap<String, Object> storage = new HashMap<>();
             for (String key : keys) {
-                storage.put(key, getGroupsData().getData().getString(getFilePath() + key.replace("_", "-")));
+                storage.put(key, getGroupsData().getData().getString(getFileKey() + key.replace("_", "-")));
             }
             data = new Data(storage);
         }
@@ -143,7 +143,7 @@ public class Group extends EasyGroup {
                 Messages.log("Couldn't save data to database! Error GDB1");
             }
         } else {
-            groupsData.setAndSave(getFilePath() + key.replace("_", "-"), value);
+            groupsData.setAndSave(getFileKey() + key.replace("_", "-"), value);
         }
         this.groupHandler.getInstance().getGroupHandler().load();
     }
@@ -201,7 +201,7 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    public String getFilePath() {
+    public String getFileKey() {
         return "groups." + NAME + ".";
     }
 

@@ -38,8 +38,8 @@ public class Subgroup extends EasyGroup {
             this.suffix = data.getStringOr("suffix", "");
         } else {
             this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
-            this.prefix = groupsData.getOrDefault(getFilePath() + "prefix", "");
-            this.suffix = groupsData.getOrDefault(getFilePath() + "suffix", "");
+            this.prefix = groupsData.getOrDefault(getFileKey() + "prefix", "");
+            this.suffix = groupsData.getOrDefault(getFileKey() + "suffix", "");
         }
 
         if (groupHandler.handleGenders()) {
@@ -56,7 +56,7 @@ public class Subgroup extends EasyGroup {
         if (value instanceof String) value = ((String) value).replace("§", "&");
         if (instance.getStorageType() == StorageType.LOCAL) {
             key = key.replace("_", "-");
-            groupsData.setAndSave(getFilePath() + key, value);
+            groupsData.setAndSave(getFileKey() + key, value);
         } else {
             UpdateStatement updateStatement = new UpdateStatement("subgroups")
                     .addCondition("group", getName())
@@ -117,7 +117,7 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
-    public String getFilePath() {
+    public String getFileKey() {
         return "subgroups." + getName() + ".";
     }
 

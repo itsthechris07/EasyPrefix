@@ -51,7 +51,7 @@ public abstract class EasyGroup {
     /**
      * @return String returns the key for group in FileConfiguration
      */
-    public abstract String getFilePath();
+    public abstract String getFileKey();
 
     /**
      * deletes the group recursively
