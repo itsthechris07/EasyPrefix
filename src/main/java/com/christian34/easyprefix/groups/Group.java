@@ -29,11 +29,11 @@ public class Group extends EasyGroup {
     private final GroupsData groupsData;
     private final GroupHandler groupHandler;
     private final ChatColor groupColor;
+    private final EasyPrefix instance;
     private String prefix, suffix, joinMessage, quitMessage;
     private Color chatColor;
     private ChatFormatting chatFormatting;
     private GenderedLayout genderedLayout = null;
-    private final EasyPrefix instance;
 
     public Group(GroupHandler groupHandler, @NotNull String name) {
         this.NAME = name;
@@ -133,7 +133,6 @@ public class Group extends EasyGroup {
     }
 
     private void saveData(@NotNull String key, @Nullable Object value) {
-        EasyPrefix instance = groupHandler.getInstance();
         if (instance.getStorageType() == StorageType.SQL) {
             UpdateStatement updateStatement = new UpdateStatement("groups")
                     .addCondition("group", this.NAME)
@@ -207,15 +206,15 @@ public class Group extends EasyGroup {
     @Override
     @NotNull
     public String getSuffix(@Nullable User user, boolean translate) {
-        String suffix;
+        String groupSuffix;
         if (this.groupHandler.handleGenders() && user != null) {
-            suffix = this.genderedLayout.getSuffix(user.getGenderType());
-            if (suffix == null) suffix = this.suffix;
+            groupSuffix = this.genderedLayout.getSuffix(user.getGenderType());
+            if (groupSuffix == null) groupSuffix = this.suffix;
         } else {
-            suffix = this.suffix;
+            groupSuffix = this.suffix;
         }
-        if (translate) suffix = translate(suffix, user);
-        return suffix;
+        if (translate) groupSuffix = translate(groupSuffix, user);
+        return groupSuffix;
     }
 
     @Override
@@ -225,9 +224,9 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    public void setSuffix(@Nullable String suffix, @NotNull Gender gender) {
-        if (suffix != null) {
-            suffix = suffix.replace("§", "&");
+    public void setSuffix(@Nullable String groupSuffix, @NotNull Gender gender) {
+        if (groupSuffix != null) {
+            groupSuffix = groupSuffix.replace("§", "&");
         }
 
         if (instance.getStorageType() == StorageType.SQL) {
@@ -243,14 +242,14 @@ public class Group extends EasyGroup {
             }
 
             UpdateStatement update = new UpdateStatement("groups_gendered");
-            update.setValue("suffix", suffix);
+            update.setValue("suffix", groupSuffix);
             update
                     .addCondition("group", getName())
                     .addCondition("gender", gender.getName());
             update.execute();
         } else {
             GroupsData data = getGroupsData();
-            data.setAndSave(getFileKey() + "genders." + gender.getName() + ".suffix", suffix);
+            data.setAndSave(getFileKey() + "genders." + gender.getName() + ".suffix", groupSuffix);
         }
         groupHandler.reloadGroup(this);
     }
@@ -268,7 +267,6 @@ public class Group extends EasyGroup {
 
     @Override
     public void delete() {
-        EasyPrefix instance = this.groupHandler.getInstance();
         if (instance.getStorageType() == StorageType.LOCAL) {
             groupsData.setAndSave("groups." + getName(), null);
         } else {
@@ -288,18 +286,11 @@ public class Group extends EasyGroup {
 
     public void setChatColor(@NotNull Color color) {
         this.chatColor = color;
-        String value = null;
-        if (color != null) {
-            value = color.getCode().replace("§", "&");
-            if (ChatFormatting.RAINBOW.equals(chatFormatting)) {
-                setChatFormatting(null);
-            }
-        } else {
-            if (!(chatFormatting != null && chatFormatting.equals(ChatFormatting.RAINBOW))) {
-                setChatFormatting(null);
-            }
+
+        if (getChatFormatting() != null && getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+            setChatFormatting(null);
         }
-        saveData("chat-color", value);
+        saveData("chat-color", color.getCode().replace("§", "&"));
     }
 
     @Nullable
@@ -312,9 +303,10 @@ public class Group extends EasyGroup {
         String value = null;
         if (chatFormatting != null) {
             if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                setChatColor(null);
                 value = "%r";
-            } else value = chatFormatting.getCode().replace("§", "&");
+            } else {
+                value = chatFormatting.getCode().replace("§", "&");
+            }
         }
         saveData("chat-formatting", value);
     }
