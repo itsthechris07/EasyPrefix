@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -201,7 +202,7 @@ public class GuiRespond {
             return page;
         }
 
-        public ArrayList<Icon> getIcons() {
+        public List<Icon> getIcons() {
             return icons;
         }
 

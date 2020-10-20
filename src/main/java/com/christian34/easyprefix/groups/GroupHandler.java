@@ -19,6 +19,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * EasyPrefix 2020.
@@ -77,8 +78,8 @@ public class GroupHandler {
         this.defaultGroup = new Group(this, "default");
         groups.add(defaultGroup);
 
-        ArrayList<String> groupNames = new ArrayList<>();
-        ArrayList<String> subgroupNames = new ArrayList<>();
+        List<String> groupNames = new ArrayList<>();
+        List<String> subgroupNames = new ArrayList<>();
 
         if (instance.getStorageType() == StorageType.LOCAL) {
             GroupsData groupsData = getGroupsData();
@@ -151,7 +152,7 @@ public class GroupHandler {
         }
     }
 
-    public ArrayList<Gender> getGenderTypes() {
+    public List<Gender> getGenderTypes() {
         return genders;
     }
 
@@ -185,11 +186,11 @@ public class GroupHandler {
         return false;
     }
 
-    public ArrayList<Group> getGroups() {
+    public List<Group> getGroups() {
         return groups;
     }
 
-    public ArrayList<Subgroup> getSubgroups() {
+    public List<Subgroup> getSubgroups() {
         return subgroups;
     }
 

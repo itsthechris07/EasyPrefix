@@ -25,6 +25,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * EasyPrefix 2020.
@@ -158,7 +159,7 @@ public class EasyPrefix extends JavaPlugin {
         return user;
     }
 
-    public ArrayList<User> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 

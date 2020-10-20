@@ -133,7 +133,7 @@ public class SetCommand implements Subcommand {
         int minutes = (int) (min % 60);
         int hours = (int) ((min / 60) % 24);
         String msg = Message.LAYOUT_ERROR.toString();
-        return msg.replace("%h%", hours + "").replace("%m%", (minutes == 0) ? "<1" : minutes + "");
+        return msg.replace("%h%", Integer.toString(hours)).replace("%m%", (minutes == 0) ? "<1" : Integer.toString(minutes));
     }
 
     /**

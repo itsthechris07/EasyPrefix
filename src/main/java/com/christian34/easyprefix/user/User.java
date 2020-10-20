@@ -299,7 +299,7 @@ public class User {
     }
 
     public List<Group> getAvailableGroups() {
-        ArrayList<Group> availableGroups = new ArrayList<>();
+        List<Group> availableGroups = new ArrayList<>();
         for (Group targetGroup : this.instance.getGroupHandler().getGroups()) {
             if (player.hasPermission("EasyPrefix.group." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);
@@ -313,7 +313,7 @@ public class User {
     }
 
     public List<Subgroup> getAvailableSubgroups() {
-        ArrayList<Subgroup> availableGroups = new ArrayList<>();
+        List<Subgroup> availableGroups = new ArrayList<>();
         for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
             if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);

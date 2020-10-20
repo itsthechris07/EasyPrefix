@@ -77,7 +77,7 @@ public class GuiSettings {
             if (user.getGenderType() == null) {
                 user.setGenderType(groupHandler.getGenderTypes().get(0));
             } else {
-                ArrayList<Gender> genders = groupHandler.getGenderTypes();
+                List<Gender> genders = groupHandler.getGenderTypes();
                 int index = genders.indexOf(user.getGenderType());
                 if (index + 1 >= genders.size()) {
                     index = 0;

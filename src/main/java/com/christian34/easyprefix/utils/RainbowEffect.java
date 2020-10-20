@@ -5,6 +5,7 @@ import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Random;
  * @author Christian34
  */
 public class RainbowEffect {
-    private static ArrayList<ChatColor> rainbowColors = null;
+    private static List<ChatColor> rainbowColors = null;
 
     public static String addRainbowEffect(String text) {
         String[] letters = text.split("(?<!^)");
@@ -31,13 +32,13 @@ public class RainbowEffect {
     }
 
     private static ChatColor getRandomColor() {
-        ArrayList<ChatColor> colors = getRainbowColors();
+        List<ChatColor> colors = getRainbowColors();
         return colors.get(new Random().nextInt(colors.size()));
     }
 
-    public static ArrayList<ChatColor> getRainbowColors() {
+    public static List<ChatColor> getRainbowColors() {
         if (rainbowColors == null || rainbowColors.isEmpty()) {
-            ArrayList<ChatColor> enabledColors = new ArrayList<>();
+            List<ChatColor> enabledColors = new ArrayList<>();
             for (String color : ConfigKeys.COLOR_RAINBOW_COLORS.toStringList()) {
                 try {
                     enabledColors.add(ChatColor.valueOf(color));
