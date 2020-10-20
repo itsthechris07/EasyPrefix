@@ -2,15 +2,15 @@ package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
+import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.sql.Data;
-import com.christian34.easyprefix.sql.DeleteStatement;
-import com.christian34.easyprefix.sql.SelectQuery;
-import com.christian34.easyprefix.sql.UpdateStatement;
+import com.christian34.easyprefix.sql.*;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * EasyPrefix 2020.
@@ -93,6 +93,36 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
+    public void setPrefix(@Nullable String prefix, @NotNull Gender gender) {
+        if (prefix != null) {
+            prefix = prefix.replace("§", "&");
+        }
+
+        if (instance.getStorageType() == StorageType.SQL) {
+            SelectQuery select = new SelectQuery("subgroups_gendered", "id")
+                    .addCondition("group", getName())
+                    .addCondition("gender", gender.getName());
+            if (select.getData().isEmpty()) {
+                InsertStatement insert = new InsertStatement("subgroups_gendered");
+                insert
+                        .setValue("group", getName())
+                        .setValue("gender", gender.getName());
+                insert.execute();
+            }
+
+            UpdateStatement update = new UpdateStatement("subgroups_gendered");
+            update.setValue("prefix", prefix);
+            update
+                    .addCondition("group", getName())
+                    .addCondition("gender", gender.getName());
+            update.execute();
+        } else {
+            groupsData.setAndSave(getFileKey() + "genders." + gender.getName() + ".prefix", prefix);
+        }
+        groupHandler.reloadGroup(this);
+    }
+
+    @Override
     public String getSuffix(User user, boolean translate) {
         String suffix;
         if (this.groupHandler.handleGenders() && user != null) {
@@ -109,6 +139,36 @@ public class Subgroup extends EasyGroup {
     public void setSuffix(String suffix) {
         this.suffix = suffix.replace("§", "&");
         saveData("suffix", this.suffix);
+    }
+
+    @Override
+    public void setSuffix(@Nullable String suffix, @NotNull Gender gender) {
+        if (suffix != null) {
+            suffix = suffix.replace("§", "&");
+        }
+
+        if (instance.getStorageType() == StorageType.SQL) {
+            SelectQuery select = new SelectQuery("subgroups_gendered", "id")
+                    .addCondition("group", getName())
+                    .addCondition("gender", gender.getName());
+            if (select.getData().isEmpty()) {
+                InsertStatement insert = new InsertStatement("subgroups_gendered");
+                insert
+                        .setValue("group", getName())
+                        .setValue("gender", gender.getName());
+                insert.execute();
+            }
+
+            UpdateStatement update = new UpdateStatement("subgroups_gendered");
+            update.setValue("suffix", suffix);
+            update
+                    .addCondition("group", getName())
+                    .addCondition("gender", gender.getName());
+            update.execute();
+        } else {
+            groupsData.setAndSave(getFileKey() + "genders." + gender.getName() + ".suffix", suffix);
+        }
+        groupHandler.reloadGroup(this);
     }
 
     @Override

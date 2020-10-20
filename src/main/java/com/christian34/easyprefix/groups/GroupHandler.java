@@ -220,6 +220,18 @@ public class GroupHandler {
         return true;
     }
 
+    public void reloadGroup(EasyGroup easyGroup) {
+        if (easyGroup instanceof Group) {
+            Group group = (Group) easyGroup;
+            groups.remove(group);
+            groups.add(new Group(this, easyGroup.getName()));
+        } else {
+            Subgroup subgroup = (Subgroup) easyGroup;
+            subgroups.remove(subgroup);
+            subgroups.add(new Subgroup(this, easyGroup.getName()));
+        }
+    }
+
     private GroupsData getGroupsData() {
         return groupsData;
     }
