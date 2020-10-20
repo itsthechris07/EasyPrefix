@@ -281,11 +281,12 @@ public class Group extends EasyGroup {
         instance.getUsers().clear();
     }
 
+    @NotNull
     public Color getChatColor() {
         return chatColor;
     }
 
-    public void setChatColor(Color color) {
+    public void setChatColor(@NotNull Color color) {
         this.chatColor = color;
         String value = null;
         if (color != null) {
@@ -306,7 +307,7 @@ public class Group extends EasyGroup {
         return chatFormatting;
     }
 
-    public void setChatFormatting(ChatFormatting chatFormatting) {
+    public void setChatFormatting(@Nullable ChatFormatting chatFormatting) {
         this.chatFormatting = chatFormatting;
         String value = null;
         if (chatFormatting != null) {

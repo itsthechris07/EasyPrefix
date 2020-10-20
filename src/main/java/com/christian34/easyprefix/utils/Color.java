@@ -4,6 +4,8 @@ import com.christian34.easyprefix.messages.Message;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * EasyPrefix 2020.
@@ -39,6 +41,7 @@ public enum Color {
         this.material = material.parseItem();
     }
 
+    @NotNull
     public static Color[] getValues() {
         Color[] colors = new Color[values().length - 1];
         int i = 0;
@@ -50,6 +53,7 @@ public enum Color {
         return colors;
     }
 
+    @Nullable
     public static Color getByCode(String code) {
         for (Color color : Color.values()) {
             if (color.code.equals(code)) return color;
@@ -62,10 +66,12 @@ public enum Color {
         return getCode() + name.toString();
     }
 
+    @NotNull
     public String getCode() {
         return "§" + code;
     }
 
+    @NotNull
     public ItemStack toItemStack() {
         ItemStack item = material.clone();
         ItemMeta meta = item.getItemMeta();
