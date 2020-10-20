@@ -32,7 +32,7 @@ import java.util.ArrayList;
  * @author Christian34
  */
 public class EasyPrefix extends JavaPlugin {
-    private static EasyPrefix instance;
+    private static EasyPrefix instance = null;
     private ArrayList<User> users;
     private Plugin plugin;
     private GroupHandler groupHandler;
@@ -46,6 +46,10 @@ public class EasyPrefix extends JavaPlugin {
 
     public static EasyPrefix getInstance() {
         return instance;
+    }
+
+    private synchronized static void setInstance(EasyPrefix instance) {
+        EasyPrefix.instance = instance;
     }
 
     public DataMigration getDataMigration() {
@@ -92,7 +96,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void onEnable() {
-        instance = this;
+        setInstance(this);
         this.plugin = this;
         this.users = new ArrayList<>();
         this.fileManager = new FileManager(this);
