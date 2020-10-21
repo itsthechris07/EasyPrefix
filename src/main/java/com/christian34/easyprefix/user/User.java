@@ -217,12 +217,8 @@ public class User {
         String value = null;
         if (color != null) {
             value = color.getCode().replace("§", "&");
-            if (chatFormatting != null && chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                setChatFormatting(null);
-            }
-        } else {
-            if (!(chatFormatting != null && chatFormatting.equals(ChatFormatting.RAINBOW))) {
-                setChatFormatting(null);
+            if (getChatFormatting() != null && getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+                setChatFormatting(ChatFormatting.UNDEFINED);
             }
         }
         saveData("chat_color", value);
@@ -248,7 +244,9 @@ public class User {
             if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
                 setChatColor(null);
                 value = "%r";
-            } else value = chatFormatting.getCode().replace("§", "&");
+            } else {
+                value = chatFormatting.getCode().replace("§", "&");
+            }
         }
         saveData("chat_formatting", value);
         this.instance.unloadUser(getPlayer());

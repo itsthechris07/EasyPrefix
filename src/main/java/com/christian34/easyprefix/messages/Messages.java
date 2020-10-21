@@ -98,16 +98,16 @@ public class Messages {
         }
 
         FileWriter writer = new FileWriter(tempFile);
-
         Reader reader = new FileReader(file);
-        BufferedReader br = new BufferedReader(reader);
 
-        while (br.ready()) {
-            writer.write(br.readLine().replaceAll("[^\\x20-\\x7e]", "") + "\n");
+        try (BufferedReader br = new BufferedReader(reader)) {
+            while (br.ready()) {
+                writer.write(br.readLine().replaceAll("[^\\x20-\\x7e]", "") + "\n");
+            }
+        } catch (IOException ignored) {
         }
 
         writer.close();
-        br.close();
         reader.close();
         if (!file.delete() && !tempFile.renameTo(file)) {
             Messages.log("§cCouldn't update file messages.yml! Please consider an update to newer a newer Minecraft version.");

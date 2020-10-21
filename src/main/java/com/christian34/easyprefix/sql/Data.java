@@ -33,6 +33,8 @@ public class Data {
     }
 
     public int getInt(String key) {
+        String val = getString(key);
+        if (val == null) return 0;
         return Integer.parseInt(getString(key));
     }
 

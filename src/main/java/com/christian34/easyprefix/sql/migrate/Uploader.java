@@ -185,8 +185,8 @@ class Uploader {
             userData.loadData();
 
             HashMap<String, Object> data = userData.getData().getData();
-            for (String key : data.keySet()) {
-                update.setValue(key, data.get(key));
+            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                update.setValue(entry.getKey(), entry.getValue());
             }
             try {
                 if (update.execute()) {

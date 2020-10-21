@@ -64,21 +64,21 @@ public class Group extends EasyGroup {
         this.suffix = data.getStringOr("suffix", "");
         this.suffix = suffix.replace("§", "&");
 
-        String chatFormatting = data.getString("chat_formatting");
-        if (chatFormatting != null && chatFormatting.length() == 2) {
-            this.chatFormatting = ChatFormatting.getByCode(chatFormatting.substring(1, 2));
+        String formatting = data.getString("chat_formatting");
+        if (formatting != null && formatting.length() == 2) {
+            this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
             if (this.chatFormatting == null) setChatFormatting(null);
         }
 
-        String chatColor = data.getString("chat_color");
-        if (chatColor == null || chatColor.length() < 2) {
+        String color = data.getString("chat_color");
+        if (color == null || color.length() < 2) {
             if (this.chatFormatting != null && this.chatFormatting.equals(ChatFormatting.RAINBOW)) {
                 this.chatColor = Color.GRAY;
             } else {
                 setChatColor(Color.GRAY);
             }
         } else {
-            this.chatColor = Color.getByCode(chatColor.substring(1, 2));
+            this.chatColor = Color.getByCode(color.substring(1, 2));
         }
 
         this.groupColor = getGroupColor(prefix);

@@ -183,9 +183,6 @@ public class GuiSettings {
                             formatting = null;
                         }
                     }
-                    if (formatting != null && !formatting.equals(ChatFormatting.RAINBOW)) {
-                        return;
-                    }
                     user.setChatFormatting(formatting);
                     openColorsPage();
                 } else {

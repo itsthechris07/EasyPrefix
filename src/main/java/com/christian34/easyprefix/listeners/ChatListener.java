@@ -43,7 +43,7 @@ public class ChatListener implements Listener {
         if (ConfigKeys.HANDLE_COLORS.toBoolean()) {
             ChatFormatting chatFormatting = user.getChatFormatting();
             chatColor = user.getChatColor().getCode();
-            if (chatFormatting != null) {
+            if (chatFormatting != null && !chatFormatting.equals(ChatFormatting.UNDEFINED)) {
                 if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
                     msg = RainbowEffect.addRainbowEffect(msg);
                     chatColor = "";

@@ -8,7 +8,12 @@ import com.christian34.easyprefix.messages.Message;
  * @author Christian34
  */
 public enum ChatFormatting {
-    BOLD("l", Message.FORMATTING_BOLD), ITALIC("o", Message.FORMATTING_ITALIC), RAINBOW("r", Message.FORMATTING_RAINBOW), STRIKETHROUGH("m", Message.FORMATTING_STRIKETHROUGH), UNDEFINED("r", null), UNDERLINE("n", Message.FORMATTING_UNDERLINE);
+    BOLD("l", Message.FORMATTING_BOLD),
+    ITALIC("o", Message.FORMATTING_ITALIC),
+    RAINBOW("r", Message.FORMATTING_RAINBOW),
+    STRIKETHROUGH("m", Message.FORMATTING_STRIKETHROUGH),
+    UNDEFINED("", null),
+    UNDERLINE("n", Message.FORMATTING_UNDERLINE);
 
     private final String code;
     private final Message name;
@@ -38,13 +43,18 @@ public enum ChatFormatting {
 
     @Override
     public String toString() {
-        if (code.equals("r")) {
-            return getCode() + RainbowEffect.addRainbowEffect(name.toString());
+        if (code != null) {
+            if (code.equals("r")) {
+                return getCode() + RainbowEffect.addRainbowEffect(name.toString());
+            }
+            return getCode() + name.toString();
         }
-        return getCode() + name.toString();
+        return "";
     }
 
     public String getCode() {
+        if (code == null)
+            return "";
         return "§" + code;
     }
 

@@ -109,9 +109,6 @@ public class GuiModifyingGroups {
                         formatting = null;
                     }
                 }
-                if (formatting != null && !formatting.equals(ChatFormatting.RAINBOW)) {
-                    return;
-                }
                 group.setChatFormatting(formatting);
                 editChatColor(easyGroup);
             });
