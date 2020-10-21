@@ -60,10 +60,8 @@ public class DeleteStatement {
 
     public boolean execute() {
         CompletableFuture<Boolean> compFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                PreparedStatement stmt = buildStatement();
+            try (PreparedStatement stmt = buildStatement()) {
                 stmt.executeUpdate();
-                stmt.close();
                 return true;
             } catch (SQLException ex) {
                 return false;

@@ -29,10 +29,8 @@ public class InsertStatement {
     }
 
     public boolean execute() throws RuntimeException {
-        try {
-            PreparedStatement stmt = buildStatement();
+        try (PreparedStatement stmt = buildStatement()) {
             stmt.executeUpdate();
-            stmt.close();
             return true;
         } catch (SQLException ex) {
             if (ex instanceof SQLIntegrityConstraintViolationException) {

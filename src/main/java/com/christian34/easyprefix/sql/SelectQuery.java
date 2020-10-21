@@ -68,8 +68,7 @@ public class SelectQuery {
     private CompletableFuture<HashMap<String, Object>> retrieveData() {
         return CompletableFuture.supplyAsync(() -> {
             HashMap<String, Object> map = new HashMap<>();
-            try {
-                ResultSet result = prepareStatement().executeQuery();
+            try (ResultSet result = prepareStatement().executeQuery()) {
                 if (result.next()) {
                     for (String key : columns) {
                         map.put(key, result.getString(key));
