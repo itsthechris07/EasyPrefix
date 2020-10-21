@@ -26,7 +26,7 @@ import java.util.List;
  * @author Christian34
  */
 public final class Messages {
-    private final static List<String> LANGUAGES = Arrays.asList("en_EN", "de_DE", "it_IT");
+    private static final List<String> LANGUAGES = Arrays.asList("en_EN", "de_DE", "it_IT");
     private static final EasyPrefix instance;
     private static FileConfiguration data;
     private static String language;

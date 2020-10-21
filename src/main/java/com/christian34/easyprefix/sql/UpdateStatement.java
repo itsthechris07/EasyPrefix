@@ -7,6 +7,7 @@ import com.christian34.easyprefix.sql.database.StorageType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -69,8 +70,8 @@ public class UpdateStatement {
 
         PreparedStatement stmt = database.getConnection().prepareStatement(query.toString());
         i = 1;
-        for (String value : values.keySet()) {
-            stmt.setObject(i, values.get(value));
+        for (Map.Entry<String, Object> value : values.entrySet()) {
+            stmt.setObject(i, value.getValue());
             i++;
         }
 

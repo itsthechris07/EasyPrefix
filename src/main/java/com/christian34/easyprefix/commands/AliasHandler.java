@@ -37,18 +37,18 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
         if (commandMap == null) return;
 
 
-        PluginCommand prefixAlias = createPluginCommand(this.prefixAlias);
-        if (prefixAlias != null) {
-            prefixAlias.setExecutor(this);
-            prefixAlias.setTabCompleter(this);
-            commandMap.register(instance.getDescription().getName(), prefixAlias);
+        PluginCommand prefixCmd = createPluginCommand(this.prefixAlias);
+        if (prefixCmd != null) {
+            prefixCmd.setExecutor(this);
+            prefixCmd.setTabCompleter(this);
+            commandMap.register(instance.getDescription().getName(), prefixCmd);
         }
 
-        PluginCommand suffixAlias = createPluginCommand(this.suffixAlias);
-        if (suffixAlias != null) {
-            suffixAlias.setExecutor(this);
-            suffixAlias.setTabCompleter(this);
-            commandMap.register(instance.getDescription().getName(), suffixAlias);
+        PluginCommand suffixCmd = createPluginCommand(this.suffixAlias);
+        if (suffixCmd != null) {
+            suffixCmd.setExecutor(this);
+            suffixCmd.setTabCompleter(this);
+            commandMap.register(instance.getDescription().getName(), suffixCmd);
         }
     }
 

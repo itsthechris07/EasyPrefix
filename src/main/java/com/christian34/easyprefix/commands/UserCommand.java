@@ -24,12 +24,10 @@ import java.util.List;
  * @author Christian34
  */
 public class UserCommand implements Subcommand {
-    private final CommandHandler commandHandler;
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
 
     public UserCommand(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
         this.instance = commandHandler.getInstance();
         this.groupHandler = instance.getGroupHandler();
     }
@@ -46,16 +44,16 @@ public class UserCommand implements Subcommand {
 
     @Override
     public void handleCommand(CommandSender sender, List<String> args) {
-        if (!(args.size() > 1)) {
+        if (args.size() <= 1) {
             showHelp(sender);
             return;
         }
+
         Player player = Bukkit.getPlayer(args.get(1));
         if (player == null) {
             sender.sendMessage(Messages.getMessage(Message.PLAYER_NOT_FOUND));
             return;
         }
-        GroupHandler groupHandler = commandHandler.getInstance().getGroupHandler();
         User target = new User(player);
         target.login();
         if (args.size() < 3) {
