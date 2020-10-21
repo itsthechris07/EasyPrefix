@@ -13,8 +13,11 @@ import java.util.Random;
  *
  * @author Christian34
  */
-public class RainbowEffect {
+public final class RainbowEffect {
     private static List<ChatColor> rainbowColors = null;
+
+    private RainbowEffect() {
+    }
 
     public static String addRainbowEffect(String text) {
         String[] letters = text.split("(?<!^)");

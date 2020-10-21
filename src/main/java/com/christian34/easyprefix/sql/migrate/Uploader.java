@@ -184,7 +184,7 @@ class Uploader {
             userData.setDatabase(dataMigration.getLocalDatabase());
             userData.loadData();
 
-            HashMap<String, Object> data = userData.getData().getData();
+            Map<String, Object> data = userData.getData().getData();
             for (Map.Entry<String, Object> entry : data.entrySet()) {
                 update.setValue(entry.getKey(), entry.getValue());
             }

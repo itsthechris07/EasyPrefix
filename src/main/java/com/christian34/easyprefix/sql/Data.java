@@ -1,6 +1,6 @@
 package com.christian34.easyprefix.sql;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * EasyPrefix 2020.
@@ -8,14 +8,14 @@ import java.util.HashMap;
  * @author Christian34
  */
 public class Data {
-    private final HashMap<String, Object> hash;
+    private final Map<String, Object> hash;
 
-    public Data(HashMap<String, Object> data) {
+    public Data(Map<String, Object> data) {
         this.hash = data;
     }
 
     public boolean isEmpty() {
-        return hash == null || hash.keySet().size() == 0;
+        return hash == null || hash.keySet().isEmpty();
     }
 
     public String getString(String key) {
@@ -28,7 +28,7 @@ public class Data {
         return value == null ? alternative : value;
     }
 
-    public HashMap<String, Object> getData() {
+    public Map<String, Object> getData() {
         return hash;
     }
 

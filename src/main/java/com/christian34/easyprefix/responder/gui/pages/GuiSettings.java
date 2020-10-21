@@ -120,7 +120,7 @@ public class GuiSettings {
                     .onClick(() -> openCustomLayoutPage(this::openGroupsListPage));
         }
 
-        if (user.getAvailableSubgroups().size() > 0) {
+        if (!user.getAvailableSubgroups().isEmpty()) {
             ItemStack subgroupsMaterial = VersionController.getMinorVersion() <= 12
                     ? XMaterial.CHEST.parseItem()
                     : XMaterial.WRITABLE_BOOK.parseItem();
