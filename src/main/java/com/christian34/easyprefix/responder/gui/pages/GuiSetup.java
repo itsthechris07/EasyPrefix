@@ -57,19 +57,10 @@ public class GuiSetup {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
-        String langName = Message.BTN_CHANGE_LANG.toString().replace("%lang%", Messages.langToName());
-        guiRespond.addIcon(XMaterial.OAK_SIGN.parseItem(), langName, 2, 2).setLore(Messages.getList(Message.LORE_CHANGE_LANG)).onClick(() -> {
-            String crntLang = Messages.getLanguage();
-            String nextLang = "en_EN";
-            switch (crntLang) {
-                case "en_EN":
-                    nextLang = "de_DE";
-                    break;
-                case "de_DE":
-                    nextLang = "it_IT";
-                    break;
-            }
-            Messages.setLanguage(nextLang);
+        String langName = "§aLanguage §7(§a" + Messages.getLanguage().getName() + "§7)";
+        guiRespond.addIcon(XMaterial.OAK_SIGN.parseItem(), langName, 2, 2).setLore("Click me to switch the language", "Available: English, Deutsch, Italiano").onClick(() -> {
+            Messages.Language language = Messages.getLanguage();
+            Messages.setLanguage(language.getNext());
             pluginSettingsGui();
         });
 

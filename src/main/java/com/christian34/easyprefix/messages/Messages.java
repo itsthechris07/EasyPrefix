@@ -26,10 +26,9 @@ import java.util.List;
  * @author Christian34
  */
 public final class Messages {
-    private static final List<String> LANGUAGES = Arrays.asList("en_EN", "de_DE", "it_IT");
     private static final EasyPrefix instance;
     private static FileConfiguration data;
-    private static String language;
+    private static Language language;
 
     static {
         instance = EasyPrefix.getInstance();
@@ -38,46 +37,34 @@ public final class Messages {
     private Messages() {
     }
 
-    public static String getLanguage() {
+    public static Language getLanguage() {
         return language;
     }
 
-    public static void setLanguage(String lang) {
-        if (LANGUAGES.contains(lang)) {
-            language = lang;
-            instance.getFileManager().getConfig().set(ConfigKeys.LANG.getPath(), lang);
-            load();
-        }
-    }
-
-    public static String langToName() {
-        switch (language) {
-            case "de_DE":
-                return "Deutsch";
-            case "it_IT":
-                return "Italiano";
-            default:
-                return "English";
-        }
+    public static void setLanguage(Language lang) {
+        instance.getFileManager().getConfig().set(ConfigKeys.LANG.getPath(), lang.getId());
+        load();
     }
 
     public static void load() {
         Plugin plugin = instance.getPlugin();
-        language = ConfigKeys.PLUGIN_LANG.toString();
 
-        if (!LANGUAGES.contains(language)) {
-            Messages.log("§cCouldn't load messages for language '" + language + "'! Please use a valid language!");
-            setLanguage("en_EN");
+        String langId = ConfigKeys.PLUGIN_LANG.toString();
+        language = Language.getByName(langId);
+        if (language == null) {
+            Messages.log("§cCouldn't load messages for language '" + langId + "'! Please use a valid language!");
+            setLanguage(Language.en_EN);
             Messages.log("§cYour language has been set to en_EN!");
             return;
         }
 
-        File file = new File(FileManager.getPluginFolder(), language + ".yml");
+        String langFile = language.getId() + ".yml";
+        File file = new File(FileManager.getPluginFolder(), langFile);
         if (!file.exists()) {
-            plugin.saveResource(language + ".yml", false);
+            plugin.saveResource(langFile, false);
         } else {
             try {
-                ConfigUpdater.update(instance, language + ".yml", file, new ArrayList<>());
+                ConfigUpdater.update(instance, langFile, file, new ArrayList<>());
             } catch (IOException e) {
                 Messages.log("§cCouldn't update file. Please report this error on github.com!");
                 e.printStackTrace();
@@ -165,6 +152,47 @@ public final class Messages {
 
     public static void log(String message) {
         Bukkit.getConsoleSender().sendMessage(getPrefix() + translate(message));
+    }
+
+
+    public enum Language {
+        en_EN("English"),
+        de_DE("Deutsch"),
+        it_IT("Italiano");
+
+        private final String NAME;
+
+        Language(String name) {
+            this.NAME = name;
+        }
+
+        public static Language getByName(String val) {
+            for (Language lang : values()) {
+                if (lang.name().equalsIgnoreCase(val)) {
+                    return lang;
+                }
+            }
+            return null;
+        }
+
+        public String getName() {
+            return NAME;
+        }
+
+        public String getId() {
+            return name();
+        }
+
+        public Language getNext() {
+            if (this == Language.en_EN) {
+                return de_DE;
+            } else if (this == Language.de_DE) {
+                return it_IT;
+            } else {
+                return en_EN;
+            }
+        }
+
     }
 
 }
