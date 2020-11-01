@@ -21,8 +21,8 @@ public class Subgroup extends EasyGroup {
     private final String NAME;
     private final GroupHandler groupHandler;
     private final EasyPrefix instance;
-    private String prefix, suffix;
     private final ChatColor groupColor;
+    private String prefix, suffix;
     private GroupsData groupsData;
     private GenderedLayout genderedLayout = null;
 
@@ -34,20 +34,25 @@ public class Subgroup extends EasyGroup {
             SelectQuery selectQuery = new SelectQuery("subgroups", "prefix", "suffix")
                     .addCondition("group", name);
             Data data = selectQuery.getData();
-            this.prefix = data.getStringOr("prefix", "");
-            this.suffix = data.getStringOr("suffix", "");
+            this.prefix = data.getString("prefix");
+            this.suffix = data.getString("suffix");
         } else {
             this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
-            this.prefix = groupsData.getOrDefault(getFileKey() + "prefix", "");
-            this.suffix = groupsData.getOrDefault(getFileKey() + "suffix", "");
+            this.prefix = groupsData.getString(getFileKey() + "prefix");
+            this.suffix = groupsData.getString(getFileKey() + "suffix");
         }
 
         if (groupHandler.handleGenders()) {
             this.genderedLayout = new GenderedLayout(this);
         }
 
-        this.prefix = prefix.replace("§", "&");
-        this.suffix = suffix.replace("§", "&");
+        if (prefix != null) {
+            this.prefix = prefix.replace("§", "&");
+        }
+
+        if (suffix != null) {
+            this.suffix = suffix.replace("§", "&");
+        }
 
         this.groupColor = getGroupColor(prefix);
     }
@@ -74,6 +79,7 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
+    @Nullable
     public String getPrefix(User user, boolean translate) {
         String prefix;
         if (this.groupHandler.handleGenders() && user != null) {
@@ -123,6 +129,7 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
+    @Nullable
     public String getSuffix(User user, boolean translate) {
         String suffix;
         if (this.groupHandler.handleGenders() && user != null) {
@@ -172,6 +179,7 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
+    @NotNull
     public ChatColor getGroupColor() {
         return groupColor;
     }

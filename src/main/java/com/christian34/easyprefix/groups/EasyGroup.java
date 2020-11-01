@@ -52,6 +52,7 @@ public abstract class EasyGroup {
     /**
      * @return ChatColor returns the automatic generated color
      */
+    @NotNull
     public abstract ChatColor getGroupColor();
 
     /**
@@ -94,6 +95,7 @@ public abstract class EasyGroup {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 
+    @NotNull
     public ChatColor getGroupColor(String prefix) {
         ChatColor color = null;
         if (prefix != null && prefix.contains("&")) {

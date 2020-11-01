@@ -58,9 +58,9 @@ public class GroupCommand implements Subcommand {
             sender.sendMessage(" \n§7--------------=== §5§l" + group.getName() + " §7===--------------\n ");
             sender.sendMessage("§5Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
             sender.sendMessage("§5Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
-            String cc = (group.getChatColor() != null) ? group.getChatColor().getCode() : "-";
+            String cc = group.getChatColor().getCode();
             if (group.getChatFormatting() != null) cc = cc + group.getChatFormatting().getCode();
-            sender.sendMessage("§5Chatcolor§f: §7" + cc.replace("§", "&"));
+            sender.sendMessage("§5Chat color§f: §7" + cc.replace("§", "&"));
             sender.sendMessage("§5Join message§f: §7" + group.getJoinMessageText());
             sender.sendMessage("§5Quit message§f: §7" + group.getQuitMessageText());
             sender.sendMessage(" \n§7-----------------------------------------------\n ");

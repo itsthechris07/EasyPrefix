@@ -86,7 +86,7 @@ public class Group extends EasyGroup {
         this.quitMessage = data.getString("quit_msg");
     }
 
-    @NotNull
+    @Nullable
     public String getJoinMessage(User user) {
         if (this.joinMessage == null || this.joinMessage.isEmpty()) {
             this.joinMessage = this.groupHandler.getGroup("default").getJoinMessageText();
@@ -94,7 +94,7 @@ public class Group extends EasyGroup {
         return Objects.requireNonNull(translate(joinMessage, user));
     }
 
-    @NotNull
+    @Nullable
     public String getJoinMessageText() {
         if (this.joinMessage == null || this.joinMessage.isEmpty()) {
             this.joinMessage = this.groupHandler.getGroup("default").getJoinMessageText();
@@ -107,7 +107,7 @@ public class Group extends EasyGroup {
         saveData("join-msg", this.joinMessage);
     }
 
-    @NotNull
+    @Nullable
     public String getQuitMessage(@NotNull User user) {
         if (this.quitMessage == null || this.quitMessage.isEmpty()) {
             this.quitMessage = this.groupHandler.getGroup("default").getQuitMessageText();
@@ -115,7 +115,7 @@ public class Group extends EasyGroup {
         return Objects.requireNonNull(translate(quitMessage, user));
     }
 
-    @NotNull
+    @Nullable
     public String getQuitMessageText() {
         if (this.quitMessage == null || this.quitMessage.isEmpty()) {
             this.quitMessage = this.groupHandler.getGroup("default").getQuitMessageText();

@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -130,7 +129,7 @@ public final class Messages {
         String text = translate(data.getString(message.getPath()));
 
         if (text == null) {
-            throw new RuntimeException("§cCould't read message. Please report this error to github! (" + message.name() + ")");
+            throw new RuntimeException("§cCouldn't read message. Please report this error to github! (" + message.name() + ")");
         }
 
         ExpansionManager expansionManager = EasyPrefix.getInstance().getExpansionManager();

@@ -50,6 +50,7 @@ public class GroupsData {
         return val == null ? defaultValue : val;
     }
 
+    @NotNull
     public Set<String> getSection(String key) {
         ConfigurationSection section = getData().getConfigurationSection(key);
         if (section != null) {
@@ -58,15 +59,16 @@ public class GroupsData {
         return Collections.emptySet();
     }
 
-    public void setAndSave(String key, Object value) {
+    public void setAndSave(@NotNull String key, @Nullable Object value) {
         getData().set(key, value);
         save();
     }
 
-    public void set(String key, Object value) {
+    public void set(@NotNull String key, @Nullable Object value) {
         getData().set(key, value);
     }
 
+    @NotNull
     public FileConfiguration getData() {
         return data;
     }
