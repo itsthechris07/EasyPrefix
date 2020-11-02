@@ -1,10 +1,8 @@
 package com.christian34.easyprefix.messages;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.VersionController;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -28,6 +26,7 @@ public final class Messages {
     private static final EasyPrefix instance;
     private static FileConfiguration data;
     private static Language language;
+    private static final String PREFIX = "§7[§5EasyPrefix§7] ";
 
     static {
         instance = EasyPrefix.getInstance();
@@ -119,23 +118,8 @@ public final class Messages {
         return getPrefix() + translate(data.getString(message.getPath()));
     }
 
-    public static String getMessage(@NotNull Message message, @NotNull User user) {
-        String text = translate(data.getString(message.getPath()));
-
-        if (text == null) {
-            throw new RuntimeException("§cCouldn't read message. Please report this error to github! (" + message.name() + ")");
-        }
-
-        ExpansionManager expansionManager = EasyPrefix.getInstance().getExpansionManager();
-        if (expansionManager.isUsingPapi()) {
-            return getPrefix() + expansionManager.setPapi(user.getPlayer(), text);
-        } else {
-            return getPrefix() + text;
-        }
-    }
-
     public static String getPrefix() {
-        return "§7[§5EasyPrefix§7] ";
+        return PREFIX;
     }
 
     @Nullable

@@ -27,14 +27,13 @@ public class GroupsData {
         this.instance = instance;
     }
 
-    public GroupsData load() {
+    public void load() {
         File pluginFolder = FileManager.getPluginFolder();
         this.file = new File(pluginFolder, "groups.yml");
         if (!file.exists()) {
             this.instance.getPlugin().saveResource("groups.yml", true);
         }
         this.data = YamlConfiguration.loadConfiguration(file);
-        return this;
     }
 
     public void save() {
@@ -70,7 +69,6 @@ public class GroupsData {
         getData().set(key, value);
     }
 
-    @NotNull
     public FileConfiguration getData() {
         return data;
     }

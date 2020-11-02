@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -59,11 +58,6 @@ public class ChatRespond {
         for (String msg : messages) {
             RESPONDER.getPlayer().sendMessage(msg.replace("%quit%", "quit").replace("%question%", TEXT.replace("%newline%", "\n")));
         }
-    }
-
-    public void sendMessage(BaseComponent baseComponent) {
-        RESPONDER.getPlayer().closeInventory();
-        RESPONDER.getPlayer().spigot().sendMessage(baseComponent);
     }
 
     public void addInputReader(Predicate<String> respond) {

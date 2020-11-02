@@ -77,7 +77,7 @@ public class User {
         this.isGroupForced = userData.getBoolean("force_group");
 
         String groupName = userData.getString("group");
-        if (groupName == null || groupName.equals("")) {
+        if (groupName == null || groupName.isEmpty()) {
             this.group = getGroupPerPerms();
         } else {
             if (groupHandler.isGroup(groupName) && (hasPermission("group." + groupName) || isGroupForced || groupName.equals("default"))) {

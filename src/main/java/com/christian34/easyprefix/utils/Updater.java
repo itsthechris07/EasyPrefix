@@ -16,7 +16,7 @@ import java.net.URL;
  * @author Christian34
  */
 public class Updater {
-    public final String UPDATE_MSG = "§7A new update is available at: §bhttps://www.spigotmc" + ".org/resources/44580/updates";
+    public static final String UPDATE_MSG = "§7A new update is available at: §bhttps://www.spigotmc" + ".org/resources/44580/updates";
     private final EasyPrefix instance;
     private String spigotPluginVersion;
     private boolean available = false;
