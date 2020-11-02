@@ -168,8 +168,8 @@ public class GuiSettings {
                 continue;
             }
             List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
-            if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                lore.remove(lore.size() - 1);
+            if (!chatFormatting.equals(ChatFormatting.RAINBOW)) {
+                lore.add(Message.LORE_SELECT_COLOR_NC.toString());
             }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
@@ -251,9 +251,8 @@ public class GuiSettings {
         final String divider = "§7--------------------";
 
         String loreDetail = Message.LORE_GROUP_DETAIL.toString();
-        String loreEdit = Message.LORE_EDIT.toString();
 
-        List<String> prefixLore = Arrays.asList(divider, loreDetail + user.getPrefix().replace("§", "&"), " ", loreEdit);
+        List<String> prefixLore = Arrays.asList(divider, loreDetail + user.getPrefix().replace("§", "&"), " ");
 
         guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).onClick(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.toString()
@@ -264,7 +263,7 @@ public class GuiSettings {
             );
         });
 
-        List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ", loreEdit);
+        List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ");
 
         guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).onClick(() -> {
             ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString()

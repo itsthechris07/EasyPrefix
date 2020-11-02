@@ -5,6 +5,8 @@ import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +47,9 @@ public class GroupsData {
         load();
     }
 
-    public String getOrDefault(String key, String defaultValue) {
-        String val = data.getString(key);
-        return val == null ? defaultValue : val;
+    @Nullable
+    public String getString(String key) {
+        return data.getString(key);
     }
 
     @NotNull

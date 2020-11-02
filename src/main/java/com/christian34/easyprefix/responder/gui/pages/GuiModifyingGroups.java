@@ -95,8 +95,8 @@ public class GuiModifyingGroups {
         slot = 3;
         for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
             List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
-            if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                lore.remove(lore.size() - 1);
+            if (!chatFormatting.equals(ChatFormatting.RAINBOW)) {
+                lore.add(Message.LORE_SELECT_COLOR_NC.toString());
             }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
@@ -159,12 +159,12 @@ public class GuiModifyingGroups {
     }
 
     public void deleteConfirmation(EasyGroup easyGroup) {
-        GuiRespond guiRespond = new GuiRespond(user, Message.SETUP_GROUP_TITLE_DELETE.toString().replace("%group%", easyGroup.getName()), 3);
-        guiRespond.addIcon(Color.GREEN.toItemStack(), Message.BTN_CONFIRM, 2, 4).onClick(() -> {
+        GuiRespond guiRespond = new GuiRespond(user, "§4Delete " + easyGroup.getName() + "?", 3);
+        guiRespond.addIcon(Color.GREEN.toItemStack(), "§aYes", 2, 4).onClick(() -> {
             easyGroup.delete();
             new GuiSetup(user).groupsList();
         });
-        guiRespond.addIcon(Color.RED.toItemStack(), Message.BTN_CANCEL, 2, 6).onClick(() ->
+        guiRespond.addIcon(Color.RED.toItemStack(), "§cNo", 2, 6).onClick(() ->
                 new GuiSetup(user).openProfile(easyGroup)
         );
         guiRespond.preventClose(true);

@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -76,6 +77,11 @@ public class Icon implements Cloneable {
             itemMeta.setLore(lore);
         }
         itemStack.setItemMeta(itemMeta);
+        return this;
+    }
+
+    public Icon setLore(@NotNull String... lore) {
+        setLore(Arrays.asList(lore));
         return this;
     }
 

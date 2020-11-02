@@ -17,7 +17,6 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * EasyPrefix 2020.
@@ -88,15 +87,16 @@ public class Group extends EasyGroup {
 
     @Nullable
     public String getJoinMessage(User user) {
-        if (this.joinMessage == null || this.joinMessage.isEmpty()) {
-            this.joinMessage = this.groupHandler.getGroup("default").getJoinMessageText();
+        String message = getJoinMessageText();
+        if (message != null) {
+            return translate(message, user);
         }
-        return Objects.requireNonNull(translate(joinMessage, user));
+        return null;
     }
 
     @Nullable
     public String getJoinMessageText() {
-        if (this.joinMessage == null || this.joinMessage.isEmpty()) {
+        if ((this.joinMessage == null || this.joinMessage.isEmpty()) && !getName().equals("default")) {
             this.joinMessage = this.groupHandler.getGroup("default").getJoinMessageText();
         }
         return joinMessage;
@@ -109,15 +109,16 @@ public class Group extends EasyGroup {
 
     @Nullable
     public String getQuitMessage(@NotNull User user) {
-        if (this.quitMessage == null || this.quitMessage.isEmpty()) {
-            this.quitMessage = this.groupHandler.getGroup("default").getQuitMessageText();
+        String message = getQuitMessageText();
+        if (message != null) {
+            return translate(message, user);
         }
-        return Objects.requireNonNull(translate(quitMessage, user));
+        return null;
     }
 
     @Nullable
     public String getQuitMessageText() {
-        if (this.quitMessage == null || this.quitMessage.isEmpty()) {
+        if ((this.quitMessage == null || this.quitMessage.isEmpty()) && !getName().equals("default")) {
             this.quitMessage = this.groupHandler.getGroup("default").getQuitMessageText();
         }
         return quitMessage;

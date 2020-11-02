@@ -115,12 +115,6 @@ public final class Messages {
         return translate(data.getString(path));
     }
 
-    public static String getAndSet(@NotNull Message message, @NotNull String value) {
-        String text = translate(data.getString(message.getPath()));
-        if (text == null) return null;
-        return text.replace("%value%", value);
-    }
-
     public static String getMessage(@NotNull Message message) {
         return getPrefix() + translate(data.getString(message.getPath()));
     }
@@ -145,7 +139,7 @@ public final class Messages {
     }
 
     @Nullable
-    private static String translate(String text) {
+    public static String translate(String text) {
         return (text != null) ? ChatColor.translateAlternateColorCodes('&', text) : null;
     }
 
