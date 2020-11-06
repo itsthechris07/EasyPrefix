@@ -1,8 +1,10 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,14 +14,15 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class ReloadCommand implements Subcommand {
+class ReloadCommand implements Subcommand {
     private final EasyPrefix instance;
 
-    public ReloadCommand(CommandHandler commandHandler) {
-        this.instance = commandHandler.getInstance();
+    public ReloadCommand(EasyPrefixCommand parentCommand) {
+        this.instance = parentCommand.getInstance();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "reload";
     }
@@ -30,13 +33,13 @@ public class ReloadCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         this.instance.reload();
         sender.sendMessage(Messages.getPrefix() + "§aPlugin has been reloaded!");
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 

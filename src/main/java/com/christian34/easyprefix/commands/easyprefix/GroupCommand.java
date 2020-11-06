@@ -1,11 +1,13 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,17 +18,18 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class GroupCommand implements Subcommand {
-    private final CommandHandler commandHandler;
+class GroupCommand implements Subcommand {
+    private final EasyPrefixCommand parentCommand;
     private final GroupHandler groupHandler;
 
-    public GroupCommand(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
-        EasyPrefix instance = commandHandler.getInstance();
+    public GroupCommand(EasyPrefixCommand parentCommand) {
+        this.parentCommand = parentCommand;
+        EasyPrefix instance = parentCommand.getInstance();
         this.groupHandler = instance.getGroupHandler();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "group";
     }
@@ -37,9 +40,9 @@ public class GroupCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (args.size() < 2) {
-            commandHandler.getSubcommand("help").handleCommand(sender, null);
+            parentCommand.getSubcommand("help").handleCommand(sender, null);
             return;
         }
 
@@ -76,7 +79,7 @@ public class GroupCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         List<String> matches;
         if (args.size() == 2) {
             matches = new ArrayList<>();

@@ -1,6 +1,7 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.sql.database.StorageType;
@@ -8,6 +9,7 @@ import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,16 +19,17 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class DebugCommand implements Subcommand {
+class DebugCommand implements Subcommand {
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
 
-    public DebugCommand(CommandHandler commandHandler) {
-        this.instance = commandHandler.getInstance();
+    public DebugCommand(EasyPrefixCommand parentCommand) {
+        this.instance = parentCommand.getInstance();
         this.groupHandler = instance.getGroupHandler();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "debug";
     }
@@ -37,7 +40,7 @@ public class DebugCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         sender.sendMessage(" \n§7------------=== §5§lEasyPrefix DEBUG §7===------------");
         sender.sendMessage("§5Version: §7" + VersionController.getPluginVersion());
         sender.sendMessage("§5Groups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
@@ -52,7 +55,7 @@ public class DebugCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 

@@ -1,9 +1,11 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.StorageType;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,16 +16,17 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class DatabaseCommand implements Subcommand {
-    private final CommandHandler commandHandler;
+class DatabaseCommand implements Subcommand {
+    private final EasyPrefixCommand parentCommand;
     private final EasyPrefix instance;
 
-    public DatabaseCommand(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
-        this.instance = commandHandler.getInstance();
+    public DatabaseCommand(EasyPrefixCommand parentCommand) {
+        this.parentCommand = parentCommand;
+        this.instance = parentCommand.getInstance();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "database";
     }
@@ -34,9 +37,9 @@ public class DatabaseCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (this.instance.getStorageType() == StorageType.LOCAL) {
-            commandHandler.getSubcommand("help").handleCommand(sender, null);
+            parentCommand.getSubcommand("help").handleCommand(sender, null);
             return;
         }
 
@@ -54,7 +57,7 @@ public class DatabaseCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (args.size() == 2) {
             List<String> matches = Collections.singletonList("upload");
             if (args.get(1).isEmpty()) {

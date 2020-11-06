@@ -1,12 +1,14 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.gui.pages.GuiSetup;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +18,15 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class SetupCommand implements Subcommand {
+class SetupCommand implements Subcommand {
     private final EasyPrefix instance;
 
-    public SetupCommand(CommandHandler commandHandler) {
-        this.instance = commandHandler.getInstance();
+    public SetupCommand(EasyPrefixCommand parentCommand) {
+        this.instance = parentCommand.getInstance();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "setup";
     }
@@ -34,7 +37,7 @@ public class SetupCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         User user = sender instanceof Player ? instance.getUser((Player) sender) : null;
         if (user != null) {
             new GuiSetup(user).mainPage();
@@ -44,7 +47,7 @@ public class SetupCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 

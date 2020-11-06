@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,48 +23,45 @@ import java.util.List;
  */
 public class AliasHandler implements CommandExecutor, TabCompleter {
     private final String prefixAlias, suffixAlias;
-    private final CommandHandler commandHandler;
+    private final EasyPrefixCommand parentCommand;
     private final EasyPrefix instance;
 
-    public AliasHandler(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
-        this.instance = commandHandler.getInstance();
+    public AliasHandler(EasyPrefixCommand parentCommand) {
+        this.parentCommand = parentCommand;
+        this.instance = parentCommand.getInstance();
 
         this.prefixAlias = ConfigKeys.PREFIX_ALIAS.toString().replace("/", "");
         this.suffixAlias = ConfigKeys.SUFFIX_ALIAS.toString().replace("/", "");
+
         CommandMap commandMap = getCommandMapInstance();
-        if (commandMap == null) return;
-
-
-        PluginCommand prefixCmd = createPluginCommand(this.prefixAlias);
-        if (prefixCmd != null) {
-            prefixCmd.setExecutor(this);
-            prefixCmd.setTabCompleter(this);
-            commandMap.register(instance.getDescription().getName(), prefixCmd);
+        if (commandMap == null) {
+            throw new CommandException("Couldn't find command map!");
         }
 
-        PluginCommand suffixCmd = createPluginCommand(this.suffixAlias);
-        if (suffixCmd != null) {
-            suffixCmd.setExecutor(this);
-            suffixCmd.setTabCompleter(this);
-            commandMap.register(instance.getDescription().getName(), suffixCmd);
+        for (String name : Arrays.asList(prefixAlias, suffixAlias)) {
+            PluginCommand pluginCommand = createPluginCommand(name);
+            if (pluginCommand != null) {
+                pluginCommand.setExecutor(this);
+                pluginCommand.setTabCompleter(this);
+                commandMap.register(instance.getDescription().getName(), pluginCommand);
+            }
         }
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (args.length == 0) {
-            commandHandler.getSubcommand("help").handleCommand(sender, null);
+            parentCommand.getSubcommand("help").handleCommand(sender, null);
             return true;
         }
 
-        List<String> value = new ArrayList<>(Arrays.asList(args));
+        List<String> value = Arrays.asList(args);
         if (cmd.getName().equalsIgnoreCase(this.prefixAlias)) {
             value.add(0, "setprefix");
         } else if (cmd.getName().equalsIgnoreCase(this.suffixAlias)) {
             value.add(0, "setsuffix");
         }
-        commandHandler.getSubcommand("set").handleCommand(sender, value);
+        parentCommand.getSubcommand("set").handleCommand(sender, value);
         return true;
     }
 

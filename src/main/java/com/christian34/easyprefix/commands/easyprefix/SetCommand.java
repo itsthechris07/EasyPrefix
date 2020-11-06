@@ -1,6 +1,7 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
@@ -9,6 +10,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -19,16 +21,17 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class SetCommand implements Subcommand {
-    private final CommandHandler commandHandler;
+class SetCommand implements Subcommand {
+    private final EasyPrefixCommand parentCommand;
     private final EasyPrefix instance;
 
-    public SetCommand(CommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
-        this.instance = commandHandler.getInstance();
+    public SetCommand(EasyPrefixCommand parentCommand) {
+        this.parentCommand = parentCommand;
+        this.instance = parentCommand.getInstance();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "set";
     }
@@ -39,7 +42,7 @@ public class SetCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         User user = sender instanceof Player ? instance.getUser((Player) sender) : null;
         if (user == null) {
             sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
@@ -47,7 +50,7 @@ public class SetCommand implements Subcommand {
         }
 
         if (args.size() < 2) {
-            commandHandler.getSubcommand("help").handleCommand(sender, null);
+            parentCommand.getSubcommand("help").handleCommand(sender, null);
             return;
         }
 
@@ -118,7 +121,7 @@ public class SetCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 

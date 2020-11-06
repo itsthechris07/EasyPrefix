@@ -1,9 +1,11 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.sql.database.StorageType;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,14 +15,15 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class HelpCommand implements Subcommand {
+class HelpCommand implements Subcommand {
     private final EasyPrefix instance;
 
-    public HelpCommand(CommandHandler commandHandler) {
-        this.instance = commandHandler.getInstance();
+    public HelpCommand(EasyPrefixCommand parentCommand) {
+        this.instance = parentCommand.getInstance();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "help";
     }
@@ -61,7 +64,7 @@ public class HelpCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 

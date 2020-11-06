@@ -1,6 +1,7 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -11,6 +12,7 @@ import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,16 +25,17 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class UserCommand implements Subcommand {
+class UserCommand implements Subcommand {
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
 
-    public UserCommand(CommandHandler commandHandler) {
-        this.instance = commandHandler.getInstance();
+    public UserCommand(EasyPrefixCommand parentCommand) {
+        this.instance = parentCommand.getInstance();
         this.groupHandler = instance.getGroupHandler();
     }
 
     @Override
+    @NotNull
     public String getName() {
         return "user";
     }
@@ -43,7 +46,7 @@ public class UserCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (args.size() <= 1) {
             showHelp(sender);
             return;
@@ -148,7 +151,7 @@ public class UserCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(CommandSender sender, List<String> args) {
+    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (args.size() == 2) {
             return null;
         } else if (args.size() == 3) {

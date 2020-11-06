@@ -1,17 +1,14 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
-import com.christian34.easyprefix.sql.database.StorageType;
-import com.christian34.easyprefix.utils.Debug;
+import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
+import com.christian34.easyprefix.commands.tags.TagsCommand;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,107 +18,47 @@ import java.util.List;
  */
 public class CommandHandler implements CommandExecutor, TabCompleter {
     private final EasyPrefix instance;
-    private final List<Subcommand> subcommands;
+    private final List<EasyCommand> commands;
 
     public CommandHandler(EasyPrefix instance) {
         this.instance = instance;
+        this.commands = new ArrayList<>();
 
-        PluginCommand mainCommand = instance.getCommand("easyprefix");
-        if (mainCommand != null) {
-            mainCommand.setExecutor(this);
-            mainCommand.setTabCompleter(this);
+        commands.add(new EasyPrefixCommand(instance));
+        commands.add(new TagsCommand(instance));
+
+        for (EasyCommand command : commands) {
+            PluginCommand pluginCommand = instance.getCommand(command.getName());
+            if (pluginCommand == null) {
+                throw new RuntimeException("Unknown command '" + command.getName() + "'!");
+            }
+
+            pluginCommand.setExecutor(this);
+            pluginCommand.setTabCompleter(this);
         }
-
-        this.subcommands = new ArrayList<>();
-        subcommands.add(new UserCommand(this));
-        subcommands.add(new HelpCommand(this));
-        subcommands.add(new GroupCommand(this));
-        subcommands.add(new SetupCommand(this));
-        subcommands.add(new SettingsCommand(this));
-        subcommands.add(new ReloadCommand(this));
-        subcommands.add(new DebugCommand(this));
-
-        if (this.instance.getStorageType() == StorageType.SQL) {
-            subcommands.add(new DatabaseCommand(this));
-        }
-
-        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-            subcommands.add(new SetCommand(this));
-            new AliasHandler(this);
-        }
-    }
-
-    protected EasyPrefix getInstance() {
-        return instance;
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (args.length == 0) {
-            sender.sendMessage(Messages.getPrefix() + "§7This server uses §5EasyPrefix §7version §b" + this.instance.getDescription().getVersion() + " §7by Christian34.\nType '/" + label + " help' to get a command overview.");
-            return true;
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        for (EasyCommand easyCommand : commands) {
+            if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
+                easyCommand.handleCommand(sender, Arrays.asList(args));
+                break;
+            }
         }
 
-        if (cmd.getName().equalsIgnoreCase("easyprefix")) {
-            if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-                if (args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")) {
-                    getSubcommand("set").handleCommand(sender, Arrays.asList(args));
-                    return true;
-                }
-            }
-            for (Subcommand subCmd : subcommands) {
-                if (subCmd.getName().equalsIgnoreCase(args[0]) || subCmd.getName().startsWith(args[0])) {
-                    if (subCmd.getPermission() == null || sender.hasPermission("easyprefix." + subCmd.getPermission())) {
-                        try {
-                            subCmd.handleCommand(sender, Arrays.asList(args));
-                        } catch (Exception ex) {
-                            Debug.captureException(ex);
-                        }
-                    } else {
-                        sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
-                    }
-                    return true;
-                }
-            }
-            sender.sendMessage(Messages.getPrefix() + "§cCouldn't find requested command!\nType '/" + label + " help'" + " to get a command overview.");
-        }
-        return true;
+        return false;
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Command cmd, @NotNull String alias, String[] args) {
-        if (!cmd.getName().equalsIgnoreCase("easyprefix")) return null;
-        if (args.length == 1) {
-            List<String> matches = new ArrayList<>();
-            for (Subcommand subcmd : subcommands) {
-                if (subcmd.getName().equalsIgnoreCase(args[0]) || subcmd.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
-                    if (subcmd.getPermission() == null || sender.hasPermission("easyprefix." + subcmd.getPermission())) {
-                        matches.add(subcmd.getName());
-                    }
-                }
-            }
-            matches.remove("set");
-            matches.addAll(Arrays.asList("setprefix", "setsuffix"));
-            return matches;
-        } else {
-            for (Subcommand subcmd : subcommands) {
-                if (subcmd.getName().equalsIgnoreCase(args[0]) || subcmd.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
-                    if (subcmd.getPermission() == null || sender.hasPermission("easyprefix." + subcmd.getPermission())) {
-                        return subcmd.getTabCompletion(sender, Arrays.asList(args));
-                    }
-                }
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        for (EasyCommand easyCommand : commands) {
+            if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
+                return easyCommand.getTabCompletion(sender, Arrays.asList(args));
             }
         }
-        return Collections.emptyList();
-    }
 
-    public Subcommand getSubcommand(String name) {
-        for (Subcommand subCmd : subcommands) {
-            if (subCmd.getName().equalsIgnoreCase(name)) {
-                return subCmd;
-            }
-        }
-        throw new NullPointerException("Couldn't find subcommand with name '" + name + "'");
+        return null;
     }
 
 }

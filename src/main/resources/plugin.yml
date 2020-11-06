@@ -10,4 +10,6 @@ softdepend:
 commands:
   EasyPrefix:
     description: Main command
-    aliases: [ep, easyp, eprefix]
+    aliases: [ ep, easyp, eprefix ]
+  tags:
+    description: tag command
