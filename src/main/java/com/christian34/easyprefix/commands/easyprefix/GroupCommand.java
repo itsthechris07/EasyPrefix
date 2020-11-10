@@ -5,7 +5,7 @@ import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +35,18 @@ class GroupCommand implements Subcommand {
     }
 
     @Override
-    public String getPermission() {
-        return "admin";
+    public UserPermission getPermission() {
+        return UserPermission.ADMIN;
+    }
+
+    @Override
+    public String getDescription() {
+        return "allows to modify groups";
+    }
+
+    @Override
+    public String getCommandUsage() {
+        return "group <group> <argument>";
     }
 
     @Override
@@ -48,7 +58,7 @@ class GroupCommand implements Subcommand {
 
         Group group = groupHandler.isGroup(args.get(1)) ? groupHandler.getGroup(args.get(1)) : null;
         if (group == null) {
-            sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
+            sender.sendMessage(Message.GROUP_NOT_FOUND.toMessage());
             return;
         }
 

@@ -4,8 +4,8 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.user.UserPermission;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -21,6 +21,7 @@ import java.util.List;
  *
  * @author Christian34
  */
+@Deprecated
 class SetCommand implements Subcommand {
     private final EasyPrefixCommand parentCommand;
     private final EasyPrefix instance;
@@ -37,15 +38,27 @@ class SetCommand implements Subcommand {
     }
 
     @Override
-    public String getPermission() {
-        return "custom.prefix";
+    public UserPermission getPermission() {
+        return null;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return "changes your prefix or suffix";
+    }
+
+    @Override
+    @NotNull
+    public String getCommandUsage() {
+        return "setprefix/setsuffix <value>";
     }
 
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         User user = sender instanceof Player ? instance.getUser((Player) sender) : null;
         if (user == null) {
-            sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
+            sender.sendMessage(Message.PLAYER_ONLY.toMessage());
             return;
         }
 
@@ -58,7 +71,7 @@ class SetCommand implements Subcommand {
 
         if (args.get(0).equalsIgnoreCase("setprefix")) {
             if (!user.hasPermission("custom.prefix")) {
-                sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
+                sender.sendMessage(Message.NO_PERMS.toMessage());
                 return;
             }
 
@@ -89,7 +102,7 @@ class SetCommand implements Subcommand {
             }
         } else if (args.get(0).equalsIgnoreCase("setsuffix")) {
             if (!user.hasPermission("custom.suffix")) {
-                sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
+                sender.sendMessage(Message.NO_PERMS.toMessage());
                 return;
             }
             Timestamp next = getNextTimestamp(user.getLastSuffixUpdate());

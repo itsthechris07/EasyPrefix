@@ -1,5 +1,9 @@
 package com.christian34.easyprefix.commands;
 
+import com.christian34.easyprefix.user.UserPermission;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * EasyPrefix 2020.
  *
@@ -7,6 +11,13 @@ package com.christian34.easyprefix.commands;
  */
 public interface Subcommand extends EasyCommand {
 
-    String getPermission();
+    @Nullable
+    UserPermission getPermission();
+
+    @NotNull
+    String getDescription();
+
+    @NotNull
+    String getCommandUsage();
 
 }

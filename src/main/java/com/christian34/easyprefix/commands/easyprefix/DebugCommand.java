@@ -5,6 +5,7 @@ import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -35,8 +36,20 @@ class DebugCommand implements Subcommand {
     }
 
     @Override
-    public String getPermission() {
-        return "admin";
+    public UserPermission getPermission() {
+        return UserPermission.ADMIN;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return "shows useful information";
+    }
+
+    @Override
+    @NotNull
+    public String getCommandUsage() {
+        return "debug";
     }
 
     @Override

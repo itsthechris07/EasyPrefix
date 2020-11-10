@@ -9,6 +9,7 @@ import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,8 +42,20 @@ class UserCommand implements Subcommand {
     }
 
     @Override
-    public String getPermission() {
-        return "admin";
+    public UserPermission getPermission() {
+        return UserPermission.ADMIN;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return "shows some important information about the given player and allows a configuration";
+    }
+
+    @Override
+    @NotNull
+    public String getCommandUsage() {
+        return "user <player> (<arguments>)";
     }
 
     @Override
@@ -54,7 +67,7 @@ class UserCommand implements Subcommand {
 
         Player player = Bukkit.getPlayer(args.get(1));
         if (player == null) {
-            sender.sendMessage(Messages.getMessage(Message.PLAYER_NOT_FOUND));
+            sender.sendMessage(Message.PLAYER_NOT_FOUND.toMessage());
             return;
         }
         User target = new User(player);
@@ -67,7 +80,7 @@ class UserCommand implements Subcommand {
             Bukkit.getScheduler().runTaskLaterAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
                 instance.unloadUser(target.getPlayer());
                 instance.getUser(target.getPlayer()).login();
-                sender.sendMessage(Messages.getMessage(Message.SUCCESS));
+                sender.sendMessage(Message.SUCCESS.toMessage());
             }, 20L);
         } else if (args.get(2).equalsIgnoreCase("info")) {
             showInfo(sender, target);
@@ -78,9 +91,9 @@ class UserCommand implements Subcommand {
                 if (groupHandler.isGroup(args.get(3))) {
                     Group targetGroup = groupHandler.getGroup(args.get(3));
                     target.setGroup(targetGroup, true);
-                    sender.sendMessage(Messages.getMessage(Message.SUCCESS));
+                    sender.sendMessage(Message.SUCCESS.toMessage());
                 } else {
-                    sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
+                    sender.sendMessage(Message.GROUP_NOT_FOUND.toMessage());
                 }
             }
         } else if (args.get(2).equalsIgnoreCase("setsubgroup")) {
@@ -90,12 +103,12 @@ class UserCommand implements Subcommand {
                 if (groupHandler.isSubgroup(args.get(3))) {
                     Subgroup targetGroup = groupHandler.getSubgroup(args.get(3));
                     target.setSubgroup(targetGroup);
-                    sender.sendMessage(Messages.getMessage(Message.SUCCESS));
+                    sender.sendMessage(Message.SUCCESS.toMessage());
                 } else if (args.get(3).equalsIgnoreCase("none")) {
                     target.setSubgroup(null);
-                    sender.sendMessage(Messages.getMessage(Message.SUCCESS));
+                    sender.sendMessage(Message.SUCCESS.toMessage());
                 } else {
-                    sender.sendMessage(Messages.getMessage(Message.GROUP_NOT_FOUND));
+                    sender.sendMessage(Message.GROUP_NOT_FOUND.toMessage());
                 }
             }
         } else if (args.get(2).equalsIgnoreCase("setgender")) {
@@ -144,7 +157,7 @@ class UserCommand implements Subcommand {
         Gender genderType = groupHandler.getGender(gender);
         if (genderType != null) {
             targetUser.setGenderType(genderType);
-            sender.sendMessage(Messages.getMessage(Message.SUCCESS));
+            sender.sendMessage(Message.SUCCESS.toMessage());
         } else {
             sender.sendMessage(Messages.getPrefix() + "§cThis gender doesn't exist");
         }

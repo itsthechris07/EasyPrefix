@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,8 +33,20 @@ class DatabaseCommand implements Subcommand {
     }
 
     @Override
-    public String getPermission() {
-        return "admin";
+    public UserPermission getPermission() {
+        return UserPermission.ADMIN;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return "allows the configuration of the database";
+    }
+
+    @Override
+    @NotNull
+    public String getCommandUsage() {
+        return "database (<argument>)";
     }
 
     @Override

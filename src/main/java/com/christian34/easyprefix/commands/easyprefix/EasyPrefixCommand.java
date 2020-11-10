@@ -47,6 +47,10 @@ public class EasyPrefixCommand implements EasyCommand {
         }
     }
 
+    public List<Subcommand> getSubcommands() {
+        return subcommands;
+    }
+
     public EasyPrefix getInstance() {
         return instance;
     }
@@ -83,14 +87,14 @@ public class EasyPrefixCommand implements EasyCommand {
         }
         for (Subcommand subCmd : subcommands) {
             if (subCmd.getName().equalsIgnoreCase(subcommand) || subCmd.getName().startsWith(subcommand)) {
-                if (subCmd.getPermission() == null || sender.hasPermission("easyprefix." + subCmd.getPermission())) {
+                if (subCmd.getPermission() == null || sender.hasPermission(subCmd.getPermission().toString())) {
                     try {
                         subCmd.handleCommand(sender, args);
                     } catch (Exception ex) {
                         Debug.captureException(ex);
                     }
                 } else {
-                    sender.sendMessage(Messages.getMessage(Message.NO_PERMS));
+                    sender.sendMessage(Message.NO_PERMS.toMessage());
                 }
                 return;
             }
@@ -106,7 +110,7 @@ public class EasyPrefixCommand implements EasyCommand {
             List<String> matches = new ArrayList<>();
             for (Subcommand subcmd : subcommands) {
                 if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
-                    if (subcmd.getPermission() == null || sender.hasPermission("easyprefix." + subcmd.getPermission())) {
+                    if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
                         matches.add(subcmd.getName());
                     }
                 }
@@ -117,7 +121,7 @@ public class EasyPrefixCommand implements EasyCommand {
         } else {
             for (Subcommand subcmd : subcommands) {
                 if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
-                    if (subcmd.getPermission() == null || sender.hasPermission("easyprefix." + subcmd.getPermission())) {
+                    if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
                         return subcmd.getTabCompletion(sender, args);
                     }
                 }

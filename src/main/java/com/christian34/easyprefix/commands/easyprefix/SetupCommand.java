@@ -3,9 +3,9 @@ package com.christian34.easyprefix.commands.easyprefix;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.gui.pages.GuiSetup;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +32,20 @@ class SetupCommand implements Subcommand {
     }
 
     @Override
-    public String getPermission() {
-        return "admin";
+    public UserPermission getPermission() {
+        return UserPermission.ADMIN;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return "opens the graphical user interface which allows you to setup the plugin";
+    }
+
+    @Override
+    @NotNull
+    public String getCommandUsage() {
+        return "setup";
     }
 
     @Override
@@ -42,7 +54,7 @@ class SetupCommand implements Subcommand {
         if (user != null) {
             new GuiSetup(user).mainPage();
         } else {
-            sender.sendMessage(Messages.getMessage(Message.PLAYER_ONLY));
+            sender.sendMessage(Message.PLAYER_ONLY.toMessage());
         }
     }
 

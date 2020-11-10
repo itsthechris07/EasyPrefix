@@ -3,6 +3,7 @@ package com.christian34.easyprefix.commands.easyprefix;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +29,20 @@ class ReloadCommand implements Subcommand {
     }
 
     @Override
-    public String getPermission() {
-        return "admin";
+    public UserPermission getPermission() {
+        return UserPermission.ADMIN;
+    }
+
+    @Override
+    @NotNull
+    public String getDescription() {
+        return "reloads the plugin (not recommended, please stop and start the server)";
+    }
+
+    @Override
+    @NotNull
+    public String getCommandUsage() {
+        return "reload";
     }
 
     @Override
