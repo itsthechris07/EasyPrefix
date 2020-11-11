@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,6 +31,7 @@ public class TagsCommand implements EasyCommand {
         this.subcommands = new ArrayList<>();
         subcommands.add(new HelpCommand(this));
         subcommands.add(new ListCommand(this, instance));
+        subcommands.add(new SelectCommand(this, instance));
     }
 
     public List<Subcommand> getSubcommands() {
@@ -77,7 +79,27 @@ public class TagsCommand implements EasyCommand {
 
     @Override
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
-        return null;
+        String subcommand = args.get(0);
+        if (args.size() == 1) {
+            List<String> matches = new ArrayList<>();
+            for (Subcommand subcmd : subcommands) {
+                if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
+                    if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
+                        matches.add(subcmd.getName());
+                    }
+                }
+            }
+            return matches;
+        } else {
+            for (Subcommand subcmd : subcommands) {
+                if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
+                    if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
+                        return subcmd.getTabCompletion(sender, args);
+                    }
+                }
+            }
+        }
+        return Collections.emptyList();
     }
 
     public Subcommand getSubcommand(String name) {

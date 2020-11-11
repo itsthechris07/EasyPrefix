@@ -65,7 +65,7 @@ public enum Message {
     PAGE_PREVIOUS("$gui.previous"),
     PLAYER_NOT_FOUND("$info.playerNotFound"),
     PLAYER_ONLY("$info.playerOnly"),
-    CHAT_TAGS_HEADER("$chat.tags_header"),
+    CHAT_TAGS_HEADER("$tags.chat_header"),
     RESET_PLAYER_PREFIX("$chat.resetPlayerPrefix"),
     RESET_PLAYER_SUFFIX("$chat.resetPlayerSuffix"),
     SETTINGS_TITLE("$gui.settingsTitle"),
@@ -77,9 +77,13 @@ public enum Message {
     SUBMIT_PREFIX("$chat.confirmPlayerPrefix"),
     SUBMIT_SUFFIX("$chat.confirmPlayerSuffix"),
     SUCCESS("$info.success"),
-    CHAT_TAGS_AVAILABLE("$chat.tags_available"),
+    CHAT_TAGS_AVAILABLE("$tags.list_info_available"),
     SUCCESS_PLAYER_PREFIX("$chat.playerPrefix"),
     SUCCESS_PLAYER_SUFFIX("$chat.playerSuffix"),
+    TAGS_ITEM_TITLE("$tags.item_title"),
+    TAGS_ITEM_LORE("$tags.item_lore"),
+    TAGS_INVALID_NAME("$tags.tag_not_found"),
+    TAGS_PLAYER_SELECT("$tags.tag_selected"),
     TITLE_GENDER("$gui.title.gender");
 
     private final String message;
