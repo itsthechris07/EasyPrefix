@@ -3,6 +3,8 @@ package com.christian34.easyprefix.commands.easyprefix;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
+import com.christian34.easyprefix.commands.set.SetPrefixCommand;
+import com.christian34.easyprefix.commands.set.SetSuffixCommand;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
@@ -12,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,7 +43,8 @@ public class EasyPrefixCommand implements EasyCommand {
         }
 
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-            subcommands.add(new SetCommand(this));
+            subcommands.add(new SetPrefixCommand(this));
+            subcommands.add(new SetSuffixCommand(this));
             new AliasHandler(this);
         }
     }
@@ -78,13 +80,6 @@ public class EasyPrefixCommand implements EasyCommand {
         }
 
         String subcommand = args.get(0);
-
-        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-            if (subcommand.equalsIgnoreCase("setprefix") || subcommand.equalsIgnoreCase("setsuffix")) {
-                getSubcommand("set").handleCommand(sender, args);
-                return;
-            }
-        }
         for (Subcommand subCmd : subcommands) {
             if (subCmd.getName().equalsIgnoreCase(subcommand) || subCmd.getName().startsWith(subcommand)) {
                 if (subCmd.getPermission() == null || sender.hasPermission(subCmd.getPermission().toString())) {
@@ -115,8 +110,6 @@ public class EasyPrefixCommand implements EasyCommand {
                     }
                 }
             }
-            matches.remove("set");
-            matches.addAll(Arrays.asList("setprefix", "setsuffix"));
             return matches;
         } else {
             for (Subcommand subcmd : subcommands) {

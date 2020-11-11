@@ -340,6 +340,10 @@ public class User {
         return null;
     }
 
+    public boolean hasPermission(UserPermission userPermission) {
+        return player.hasPermission(userPermission.toString());
+    }
+
     public void sendMessage(String message) {
         player.sendMessage(Messages.getPrefix() + message);
     }
