@@ -8,12 +8,14 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -77,24 +79,33 @@ class ListCommand implements Subcommand {
                 .replace("%tags%", subgroups.size() + "")
                 .replace("%newline%", "\n"));
 
+        String itemTitle = Message.TAGS_ITEM_TITLE.getText();
+
         TextComponent list = new TextComponent("");
-        for (Subgroup subgroup : subgroups) {
-            list.addExtra(getText(subgroup.getName(), "/ep bla", subgroup.getName()));
-            list.addExtra(", ");
+        for (int i = 0; i < subgroups.size(); i++) {
+            Subgroup subgroup = subgroups.get(i);
+            list.addExtra(getText(
+                    itemTitle.replace("%name%", subgroup.getName()),
+                    "/tags select " + subgroup.getName(),
+                    subgroup.getName()));
+            if (i != subgroups.size() - 1) {
+                list.addExtra("§7, ");
+            }
         }
-        user.getPlayer().spigot().sendMessage(getText("text", "/ep test", "hover text"));
+
+        user.getPlayer().spigot().sendMessage(list);
     }
 
     private TextComponent getText(String text, String command, String hoverText) {
         TextComponent msg = new TextComponent(TextComponent.fromLegacyText(text));
         msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
-        msg.addExtra(msg);
+        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(hoverText)));
         return msg;
     }
 
     @Override
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
-        return null;
+        return Collections.emptyList();
     }
 
 }

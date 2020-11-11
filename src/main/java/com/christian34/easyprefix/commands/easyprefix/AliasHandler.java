@@ -57,11 +57,10 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
 
         List<String> value = Arrays.asList(args);
         if (cmd.getName().equalsIgnoreCase(this.prefixAlias)) {
-            value.add(0, "setprefix");
+            parentCommand.getSubcommand("setprefix").handleCommand(sender, value);
         } else if (cmd.getName().equalsIgnoreCase(this.suffixAlias)) {
-            value.add(0, "setsuffix");
+            parentCommand.getSubcommand("setsuffix").handleCommand(sender, value);
         }
-        parentCommand.getSubcommand("set").handleCommand(sender, value);
         return true;
     }
 

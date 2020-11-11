@@ -10,7 +10,8 @@ public enum UserPermission {
     SETTINGS,
     CUSTOM_PREFIX,
     CUSTOM_SUFFIX,
-    CUSTOM_BYPASS;
+    CUSTOM_BYPASS,
+    TAGS_SWITCH;
 
     private final static String PERMISSION_PREFIX = "EasyPrefix.";
 
