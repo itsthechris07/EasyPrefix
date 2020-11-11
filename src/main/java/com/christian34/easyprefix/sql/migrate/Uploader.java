@@ -1,10 +1,10 @@
 package com.christian34.easyprefix.sql.migrate;
 
 import com.christian34.easyprefix.files.GroupsData;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.user.UserData;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.ResultSet;
@@ -31,7 +31,7 @@ class Uploader {
         Set<String> groupNames = groupsData.getSection("groups");
 
         if (groupNames.isEmpty()) {
-            Messages.log("§cCouldn't find groups to upload!");
+            Debug.log("§cCouldn't find groups to upload!");
             return false;
         }
 
@@ -54,7 +54,7 @@ class Uploader {
             try {
                 update.execute();
             } catch (Exception ex) {
-                Messages.log("§cCouldn't upload group '" + name + "'!");
+                Debug.log("§cCouldn't upload group '" + name + "'!");
                 ex.printStackTrace();
             }
         }
@@ -65,7 +65,7 @@ class Uploader {
         Set<String> groupNames = groupsData.getSection("subgroups");
 
         if (groupNames.isEmpty()) {
-            Messages.log("§cCouldn't find any subgroups to upload!");
+            Debug.log("§cCouldn't find any subgroups to upload!");
             return false;
         }
 
@@ -84,7 +84,7 @@ class Uploader {
             try {
                 update.execute();
             } catch (Exception ex) {
-                Messages.log("§cCouldn't upload subgroup '" + name + "'!");
+                Debug.log("§cCouldn't upload subgroup '" + name + "'!");
                 ex.printStackTrace();
             }
         }
@@ -113,7 +113,7 @@ class Uploader {
                 try {
                     insert.execute();
                 } catch (Exception ex) {
-                    Messages.log("§cCouldn't upload the gendered layout for group '" + name + "'!");
+                    Debug.log("§cCouldn't upload the gendered layout for group '" + name + "'!");
                     ex.printStackTrace();
                 }
             }
@@ -143,7 +143,7 @@ class Uploader {
                 try {
                     insert.execute();
                 } catch (Exception ex) {
-                    Messages.log("§cCouldn't upload the gendered layout for subgroup '" + name + "'!");
+                    Debug.log("§cCouldn't upload the gendered layout for subgroup '" + name + "'!");
                     ex.printStackTrace();
                 }
             }
@@ -168,7 +168,7 @@ class Uploader {
         }
 
         if (users.isEmpty()) {
-            Messages.log("Couldn't find any users!");
+            Debug.log("Couldn't find any users!");
             return false;
         }
 
@@ -193,7 +193,7 @@ class Uploader {
                     return true;
                 }
             } catch (Exception ex) {
-                Messages.log("§cAn error occurred while uploading the data for user '" + uniqueId.toString() + "'!");
+                Debug.log("§cAn error occurred while uploading the data for user '" + uniqueId.toString() + "'!");
             }
         }
         return false;

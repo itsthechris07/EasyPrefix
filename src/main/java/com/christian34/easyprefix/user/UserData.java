@@ -2,7 +2,6 @@ package com.christian34.easyprefix.user;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.Data;
 import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
@@ -64,7 +63,7 @@ public class UserData {
                     .setValue("uuid", uniqueId.toString())
                     .setValue("username", username);
             if (!insertStatement.execute()) {
-                Messages.log("§cCouldn't update database! Error UDDB3");
+                Debug.log("§cCouldn't update database! Error UDDB3");
             }
         } else {
             if (player != null && username != null) {
@@ -73,7 +72,7 @@ public class UserData {
                             .addCondition("uuid", player.getUniqueId().toString())
                             .setValue("username", player.getName());
                     if (!updateStatement.execute()) {
-                        Messages.log("§cCouldn't update username for player '" + player.getName() + "'!");
+                        Debug.log("§cCouldn't update username for player '" + player.getName() + "'!");
                     }
                 }
             }
@@ -93,14 +92,14 @@ public class UserData {
         UserDataFile userDataFile = new UserDataFile(uniqueId);
         if (userDataFile.getFile() == null || userDataFile.getFileData() == null) return;
         OfflinePlayer op = Bukkit.getOfflinePlayer(uniqueId);
-        Messages.log("Updating " + op.getName() + "´s data...");
+        Debug.log("Updating " + op.getName() + "´s data...");
 
         SelectQuery selectQuery = new SelectQuery("users", "uuid").addCondition("uuid", this.uniqueId.toString());
         if (selectQuery.getData().isEmpty()) {
-            Messages.log("Creating database for user...");
+            Debug.log("Creating database for user...");
             InsertStatement insertStatement = new InsertStatement("users").setValue("uuid", this.uniqueId.toString());
             if (!insertStatement.execute()) {
-                Messages.log("Couldn't save data to database! Error UDDB4");
+                Debug.log("Couldn't save data to database! Error UDDB4");
             }
         }
         List<String> rows = Arrays.asList("group", "subgroup", "custom_prefix", "gender", "chat_color", "chat_formatting", "custom_suffix", "custom_prefix");
@@ -110,11 +109,11 @@ public class UserData {
                         .addCondition("uuid", uniqueId.toString())
                         .setValue(row, userDataFile.getFileData().getString(row.replace("_", "-")));
                 if (!updateStatement.execute()) {
-                    Messages.log("Couldn't save data to database! Error UDDB1");
+                    Debug.log("Couldn't save data to database! Error UDDB1");
                 }
             } catch (Exception ex) {
-                Messages.log("§cAn exception occurred while updating " + op.getName() + "´s data...");
-                Messages.log("§cError: " + ex.getMessage());
+                Debug.log("§cAn exception occurred while updating " + op.getName() + "´s data...");
+                Debug.log("§cError: " + ex.getMessage());
                 ex.printStackTrace();
             }
         }
@@ -123,21 +122,21 @@ public class UserData {
                     .addCondition("uuid", uniqueId.toString())
                     .setValue("force_group", 1);
             if (!updateStatement.execute()) {
-                Messages.log("Couldn't save data to database! Error UDDB2");
+                Debug.log("Couldn't save data to database! Error UDDB2");
             }
         }
         File backupDir = new File(FileManager.getPluginFolder() + "/user/backup");
         if (!backupDir.exists()) {
             if (!backupDir.mkdirs()) {
-                Messages.log("§cCouldn't create backup folder!");
+                Debug.log("§cCouldn't create backup folder!");
             }
         }
         if (userDataFile.getFile().renameTo(new File(backupDir, uniqueId.toString() + ".yml"))) {
             if (!userDataFile.getFile().delete()) {
-                Messages.log("§cCouldn't delete user data for '" + uniqueId + "'!");
+                Debug.log("§cCouldn't delete user data for '" + uniqueId + "'!");
             }
         }
-        Messages.log("§aData has been updated!");
+        Debug.log("§aData has been updated!");
     }
 
 }

@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public final class RainbowEffect {
             try {
                 enabledColors.add(ChatColor.valueOf(color));
             } catch (Exception ignored) {
-                Messages.log("Couldn't find a color with name '" + color + "'!");
+                Debug.log("Couldn't find a color with name '" + color + "'!");
             }
         }
         rainbowColors = enabledColors;

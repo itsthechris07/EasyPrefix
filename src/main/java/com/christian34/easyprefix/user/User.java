@@ -10,6 +10,7 @@ import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -348,7 +349,7 @@ public class User {
                 .addCondition("uuid", getPlayer().getUniqueId().toString())
                 .setValue(key, value);
         if (!updateStatement.execute()) {
-            Messages.log("Couldn't save data to database! Error UDB1");
+            Debug.log("Couldn't save data to database! Error UDB1");
         }
     }
 

@@ -4,9 +4,9 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class GenderedLayout {
         try {
             load();
         } catch (Exception ex) {
-            Messages.log("§cAn error occurred while loading a gendered layout for "
+            Debug.log("§cAn error occurred while loading a gendered layout for "
                     + easyGroupType + " '" + easyGroup.getName() + "'!");
             ex.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class GenderedLayout {
                 Gender gender = instance.getGroupHandler().getGender(result.getString("gender"));
 
                 if (gender == null) {
-                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
+                    Debug.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
                     continue;
                 }
 
@@ -75,7 +75,7 @@ public class GenderedLayout {
                 Gender gender = instance.getGroupHandler().getGender(name);
 
                 if (gender == null) {
-                    Messages.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
+                    Debug.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
                     continue;
                 }
 

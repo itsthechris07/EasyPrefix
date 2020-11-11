@@ -3,9 +3,9 @@ package com.christian34.easyprefix.messages;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.VersionController;
 import com.tchristofferson.configupdater.ConfigUpdater;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -48,9 +48,9 @@ public final class Messages {
         String langId = ConfigKeys.PLUGIN_LANG.toString();
         language = Language.getByName(langId);
         if (language == null) {
-            Messages.log("§cCouldn't load messages for language '" + langId + "'! Please use a valid language!");
+            Debug.log("§cCouldn't load messages for language '" + langId + "'! Please use a valid language!");
             setLanguage(Language.en_EN);
-            Messages.log("§cYour language has been set to en_EN!");
+            Debug.log("§cYour language has been set to en_EN!");
             return;
         }
 
@@ -62,7 +62,7 @@ public final class Messages {
             try {
                 ConfigUpdater.update(instance, langFile, file, new ArrayList<>());
             } catch (IOException e) {
-                Messages.log("§cCouldn't update file. Please report this error on github.com!");
+                Debug.log("§cCouldn't update file. Please report this error on github.com!");
                 e.printStackTrace();
             }
         }
@@ -96,7 +96,7 @@ public final class Messages {
         writer.close();
         reader.close();
         if (!file.delete() && !tempFile.renameTo(file)) {
-            Messages.log("§cCouldn't update file messages.yml! Please consider an update to newer a newer Minecraft version.");
+            Debug.log("§cCouldn't update file messages.yml! Please consider an update to newer a newer Minecraft version.");
         }
     }
 

@@ -126,14 +126,14 @@ public class EasyPrefix extends JavaPlugin {
         this.expansionManager = new ExpansionManager(this);
         this.updater = new Updater(this);
         hookMetrics();
-        Messages.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
-        Messages.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
-        Messages.log("This software uses Sentry for anonymous user statistics. License: https://github.com/getsentry/sentry/blob/master/LICENSE");
+        Debug.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
+        Debug.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
+        Debug.log("This software uses Sentry for anonymous user statistics. License: https://github.com/getsentry/sentry/blob/master/LICENSE");
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (formatChat() && (Bukkit.getPluginManager().isPluginEnabled("EssentialsChat") || Bukkit.getPluginManager().isPluginEnabled("MultiChat"))) {
-                Messages.log("§c--------------------------------------");
-                Messages.log("§cYou are using a different chat management plugin. To avoid issues, please set 'handle-chat' in config.yml to false");
-                Messages.log("§c--------------------------------------");
+                Debug.log("§c--------------------------------------");
+                Debug.log("§cYou are using a different chat management plugin. To avoid issues, please set 'handle-chat' in config.yml to false");
+                Debug.log("§c--------------------------------------");
             }
         }, 20 * 3);
     }

@@ -4,12 +4,12 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.groups.gender.GenderedLayout;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.*;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -139,7 +139,7 @@ public class Group extends EasyGroup {
                     .addCondition("group", this.NAME)
                     .setValue(key.replace("-", "_"), value);
             if (!updateStatement.execute()) {
-                Messages.log("Couldn't save data to database! Error GDB1");
+                Debug.log("Couldn't save data to database! Error GDB1");
             }
         } else {
             groupsData.setAndSave(getFileKey() + key.replace("_", "-"), value);
@@ -273,7 +273,7 @@ public class Group extends EasyGroup {
         } else {
             DeleteStatement deleteStatement = new DeleteStatement("groups").addCondition("group", getName());
             if (!deleteStatement.execute()) {
-                Messages.log("§cCouldn't delete group '" + getName() + "'!");
+                Debug.log("§cCouldn't delete group '" + getName() + "'!");
             }
         }
         instance.getGroupHandler().getGroups().remove(this);

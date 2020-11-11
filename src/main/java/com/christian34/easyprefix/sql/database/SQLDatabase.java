@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.sql.database;
 
 import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.*;
@@ -43,12 +42,12 @@ public class SQLDatabase implements Database {
                 updateTables();
                 return true;
             } catch (SQLSyntaxErrorException e) {
-                Messages.log("§cDatabase '" + database + "' does not exist!");
+                Debug.log("§cDatabase '" + database + "' does not exist!");
             } catch (SQLException e) {
-                Messages.log("§cAccess denied for user '" + this.username + "'@'" + this.host + "'");
-                Messages.log("§cPlease check if the sql server is running and you entered the right username and password.");
+                Debug.log("§cAccess denied for user '" + this.username + "'@'" + this.host + "'");
+                Debug.log("§cPlease check if the sql server is running and you entered the right username and password.");
             } catch (ClassNotFoundException e) {
-                Messages.log("§cYour installation does not support sql!");
+                Debug.log("§cYour installation does not support sql!");
             }
             return false;
         }

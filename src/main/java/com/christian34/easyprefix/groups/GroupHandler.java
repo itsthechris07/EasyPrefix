@@ -5,7 +5,6 @@ import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.Gender;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
@@ -61,9 +60,9 @@ public class GroupHandler {
                         .setValue("join_msg", "&8» %ep_user_prefix%%player% &7joined the game")
                         .setValue("quit_msg", "&8« %ep_user_prefix%%player% &7left the game");
                 if (!insertStatement.execute()) {
-                    Messages.log("Couldn't upload default group to database!");
+                    Debug.log("Couldn't upload default group to database!");
                 }
-                Messages.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data with: /easyprefix database upload");
+                Debug.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data with: /easyprefix database upload");
             }
         }
     }
@@ -209,7 +208,7 @@ public class GroupHandler {
         } else {
             InsertStatement insertStatement = new InsertStatement("groups").setValue("group", groupName);
             if (!insertStatement.execute()) {
-                Messages.log("Couldn't save new group!");
+                Debug.log("Couldn't save new group!");
                 return false;
             }
         }

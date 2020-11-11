@@ -2,7 +2,7 @@ package com.christian34.easyprefix.groups.gender;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public class Gender {
 
          String displayName = config.getData().getString("config.gender.types." + name + ".displayname");
          if (displayName == null) {
-             Messages.log("You haven't set a display name for gender '" + name + "'!");
+             Debug.log("You haven't set a display name for gender '" + name + "'!");
              instance.getGroupHandler().getGenderTypes().remove(this);
              return;
          }

@@ -2,10 +2,10 @@ package com.christian34.easyprefix.sql.migrate;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.utils.Debug;
 
 /**
  * EasyPrefix 2020.
@@ -56,38 +56,38 @@ public class DataMigration {
         if (!connected) {
             connect();
         }
-        Messages.log("§cThe data migration has started. This could take a while.");
+        Debug.log("§cThe data migration has started. This could take a while.");
 
         if (uploader.sendGroups()) {
-            Messages.log("Groups has been migrated.");
+            Debug.log("Groups has been migrated.");
         } else {
-            Messages.log("§cCouldn't migrate groups! If you think this is an error, please create an issue on github.");
+            Debug.log("§cCouldn't migrate groups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendSubgroups()) {
-            Messages.log("Subgroups has been migrated.");
+            Debug.log("Subgroups has been migrated.");
         } else {
-            Messages.log("§cCouldn't migrate subgroups! If you think this is an error, please create an issue on github.");
+            Debug.log("§cCouldn't migrate subgroups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendGenderedGroupsLayout()) {
-            Messages.log("Layout data for groups has been migrated.");
+            Debug.log("Layout data for groups has been migrated.");
         } else {
-            Messages.log("§cCouldn't migrate layout data for groups! If you think this is an error, please create an issue on github.");
+            Debug.log("§cCouldn't migrate layout data for groups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendGenderedSubgroupsLayout()) {
-            Messages.log("Layout data for subgroups has been migrated.");
+            Debug.log("Layout data for subgroups has been migrated.");
         } else {
-            Messages.log("§cCouldn't migrate layout data for subgroups! If you think this is an error, please create an issue on github.");
+            Debug.log("§cCouldn't migrate layout data for subgroups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendUsers()) {
-            Messages.log("Users have been migrated.");
+            Debug.log("Users have been migrated.");
         } else {
-            Messages.log("§cCouldn't migrate users! If you think this is an error, please create an issue on github.");
+            Debug.log("§cCouldn't migrate users! If you think this is an error, please create an issue on github.");
         }
-        Messages.log("§aData has been migrated!");
+        Debug.log("§aData has been migrated!");
         close();
     }
 

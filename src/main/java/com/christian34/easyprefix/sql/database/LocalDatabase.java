@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.sql.database;
 
 import com.christian34.easyprefix.files.FileManager;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.utils.Debug;
 
 import java.io.File;
@@ -48,10 +47,10 @@ public class LocalDatabase implements Database {
                 connection = DriverManager.getConnection("jdbc:sqlite:" + FileManager.getPluginFolder() + "/storage" + ".db");
                 return true;
             } catch (SQLException e) {
-                Messages.log("§cCouldn't connect to local storage!");
+                Debug.log("§cCouldn't connect to local storage!");
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
-                Messages.log("§cYour installation does not support sqlite!");
+                Debug.log("§cYour installation does not support sqlite!");
             }
             return false;
         }

@@ -265,10 +265,10 @@ public class GuiRespond {
                 e.getWhoClicked().closeInventory();
                 e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
                 Debug.captureException(ex);
-                Messages.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
-                Messages.log("&c------ ERROR ------");
+                Debug.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
+                Debug.log("&c------ ERROR ------");
                 ex.printStackTrace();
-                Messages.log("&c------ END OF ERROR ------");
+                Debug.log("&c------ END OF ERROR ------");
             }
 
         }

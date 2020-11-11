@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.messages.Messages;
 import org.bukkit.Bukkit;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -33,12 +32,12 @@ public class Updater {
                 connection.setRequestMethod("GET");
                 spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
             } catch (IOException e) {
-                Messages.log("§cUpdate checker failed!");
+                Debug.log("§cUpdate checker failed!");
                 return;
             }
             if (spigotPluginVersion.split("\\.")[1].equals("7")) {
                 available = true;
-                Messages.log(UPDATE_MSG);
+                Debug.log(UPDATE_MSG);
             }
         });
         return this.available;

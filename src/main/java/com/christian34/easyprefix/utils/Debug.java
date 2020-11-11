@@ -57,8 +57,12 @@ public final class Debug {
 
     public static void captureException(Exception exception) {
         Sentry.captureException(exception);
-        Messages.log("An error occurred while using EasyPrefix:");
+        log("An error occurred while using EasyPrefix:");
         exception.printStackTrace();
+    }
+
+    public static void log(String message) {
+        Bukkit.getConsoleSender().sendMessage(Messages.getPrefix() + Messages.translate(message));
     }
 
 }

@@ -4,10 +4,10 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.groups.gender.GenderedLayout;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.*;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,7 +69,7 @@ public class Subgroup extends EasyGroup {
                     .addCondition("group", getName())
                     .setValue(key.replace("-", "_"), value);
             if (!updateStatement.execute()) {
-                Messages.log("Couldn't save data to database! Error SDB1");
+                Debug.log("Couldn't save data to database! Error SDB1");
             }
         }
         instance.getGroupHandler().load();
@@ -198,7 +198,7 @@ public class Subgroup extends EasyGroup {
         } else {
             DeleteStatement deleteStatement = new DeleteStatement("subgroups").addCondition("group", getName());
             if (!deleteStatement.execute()) {
-                Messages.log("§cCouldn't delete subgroup '" + getName() + "'!");
+                Debug.log("§cCouldn't delete subgroup '" + getName() + "'!");
             }
         }
         instance.getGroupHandler().getSubgroups().remove(this);
