@@ -6,6 +6,7 @@ package com.christian34.easyprefix.messages;
  * @author Christian34
  */
 public enum Message {
+    PREFIX_ALT("info.prefix"),
     DISABLED("§cdisabled"),
     ENABLED("§aenabled"),
     LORE_PERMISSION("§7Permission: &f"),
@@ -59,6 +60,7 @@ public enum Message {
     PAGE_PREVIOUS("$gui.previous"),
     PLAYER_NOT_FOUND("$info.playerNotFound"),
     PLAYER_ONLY("$info.playerOnly"),
+    CHAT_TAGS_HEADER("$chat.tags_header"),
     RESET_PLAYER_PREFIX("$chat.resetPlayerPrefix"),
     RESET_PLAYER_SUFFIX("$chat.resetPlayerSuffix"),
     SETTINGS_TITLE("$gui.settingsTitle"),
@@ -70,6 +72,7 @@ public enum Message {
     SUBMIT_PREFIX("$chat.confirmPlayerPrefix"),
     SUBMIT_SUFFIX("$chat.confirmPlayerSuffix"),
     SUCCESS("$info.success"),
+    CHAT_TAGS_AVAILABLE("$chat.tags_available"),
     SUCCESS_PLAYER_PREFIX("$chat.playerPrefix"),
     SUCCESS_PLAYER_SUFFIX("$chat.playerSuffix"),
     TITLE_GENDER("$gui.title.gender");
@@ -89,10 +92,13 @@ public enum Message {
 
     @Override
     public String toString() {
-        if (isKey) {
-            return Messages.getText(message);
-        }
-        return Messages.translate(message);
+        String text = (isKey) ? Messages.getText(message) : message;
+        return Messages.translate(text);
+    }
+
+    public String toMessage() {
+        String text = toString();
+        return Messages.getPrefix() + text;
     }
 
     public String getPath() {

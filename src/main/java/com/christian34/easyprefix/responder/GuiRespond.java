@@ -183,7 +183,7 @@ public class GuiRespond {
     }
 
     private ItemStack getPlaceholder() {
-        ItemStack glass = XMaterial.GRAY_STAINED_GLASS_PANE.parseItem(true);
+        ItemStack glass = XMaterial.GRAY_STAINED_GLASS_PANE.parseItem();
         ItemMeta meta = Objects.requireNonNull(glass).getItemMeta();
         if (meta != null) meta.setDisplayName("§0 ");
         glass.setItemMeta(meta);

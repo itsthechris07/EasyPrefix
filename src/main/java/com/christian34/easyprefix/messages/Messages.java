@@ -24,22 +24,20 @@ import java.util.List;
  */
 public final class Messages {
     private static final EasyPrefix instance;
+    private static final String PREFIX = "§7[§5EasyPrefix§7] ";
     private static FileConfiguration data;
     private static Language language;
-    private static final String PREFIX = "§7[§5EasyPrefix§7] ";
 
     static {
         instance = EasyPrefix.getInstance();
     }
 
-    private Messages() {
-    }
-
+    @NotNull
     public static Language getLanguage() {
         return language;
     }
 
-    public static void setLanguage(Language lang) {
+    public static void setLanguage(@NotNull Language lang) {
         instance.getFileManager().getConfig().set(ConfigKeys.LANG.getPath(), lang.getId());
         load();
     }
@@ -79,7 +77,7 @@ public final class Messages {
         data = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static void replaceInFile(@NotNull File file) throws IOException {
+    private static void replaceInFile(@NotNull File file) throws IOException {
         File tempFile = new File("plugins/EasyPrefix", "messages.tmp");
         if (!tempFile.createNewFile()) {
             return;
@@ -102,6 +100,7 @@ public final class Messages {
         }
     }
 
+    @NotNull
     public static List<String> getList(@NotNull Message message) {
         List<String> temp = new ArrayList<>();
         for (String msg : data.getStringList(message.getPath())) {
@@ -110,14 +109,12 @@ public final class Messages {
         return temp;
     }
 
+    @Nullable
     public static String getText(@NotNull String path) {
-        return translate(data.getString(path));
+        return data.getString(path);
     }
 
-    public static String getMessage(@NotNull Message message) {
-        return getPrefix() + translate(data.getString(message.getPath()));
-    }
-
+    @NotNull
     public static String getPrefix() {
         return PREFIX;
     }
@@ -130,7 +127,6 @@ public final class Messages {
     public static void log(String message) {
         Bukkit.getConsoleSender().sendMessage(getPrefix() + translate(message));
     }
-
 
     public enum Language {
         en_EN("English"),

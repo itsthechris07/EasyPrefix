@@ -79,7 +79,15 @@ public abstract class EasyGroup {
             ExpansionManager expansionManager = EasyPrefix.getInstance().getExpansionManager();
             if (!expansionManager.isUsingPapi()) {
                 String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user, false) : "";
+                if (sgPrefix == null) {
+                    sgPrefix = "";
+                }
+
                 String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user, false) : "";
+                if (sgSuffix == null) {
+                    sgSuffix = "";
+                }
+
                 text = text
                         .replace("%ep_user_prefix%", user.getGroup().getPrefix(null, false))
                         .replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false))

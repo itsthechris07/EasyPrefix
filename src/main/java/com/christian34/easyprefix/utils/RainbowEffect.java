@@ -14,9 +14,18 @@ import java.util.Random;
  * @author Christian34
  */
 public final class RainbowEffect {
-    private static List<ChatColor> rainbowColors = null;
+    private static final List<ChatColor> rainbowColors;
 
-    private RainbowEffect() {
+    static {
+        List<ChatColor> enabledColors = new ArrayList<>();
+        for (String color : ConfigKeys.COLOR_RAINBOW_COLORS.toStringList()) {
+            try {
+                enabledColors.add(ChatColor.valueOf(color));
+            } catch (Exception ignored) {
+                Messages.log("Couldn't find a color with name '" + color + "'!");
+            }
+        }
+        rainbowColors = enabledColors;
     }
 
     public static String addRainbowEffect(String text) {
@@ -40,17 +49,6 @@ public final class RainbowEffect {
     }
 
     public static List<ChatColor> getRainbowColors() {
-        if (rainbowColors == null || rainbowColors.isEmpty()) {
-            List<ChatColor> enabledColors = new ArrayList<>();
-            for (String color : ConfigKeys.COLOR_RAINBOW_COLORS.toStringList()) {
-                try {
-                    enabledColors.add(ChatColor.valueOf(color));
-                } catch (Exception ignored) {
-                    Messages.log("Couldn't find a color with name '" + color + "'!");
-                }
-            }
-            rainbowColors = enabledColors;
-        }
         return rainbowColors;
     }
 

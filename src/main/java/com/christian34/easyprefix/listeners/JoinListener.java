@@ -6,6 +6,7 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.utils.Updater;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -46,12 +47,12 @@ public class JoinListener implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(instance.getPlugin(), () -> {
             if (user.getPlayer().hasPermission("easyprefix.admin")) {
                 if (instance.getUpdater().checkForUpdates()) {
-                    user.sendMessage(instance.getUpdater().UPDATE_MSG);
+                    user.sendMessage(Updater.UPDATE_MSG);
                 }
             }
             if (ConfigKeys.USE_GENDER.toBoolean() && ConfigKeys.FORCE_GENDER.toBoolean()) {
                 if (user.getGenderType() == null) {
-                    String prefix = Messages.getText("info.prefix");
+                    String prefix = Message.PREFIX_ALT.toString();
                     if (prefix == null) prefix = Messages.getPrefix();
                     TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Message.NOTIFY_GENDER_TEXT.toString()));
                     TextComponent change = new TextComponent(TextComponent.fromLegacyText(Message.NOTIFY_GENDER_BTN.toString()));
