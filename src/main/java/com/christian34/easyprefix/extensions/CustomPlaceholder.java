@@ -56,7 +56,7 @@ class CustomPlaceholder extends PlaceholderExpansion {
                 String color = user.getChatColor().getCode();
                 if (user.getChatFormatting() != null) {
                     if (user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                        color = Message.FORMATTING_RAINBOW.toString();
+                        color = Message.FORMATTING_RAINBOW.getText();
                     } else {
                         color += user.getChatFormatting().getCode();
                     }

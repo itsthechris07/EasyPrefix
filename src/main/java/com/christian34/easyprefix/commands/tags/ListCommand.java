@@ -72,7 +72,7 @@ class ListCommand implements Subcommand {
 
         User user = instance.getUser(player);
         List<Subgroup> subgroups = user.getAvailableSubgroups();
-        sender.sendMessage(Message.CHAT_TAGS_AVAILABLE.toString()
+        sender.sendMessage(Message.CHAT_TAGS_AVAILABLE.getText()
                 .replace("%prefix%", Messages.getPrefix())
                 .replace("%tags%", subgroups.size() + "")
                 .replace("%newline%", "\n"));

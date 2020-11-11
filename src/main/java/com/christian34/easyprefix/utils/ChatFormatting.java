@@ -45,9 +45,9 @@ public enum ChatFormatting {
     public String toString() {
         if (code != null) {
             if (code.equals("r")) {
-                return getCode() + RainbowEffect.addRainbowEffect(name.toString());
+                return getCode() + RainbowEffect.addRainbowEffect(name.getText());
             }
-            return getCode() + name.toString();
+            return getCode() + name.getText();
         }
         return "";
     }

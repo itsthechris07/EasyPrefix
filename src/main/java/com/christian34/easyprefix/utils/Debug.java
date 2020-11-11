@@ -48,9 +48,6 @@ public final class Debug {
         hub.setTag("groups", String.valueOf(instance.getGroupHandler().getGroups().size()));
     }
 
-    private Debug() {
-    }
-
     public static void recordAction(String message) {
         hub.addBreadcrumb(message);
     }

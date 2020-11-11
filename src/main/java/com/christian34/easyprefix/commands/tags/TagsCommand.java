@@ -66,7 +66,7 @@ public class TagsCommand implements EasyCommand {
                         Debug.captureException(ex);
                     }
                 } else {
-                    sender.sendMessage(Message.NO_PERMS.toMessage());
+                    sender.sendMessage(Message.NO_PERMS.getMessage());
                 }
                 return;
             }

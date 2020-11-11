@@ -46,14 +46,14 @@ public class GuiRespond {
         this.guiLines = lines;
         this.inventory = Bukkit.createInventory(holder.getPlayer(), lines * 9, title);
         this.maxSlots = (guiLines - 2) * 9;
-        this.nextPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_NEXT.toString()).setSlot(lines, 6);
-        this.prevPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_PREVIOUS.toString()).setSlot(lines, 4);
+        this.nextPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_NEXT.getText()).setSlot(lines, 6);
+        this.prevPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_PREVIOUS.getText()).setSlot(lines, 4);
         Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
     }
 
     private static Icon getCloseIcon() {
         if (closeIcon == null) {
-            closeIcon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.toString());
+            closeIcon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.getText());
         }
         return closeIcon.clone();
     }
@@ -101,11 +101,11 @@ public class GuiRespond {
     }
 
     public Icon addIcon(Material material, Message displayName, int line, int slot) {
-        return addIcon(new ItemStack(material), displayName.toString(), line, slot);
+        return addIcon(new ItemStack(material), displayName.getText(), line, slot);
     }
 
     public Icon addIcon(ItemStack itemStack, Message displayName, int line, int slot) {
-        return addIcon(itemStack, displayName.toString(), line, slot);
+        return addIcon(itemStack, displayName.getText(), line, slot);
     }
 
     /**

@@ -7,7 +7,6 @@ import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.ChatRespond;
 import com.christian34.easyprefix.responder.GuiRespond;
 import com.christian34.easyprefix.responder.gui.ClickAction;
@@ -34,7 +33,7 @@ import java.util.Objects;
  * @author Christian34
  */
 public class GuiSettings {
-    private final String TITLE = Message.SETTINGS_TITLE.toString();
+    private final String TITLE = Message.SETTINGS_TITLE.getText();
     private final User user;
 
     public GuiSettings(User user) {
@@ -72,7 +71,7 @@ public class GuiSettings {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.TITLE_GENDER), 3);
         String genderName = "n/A";
         if (user.getGenderType() != null) genderName = user.getGenderType().getDisplayName();
-        List<String> lore = Arrays.asList(" ", Message.LORE_CHANGE_GENDER.toString());
+        List<String> lore = Arrays.asList(" ", Message.LORE_CHANGE_GENDER.getText());
         guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), genderName, 2, 5).setLore(lore).onClick(() -> {
             if (user.getGenderType() == null) {
                 user.setGenderType(groupHandler.getGenderTypes().get(0));
@@ -106,7 +105,7 @@ public class GuiSettings {
                 }
             } else {
                 lore.add(" ");
-                lore.add(Message.BTN_SELECT_PREFIX.toString());
+                lore.add(Message.BTN_SELECT_PREFIX.getText());
             }
 
             guiRespond.addIcon(itemStack, prefixColor + group.getName()).setLore(lore).onClick(() -> {
@@ -150,7 +149,7 @@ public class GuiSettings {
                     user.setChatColor(color);
                     openColorsPage();
                 } else {
-                    user.sendMessage(Message.NO_PERMS.toString());
+                    user.sendMessage(Message.NO_PERMS.getText());
                 }
             });
 
@@ -167,9 +166,9 @@ public class GuiSettings {
             if (!showAll && !user.getPlayer().hasPermission("EasyPrefix.Color." + chatFormatting.name().toLowerCase())) {
                 continue;
             }
-            List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
+            List<String> lore = Message.LORE_SELECT_COLOR.getList();
             if (!chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                lore.add(Message.LORE_SELECT_COLOR_NC.toString());
+                lore.add(Message.LORE_SELECT_COLOR_NC.getText());
             }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
@@ -186,7 +185,7 @@ public class GuiSettings {
                     user.setChatFormatting(formatting);
                     openColorsPage();
                 } else {
-                    user.sendMessage(Message.NO_PERMS.toString());
+                    user.sendMessage(Message.NO_PERMS.getText());
                 }
             });
             slot++;
@@ -214,7 +213,7 @@ public class GuiSettings {
                 }
             } else {
                 lore.add(" ");
-                lore.add(Message.BTN_SELECT_PREFIX.toString());
+                lore.add(Message.BTN_SELECT_PREFIX.getText());
             }
 
             guiRespond.addIcon(bookItem, subgroup.getGroupColor() + subgroup.getName()).setLore(lore).onClick(() -> {
@@ -250,12 +249,12 @@ public class GuiSettings {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 3);
         final String divider = "§7--------------------";
 
-        String loreDetail = Message.LORE_GROUP_DETAIL.toString();
+        String loreDetail = Message.LORE_GROUP_DETAIL.getText();
 
         List<String> prefixLore = Arrays.asList(divider, loreDetail + user.getPrefix().replace("§", "&"), " ");
 
         guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).onClick(() -> {
-            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.toString()
+            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.getText()
                     .replace("%prefix%", user.getPrefix().replace("§", "&")));
 
             responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
@@ -265,8 +264,8 @@ public class GuiSettings {
 
         List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ");
 
-        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 6).setLore(suffixLore).onClick(() -> {
-            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString()
+        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.getText(), 2, 6).setLore(suffixLore).onClick(() -> {
+            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.getText()
                     .replace("%suffix%", user.getSuffix().replace("§", "&")));
 
             responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
@@ -274,7 +273,7 @@ public class GuiSettings {
             );
         });
 
-        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.toString(), 3, 9).onClick(() -> {
+        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.getText(), 3, 9).onClick(() -> {
             user.setPrefix(null);
             user.setSuffix(null);
             openCustomLayoutPage(backAction);
@@ -290,7 +289,7 @@ public class GuiSettings {
     }
 
     private String setTitle(Message sub) {
-        return TITLE.replace("%page%", sub.toString());
+        return TITLE.replace("%page%", sub.getText());
     }
 
 }

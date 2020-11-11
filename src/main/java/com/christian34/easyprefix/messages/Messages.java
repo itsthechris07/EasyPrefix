@@ -100,17 +100,13 @@ public final class Messages {
         }
     }
 
-    @NotNull
-    public static List<String> getList(@NotNull Message message) {
-        List<String> temp = new ArrayList<>();
-        for (String msg : data.getStringList(message.getPath())) {
-            temp.add(translate(msg));
-        }
-        return temp;
+    @Nullable
+    static List<String> getList(@NotNull String path) {
+        return data.getStringList(path);
     }
 
     @Nullable
-    public static String getText(@NotNull String path) {
+    static String getText(@NotNull String path) {
         return data.getString(path);
     }
 
@@ -122,10 +118,6 @@ public final class Messages {
     @Nullable
     public static String translate(String text) {
         return (text != null) ? ChatColor.translateAlternateColorCodes('&', text) : null;
-    }
-
-    public static void log(String message) {
-        Bukkit.getConsoleSender().sendMessage(getPrefix() + translate(message));
     }
 
     public enum Language {

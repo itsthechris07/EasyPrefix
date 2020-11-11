@@ -2,7 +2,6 @@ package com.christian34.easyprefix.responder;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -11,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -42,7 +40,7 @@ public class ChatRespond {
 
     private void startTimer() {
         this.bukkitTask = Bukkit.getScheduler().runTaskLater(instance, () -> {
-            if (RESPONDER != null) RESPONDER.sendMessage(Message.INPUT_CANCELLED.toString());
+            if (RESPONDER != null) RESPONDER.sendMessage(Message.INPUT_CANCELLED.getText());
             exit();
         }, 20 * 60);
     }
@@ -54,8 +52,7 @@ public class ChatRespond {
 
     public void sendMessage() {
         RESPONDER.getPlayer().closeInventory();
-        List<String> messages = Messages.getList(Message.CHAT_HEADER);
-        for (String msg : messages) {
+        for (String msg : Message.CHAT_HEADER.getList()) {
             RESPONDER.getPlayer().sendMessage(msg.replace("%quit%", "quit").replace("%question%", TEXT.replace("%newline%", "\n")));
         }
     }
@@ -76,7 +73,7 @@ public class ChatRespond {
             User user = instance.getUser(e.getPlayer());
             user.getPlayer().spigot().sendMessage();
             if (e.getMessage().equals("quit")) {
-                user.sendMessage(Message.SETUP_CANCELLED.toString());
+                user.sendMessage(Message.SETUP_CANCELLED.getText());
                 exit();
             } else {
                 if (inputReader != null) {

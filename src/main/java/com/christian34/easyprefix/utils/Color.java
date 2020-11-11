@@ -63,7 +63,7 @@ public enum Color {
 
     @Override
     public String toString() {
-        return getCode() + name.toString();
+        return getCode() + name.getText();
     }
 
     @NotNull

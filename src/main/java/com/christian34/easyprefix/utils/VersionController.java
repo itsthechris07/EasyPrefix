@@ -19,9 +19,6 @@ public final class VersionController {
         pluginVersion = EasyPrefix.getInstance().getPlugin().getDescription().getVersion();
     }
 
-    private VersionController() {
-    }
-
     public static String getPluginVersion() {
         return pluginVersion;
     }

@@ -5,7 +5,6 @@ import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.ChatRespond;
 import com.christian34.easyprefix.responder.GuiRespond;
 import com.christian34.easyprefix.responder.gui.Icon;
@@ -34,18 +33,18 @@ public class GuiModifyingGroups {
     }
 
     public void editPrefix(EasyGroup easyGroup) {
-        ChatRespond responder = new ChatRespond(user, Message.SET_PREFIX.toString().replace("%prefix%", easyGroup.getPrefix(null, false)));
+        ChatRespond responder = new ChatRespond(user, Message.SET_PREFIX.getText().replace("%prefix%", easyGroup.getPrefix(null, false)));
         responder.getInput((respond) -> {
             easyGroup.setPrefix(respond);
-            user.sendMessage(Message.INPUT_SAVED.toString());
+            user.sendMessage(Message.INPUT_SAVED.getText());
         });
     }
 
     public void editSuffix(EasyGroup easyGroup) {
-        ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.toString().replace("%suffix%", easyGroup.getSuffix(null, false)));
+        ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.getText().replace("%suffix%", easyGroup.getSuffix(null, false)));
         responder.getInput((respond) -> {
             easyGroup.setSuffix(respond);
-            user.sendMessage(Message.INPUT_SAVED.toString());
+            user.sendMessage(Message.INPUT_SAVED.getText());
         });
     }
 
@@ -53,7 +52,7 @@ public class GuiModifyingGroups {
         ChatRespond responder = new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: §7" + group.getJoinMessageText());
         responder.getInput((respond) -> {
             group.setJoinMessage(respond);
-            user.sendMessage(Message.INPUT_SAVED.toString());
+            user.sendMessage(Message.INPUT_SAVED.getText());
         });
     }
 
@@ -61,14 +60,14 @@ public class GuiModifyingGroups {
         ChatRespond responder = new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: §7" + group.getQuitMessageText());
         responder.getInput((respond) -> {
             group.setQuitMessage(respond);
-            user.sendMessage(Message.INPUT_SAVED.toString());
+            user.sendMessage(Message.INPUT_SAVED.getText());
         });
     }
 
     public void editChatColor(EasyGroup easyGroup) {
         if (!(easyGroup instanceof Group)) return;
         Group group = (Group) easyGroup;
-        String title = group.getGroupColor() + group.getName() + " §8» " + Message.SETTINGS_TITLE_FORMATTINGS.toString();
+        String title = group.getGroupColor() + group.getName() + " §8» " + Message.SETTINGS_TITLE_FORMATTINGS.getText();
         GuiRespond guiRespond = new GuiRespond(user, title, 5);
 
         int line = 2, slot = 1;
@@ -94,9 +93,9 @@ public class GuiModifyingGroups {
         line = 4;
         slot = 3;
         for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
-            List<String> lore = Messages.getList(Message.LORE_SELECT_COLOR);
+            List<String> lore = Message.LORE_SELECT_COLOR.getList();
             if (!chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                lore.add(Message.LORE_SELECT_COLOR_NC.toString());
+                lore.add(Message.LORE_SELECT_COLOR_NC.getText());
             }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {

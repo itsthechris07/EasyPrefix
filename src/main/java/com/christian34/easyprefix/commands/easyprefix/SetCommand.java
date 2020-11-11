@@ -58,7 +58,7 @@ class SetCommand implements Subcommand {
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         User user = sender instanceof Player ? instance.getUser((Player) sender) : null;
         if (user == null) {
-            sender.sendMessage(Message.PLAYER_ONLY.toMessage());
+            sender.sendMessage(Message.PLAYER_ONLY.getMessage());
             return;
         }
 
@@ -71,7 +71,7 @@ class SetCommand implements Subcommand {
 
         if (args.get(0).equalsIgnoreCase("setprefix")) {
             if (!user.hasPermission("custom.prefix")) {
-                sender.sendMessage(Message.NO_PERMS.toMessage());
+                sender.sendMessage(Message.NO_PERMS.getMessage());
                 return;
             }
 
@@ -83,26 +83,26 @@ class SetCommand implements Subcommand {
             if (args.get(1).equalsIgnoreCase("reset")) {
                 if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                     user.setPrefix(null);
-                    user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString()
+                    user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.getText()
                             .replace("%prefix%", user.getPrefix().replace("§", "&")));
                 } else {
-                    user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_PREFIX.toString()
+                    user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_PREFIX.getText()
                             .replace("%prefix%", input), "/ep setprefix reset submit"));
                 }
                 return;
             }
             if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
-                user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_PREFIX.toString()
+                user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_PREFIX.getText()
                         .replace("%prefix%", input), "/ep setprefix " + input + " submit"));
             } else {
                 user.setPrefix(input);
                 user.saveData("custom_prefix_update", new Timestamp(System.currentTimeMillis()).toString());
-                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.toString()
+                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.getText()
                         .replace("%prefix%", user.getPrefix().replace("§", "&")));
             }
         } else if (args.get(0).equalsIgnoreCase("setsuffix")) {
             if (!user.hasPermission("custom.suffix")) {
-                sender.sendMessage(Message.NO_PERMS.toMessage());
+                sender.sendMessage(Message.NO_PERMS.getMessage());
                 return;
             }
             Timestamp next = getNextTimestamp(user.getLastSuffixUpdate());
@@ -113,21 +113,21 @@ class SetCommand implements Subcommand {
             if (args.get(1).equalsIgnoreCase("reset")) {
                 if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                     user.setSuffix(null);
-                    user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.toString()
+                    user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.getText()
                             .replace("%suffix%", user.getSuffix().replace("§", "&")));
                 } else {
-                    user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_SUFFIX.toString()
+                    user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.RESET_PLAYER_SUFFIX.getText()
                             .replace("%suffix%", input), "/ep setsuffix reset submit"));
                 }
                 return;
             }
             if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
-                user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_SUFFIX.toString()
+                user.getPlayer().spigot().sendMessage(buildConfirmComponent(Message.SUBMIT_SUFFIX.getText()
                         .replace("%suffix%", input), "/ep setsuffix " + input + " submit"));
             } else {
                 user.setSuffix(input);
                 user.saveData("custom_suffix_update", new Timestamp(System.currentTimeMillis()).toString());
-                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.toString()
+                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.getText()
                         .replace("%suffix%", user.getSuffix().replace("§", "&")));
             }
         }
@@ -148,7 +148,7 @@ class SetCommand implements Subcommand {
         long min = (timestamp.getTime() - System.currentTimeMillis()) / 1000 / 60;
         int minutes = (int) (min % 60);
         int hours = (int) ((min / 60) % 24);
-        String msg = Message.LAYOUT_ERROR.toString();
+        String msg = Message.LAYOUT_ERROR.getText();
         return msg.replace("%h%", Integer.toString(hours)).replace("%m%", (minutes == 0) ? "<1" : Integer.toString(minutes));
     }
 
@@ -173,7 +173,7 @@ class SetCommand implements Subcommand {
 
     private TextComponent buildConfirmComponent(String text, String command) {
         TextComponent msg = new TextComponent(TextComponent.fromLegacyText(text.replace("%newline%", "\n")));
-        TextComponent confirm = new TextComponent(TextComponent.fromLegacyText(" " + Message.CHAT_BTN_CONFIRM.toString() + " "));
+        TextComponent confirm = new TextComponent(TextComponent.fromLegacyText(" " + Message.CHAT_BTN_CONFIRM.getText() + " "));
         confirm.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
         msg.addExtra(confirm);
         return msg;

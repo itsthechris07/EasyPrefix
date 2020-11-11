@@ -67,7 +67,7 @@ class UserCommand implements Subcommand {
 
         Player player = Bukkit.getPlayer(args.get(1));
         if (player == null) {
-            sender.sendMessage(Message.PLAYER_NOT_FOUND.toMessage());
+            sender.sendMessage(Message.PLAYER_NOT_FOUND.getMessage());
             return;
         }
         User target = new User(player);
@@ -80,7 +80,7 @@ class UserCommand implements Subcommand {
             Bukkit.getScheduler().runTaskLaterAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
                 instance.unloadUser(target.getPlayer());
                 instance.getUser(target.getPlayer()).login();
-                sender.sendMessage(Message.SUCCESS.toMessage());
+                sender.sendMessage(Message.SUCCESS.getMessage());
             }, 20L);
         } else if (args.get(2).equalsIgnoreCase("info")) {
             showInfo(sender, target);
@@ -91,9 +91,9 @@ class UserCommand implements Subcommand {
                 if (groupHandler.isGroup(args.get(3))) {
                     Group targetGroup = groupHandler.getGroup(args.get(3));
                     target.setGroup(targetGroup, true);
-                    sender.sendMessage(Message.SUCCESS.toMessage());
+                    sender.sendMessage(Message.SUCCESS.getMessage());
                 } else {
-                    sender.sendMessage(Message.GROUP_NOT_FOUND.toMessage());
+                    sender.sendMessage(Message.GROUP_NOT_FOUND.getMessage());
                 }
             }
         } else if (args.get(2).equalsIgnoreCase("setsubgroup")) {
@@ -103,12 +103,12 @@ class UserCommand implements Subcommand {
                 if (groupHandler.isSubgroup(args.get(3))) {
                     Subgroup targetGroup = groupHandler.getSubgroup(args.get(3));
                     target.setSubgroup(targetGroup);
-                    sender.sendMessage(Message.SUCCESS.toMessage());
+                    sender.sendMessage(Message.SUCCESS.getMessage());
                 } else if (args.get(3).equalsIgnoreCase("none")) {
                     target.setSubgroup(null);
-                    sender.sendMessage(Message.SUCCESS.toMessage());
+                    sender.sendMessage(Message.SUCCESS.getMessage());
                 } else {
-                    sender.sendMessage(Message.GROUP_NOT_FOUND.toMessage());
+                    sender.sendMessage(Message.GROUP_NOT_FOUND.getMessage());
                 }
             }
         } else if (args.get(2).equalsIgnoreCase("setgender")) {
@@ -157,7 +157,7 @@ class UserCommand implements Subcommand {
         Gender genderType = groupHandler.getGender(gender);
         if (genderType != null) {
             targetUser.setGenderType(genderType);
-            sender.sendMessage(Message.SUCCESS.toMessage());
+            sender.sendMessage(Message.SUCCESS.getMessage());
         } else {
             sender.sendMessage(Messages.getPrefix() + "§cThis gender doesn't exist");
         }

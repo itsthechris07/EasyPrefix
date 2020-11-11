@@ -58,7 +58,7 @@ class GroupCommand implements Subcommand {
 
         Group group = groupHandler.isGroup(args.get(1)) ? groupHandler.getGroup(args.get(1)) : null;
         if (group == null) {
-            sender.sendMessage(Message.GROUP_NOT_FOUND.toMessage());
+            sender.sendMessage(Message.GROUP_NOT_FOUND.getMessage());
             return;
         }
 

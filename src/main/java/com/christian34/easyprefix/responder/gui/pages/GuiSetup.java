@@ -40,20 +40,20 @@ public class GuiSetup {
     }
 
     public void mainPage() {
-        GuiRespond guiRespond = new GuiRespond(user, Message.SETTINGS_TITLE_MAIN.toString(), 3);
+        GuiRespond guiRespond = new GuiRespond(user, Message.SETTINGS_TITLE_MAIN.getText(), 3);
         guiRespond.addIcon(XMaterial.CHEST.parseItem(), "§5Groups", 2, 3).onClick(this::groupsList);
 
-        guiRespond.addIcon(Material.NETHER_STAR, Message.SETTINGS_TITLE_MAIN.toString(), 2, 5).onClick(this::pluginSettingsGui);
+        guiRespond.addIcon(Material.NETHER_STAR, Message.SETTINGS_TITLE_MAIN.getText(), 2, 5).onClick(this::pluginSettingsGui);
 
         ItemStack icon = (VersionController.getMinorVersion() <= 12) ? XMaterial.CHEST.parseItem() : XMaterial.WRITABLE_BOOK.parseItem();
-        guiRespond.addIcon(icon, Message.BTN_SUBGROUPS.toString(), 2, 7).onClick(this::openSubgroupsList);
+        guiRespond.addIcon(icon, Message.BTN_SUBGROUPS.getText(), 2, 7).onClick(this::openSubgroupsList);
 
         guiRespond.addCloseButton();
         guiRespond.openInventory();
     }
 
     public void pluginSettingsGui() {
-        GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.toString(), 3);
+        GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.getText(), 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
         String langName = "§aLanguage §7(§a" + Messages.getLanguage().getName() + "§7)";
@@ -64,7 +64,7 @@ public class GuiSetup {
         });
 
         boolean useCp = ConfigKeys.CUSTOM_LAYOUT.toBoolean();
-        String cpText = "§aCustom Layout §7(" + ((useCp) ? Message.ENABLED.toString() : Message.DISABLED.toString()) + "§7)";
+        String cpText = "§aCustom Layout §7(" + ((useCp) ? Message.ENABLED.getText() : Message.DISABLED.getText()) + "§7)";
         guiRespond.addIcon(Material.BEACON, cpText, 2, 4).setLore("§5Enable/Disable custom prefixes and suffixes").onClick(() -> {
             configData.set(ConfigKeys.CUSTOM_LAYOUT.getPath(), !useCp);
             EasyPrefix.getInstance().reload();
@@ -72,7 +72,7 @@ public class GuiSetup {
         });
 
         boolean useGender = ConfigKeys.USE_GENDER.toBoolean();
-        String genderText = "§aGender §7(" + ((useGender) ? Message.ENABLED.toString() : Message.DISABLED.toString()) + "§7)";
+        String genderText = "§aGender §7(" + ((useGender) ? Message.ENABLED.getText() : Message.DISABLED.getText()) + "§7)";
         guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 6).setLore("§5Enable/Disable players gender").onClick(() -> {
             boolean use = !useGender;
             configData.set(ConfigKeys.USE_GENDER.getPath(), use);
@@ -81,7 +81,7 @@ public class GuiSetup {
         });
 
         boolean useColors = ConfigKeys.HANDLE_COLORS.toBoolean();
-        String colorsText = "§aHandle colors §7(" + ((useColors) ? Message.ENABLED.toString() : Message.DISABLED.toString()) + "§7)";
+        String colorsText = "§aHandle colors §7(" + ((useColors) ? Message.ENABLED.getText() : Message.DISABLED.getText()) + "§7)";
         guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 8).setLore("§5Translate color and formatting codes").onClick(() -> {
             boolean use = !useColors;
             configData.set(ConfigKeys.HANDLE_COLORS.getPath(), use);
@@ -129,24 +129,24 @@ public class GuiSetup {
             List<String> lore = new ArrayList<>();
             lore.add(divider);
             if (prefix.length() > 25) {
-                lore.add(Message.LORE_PREFIX.toString() + "§7«§f" + prefix.substring(0, 25));
+                lore.add(Message.LORE_PREFIX.getText() + "§7«§f" + prefix.substring(0, 25));
                 lore.add("§f" + prefix.substring(26) + "§7»");
             } else {
-                lore.add(Message.LORE_PREFIX.toString() + "§7«§f" + prefix + "§7»");
+                lore.add(Message.LORE_PREFIX.getText() + "§7«§f" + prefix + "§7»");
             }
-            lore.add(Message.LORE_SUFFIX.toString() + "§7«§f" + suffix + "§7»");
+            lore.add(Message.LORE_SUFFIX.getText() + "§7«§f" + suffix + "§7»");
 
             String groupChatColor = group.getChatColor().getCode();
             if (group.getChatFormatting() != null) {
                 if (group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                     groupChatColor += group.getChatFormatting().getCode();
                 } else {
-                    groupChatColor = Message.FORMATTING_RAINBOW.toString();
+                    groupChatColor = Message.FORMATTING_RAINBOW.getText();
                 }
             }
 
             lore.add("§7Color: §f" + groupChatColor.replace("§", "&"));
-            lore.add(Message.LORE_PERMISSION.toString() + "EasyPrefix.group." + group.getName());
+            lore.add(Message.LORE_PERMISSION.getText() + "EasyPrefix.group." + group.getName());
 
             guiRespond.addIcon(XMaterial.CHEST.parseItem(), prefixColor + group.getName()).setLore(lore).onClick(() -> openGroupProfile(group));
         }
@@ -174,13 +174,13 @@ public class GuiSetup {
             List<String> lore = new ArrayList<>();
             lore.add("§7-------------------------");
             if (prefix.length() > 25) {
-                lore.add(Message.LORE_PREFIX.toString() + "§7«§f" + prefix.substring(0, 25));
+                lore.add(Message.LORE_PREFIX.getText() + "§7«§f" + prefix.substring(0, 25));
                 lore.add("§f" + prefix.substring(26) + "§7»");
             } else {
-                lore.add(Message.LORE_PREFIX.toString() + "§7«§f" + prefix + "§7»");
+                lore.add(Message.LORE_PREFIX.getText() + "§7«§f" + prefix + "§7»");
             }
-            lore.add(Message.LORE_SUFFIX.toString() + "§7«§f" + suffix + "§7»");
-            lore.add(Message.LORE_PERMISSION.toString() + "EasyPrefix.subgroup." + subgroup.getName());
+            lore.add(Message.LORE_SUFFIX.getText() + "§7«§f" + suffix + "§7»");
+            lore.add(Message.LORE_PERMISSION.getText() + "EasyPrefix.subgroup." + subgroup.getName());
 
             ItemStack sgBtn = VersionController.getMinorVersion() <= 12
                     ? XMaterial.CHEST.parseItem()
@@ -203,11 +203,11 @@ public class GuiSetup {
     public void openGroupProfile(Group group) {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §7" + group.getGroupColor() + group.getName(), 3);
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 2);
-        prefixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getPrefix(null, false) + "§7»", " "));
+        prefixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + group.getPrefix(null, false) + "§7»", " "));
         prefixIcon.onClick(() -> this.guiModifyingGroups.editPrefix(group));
 
         Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX, 2, 3);
-        suffixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getSuffix(null, false) + "§7»", " "));
+        suffixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + group.getSuffix(null, false) + "§7»", " "));
         suffixIcon.onClick(() -> this.guiModifyingGroups.editSuffix(group));
 
         String groupChatColor = group.getChatColor().getCode().replace("§", "&");
@@ -219,21 +219,21 @@ public class GuiSetup {
             }
         }
 
-        List<String> loreChatColor = Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.toString() + groupChatColor, " ");
+        List<String> loreChatColor = Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + groupChatColor, " ");
         guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), "§aChange Chatcolor", 2, 4).setLore(loreChatColor).onClick(() -> this.guiModifyingGroups.editChatColor(group));
 
         ItemStack joinMsgItem = Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh" +
                 "0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2VkZDIwYmU5MzUyMDk0OWU2Y2U3ODlkYzRmNDNlZmFlYjI4YzcxN2VlNmJm" +
                 "Y2JiZTAyNzgwMTQyZjcxNiJ9fX0=");
         Icon joinMsgIcon = guiRespond.addIcon(joinMsgItem, "§aJoin Message", 2, 6);
-        joinMsgIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getJoinMessageText() + "§7»", " "));
+        joinMsgIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + group.getJoinMessageText() + "§7»", " "));
         joinMsgIcon.onClick(() -> this.guiModifyingGroups.editJoinMessage(group));
 
         ItemStack quitMsgItem = Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh" +
                 "0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ4YTk5ZGIyYzM3ZWM3MWQ3MTk5Y2Q1MjYzOTk4MWE3NTEzY2U5Y2NhOTYy" +
                 "NmEzOTM2Zjk2NWIxMzExOTMifX19");
         Icon quitMsgIcon = guiRespond.addIcon(quitMsgItem, "§aQuit Message", 2, 7);
-        quitMsgIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + group.getQuitMessageText() + "§7»", " "));
+        quitMsgIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + group.getQuitMessageText() + "§7»", " "));
         quitMsgIcon.onClick(() -> this.guiModifyingGroups.editQuitMessage(group));
 
         Icon genderedLayoutIcon = guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), "Gendered Layout", 2, 9);
@@ -250,12 +250,12 @@ public class GuiSetup {
     public void openSubgroupProfile(Subgroup subgroup) {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 3);
 
-        Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX.toString(), 2, 3);
-        prefixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + subgroup.getPrefix(null, false) + "§7»", " "));
+        Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX.getText(), 2, 3);
+        prefixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + subgroup.getPrefix(null, false) + "§7»", " "));
         prefixIcon.onClick(() -> this.guiModifyingGroups.editPrefix(subgroup));
 
-        Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.toString(), 2, 5);
-        suffixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.toString() + "§7«§f" + subgroup.getSuffix(null, false) + "§7»", " "));
+        Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.getText(), 2, 5);
+        suffixIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + subgroup.getSuffix(null, false) + "§7»", " "));
         suffixIcon.onClick(() -> this.guiModifyingGroups.editSuffix(subgroup));
 
         Icon genderedLayoutIcon = guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), "Gendered Layout", 2, 8);

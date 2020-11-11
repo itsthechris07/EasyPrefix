@@ -1,5 +1,10 @@
 package com.christian34.easyprefix.messages;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * EasyPrefix 2020.
  *
@@ -90,15 +95,34 @@ public enum Message {
         }
     }
 
-    @Override
-    public String toString() {
+    /**
+     * Returns the translation with colors, but without prefix.
+     *
+     * @return the translation with colors
+     */
+    public String getText() {
         String text = (isKey) ? Messages.getText(message) : message;
         return Messages.translate(text);
     }
 
-    public String toMessage() {
-        String text = toString();
+    /**
+     * @return the translation with prefix
+     */
+    public String getMessage() {
+        String text = getText();
         return Messages.getPrefix() + text;
+    }
+
+    @NotNull
+    public List<String> getList() {
+        List<String> list = Messages.getList(getPath());
+        if (list != null) {
+            for (String line : list) {
+                list.add(Messages.translate(line));
+            }
+            return list;
+        }
+        return new ArrayList<>();
     }
 
     public String getPath() {
