@@ -84,6 +84,7 @@ public enum Message {
     TAGS_ITEM_LORE("$tags.item_lore"),
     TAGS_INVALID_NAME("$tags.tag_not_found"),
     TAGS_PLAYER_SELECT("$tags.tag_selected"),
+    TAG_SET_TO_PLAYER("$tags.set_to_player"),
     TITLE_GENDER("$gui.title.gender");
 
     private final String message;

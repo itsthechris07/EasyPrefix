@@ -32,6 +32,8 @@ public class TagsCommand implements EasyCommand {
         subcommands.add(new HelpCommand(this));
         subcommands.add(new ListCommand(this, instance));
         subcommands.add(new SelectCommand(this, instance));
+        subcommands.add(new SetCommand(this, instance));
+        subcommands.add(new ClearCommand(this, instance));
     }
 
     public List<Subcommand> getSubcommands() {

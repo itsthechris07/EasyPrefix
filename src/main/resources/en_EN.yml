@@ -66,6 +66,7 @@ tags:
     - '&5Click on me to select this tag'
   tag_not_found: '%prefix%&cCouldn''t find tag &7%tag%&c!'
   tag_selected: '%prefix%&aYour tag has been set to &7%tag%&a!'
+  set_to_player: '%prefix%&aThe tag for %player% has been set to &7%tag%&a!'
 colors:
   black: 'Black'
   blue: 'Blue'
