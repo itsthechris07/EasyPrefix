@@ -117,8 +117,9 @@ public final class Messages {
     }
 
     @Nullable
-    public static String translate(String text) {
-        return (text != null) ? ChatColor.translateAlternateColorCodes('&', text) : null;
+    public static String setColors(String text) {
+        if (text == null) return null;
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 
     public enum Language {

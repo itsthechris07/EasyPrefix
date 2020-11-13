@@ -59,7 +59,7 @@ public final class Debug {
     }
 
     public static void log(String message) {
-        Bukkit.getConsoleSender().sendMessage(Messages.getPrefix() + Messages.translate(message));
+        Bukkit.getConsoleSender().sendMessage(Messages.getPrefix() + Messages.setColors(message));
     }
 
 }
