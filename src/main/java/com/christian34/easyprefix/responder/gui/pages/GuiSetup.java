@@ -222,17 +222,11 @@ public class GuiSetup {
         List<String> loreChatColor = Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + groupChatColor, " ");
         guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), "§aChange Chatcolor", 2, 4).setLore(loreChatColor).onClick(() -> this.guiModifyingGroups.editChatColor(group));
 
-        ItemStack joinMsgItem = Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh" +
-                "0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2VkZDIwYmU5MzUyMDk0OWU2Y2U3ODlkYzRmNDNlZmFlYjI4YzcxN2VlNmJm" +
-                "Y2JiZTAyNzgwMTQyZjcxNiJ9fX0=");
-        Icon joinMsgIcon = guiRespond.addIcon(joinMsgItem, "§aJoin Message", 2, 6);
+        Icon joinMsgIcon = guiRespond.addIcon(Material.BLAZE_ROD, "§aJoin Message", 2, 6);
         joinMsgIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + group.getJoinMessageText() + "§7»", " "));
         joinMsgIcon.onClick(() -> this.guiModifyingGroups.editJoinMessage(group));
 
-        ItemStack quitMsgItem = Icon.getCustomPlayerHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh" +
-                "0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ4YTk5ZGIyYzM3ZWM3MWQ3MTk5Y2Q1MjYzOTk4MWE3NTEzY2U5Y2NhOTYy" +
-                "NmEzOTM2Zjk2NWIxMzExOTMifX19");
-        Icon quitMsgIcon = guiRespond.addIcon(quitMsgItem, "§aQuit Message", 2, 7);
+        Icon quitMsgIcon = guiRespond.addIcon(Material.STICK, "§aQuit Message", 2, 7);
         quitMsgIcon.setLore(Arrays.asList(DIVIDER, Message.LORE_GROUP_DETAIL.getText() + "§7«§f" + group.getQuitMessageText() + "§7»", " "));
         quitMsgIcon.onClick(() -> this.guiModifyingGroups.editQuitMessage(group));
 

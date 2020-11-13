@@ -29,7 +29,7 @@ import java.util.Objects;
  * @author Christian34
  */
 public class GuiRespond {
-    private static Icon closeIcon = null;
+    private static final Icon closeIcon = null;
     private final Icon nextPage, prevPage;
     private final int guiLines;
     private final int maxSlots;
@@ -49,13 +49,6 @@ public class GuiRespond {
         this.nextPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_NEXT.getText()).setSlot(lines, 6);
         this.prevPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_PREVIOUS.getText()).setSlot(lines, 4);
         Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
-    }
-
-    private static Icon getCloseIcon() {
-        if (closeIcon == null) {
-            closeIcon = new Icon(Icon.playerHead("MHF_ArrowLeft"), Message.BTN_BACK.getText());
-        }
-        return closeIcon.clone();
     }
 
     public void openInventory() {
@@ -143,7 +136,12 @@ public class GuiRespond {
     }
 
     public Icon addCloseButton() {
-        Icon icon = getCloseIcon().setSlot(guiLines, 1);
+        ItemStack item = XMaterial.RED_DYE.parseItem();
+        if (item == null) {
+            item = new ItemStack(Material.BARRIER);
+        }
+
+        Icon icon = new Icon(item, Message.BTN_BACK.getText()).setSlot(guiLines, 1);
         getPage(1).getIcons().add(icon);
         this.closeInventoryIcon = icon;
         return icon;

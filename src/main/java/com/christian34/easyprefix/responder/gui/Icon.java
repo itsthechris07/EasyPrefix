@@ -1,19 +1,15 @@
 package com.christian34.easyprefix.responder.gui;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * EasyPrefix 2020.
@@ -33,26 +29,6 @@ public class Icon implements Cloneable {
         ItemMeta itemMeta = itemStack.getItemMeta();
         Objects.requireNonNull(itemMeta).setDisplayName(displayName);
         itemStack.setItemMeta(itemMeta);
-    }
-
-    public static ItemStack getCustomPlayerHead(String base) {
-        ItemStack skull = XMaterial.PLAYER_HEAD.parseItem();
-        if (skull == null) return new ItemStack(Material.AIR);
-        try {
-            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            if (skullMeta == null) return skull;
-
-            GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-            profile.getProperties().put("textures", new Property("textures", base));
-
-            Field profileField = skullMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(skullMeta, profile);
-
-            skull.setItemMeta(skullMeta);
-        } catch (Exception ignored) {
-        }
-        return skull;
     }
 
     @SuppressWarnings("deprecation")
