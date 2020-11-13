@@ -4,6 +4,7 @@ import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.*;
+import java.util.TimeZone;
 
 /**
  * EasyPrefix 2020.
@@ -38,7 +39,10 @@ public class SQLDatabase implements Database {
             try {
                 if (connection != null && !connection.isClosed()) return true;
                 Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&useUnicode=true&characterEncoding=utf-8", username, password);
+                connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database
+                                + "?useSSL=false&useUnicode=true&characterEncoding=utf-8"
+                                + "&autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID(),
+                        username, password);
                 updateTables();
                 return true;
             } catch (SQLSyntaxErrorException e) {
