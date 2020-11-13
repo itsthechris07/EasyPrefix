@@ -12,8 +12,8 @@ import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

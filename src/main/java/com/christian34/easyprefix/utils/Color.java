@@ -33,12 +33,12 @@ public enum Color {
 
     private final String code;
     private final Message name;
-    private final ItemStack material;
+    private final ItemStack itemStack;
 
     Color(String code, Message name, XMaterial material) {
         this.code = code;
         this.name = name;
-        this.material = material.parseItem();
+        this.itemStack = material.parseItem();
     }
 
     @NotNull
@@ -73,7 +73,7 @@ public enum Color {
 
     @NotNull
     public ItemStack toItemStack() {
-        ItemStack item = material.clone();
+        ItemStack item = itemStack.clone();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(toString());

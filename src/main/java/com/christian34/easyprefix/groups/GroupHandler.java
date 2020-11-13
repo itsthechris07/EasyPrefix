@@ -162,25 +162,18 @@ public class GroupHandler {
     }
 
     @NotNull
-    public Group getGroup(String name) {
+    public Group getGroup(@NotNull String name) {
         return groups.stream().filter(group -> group.getName().equalsIgnoreCase(name)).findAny().orElse(defaultGroup);
     }
 
     @Nullable
-    public Subgroup getSubgroup(String name) {
+    public Subgroup getSubgroup(@NotNull String name) {
         return subgroups.stream().filter(subgroup -> subgroup.getName().equalsIgnoreCase(name)).findAny().orElse(null);
     }
 
-    public Boolean isGroup(String groupName) {
+    public Boolean isGroup(@NotNull String groupName) {
         for (Group group : groups) {
             if (group.getName().equalsIgnoreCase(groupName)) return true;
-        }
-        return false;
-    }
-
-    public Boolean isSubgroup(String name) {
-        for (Subgroup group : subgroups) {
-            if (group.getName().equalsIgnoreCase(name)) return true;
         }
         return false;
     }

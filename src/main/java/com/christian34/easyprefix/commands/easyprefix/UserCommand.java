@@ -100,8 +100,8 @@ class UserCommand implements Subcommand {
             if (args.size() != 4) {
                 showHelp(sender);
             } else {
-                if (groupHandler.isSubgroup(args.get(3))) {
-                    Subgroup targetGroup = groupHandler.getSubgroup(args.get(3));
+                Subgroup targetGroup = groupHandler.getSubgroup(args.get(3));
+                if (targetGroup != null) {
                     target.setSubgroup(targetGroup);
                     sender.sendMessage(Message.SUCCESS.getMessage());
                 } else if (args.get(3).equalsIgnoreCase("none")) {

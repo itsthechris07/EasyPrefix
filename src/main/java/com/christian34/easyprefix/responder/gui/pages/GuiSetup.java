@@ -8,7 +8,6 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.ChatRespond;
 import com.christian34.easyprefix.responder.GuiRespond;
 import com.christian34.easyprefix.responder.gui.Icon;
@@ -30,8 +29,8 @@ import java.util.List;
  * @author Christian34
  */
 public class GuiSetup {
-    private final User user;
     private static final String DIVIDER = "§7-------------------------";
+    private final User user;
     private final GuiModifyingGroups guiModifyingGroups;
 
     public GuiSetup(User user) {
@@ -56,38 +55,37 @@ public class GuiSetup {
         GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» " + Message.SETTINGS_TITLE_MAIN.getText(), 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
-        String langName = "§aLanguage §7(§a" + Messages.getLanguage().getName() + "§7)";
-        guiRespond.addIcon(XMaterial.OAK_SIGN.parseItem(), langName, 2, 2).setLore("Click me to switch the language", "Available: English, Deutsch, Italiano").onClick(() -> {
-            Messages.Language language = Messages.getLanguage();
-            Messages.setLanguage(language.getNext());
-            pluginSettingsGui();
-        });
-
         boolean useCp = ConfigKeys.CUSTOM_LAYOUT.toBoolean();
         String cpText = "§aCustom Layout §7(" + ((useCp) ? Message.ENABLED.getText() : Message.DISABLED.getText()) + "§7)";
-        guiRespond.addIcon(Material.BEACON, cpText, 2, 4).setLore("§5Enable/Disable custom prefixes and suffixes").onClick(() -> {
-            configData.set(ConfigKeys.CUSTOM_LAYOUT.getPath(), !useCp);
-            EasyPrefix.getInstance().reload();
-            pluginSettingsGui();
-        });
+        guiRespond.addIcon(Material.BEACON, cpText, 2, 3)
+                .setLore("§5Enable/Disable custom prefixes and suffixes")
+                .onClick(() -> {
+                    configData.set(ConfigKeys.CUSTOM_LAYOUT.getPath(), !useCp);
+                    EasyPrefix.getInstance().reload();
+                    pluginSettingsGui();
+                });
 
         boolean useGender = ConfigKeys.USE_GENDER.toBoolean();
         String genderText = "§aGender §7(" + ((useGender) ? Message.ENABLED.getText() : Message.DISABLED.getText()) + "§7)";
-        guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 6).setLore("§5Enable/Disable players gender").onClick(() -> {
-            boolean use = !useGender;
-            configData.set(ConfigKeys.USE_GENDER.getPath(), use);
-            EasyPrefix.getInstance().reload();
-            pluginSettingsGui();
-        });
+        guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 5)
+                .setLore("§5Enable/Disable players gender")
+                .onClick(() -> {
+                    boolean use = !useGender;
+                    configData.set(ConfigKeys.USE_GENDER.getPath(), use);
+                    EasyPrefix.getInstance().reload();
+                    pluginSettingsGui();
+                });
 
         boolean useColors = ConfigKeys.HANDLE_COLORS.toBoolean();
         String colorsText = "§aHandle colors §7(" + ((useColors) ? Message.ENABLED.getText() : Message.DISABLED.getText()) + "§7)";
-        guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 8).setLore("§5Translate color and formatting codes").onClick(() -> {
-            boolean use = !useColors;
-            configData.set(ConfigKeys.HANDLE_COLORS.getPath(), use);
-            EasyPrefix.getInstance().reload();
-            pluginSettingsGui();
-        });
+        guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 7)
+                .setLore("§5Translate color and formatting codes")
+                .onClick(() -> {
+                    boolean use = !useColors;
+                    configData.set(ConfigKeys.HANDLE_COLORS.getPath(), use);
+                    EasyPrefix.getInstance().reload();
+                    pluginSettingsGui();
+                });
 
         guiRespond.addCloseButton().onClick(this::mainPage);
         guiRespond.openInventory();

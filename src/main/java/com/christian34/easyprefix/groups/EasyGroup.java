@@ -6,8 +6,7 @@ import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * EasyPrefix 2020.
