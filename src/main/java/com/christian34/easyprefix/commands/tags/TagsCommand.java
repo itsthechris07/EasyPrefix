@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
@@ -50,7 +49,7 @@ public class TagsCommand implements EasyCommand {
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (args.size() == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Messages.getPrefix() + Message.PLAYER_ONLY);
+                sender.sendMessage(Message.getPrefix() + Message.PLAYER_ONLY);
                 return;
             }
 
@@ -75,7 +74,7 @@ public class TagsCommand implements EasyCommand {
                 return;
             }
         }
-        sender.sendMessage(Messages.getPrefix() + "§cCouldn't find requested command! Type '/tags help'"
+        sender.sendMessage(Message.getPrefix() + "§cCouldn't find requested command! Type '/tags help'"
                 + " to get a command overview.");
     }
 

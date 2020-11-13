@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.Bukkit;
@@ -79,14 +78,14 @@ public class SetCommand implements Subcommand {
         Subgroup subgroup = instance.getGroupHandler().getSubgroup(tagName);
         if (subgroup == null) {
             sender.sendMessage(Message.TAGS_INVALID_NAME.getText()
-                    .replace("%prefix%", Messages.getPrefix())
+                    .replace("%prefix%", Message.getPrefix())
                     .replace("%tag%", tagName));
             return;
         }
 
         user.setSubgroup(subgroup);
         sender.sendMessage(Message.TAG_SET_TO_PLAYER.getText()
-                .replace("%prefix%", Messages.getPrefix())
+                .replace("%prefix%", Message.getPrefix())
                 .replace("%tag%", subgroup.getName())
                 .replace("%player%", user.getPlayer().getName()));
     }

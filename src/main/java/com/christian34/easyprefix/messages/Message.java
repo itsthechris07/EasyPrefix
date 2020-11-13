@@ -1,8 +1,10 @@
 package com.christian34.easyprefix.messages;
 
+import com.christian34.easyprefix.files.MessageData;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,10 +89,17 @@ public enum Message {
     TAG_SET_TO_PLAYER("$tags.set_to_player"),
     TITLE_GENDER("$gui.title.gender");
 
+    private static final String PREFIX = "§7[§5EasyPrefix§7] ";
+    private static MessageData messageData;
     private final String message;
     private final boolean isKey;
+    private final boolean requiresPrefix;
 
     Message(String message) {
+        this(message, false);
+    }
+
+    Message(String message, boolean requiresPrefix) {
         if (message.startsWith("$")) {
             isKey = true;
             this.message = message.substring(1);
@@ -98,6 +107,27 @@ public enum Message {
             isKey = false;
             this.message = message;
         }
+        this.requiresPrefix = requiresPrefix;
+    }
+
+    public static void setData(MessageData data) {
+        messageData = data;
+    }
+
+    @NotNull
+    public static String getPrefix() {
+        return PREFIX;
+    }
+
+    @Nullable
+    public static String setColors(@Nullable String text) {
+        if (text == null) return null;
+        return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    @Override
+    public String toString() {
+        return getText();
     }
 
     /**
@@ -106,8 +136,18 @@ public enum Message {
      * @return the translation with colors
      */
     public String getText() {
-        String text = (isKey) ? Messages.getText(message) : message;
-        return Messages.translate(text);
+        String text = (isKey) ? messageData.getText(message) : message;
+
+        if (text.contains("%prefix%")) {
+            text = text.replace("%prefix%", getPrefix());
+        } else {
+            if (this.requiresPrefix) {
+                text = getPrefix() + text;
+            }
+        }
+
+        text = text.replace("%newline%", "\n");
+        return setColors(text);
     }
 
     /**
@@ -115,19 +155,21 @@ public enum Message {
      */
     public String getMessage() {
         String text = getText();
-        return Messages.getPrefix() + text;
+
+        if (text.contains("%prefix%")) {
+            text = text.replace("%prefix%", getPrefix());
+            return text;
+        }
+        return getPrefix() + text;
     }
 
     @NotNull
     public List<String> getList() {
-        List<String> list = Messages.getList(getPath());
-        if (list != null) {
-            for (String line : list) {
-                list.add(Messages.translate(line));
-            }
-            return list;
+        List<String> list = messageData.getList(getPath());
+        for (String line : list) {
+            list.add(setColors(line));
         }
-        return new ArrayList<>();
+        return list;
     }
 
     public String getPath() {

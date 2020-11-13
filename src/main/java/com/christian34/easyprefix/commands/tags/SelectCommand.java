@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.command.CommandSender;
@@ -77,7 +76,7 @@ public class SelectCommand implements Subcommand {
         Subgroup subgroup = instance.getGroupHandler().getSubgroup(tagName);
         if (subgroup == null) {
             user.getPlayer().sendMessage(Message.TAGS_INVALID_NAME.getText()
-                    .replace("%prefix%", Messages.getPrefix())
+                    .replace("%prefix%", Message.getPrefix())
                     .replace("%tag%", tagName));
             return;
         }
@@ -88,7 +87,7 @@ public class SelectCommand implements Subcommand {
         }
         user.setSubgroup(subgroup);
         user.getPlayer().sendMessage(Message.TAGS_PLAYER_SELECT.getText()
-                .replace("%prefix%", Messages.getPrefix())
+                .replace("%prefix%", Message.getPrefix())
                 .replace("%tag%", subgroup.getName()));
     }
 

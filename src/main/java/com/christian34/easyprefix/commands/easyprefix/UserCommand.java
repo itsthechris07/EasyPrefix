@@ -7,7 +7,6 @@ import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.Bukkit;
@@ -159,7 +158,7 @@ class UserCommand implements Subcommand {
             targetUser.setGenderType(genderType);
             sender.sendMessage(Message.SUCCESS.getMessage());
         } else {
-            sender.sendMessage(Messages.getPrefix() + "§cThis gender doesn't exist");
+            sender.sendMessage(Message.getPrefix() + "§cThis gender doesn't exist");
         }
     }
 

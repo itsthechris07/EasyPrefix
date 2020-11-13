@@ -8,7 +8,6 @@ import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
@@ -113,8 +112,6 @@ public class EasyPrefix extends JavaPlugin {
             this.storageType = StorageType.LOCAL;
         }
 
-        Messages.load();
-
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
         new CommandHandler(this);
@@ -189,7 +186,6 @@ public class EasyPrefix extends JavaPlugin {
             this.sqlDatabase.connect();
         }
         new CommandHandler(this);
-        Messages.load();
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
@@ -205,7 +201,6 @@ public class EasyPrefix extends JavaPlugin {
     private void hookMetrics() {
         Metrics metrics = new Metrics(this, 2646);
         metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
-        metrics.addCustomChart(new Metrics.SimplePie("lang", () -> Messages.getLanguage().name()));
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (storageType == StorageType.SQL) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "true" : "false"));

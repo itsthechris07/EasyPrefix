@@ -2,7 +2,7 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.command.CommandSender;
@@ -58,7 +58,7 @@ class DatabaseCommand implements Subcommand {
 
         if (args.size() == 2) {
             if (args.get(1).equalsIgnoreCase("upload")) {
-                sender.sendMessage(Messages.getPrefix() + "§7Uploading data to database. This could take a while...");
+                sender.sendMessage(Message.getPrefix() + "§7Uploading data to database. This could take a while...");
                 instance.getDataMigration().upload();
             }
         } else {

@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Updater;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -53,7 +52,7 @@ public class JoinListener implements Listener {
             if (ConfigKeys.USE_GENDER.toBoolean() && ConfigKeys.FORCE_GENDER.toBoolean()) {
                 if (user.getGenderType() == null) {
                     String prefix = Message.PREFIX_ALT.getText();
-                    if (prefix == null) prefix = Messages.getPrefix();
+                    if (prefix == null) prefix = Message.getPrefix();
                     TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Message.NOTIFY_GENDER_TEXT.getText()));
                     TextComponent change = new TextComponent(TextComponent.fromLegacyText(Message.NOTIFY_GENDER_BTN.getText()));
                     change.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ep gui settings gender"));

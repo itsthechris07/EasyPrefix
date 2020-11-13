@@ -15,6 +15,7 @@ public class FileManager {
     private final EasyPrefix instance;
     private ConfigData configData;
     private GroupsData groupsData;
+    private MessageData messageData;
 
     public FileManager(EasyPrefix instance) {
         this.instance = instance;
@@ -29,6 +30,10 @@ public class FileManager {
         return pluginFolder;
     }
 
+    public MessageData getMessageData() {
+        return messageData;
+    }
+
     public void load() {
         File userFolder = new File(getPluginFolder() + "/user");
         if (!userFolder.exists()) {
@@ -39,6 +44,7 @@ public class FileManager {
         if (!configData.getData().getBoolean("config.sql.enabled")) {
             groupsData.load();
         }
+        this.messageData = new MessageData(this.instance);
     }
 
     public ConfigData getConfig() {

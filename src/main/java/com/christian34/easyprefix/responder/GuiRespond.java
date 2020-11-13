@@ -2,7 +2,6 @@ package com.christian34.easyprefix.responder;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.responder.gui.Icon;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
@@ -261,7 +260,7 @@ public class GuiRespond {
                 clickedIcon.getClickAction().execute();
             } catch (Exception ex) {
                 e.getWhoClicked().closeInventory();
-                e.getWhoClicked().sendMessage(Messages.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
+                e.getWhoClicked().sendMessage(Message.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
                 Debug.captureException(ex);
                 Debug.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
                 Debug.log("&c------ ERROR ------");

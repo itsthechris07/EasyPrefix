@@ -1,4 +1,5 @@
 #use %newline% to break lines
+#use %plugins_prefix% to the plugins prefix
 info:
   noperms: '&cYou do not have permission to use that command.'
   playerNotFound: '&cPlayer was not found!'
@@ -59,14 +60,14 @@ chat:
   layoutError: '&7[&5Chat&7] &cYou have recently changed your layout. Please try again in %h% hours %m% minutes!'
 tags:
   chat_header: ' %newline%§7---------------=== §5§lTags §7===---------------%newline% '
-  list_info_available: '%prefix%&7You have (&8%tags%&7) tag(s) available: %newline%'
+  list_info_available: '%plugins_prefix%&7You have (&8%tags%&7) tag(s) available: %newline%'
   item_title: '&5%name%'
   item_lore:
     - ' '
     - '&5Click on me to select this tag'
-  tag_not_found: '%prefix%&cCouldn''t find tag &7%tag%&c!'
-  tag_selected: '%prefix%&aYour tag has been set to &7%tag%&a!'
-  set_to_player: '%prefix%&aThe tag for %player% has been set to &7%tag%&a!'
+  tag_not_found: '%plugins_prefix%&cCouldn''t find tag &7%tag%&c!'
+  tag_selected: '%plugins_prefix%&aYour tag has been set to &7%tag%&a!'
+  set_to_player: '%plugins_prefix%&aThe tag for %player% has been set to &7%tag%&a!'
 colors:
   black: 'Black'
   blue: 'Blue'

@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -60,7 +59,7 @@ class ListCommand implements Subcommand {
         Player player;
         if (args.size() < 2) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Messages.getPrefix() + Message.PLAYER_ONLY);
+                sender.sendMessage(Message.getPrefix() + Message.PLAYER_ONLY);
                 return;
             } else {
                 player = (Player) sender;
@@ -68,14 +67,14 @@ class ListCommand implements Subcommand {
         } else {
             player = Bukkit.getPlayer(args.get(1));
             if (player == null) {
-                sender.sendMessage(Messages.getPrefix() + Message.PLAYER_NOT_FOUND);
+                sender.sendMessage(Message.getPrefix() + Message.PLAYER_NOT_FOUND);
             }
         }
 
         User user = instance.getUser(player);
         List<Subgroup> subgroups = user.getAvailableSubgroups();
         sender.sendMessage(Message.CHAT_TAGS_AVAILABLE.getText()
-                .replace("%prefix%", Messages.getPrefix())
+                .replace("%prefix%", Message.getPrefix())
                 .replace("%tags%", subgroups.size() + "")
                 .replace("%newline%", "\n"));
 

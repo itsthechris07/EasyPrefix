@@ -3,7 +3,6 @@ package com.christian34.easyprefix.commands.tags;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.Bukkit;
@@ -70,7 +69,7 @@ public class ClearCommand implements Subcommand {
         user.setSubgroup(null);
 
         sender.sendMessage(Message.TAG_SET_TO_PLAYER.getText()
-                .replace("%prefix%", Messages.getPrefix())
+                .replace("%prefix%", Message.getPrefix())
                 .replace("%player%", user.getPlayer().getName()));
     }
 

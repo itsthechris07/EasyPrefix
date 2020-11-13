@@ -6,7 +6,7 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.groups.gender.Gender;
-import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -340,7 +340,7 @@ public class User {
     }
 
     public void sendMessage(String message) {
-        player.sendMessage(Messages.getPrefix() + message);
+        player.sendMessage(Message.getPrefix() + message);
     }
 
     public void saveData(String key, Object value) {

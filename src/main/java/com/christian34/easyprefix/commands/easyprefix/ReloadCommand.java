@@ -2,7 +2,7 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.user.UserPermission;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +48,7 @@ class ReloadCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         this.instance.reload();
-        sender.sendMessage(Messages.getPrefix() + "§aPlugin has been reloaded!");
+        sender.sendMessage(Message.getPrefix() + "§aPlugin has been reloaded!");
     }
 
     @Override

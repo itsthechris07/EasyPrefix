@@ -7,7 +7,6 @@ import com.christian34.easyprefix.commands.set.SetPrefixCommand;
 import com.christian34.easyprefix.commands.set.SetSuffixCommand;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.messages.Messages;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.command.CommandSender;
@@ -75,7 +74,7 @@ public class EasyPrefixCommand implements EasyCommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (args.size() == 0) {
-            sender.sendMessage(Messages.getPrefix() + "§7This server uses §5EasyPrefix §7version §b" + this.instance.getDescription().getVersion() + " §7by Christian34.\nType '/easyprefix help' to get a command overview.");
+            sender.sendMessage(Message.getPrefix() + "§7This server uses §5EasyPrefix §7version §b" + this.instance.getDescription().getVersion() + " §7by Christian34.\nType '/easyprefix help' to get a command overview.");
             return;
         }
 
@@ -94,7 +93,7 @@ public class EasyPrefixCommand implements EasyCommand {
                 return;
             }
         }
-        sender.sendMessage(Messages.getPrefix() + "§cCouldn't find requested command!\nType '/easyprefix help'"
+        sender.sendMessage(Message.getPrefix() + "§cCouldn't find requested command!\nType '/easyprefix help'"
                 + " to get a command overview.");
     }
 

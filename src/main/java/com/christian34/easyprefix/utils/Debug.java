@@ -2,7 +2,7 @@ package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.messages.Messages;
+import com.christian34.easyprefix.messages.Message;
 import io.sentry.HubAdapter;
 import io.sentry.IHub;
 import io.sentry.Sentry;
@@ -59,7 +59,7 @@ public final class Debug {
     }
 
     public static void log(String message) {
-        Bukkit.getConsoleSender().sendMessage(Messages.getPrefix() + Messages.setColors(message));
+        Bukkit.getConsoleSender().sendMessage(Message.getPrefix() + Message.setColors(message));
     }
 
 }
