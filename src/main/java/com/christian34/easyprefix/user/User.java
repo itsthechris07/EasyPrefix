@@ -92,12 +92,7 @@ public class User {
         if (ConfigKeys.USE_SUBGROUPS.toBoolean()) {
             String subgroupName = userData.getString("subgroup");
             if (subgroupName != null) {
-                if (groupHandler.isSubgroup(subgroupName) && hasPermission("subgroup." + subgroupName)) {
-                    this.subgroup = groupHandler.getSubgroup(subgroupName);
-                } else {
-                    this.subgroup = getSubgroupPerPerms();
-                    saveData("subgroup", null);
-                }
+                this.subgroup = groupHandler.getSubgroup(subgroupName);
             }
         }
 

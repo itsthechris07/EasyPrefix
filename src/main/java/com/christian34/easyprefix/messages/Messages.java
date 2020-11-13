@@ -78,7 +78,7 @@ public final class Messages {
     }
 
     private static void replaceInFile(@NotNull File file) throws IOException {
-        File tempFile = new File("plugins/EasyPrefix", "messages.tmp");
+        File tempFile = new File(FileManager.getPluginFolder(), "messages.tmp");
         if (!tempFile.createNewFile()) {
             return;
         }
@@ -96,18 +96,19 @@ public final class Messages {
         writer.close();
         reader.close();
         if (!file.delete() && !tempFile.renameTo(file)) {
-            Debug.log("§cCouldn't update file messages.yml! Please consider an update to newer a newer Minecraft version.");
+            Debug.log("§cCouldn't update file 'messages.yml'! Please consider an update to newer a newer Minecraft version.");
         }
     }
 
-    @Nullable
+    @NotNull
     static List<String> getList(@NotNull String path) {
         return data.getStringList(path);
     }
 
-    @Nullable
+    @NotNull
     static String getText(@NotNull String path) {
-        return data.getString(path);
+        String val = data.getString(path);
+        return val == null ? "" : val;
     }
 
     @NotNull
