@@ -61,7 +61,7 @@ public class SelectCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Message.PLAYER_ONLY.getMessage());
+            sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
             return;
         }
 
@@ -82,7 +82,7 @@ public class SelectCommand implements Subcommand {
         }
 
         if (!user.hasPermission("tag." + tagName.toLowerCase())) {
-            user.getPlayer().sendMessage(Message.NO_PERMS.getMessage());
+            user.getPlayer().sendMessage(Message.CHAT_NO_PERMS.getText());
             return;
         }
         user.setSubgroup(subgroup);

@@ -40,11 +40,13 @@ class GroupCommand implements Subcommand {
     }
 
     @Override
+    @NotNull
     public String getDescription() {
         return "allows to modify groups";
     }
 
     @Override
+    @NotNull
     public String getCommandUsage() {
         return "group <group> <argument>";
     }
@@ -58,28 +60,27 @@ class GroupCommand implements Subcommand {
 
         Group group = groupHandler.isGroup(args.get(1)) ? groupHandler.getGroup(args.get(1)) : null;
         if (group == null) {
-            sender.sendMessage(Message.GROUP_NOT_FOUND.getMessage());
+            sender.sendMessage(Message.CHAT_GROUP_NOT_FOUND.getText());
             return;
         }
 
-        if (args.size() < 3) {
-            showHelp(sender);
-            return;
-        }
-
-        if (args.get(2).equalsIgnoreCase("info")) {
-            sender.sendMessage(" \n§7--------------=== §5§l" + group.getName() + " §7===--------------\n ");
-            sender.sendMessage("§5Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
-            sender.sendMessage("§5Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
-            String cc = group.getChatColor().getCode();
-            if (group.getChatFormatting() != null) cc = cc + group.getChatFormatting().getCode();
-            sender.sendMessage("§5Chat color§f: §7" + cc.replace("§", "&"));
-            sender.sendMessage("§5Join message§f: §7" + group.getJoinMessageText());
-            sender.sendMessage("§5Quit message§f: §7" + group.getQuitMessageText());
-            sender.sendMessage(" \n§7-----------------------------------------------\n ");
+        if (args.size() < 3 || args.get(2).equalsIgnoreCase("info")) {
+            showInfo(sender, group);
         } else {
             showHelp(sender);
         }
+    }
+
+    private void showInfo(CommandSender sender, Group group) {
+        sender.sendMessage(" \n§7--------------=== §5§l" + group.getName() + " §7===--------------\n ");
+        sender.sendMessage("§5Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
+        sender.sendMessage("§5Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
+        String cc = group.getChatColor().getCode();
+        if (group.getChatFormatting() != null) cc = cc + group.getChatFormatting().getCode();
+        sender.sendMessage("§5Chat color§f: §7" + cc.replace("§", "&"));
+        sender.sendMessage("§5Join message§f: §7" + group.getJoinMessageText());
+        sender.sendMessage("§5Quit message§f: §7" + group.getQuitMessageText());
+        sender.sendMessage(" \n§7-----------------------------------------------\n ");
     }
 
     private void showHelp(CommandSender sender) {

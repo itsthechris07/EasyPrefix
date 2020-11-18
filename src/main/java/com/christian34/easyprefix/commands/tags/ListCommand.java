@@ -23,11 +23,9 @@ import java.util.List;
  * @author Christian34
  */
 class ListCommand implements Subcommand {
-    private final TagsCommand parentCommand;
     private final EasyPrefix instance;
 
-    public ListCommand(TagsCommand parentCommand, EasyPrefix instance) {
-        this.parentCommand = parentCommand;
+    public ListCommand(EasyPrefix instance) {
         this.instance = instance;
     }
 
@@ -59,7 +57,7 @@ class ListCommand implements Subcommand {
         Player player;
         if (args.size() < 2) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Message.getPrefix() + Message.PLAYER_ONLY);
+                sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
                 return;
             } else {
                 player = (Player) sender;
@@ -67,26 +65,37 @@ class ListCommand implements Subcommand {
         } else {
             player = Bukkit.getPlayer(args.get(1));
             if (player == null) {
-                sender.sendMessage(Message.getPrefix() + Message.PLAYER_NOT_FOUND);
+                sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_NOT_FOUND);
             }
         }
 
         User user = instance.getUser(player);
         List<Subgroup> subgroups = user.getAvailableSubgroups();
-        sender.sendMessage(Message.CHAT_TAGS_AVAILABLE.getText()
-                .replace("%prefix%", Message.getPrefix())
-                .replace("%tags%", subgroups.size() + "")
-                .replace("%newline%", "\n"));
+        sender.sendMessage(Message.CHAT_TAGS_AVAILABLE.getText().replace("%tags%", subgroups.size() + ""));
 
-        String itemTitle = Message.TAGS_ITEM_TITLE.getText();
+        final String itemTitle = Message.TAGS_ITEM_TITLE.getText();
+        final String lore = Message.TAGS_ITEM_LORE.getText();
 
         TextComponent list = new TextComponent("");
         for (int i = 0; i < subgroups.size(); i++) {
             Subgroup subgroup = subgroups.get(i);
-            list.addExtra(getText(
-                    itemTitle.replace("%name%", subgroup.getName()),
-                    "/tags select " + subgroup.getName(),
-                    subgroup.getName()));
+            String name = itemTitle.replace("%name%", subgroup.getName());
+            String hoverText = lore;
+            String tagPrefix = subgroup.getPrefix(null, false);
+            if (tagPrefix == null || tagPrefix.isEmpty()) {
+                tagPrefix = "-/-";
+            }
+
+            String tagSuffix = subgroup.getSuffix(null, false);
+            if (tagSuffix == null || tagSuffix.isEmpty()) {
+                tagSuffix = "-/-";
+            }
+
+            hoverText = hoverText
+                    .replace("%tag_prefix%", tagPrefix)
+                    .replace("%tag_suffix%", tagSuffix);
+
+            list.addExtra(getText(name, "/tags select " + subgroup.getName(), hoverText));
             if (i != subgroups.size() - 1) {
                 list.addExtra("§7, ");
             }
@@ -95,6 +104,7 @@ class ListCommand implements Subcommand {
         user.getPlayer().spigot().sendMessage(list);
     }
 
+    @SuppressWarnings("deprecation")
     private TextComponent getText(String text, String command, String hoverText) {
         TextComponent msg = new TextComponent(TextComponent.fromLegacyText(text));
         msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));

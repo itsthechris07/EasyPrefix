@@ -54,7 +54,7 @@ class SettingsCommand implements Subcommand {
         if (user != null) {
             new GuiSettings(user).openWelcomePage();
         } else {
-            sender.sendMessage(Message.PLAYER_ONLY.getMessage());
+            sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
         }
     }
 

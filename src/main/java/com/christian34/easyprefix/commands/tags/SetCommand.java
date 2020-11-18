@@ -68,7 +68,7 @@ public class SetCommand implements Subcommand {
 
         Player player = Bukkit.getPlayer(args.get(1));
         if (player == null) {
-            sender.sendMessage(Message.PLAYER_NOT_FOUND.getMessage());
+            sender.sendMessage(Message.CHAT_PLAYER_NOT_FOUND.getText());
             return;
         }
 

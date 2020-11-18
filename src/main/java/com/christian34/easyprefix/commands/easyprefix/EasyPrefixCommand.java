@@ -88,7 +88,7 @@ public class EasyPrefixCommand implements EasyCommand {
                         Debug.captureException(ex);
                     }
                 } else {
-                    sender.sendMessage(Message.NO_PERMS.getMessage());
+                    sender.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
                 return;
             }

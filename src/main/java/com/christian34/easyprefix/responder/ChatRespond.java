@@ -9,6 +9,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -29,18 +30,16 @@ public class ChatRespond {
 
     public ChatRespond(User responder, String text) {
         this.RESPONDER = responder;
-        this.TEXT = text;
+        this.TEXT = text.replace("%newline%", "\n");
         this.instance = EasyPrefix.getInstance();
         Bukkit.getPluginManager().registerEvents(LISTENER, instance);
-        if (text != null) {
-            sendMessage();
-            startTimer();
-        }
+        sendMessage();
+        startTimer();
     }
 
     private void startTimer() {
         this.bukkitTask = Bukkit.getScheduler().runTaskLater(instance, () -> {
-            if (RESPONDER != null) RESPONDER.sendMessage(Message.INPUT_CANCELLED.getText());
+            if (RESPONDER != null) RESPONDER.sendMessage(Message.CHAT_SETUP_CANCELLED.getText());
             exit();
         }, 20 * 60);
     }
@@ -52,16 +51,16 @@ public class ChatRespond {
 
     public void sendMessage() {
         RESPONDER.getPlayer().closeInventory();
-        for (String msg : Message.CHAT_HEADER.getList()) {
-            RESPONDER.getPlayer().sendMessage(msg.replace("%quit%", "quit").replace("%question%", TEXT.replace("%newline%", "\n")));
+        for (String msg : Message.CHAT_INPUT_LAYOUT.getList()) {
+            RESPONDER.getPlayer().sendMessage(msg.replace("%text%", TEXT.replace("%newline%", "\n")));
         }
     }
 
-    public void addInputReader(Predicate<String> respond) {
+    public void addInputReader(Predicate<@Nullable String> respond) {
         this.inputReader = respond;
     }
 
-    public void getInput(Consumer<String> consumer) {
+    public void getInput(Consumer<@Nullable String> consumer) {
         this.text = consumer;
     }
 
@@ -73,16 +72,20 @@ public class ChatRespond {
             User user = instance.getUser(e.getPlayer());
             user.getPlayer().spigot().sendMessage();
             if (e.getMessage().equals("quit")) {
-                user.sendMessage(Message.SETUP_CANCELLED.getText());
+                user.getPlayer().sendMessage(Message.CHAT_SETUP_CANCELLED.getText());
                 exit();
             } else {
+                String msg = e.getMessage();
+                if (msg.equalsIgnoreCase("empty")) {
+                    msg = null;
+                }
                 if (inputReader != null) {
-                    if (inputReader.test(e.getMessage())) {
-                        text.accept(e.getMessage());
+                    if (inputReader.test(msg)) {
+                        text.accept(msg);
                         exit();
                     }
                 } else {
-                    text.accept(e.getMessage());
+                    text.accept(msg);
                     exit();
                 }
             }

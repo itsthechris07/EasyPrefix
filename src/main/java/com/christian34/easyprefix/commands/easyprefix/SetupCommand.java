@@ -54,7 +54,7 @@ class SetupCommand implements Subcommand {
         if (user != null) {
             new GuiSetup(user).mainPage();
         } else {
-            sender.sendMessage(Message.PLAYER_ONLY.getMessage());
+            sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
         }
     }
 

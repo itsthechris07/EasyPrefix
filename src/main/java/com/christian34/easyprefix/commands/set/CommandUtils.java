@@ -25,7 +25,7 @@ class CommandUtils {
         long min = (timestamp.getTime() - System.currentTimeMillis()) / 1000 / 60;
         int minutes = (int) (min % 60);
         int hours = (int) ((min / 60) % 24);
-        String msg = Message.LAYOUT_ERROR.getText();
+        String msg = Message.CHAT_LAYOUT_UPDATE_COOLDOWN.getText();
         return msg.replace("%h%", Integer.toString(hours)).replace("%m%", (minutes == 0) ? "<1" : Integer.toString(minutes));
     }
 

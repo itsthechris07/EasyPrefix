@@ -95,8 +95,17 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
-    public void setPrefix(String prefix) {
-        this.prefix = prefix.replace("§", "&");
+    @Nullable
+    public GenderedLayout getGenderedLayout() {
+        return genderedLayout;
+    }
+
+    @Override
+    public void setPrefix(@Nullable String prefix) {
+        if (prefix != null) {
+            prefix = prefix.replace("§", "&");
+        }
+        this.prefix = prefix;
         saveData("prefix", this.prefix);
     }
 
@@ -145,8 +154,11 @@ public class Subgroup extends EasyGroup {
     }
 
     @Override
-    public void setSuffix(String suffix) {
-        this.suffix = suffix.replace("§", "&");
+    public void setSuffix(@Nullable String suffix) {
+        if (suffix != null) {
+            suffix = suffix.replace("§", "&");
+        }
+        this.suffix = suffix;
         saveData("suffix", this.suffix);
     }
 

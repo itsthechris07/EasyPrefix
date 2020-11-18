@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.gender.Gender;
+import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.responder.ChatRespond;
 import com.christian34.easyprefix.responder.GuiRespond;
@@ -15,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,41 +35,61 @@ public class GuiModifyingGroups {
     }
 
     public void editPrefix(EasyGroup easyGroup) {
-        ChatRespond responder = new ChatRespond(user, Message.SET_PREFIX.getText().replace("%prefix%", easyGroup.getPrefix(null, false)));
+        String text = Message.PREFIX + "§aPlease type the prefix in the chat!%newline%§7Current: §7«§f" + easyGroup.getPrefix(null, false) + "§7»";
+        ChatRespond responder = new ChatRespond(user, text);
         responder.getInput((respond) -> {
             easyGroup.setPrefix(respond);
-            user.sendMessage(Message.INPUT_SAVED.getText());
+            if (respond == null) {
+                user.sendAdminMessage(Message.CHAT_INPUT_VALUE_RESET);
+            } else {
+                user.sendAdminMessage(Message.INPUT_SAVED);
+            }
         });
     }
 
     public void editSuffix(EasyGroup easyGroup) {
-        ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.getText().replace("%suffix%", easyGroup.getSuffix(null, false)));
+        String text = Message.PREFIX + "§aPlease type the suffix in the chat!%newline%§7Current: §7«§f" + easyGroup.getSuffix(null, false) + "§7»";
+        ChatRespond responder = new ChatRespond(user, text);
         responder.getInput((respond) -> {
             easyGroup.setSuffix(respond);
-            user.sendMessage(Message.INPUT_SAVED.getText());
+            if (respond == null) {
+                user.sendAdminMessage(Message.CHAT_INPUT_VALUE_RESET);
+            } else {
+                user.sendAdminMessage(Message.INPUT_SAVED);
+            }
         });
     }
 
     public void editJoinMessage(Group group) {
-        ChatRespond responder = new ChatRespond(user, "§5What should be the new join message?%newline%§5Current: §7" + group.getJoinMessageText());
+        ChatRespond responder = new ChatRespond(user, Message.getPrefix() +
+                "§aPlease type in the join message!%newline%§7Current: §7«§f" + group.getJoinMessageText() + "§7»");
         responder.getInput((respond) -> {
             group.setJoinMessage(respond);
-            user.sendMessage(Message.INPUT_SAVED.getText());
+            if (respond == null) {
+                user.sendAdminMessage(Message.CHAT_INPUT_VALUE_RESET);
+            } else {
+                user.sendAdminMessage(Message.INPUT_SAVED);
+            }
         });
     }
 
     public void editQuitMessage(Group group) {
-        ChatRespond responder = new ChatRespond(user, "§5What should be the new quit message?%newline%§5Current: §7" + group.getQuitMessageText());
+        ChatRespond responder = new ChatRespond(user, Message.getPrefix() +
+                "§aPlease type in the join message!%newline%§7Current: §7«§f" + group.getQuitMessageText() + "§7»");
         responder.getInput((respond) -> {
             group.setQuitMessage(respond);
-            user.sendMessage(Message.INPUT_SAVED.getText());
+            if (respond == null) {
+                user.sendAdminMessage(Message.CHAT_INPUT_VALUE_RESET);
+            } else {
+                user.sendAdminMessage(Message.INPUT_SAVED);
+            }
         });
     }
 
     public void editChatColor(EasyGroup easyGroup) {
         if (!(easyGroup instanceof Group)) return;
         Group group = (Group) easyGroup;
-        String title = group.getGroupColor() + group.getName() + " §8» " + Message.SETTINGS_TITLE_FORMATTINGS.getText();
+        String title = group.getGroupColor() + group.getName() + " §8» " + Message.GUI_SETTINGS_TITLE_FORMATTINGS.getText();
         GuiRespond guiRespond = new GuiRespond(user, title, 5);
 
         int line = 2, slot = 1;
@@ -119,12 +141,29 @@ public class GuiModifyingGroups {
     }
 
     public void modifyGenderedLayout(EasyGroup easyGroup) {
-        GuiRespond guiRespond = new GuiRespond(user, "Layout", 3);
+        GuiRespond guiRespond = new GuiRespond(user, "§8Select a gender", 3);
+        GenderedLayout genderedLayout = easyGroup.getGenderedLayout();
 
         List<Gender> genders = instance.getGroupHandler().getGenderTypes();
         for (int i = 0; i < genders.size(); i++) {
             Gender gender = genders.get(i);
-            Icon icon = guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), gender.getDisplayName(), 2, (genders.size() == 3 ? 4 : 2) + i);
+            ItemStack head = Icon.playerHead(user.getPlayer().getName());
+            int slot = (genders.size() == 3 ? 4 : 2) + i;
+
+            String prefix = null, suffix = null;
+            if (genderedLayout != null) {
+                prefix = genderedLayout.getPrefix(gender);
+                suffix = genderedLayout.getSuffix(gender);
+            }
+            if (prefix == null) {
+                prefix = "-/-";
+            }
+            if (suffix == null) {
+                suffix = "-/-";
+            }
+
+            List<String> lore = Arrays.asList(" ", "§7Prefix: §7«§f" + prefix + "§7»", "§7Suffix: §7«§f" + suffix + "§7»");
+            Icon icon = guiRespond.addIcon(head, gender.getDisplayName(), 2, slot).setLore(lore);
             icon.onClick(() -> modifyLayout(easyGroup, gender));
         }
 
@@ -133,9 +172,21 @@ public class GuiModifyingGroups {
     }
 
     private void modifyLayout(EasyGroup easyGroup, Gender gender) {
-        GuiRespond guiRespond = new GuiRespond(user, "Layout " + easyGroup.getName() + " " + gender.getName(), 3);
+        GuiRespond guiRespond = new GuiRespond(user, "§5Group §8» §8" + easyGroup.getName() + " (" + gender.getName() + ")", 3);
+        GenderedLayout genderedLayout = easyGroup.getGenderedLayout();
 
-        Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, "prefix", 2, 4);
+        String prefix = null, suffix = null;
+        if (genderedLayout != null) {
+            prefix = genderedLayout.getPrefix(gender);
+            suffix = genderedLayout.getSuffix(gender);
+        }
+
+        if (prefix == null) {
+            prefix = "-/-";
+        }
+        String DIVIDER = "§7-------------------------";
+        Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, "§aChange Prefix", 2, 4)
+                .setLore(DIVIDER, "§7Current: §7«§f" + prefix + "§7»", " ");
         prefixIcon.onClick(() -> {
             ChatRespond chatRespond = new ChatRespond(user, "prefix");
             chatRespond.getInput(input -> {
@@ -144,7 +195,11 @@ public class GuiModifyingGroups {
             });
         });
 
-        Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, "suffix", 2, 6);
+        if (suffix == null) {
+            suffix = "-/-";
+        }
+        Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, "§aChange Suffix", 2, 6)
+                .setLore(DIVIDER, "§7Current: §7«§f" + suffix + "§7»", " ");
         suffixIcon.onClick(() -> {
             ChatRespond chatRespond = new ChatRespond(user, "suffix");
             chatRespond.getInput(input -> {
@@ -153,7 +208,7 @@ public class GuiModifyingGroups {
             });
         });
 
-        guiRespond.addCloseButton().onClick(() -> modifyGenderedLayout(easyGroup));
+        guiRespond.addCloseButton().onClick(() -> new GuiSetup(user).openProfile(easyGroup));
         guiRespond.openInventory();
     }
 

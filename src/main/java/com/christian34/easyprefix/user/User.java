@@ -306,6 +306,7 @@ public class User {
         return availableGroups;
     }
 
+    @NotNull
     public List<Subgroup> getAvailableSubgroups() {
         List<Subgroup> availableGroups = new ArrayList<>();
         for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
@@ -340,7 +341,20 @@ public class User {
     }
 
     public void sendMessage(String message) {
-        player.sendMessage(Message.getPrefix() + message);
+        player.sendMessage(Message.setPlaceholders(message));
+    }
+
+    public void sendAdminMessage(String message) {
+        if (!message.contains("%prefix%")) {
+            message = Message.getPrefix() + message;
+        } else {
+            message = message.replace("%prefix%", Message.getPrefix());
+        }
+        player.sendMessage(Message.setPlaceholders(message));
+    }
+
+    public void sendAdminMessage(Message message) {
+        sendAdminMessage(message.getText(false));
     }
 
     public void saveData(String key, Object value) {

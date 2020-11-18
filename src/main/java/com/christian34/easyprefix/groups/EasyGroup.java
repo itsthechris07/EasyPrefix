@@ -3,6 +3,7 @@ package com.christian34.easyprefix.groups;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.groups.gender.Gender;
+import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -27,10 +28,13 @@ public abstract class EasyGroup {
      */
     public abstract String getPrefix(User user, boolean translate);
 
+    @Nullable
+    public abstract GenderedLayout getGenderedLayout();
+
     /**
      * @param prefix unformatted prefix
      */
-    public abstract void setPrefix(String prefix);
+    public abstract void setPrefix(@Nullable String prefix);
 
     public abstract void setPrefix(@Nullable String prefix, @NotNull Gender gender);
 
@@ -44,7 +48,7 @@ public abstract class EasyGroup {
     /**
      * @param suffix unformatted suffix
      */
-    public abstract void setSuffix(String suffix);
+    public abstract void setSuffix(@Nullable String suffix);
 
     public abstract void setSuffix(@Nullable String suffix, @NotNull Gender gender);
 

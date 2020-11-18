@@ -85,6 +85,12 @@ public class Group extends EasyGroup {
         this.quitMessage = data.getString("quit_msg");
     }
 
+    @Override
+    @Nullable
+    public GenderedLayout getGenderedLayout() {
+        return genderedLayout;
+    }
+
     @Nullable
     public String getJoinMessage(User user) {
         String message = getJoinMessageText();
@@ -102,6 +108,7 @@ public class Group extends EasyGroup {
         return joinMessage;
     }
 
+    //todo reset
     public void setJoinMessage(@NotNull String joinMessage) {
         this.joinMessage = joinMessage.replace("§", "&");
         saveData("join-msg", this.joinMessage);
@@ -168,8 +175,11 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    public void setPrefix(@NotNull String prefix) {
-        this.prefix = prefix.replace("§", "&");
+    public void setPrefix(@Nullable String prefix) {
+        if (prefix != null) {
+            prefix = prefix.replace("§", "&");
+        }
+        this.prefix = prefix;
         saveData("prefix", this.prefix);
     }
 
@@ -219,8 +229,11 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    public void setSuffix(@NotNull String suffix) {
-        this.suffix = suffix.replace("§", "&");
+    public void setSuffix(@Nullable String suffix) {
+        if (suffix != null) {
+            suffix = suffix.replace("§", "&");
+        }
+        this.suffix = suffix;
         saveData("suffix", this.suffix);
     }
 

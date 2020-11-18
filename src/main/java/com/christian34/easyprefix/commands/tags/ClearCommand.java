@@ -61,15 +61,14 @@ public class ClearCommand implements Subcommand {
 
         Player player = Bukkit.getPlayer(args.get(1));
         if (player == null) {
-            sender.sendMessage(Message.PLAYER_NOT_FOUND.getMessage());
+            sender.sendMessage(Message.CHAT_PLAYER_NOT_FOUND.getText());
             return;
         }
 
         User user = instance.getUser(player);
         user.setSubgroup(null);
 
-        sender.sendMessage(Message.TAG_SET_TO_PLAYER.getText()
-                .replace("%prefix%", Message.getPrefix())
+        sender.sendMessage(Message.TAGS_CLEARED_FOR_PLAYER.getText()
                 .replace("%player%", user.getPlayer().getName()));
     }
 

@@ -44,18 +44,18 @@ gui:
     info_not_compatible: '&5(not compatible with rainbow effect)'
 chat:
   header:
-    - '&7----------------=== &5&lEasyPrefix &7===----------------'
-    - '%question%'
-    - '&7&oPlease type in your answer, or type "%quit%"'
-    - '&7--------------------------------------------------------------'
+    - '&a%question%'
+    - '&7You can delete the current value with "empty"'
+    - ' '
+    - '&7&oPlease type in your answer, or type "quit"'
   prefix: '&5What should be the prefix?%newline%&5Current: &7"%prefix%"'
   suffix: '&5What should be the suffix?%newline%&5Current: &7"%suffix%"'
-  playerPrefix: '&7[&5Chat&7] &aYour prefix has been set to »%prefix%«'
-  confirmPlayerPrefix: '&7[&5Chat&7] &7Do you want to set your prefix to »%prefix%«?'
-  resetPlayerPrefix: '&7[&5Chat&7] &7Do you want to reset your prefix?'
-  playerSuffix: '&7[&5Chat&7] &aYour suffix has been set to »%suffix%«'
-  confirmPlayerSuffix: '&7[&5Chat&7] &7Do you want to set your suffix to »%suffix%«?'
-  resetPlayerSuffix: '&7[&5Chat&7] &7Do you want to reset your suffix?'
+  playerPrefix: '%prefix% &aYour prefix has been set to »%prefix%«'
+  confirmPlayerPrefix: '%prefix% &7Do you want to set your prefix to »%prefix%«?'
+  resetPlayerPrefix: '%prefix% &7Do you want to reset your prefix?'
+  playerSuffix: '%prefix% &aYour suffix has been set to »%suffix%«'
+  confirmPlayerSuffix: '%prefix% &7Do you want to set your suffix to »%suffix%«?'
+  resetPlayerSuffix: '%prefix% &7Do you want to reset your suffix?'
   confirmBtn: '&7[&aConfirm&7]'
   layoutError: '&7[&5Chat&7] &cYou have recently changed your layout. Please try again in %h% hours %m% minutes!'
 tags:
@@ -89,3 +89,4 @@ colors:
     strikethrough: 'Strikethrough'
     underline: 'Underline'
     rainbow: 'Rainbow'
+

@@ -45,8 +45,8 @@ public class GuiRespond {
         this.guiLines = lines;
         this.inventory = Bukkit.createInventory(holder.getPlayer(), lines * 9, title);
         this.maxSlots = (guiLines - 2) * 9;
-        this.nextPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_NEXT.getText()).setSlot(lines, 6);
-        this.prevPage = new Icon(new ItemStack(Material.ARROW), Message.PAGE_PREVIOUS.getText()).setSlot(lines, 4);
+        this.nextPage = new Icon(new ItemStack(Material.ARROW), Message.BTN_NEXT.getText()).setSlot(lines, 6);
+        this.prevPage = new Icon(new ItemStack(Material.ARROW), Message.BTN_PREVIOUS.getText()).setSlot(lines, 4);
         Bukkit.getPluginManager().registerEvents(LISTENER, EasyPrefix.getInstance().getPlugin());
     }
 
@@ -262,10 +262,6 @@ public class GuiRespond {
                 e.getWhoClicked().closeInventory();
                 e.getWhoClicked().sendMessage(Message.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
                 Debug.captureException(ex);
-                Debug.log("&cAn error occurred while opening gui. If you think this is an error, please report following exception on spigotmc.org;");
-                Debug.log("&c------ ERROR ------");
-                ex.printStackTrace();
-                Debug.log("&c------ END OF ERROR ------");
             }
 
         }

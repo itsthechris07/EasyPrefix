@@ -32,7 +32,7 @@ public class MessageData {
         Message.setData(this);
         Plugin plugin = instance.getPlugin();
         String langFile = "messages.yml";
-        File file = new File(FileManager.getPluginFolder(), "messages.yml");
+        File file = new File(FileManager.getPluginFolder(), langFile);
         if (!file.exists()) {
             plugin.saveResource(langFile, false);
         } else {

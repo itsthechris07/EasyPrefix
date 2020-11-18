@@ -53,7 +53,7 @@ public class SetSuffixCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Message.PLAYER_ONLY.getMessage());
+            sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
             return;
         }
 
@@ -75,22 +75,22 @@ public class SetSuffixCommand implements Subcommand {
         if (args.get(1).equalsIgnoreCase("reset")) {
             if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                 user.setSuffix(null);
-                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.getText()
+                user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText()
                         .replace("%suffix%", user.getSuffix().replace("§", "&")));
             } else {
-                user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.RESET_PLAYER_SUFFIX.getText()
+                user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_SUFFIX_RESET.getText()
                         .replace("%suffix%", input), "/ep setsuffix reset submit"));
             }
             return;
         }
 
         if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
-            user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.SUBMIT_SUFFIX.getText()
+            user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_SUFFIX_CONFIRM.getText()
                     .replace("%suffix%", input), "/ep setsuffix " + input + " submit"));
         } else {
             user.setSuffix(input);
             user.saveData("custom_suffix_update", currentTime.toString());
-            user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_SUFFIX.getText()
+            user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText()
                     .replace("%suffix%", user.getSuffix().replace("§", "&")));
         }
     }

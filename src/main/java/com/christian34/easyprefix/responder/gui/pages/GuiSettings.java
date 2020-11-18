@@ -14,6 +14,7 @@ import com.christian34.easyprefix.responder.gui.Icon;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
+import com.christian34.easyprefix.utils.ListUtils;
 import com.christian34.easyprefix.utils.VersionController;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
@@ -23,7 +24,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +33,7 @@ import java.util.Objects;
  * @author Christian34
  */
 public class GuiSettings {
-    private final String TITLE = Message.SETTINGS_TITLE.getText();
+    private final String TITLE = Message.GUI_SETTINGS_TITLE.getText();
     private final User user;
 
     public GuiSettings(User user) {
@@ -41,7 +41,7 @@ public class GuiSettings {
     }
 
     public void openWelcomePage() {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_MAIN), 3);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_MAIN), 3);
         Icon prefix = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_PREFIXES, 2, 3).onClick(() -> {
             int userGroups = user.getAvailableGroups().size();
             if (userGroups <= 1) {
@@ -56,7 +56,7 @@ public class GuiSettings {
         });
         Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).onClick(this::openColorsPage);
         if (ConfigKeys.USE_GENDER.toBoolean()) {
-            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.CHANGE_GENDER, 2, 5).onClick(this::openGenderSelectPage);
+            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.BTN_CHANGE_GENDER, 2, 5).onClick(this::openGenderSelectPage);
         } else {
             prefix.setSlot(2, 4);
             formattings.setSlot(2, 6);
@@ -68,11 +68,10 @@ public class GuiSettings {
 
     public void openGenderSelectPage() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.TITLE_GENDER), 3);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_GENDER), 3);
         String genderName = "n/A";
         if (user.getGenderType() != null) genderName = user.getGenderType().getDisplayName();
-        List<String> lore = Arrays.asList(" ", Message.LORE_CHANGE_GENDER.getText());
-        guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), genderName, 2, 5).setLore(lore).onClick(() -> {
+        guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), genderName, 2, 5).onClick(() -> {
             if (user.getGenderType() == null) {
                 user.setGenderType(groupHandler.getGenderTypes().get(0));
             } else {
@@ -92,20 +91,20 @@ public class GuiSettings {
     }
 
     public void openGroupsListPage() {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), 5);
 
+        final String loreSelectPrefix = Message.BTN_SELECT_PREFIX.getText();
+        Material book = XMaterial.BOOK.parseMaterial();
         for (Group group : user.getAvailableGroups()) {
             ChatColor prefixColor = group.getGroupColor();
             List<String> lore = new ArrayList<>();
-            ItemStack itemStack = XMaterial.BOOK.parseItem();
+            ItemStack itemStack = new ItemStack(Objects.requireNonNull(book));
 
             if (user.getGroup().getName().equals(group.getName())) {
-                if (itemStack != null) {
-                    itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
-                }
+                itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             } else {
                 lore.add(" ");
-                lore.add(Message.BTN_SELECT_PREFIX.getText());
+                lore.add(loreSelectPrefix);
             }
 
             guiRespond.addIcon(itemStack, prefixColor + group.getName()).setLore(lore).onClick(() -> {
@@ -115,7 +114,8 @@ public class GuiSettings {
         }
 
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
-            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
+            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_LAYOUT, 5, 9)
+                    .setLore(Message.BTN_CUSTOM_LAYOUT_LORE.getList())
                     .onClick(() -> openCustomLayoutPage(this::openGroupsListPage));
         }
 
@@ -123,7 +123,7 @@ public class GuiSettings {
             ItemStack subgroupsMaterial = VersionController.getMinorVersion() <= 12
                     ? XMaterial.CHEST.parseItem()
                     : XMaterial.WRITABLE_BOOK.parseItem();
-            guiRespond.addIcon(subgroupsMaterial, Message.BTN_SUBGROUPS, 5, 5).onClick(() -> openSubgroupsPage(this::openGroupsListPage));
+            guiRespond.addIcon(subgroupsMaterial, Message.BTN_SETTINGS_TAGS, 5, 5).onClick(() -> openSubgroupsPage(this::openGroupsListPage));
         }
 
         guiRespond.addCloseButton().onClick(this::openWelcomePage);
@@ -131,7 +131,7 @@ public class GuiSettings {
     }
 
     public void openColorsPage() {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_FORMATTINGS), 5);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), 5);
         boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
 
         int line = 2, slot = 1;
@@ -149,7 +149,7 @@ public class GuiSettings {
                     user.setChatColor(color);
                     openColorsPage();
                 } else {
-                    user.sendMessage(Message.NO_PERMS.getText());
+                    user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
             });
 
@@ -162,13 +162,15 @@ public class GuiSettings {
 
         line = 4;
         slot = 3;
+        final List<String> infoNotCompatible = Message.LORE_SELECT_COLOR_NC.getList();
+        final List<String> loreList = Message.LORE_SELECT_COLOR.getList();
         for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
             if (!showAll && !user.getPlayer().hasPermission("EasyPrefix.Color." + chatFormatting.name().toLowerCase())) {
                 continue;
             }
-            List<String> lore = Message.LORE_SELECT_COLOR.getList();
+            List<String> lore = new ArrayList<>(loreList);
             if (!chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                lore.add(Message.LORE_SELECT_COLOR_NC.getText());
+                lore.addAll(infoNotCompatible);
             }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
@@ -185,7 +187,7 @@ public class GuiSettings {
                     user.setChatFormatting(formatting);
                     openColorsPage();
                 } else {
-                    user.sendMessage(Message.NO_PERMS.getText());
+                    user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
             });
             slot++;
@@ -202,18 +204,21 @@ public class GuiSettings {
     }
 
     public void openSubgroupsPage(ClickAction backAction) {
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 5);
-        for (Subgroup subgroup : user.getAvailableSubgroups()) {
+        List<Subgroup> subgroups = user.getAvailableSubgroups();
+        int lines = (subgroups.size() <= 9) ? 3 : ((subgroups.size() <= 18) ? 4 : 5);
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_TAGS), lines);
+
+        final Material book = XMaterial.BOOK.parseMaterial();
+        final String loreSelectTag = Message.BTN_SETTINGS_SELECT_TAG.getText();
+        for (Subgroup subgroup : subgroups) {
             List<String> lore = new ArrayList<>();
-            ItemStack bookItem = XMaterial.BOOK.parseItem();
+            ItemStack bookItem = new ItemStack(Objects.requireNonNull(book));
 
             if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
-                if (bookItem != null) {
-                    bookItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
-                }
+                bookItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
             } else {
                 lore.add(" ");
-                lore.add(Message.BTN_SELECT_PREFIX.getText());
+                lore.add(loreSelectTag);
             }
 
             guiRespond.addIcon(bookItem, subgroup.getGroupColor() + subgroup.getName()).setLore(lore).onClick(() -> {
@@ -227,7 +232,8 @@ public class GuiSettings {
         }
 
         if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
-            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_PREFIX, 5, 9)
+            guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_LAYOUT, lines, 9)
+                    .setLore(Message.BTN_CUSTOM_LAYOUT_LORE.getList())
                     .onClick(() -> openCustomLayoutPage(() -> openSubgroupsPage(this::openWelcomePage)));
         }
 
@@ -246,32 +252,35 @@ public class GuiSettings {
                 backAction.execute();
             } else openGroupsListPage();
         }
-        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.SETTINGS_TITLE_LAYOUT), 3);
-        final String divider = "§7--------------------";
+        GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), 3);
 
-        String loreDetail = Message.LORE_GROUP_DETAIL.getText();
+        List<String> prefixLore = ListUtils.replace(Message.LORE_CHANGE_PREFIX.getList(),
+                "%content%", user.getPrefix().replace("§", "&"));
 
-        List<String> prefixLore = Arrays.asList(divider, loreDetail + user.getPrefix().replace("§", "&"), " ");
+        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4)
+                .setLore(prefixLore)
+                .onClick(() -> {
+                    ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.getText()
+                            .replace("%content%", user.getPrefix().replace("§", "&")));
 
-        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4).setLore(prefixLore).onClick(() -> {
-            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.getText()
-                    .replace("%prefix%", user.getPrefix().replace("§", "&")));
+                    responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
+                            user.getPlayer().performCommand("ep setprefix " + respond))
+                    );
+                });
 
-            responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
-                    user.getPlayer().performCommand("ep setprefix " + respond))
-            );
-        });
+        List<String> suffixLore = ListUtils.replace(Message.LORE_CHANGE_SUFFIX.getList(),
+                "%content%", user.getSuffix().replace("§", "&"));
+        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.getText(), 2, 6)
+                .setLore(suffixLore)
+                .onClick(() -> {
+                    ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.getText()
+                            .replace("%content%", user.getSuffix().replace("§", "&")));
 
-        List<String> suffixLore = Arrays.asList(divider, loreDetail + user.getSuffix().replace("§", "&"), " ");
-
-        guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.getText(), 2, 6).setLore(suffixLore).onClick(() -> {
-            ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.getText()
-                    .replace("%suffix%", user.getSuffix().replace("§", "&")));
-
-            responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
-                    user.getPlayer().performCommand("ep setsuffix " + respond))
-            );
-        });
+                    responder.getInput((respond) ->
+                            Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
+                                    user.getPlayer().performCommand("ep setsuffix " + respond))
+                    );
+                });
 
         guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.getText(), 3, 9).onClick(() -> {
             user.setPrefix(null);

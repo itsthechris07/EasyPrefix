@@ -54,8 +54,10 @@ public final class Debug {
 
     public static void captureException(Exception exception) {
         Sentry.captureException(exception);
-        log("An error occurred while using EasyPrefix:");
+        Debug.log("&cAn error occurred while using EasyPrefix. If you think this is an error, please report following exception to GitHub!");
+        Debug.log("&c------ ERROR ------");
         exception.printStackTrace();
+        Debug.log("&c------ END OF ERROR ------");
     }
 
     public static void log(String message) {

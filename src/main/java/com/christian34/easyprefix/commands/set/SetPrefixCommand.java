@@ -53,7 +53,7 @@ public class SetPrefixCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Message.PLAYER_ONLY.getMessage());
+            sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
             return;
         }
 
@@ -75,23 +75,23 @@ public class SetPrefixCommand implements Subcommand {
         if (args.get(1).equalsIgnoreCase("reset")) {
             if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                 user.setPrefix(null);
-                user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.getText()
-                        .replace("%prefix%", user.getPrefix().replace("§", "&")));
+                user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText()
+                        .replace("%content%", user.getPrefix().replace("§", "&")));
             } else {
-                user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.RESET_PLAYER_PREFIX.getText()
-                        .replace("%prefix%", input), "/ep setprefix reset submit"));
+                user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_PREFIX_RESET.getText()
+                        .replace("%content%", input), "/ep setprefix reset submit"));
             }
             return;
         }
 
         if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
-            user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.SUBMIT_PREFIX.getText()
-                    .replace("%prefix%", input), "/ep setprefix " + input + " submit"));
+            user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_PREFIX_CONFIRM.getText()
+                    .replace("%content%", input), "/ep setprefix " + input + " submit"));
         } else {
             user.setPrefix(input);
             user.saveData("custom_prefix_update", currentTime.toString());
-            user.getPlayer().sendMessage(Message.SUCCESS_PLAYER_PREFIX.getText()
-                    .replace("%prefix%", user.getPrefix().replace("§", "&")));
+            user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText()
+                    .replace("%content%", user.getPrefix().replace("§", "&")));
         }
     }
 

@@ -29,7 +29,7 @@ public class TagsCommand implements EasyCommand {
 
         this.subcommands = new ArrayList<>();
         subcommands.add(new HelpCommand(this));
-        subcommands.add(new ListCommand(this, instance));
+        subcommands.add(new ListCommand(instance));
         subcommands.add(new SelectCommand(this, instance));
         subcommands.add(new SetCommand(this, instance));
         subcommands.add(new ClearCommand(this, instance));
@@ -49,7 +49,7 @@ public class TagsCommand implements EasyCommand {
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (args.size() == 0) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Message.getPrefix() + Message.PLAYER_ONLY);
+                sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
                 return;
             }
 
@@ -69,7 +69,7 @@ public class TagsCommand implements EasyCommand {
                         Debug.captureException(ex);
                     }
                 } else {
-                    sender.sendMessage(Message.NO_PERMS.getMessage());
+                    sender.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
                 return;
             }
