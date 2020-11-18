@@ -51,7 +51,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         for (EasyCommand easyCommand : commands) {
             if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
                 return easyCommand.getTabCompletion(sender, Arrays.asList(args));

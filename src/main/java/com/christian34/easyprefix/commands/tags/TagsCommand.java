@@ -47,7 +47,7 @@ public class TagsCommand implements EasyCommand {
 
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
-        if (args.size() == 0) {
+        if (args.isEmpty()) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
                 return;

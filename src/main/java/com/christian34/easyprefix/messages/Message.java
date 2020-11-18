@@ -92,11 +92,11 @@ public enum Message {
     public static final String PREFIX = "§7[§5EasyPrefix§7] ";
     public static final String CHAT_PLAYER_ONLY = "&cYou can''t use this from console!";
     private static MessageData messageData;
-    private final String message;
+    private final String key;
 
 
-    Message(String message) {
-        this.message = message;
+    Message(String key) {
+        this.key = key;
     }
 
     public static void setData(MessageData data) {
@@ -143,7 +143,7 @@ public enum Message {
     }
 
     public String getText(boolean setPlaceholders) {
-        String text = messageData.getText(message);
+        String text = messageData.getText(key);
 
         if (text.isEmpty()) {
             Bukkit.broadcastMessage("MESSAGE NULL: " + this.name() + "/" + this.getPath());
@@ -165,7 +165,7 @@ public enum Message {
     }
 
     public String getPath() {
-        return message;
+        return key;
     }
 
 }

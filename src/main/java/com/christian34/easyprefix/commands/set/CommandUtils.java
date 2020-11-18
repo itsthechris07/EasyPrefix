@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Christian34
  */
-class CommandUtils {
+final class CommandUtils {
 
     static Timestamp getNextTimestamp(long last) {
         double delay = ConfigKeys.CUSTOM_LAYOUT_COOLDOWN.toDouble();
