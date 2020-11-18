@@ -53,8 +53,8 @@ public class JoinListener implements Listener {
                 if (user.getGenderType() == null) {
                     String prefix = Message.PREFIX_ALT.getText();
                     if (prefix == null) prefix = Message.getPrefix();
-                    TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Message.NOTIFY_GENDER_TEXT.getText()));
-                    TextComponent change = new TextComponent(TextComponent.fromLegacyText(Message.NOTIFY_GENDER_BTN.getText()));
+                    TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Message.CHAT_NOTIFY_GENDER_TEXT.getText()));
+                    TextComponent change = new TextComponent(TextComponent.fromLegacyText(Message.CHAT_NOTIFY_GENDER_BTN.getText()));
                     change.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ep gui settings gender"));
                     msg.addExtra(change);
                     user.getPlayer().spigot().sendMessage(msg);
