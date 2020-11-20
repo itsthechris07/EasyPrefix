@@ -53,7 +53,7 @@ public class SetPrefixCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
+            sender.sendMessage(Message.PREFIX + Message.CHAT_PLAYER_ONLY);
             return;
         }
 

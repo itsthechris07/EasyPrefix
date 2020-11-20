@@ -52,7 +52,7 @@ public class JoinListener implements Listener {
             if (ConfigKeys.USE_GENDER.toBoolean() && ConfigKeys.FORCE_GENDER.toBoolean()) {
                 if (user.getGenderType() == null) {
                     String prefix = Message.PREFIX_ALT.getText();
-                    if (prefix == null) prefix = Message.getPrefix();
+                    if (prefix == null) prefix = Message.PREFIX;
                     TextComponent msg = new TextComponent(TextComponent.fromLegacyText(prefix + Message.CHAT_NOTIFY_GENDER_TEXT.getText()));
                     TextComponent change = new TextComponent(TextComponent.fromLegacyText(Message.CHAT_NOTIFY_GENDER_BTN.getText()));
                     change.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ep gui settings gender"));

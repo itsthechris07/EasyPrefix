@@ -57,7 +57,7 @@ class ListCommand implements Subcommand {
         Player player;
         if (args.size() < 2) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
+                sender.sendMessage(Message.PREFIX + Message.CHAT_PLAYER_ONLY);
                 return;
             } else {
                 player = (Player) sender;
@@ -65,7 +65,7 @@ class ListCommand implements Subcommand {
         } else {
             player = Bukkit.getPlayer(args.get(1));
             if (player == null) {
-                sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_NOT_FOUND);
+                sender.sendMessage(Message.PREFIX + Message.CHAT_PLAYER_NOT_FOUND);
             }
         }
 

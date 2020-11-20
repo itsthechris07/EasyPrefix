@@ -74,7 +74,7 @@ public class EasyPrefixCommand implements EasyCommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (args.isEmpty()) {
-            sender.sendMessage(Message.getPrefix() + "§7This server uses §5EasyPrefix §7version §b" + this.instance.getDescription().getVersion() + " §7by Christian34.\nType '/easyprefix help' to get a command overview.");
+            sender.sendMessage(Message.PREFIX + "§7This server uses §5EasyPrefix §7version §b" + this.instance.getDescription().getVersion() + " §7by Christian34.\nType '/easyprefix help' to get a command overview.");
             return;
         }
 
@@ -93,7 +93,7 @@ public class EasyPrefixCommand implements EasyCommand {
                 return;
             }
         }
-        sender.sendMessage(Message.getPrefix() + "§cCouldn't find requested command!\nType '/easyprefix help'"
+        sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
                 + " to get a command overview.");
     }
 

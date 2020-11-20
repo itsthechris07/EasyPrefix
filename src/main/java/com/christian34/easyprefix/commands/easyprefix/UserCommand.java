@@ -155,7 +155,7 @@ class UserCommand implements Subcommand {
             targetUser.setGenderType(genderType);
             sender.sendMessage(Message.PREFIX + "User has been updated!");
         } else {
-            sender.sendMessage(Message.getPrefix() + "§cThis gender doesn't exist");
+            sender.sendMessage(Message.PREFIX + "§cThis gender doesn't exist");
         }
     }
 

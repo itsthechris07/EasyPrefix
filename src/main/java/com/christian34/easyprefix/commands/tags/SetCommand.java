@@ -78,14 +78,12 @@ public class SetCommand implements Subcommand {
         Subgroup subgroup = instance.getGroupHandler().getSubgroup(tagName);
         if (subgroup == null) {
             sender.sendMessage(Message.TAGS_INVALID_NAME.getText()
-                    .replace("%prefix%", Message.getPrefix())
                     .replace("%tag%", tagName));
             return;
         }
 
         user.setSubgroup(subgroup);
         sender.sendMessage(Message.TAG_SET_TO_PLAYER.getText()
-                .replace("%prefix%", Message.getPrefix())
                 .replace("%tag%", subgroup.getName())
                 .replace("%player%", user.getPlayer().getName()));
     }

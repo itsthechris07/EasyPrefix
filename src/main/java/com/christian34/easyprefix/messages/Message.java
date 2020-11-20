@@ -103,11 +103,6 @@ public enum Message {
         messageData = data;
     }
 
-    @NotNull
-    public static String getPrefix() {
-        return PREFIX;
-    }
-
     @Nullable
     public static String setColors(@Nullable String text) {
         if (text == null) return null;

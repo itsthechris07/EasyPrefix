@@ -61,7 +61,7 @@ public class GuiModifyingGroups {
     }
 
     public void editJoinMessage(Group group) {
-        ChatRespond responder = new ChatRespond(user, Message.getPrefix() +
+        ChatRespond responder = new ChatRespond(user, Message.PREFIX +
                 "§aPlease type in the join message!%newline%§7Current: §7«§f" + group.getJoinMessageText() + "§7»");
         responder.getInput((respond) -> {
             group.setJoinMessage(respond);
@@ -74,7 +74,7 @@ public class GuiModifyingGroups {
     }
 
     public void editQuitMessage(Group group) {
-        ChatRespond responder = new ChatRespond(user, Message.getPrefix() +
+        ChatRespond responder = new ChatRespond(user, Message.PREFIX +
                 "§aPlease type in the join message!%newline%§7Current: §7«§f" + group.getQuitMessageText() + "§7»");
         responder.getInput((respond) -> {
             group.setQuitMessage(respond);
@@ -148,23 +148,18 @@ public class GuiModifyingGroups {
         for (int i = 0; i < genders.size(); i++) {
             Gender gender = genders.get(i);
             ItemStack head = Icon.playerHead(user.getPlayer().getName());
-            int slot = (genders.size() == 3 ? 4 : 2) + i;
 
-            String prefix = null, suffix = null;
+            String prefix = "-/-";
+            String suffix = "-/-";
             if (genderedLayout != null) {
                 prefix = genderedLayout.getPrefix(gender);
                 suffix = genderedLayout.getSuffix(gender);
             }
-            if (prefix == null) {
-                prefix = "-/-";
-            }
-            if (suffix == null) {
-                suffix = "-/-";
-            }
 
             List<String> lore = Arrays.asList(" ", "§7Prefix: §7«§f" + prefix + "§7»", "§7Suffix: §7«§f" + suffix + "§7»");
-            Icon icon = guiRespond.addIcon(head, gender.getDisplayName(), 2, slot).setLore(lore);
-            icon.onClick(() -> modifyLayout(easyGroup, gender));
+            guiRespond.addIcon(head, gender.getDisplayName(), 2, (genders.size() == 3 ? 4 : 2) + i)
+                    .setLore(lore)
+                    .onClick(() -> modifyLayout(easyGroup, gender));
         }
 
         guiRespond.addCloseButton().onClick(() -> new GuiSetup(user).openProfile(easyGroup));

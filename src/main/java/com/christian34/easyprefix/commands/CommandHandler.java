@@ -17,11 +17,9 @@ import java.util.List;
  * @author Christian34
  */
 public class CommandHandler implements CommandExecutor, TabCompleter {
-    private final EasyPrefix instance;
     private final List<EasyCommand> commands;
 
     public CommandHandler(EasyPrefix instance) {
-        this.instance = instance;
         this.commands = new ArrayList<>();
 
         commands.add(new EasyPrefixCommand(instance));

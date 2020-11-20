@@ -49,7 +49,7 @@ public class TagsCommand implements EasyCommand {
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (args.isEmpty()) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
+                sender.sendMessage(Message.PREFIX + Message.CHAT_PLAYER_ONLY);
                 return;
             }
 
@@ -74,7 +74,7 @@ public class TagsCommand implements EasyCommand {
                 return;
             }
         }
-        sender.sendMessage(Message.getPrefix() + "§cCouldn't find requested command! Type '/tags help'"
+        sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command! Type '/tags help'"
                 + " to get a command overview.");
     }
 

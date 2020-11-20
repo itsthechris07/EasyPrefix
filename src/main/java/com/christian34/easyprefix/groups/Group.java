@@ -108,9 +108,11 @@ public class Group extends EasyGroup {
         return joinMessage;
     }
 
-    //todo reset
-    public void setJoinMessage(@NotNull String joinMessage) {
-        this.joinMessage = joinMessage.replace("§", "&");
+    public void setJoinMessage(@Nullable String joinMessage) {
+        if (joinMessage != null) {
+            joinMessage = joinMessage.replace("§", "&");
+        }
+        this.joinMessage = joinMessage;
         saveData("join-msg", this.joinMessage);
     }
 
@@ -131,8 +133,11 @@ public class Group extends EasyGroup {
         return quitMessage;
     }
 
-    public void setQuitMessage(@NotNull String quitMessage) {
-        this.quitMessage = quitMessage.replace("§", "&");
+    public void setQuitMessage(@Nullable String quitMessage) {
+        if (quitMessage != null) {
+            quitMessage = quitMessage.replace("§", "&");
+        }
+        this.quitMessage = quitMessage;
         saveData("quit-msg", this.quitMessage);
     }
 

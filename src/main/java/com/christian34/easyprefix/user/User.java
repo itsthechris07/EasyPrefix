@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -340,17 +341,17 @@ public class User {
         return player.hasPermission(userPermission.toString());
     }
 
-    public void sendMessage(String message) {
-        player.sendMessage(Message.setPlaceholders(message));
+    public void sendMessage(@NotNull String message) {
+        player.sendMessage(Objects.requireNonNull(Message.setPlaceholders(message)));
     }
 
-    public void sendAdminMessage(String message) {
+    public void sendAdminMessage(@NotNull String message) {
         if (!message.contains("%prefix%")) {
-            message = Message.getPrefix() + message;
+            message = Message.PREFIX + message;
         } else {
-            message = message.replace("%prefix%", Message.getPrefix());
+            message = message.replace("%prefix%", Message.PREFIX);
         }
-        player.sendMessage(Message.setPlaceholders(message));
+        player.sendMessage(Objects.requireNonNull(Message.setPlaceholders(message)));
     }
 
     public void sendAdminMessage(Message message) {

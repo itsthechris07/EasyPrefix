@@ -61,7 +61,7 @@ public class SelectCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Message.getPrefix() + Message.CHAT_PLAYER_ONLY);
+            sender.sendMessage(Message.PREFIX + Message.CHAT_PLAYER_ONLY);
             return;
         }
 
@@ -75,9 +75,7 @@ public class SelectCommand implements Subcommand {
         String tagName = args.get(1);
         Subgroup subgroup = instance.getGroupHandler().getSubgroup(tagName);
         if (subgroup == null) {
-            user.getPlayer().sendMessage(Message.TAGS_INVALID_NAME.getText()
-                    .replace("%prefix%", Message.getPrefix())
-                    .replace("%tag%", tagName));
+            user.getPlayer().sendMessage(Message.TAGS_INVALID_NAME.getText().replace("%tag%", tagName));
             return;
         }
 
@@ -86,9 +84,7 @@ public class SelectCommand implements Subcommand {
             return;
         }
         user.setSubgroup(subgroup);
-        user.getPlayer().sendMessage(Message.TAGS_PLAYER_SELECT.getText()
-                .replace("%prefix%", Message.getPrefix())
-                .replace("%tag%", subgroup.getName()));
+        user.getPlayer().sendMessage(Message.TAGS_PLAYER_SELECT.getText().replace("%tag%", subgroup.getName()));
     }
 
     @Override

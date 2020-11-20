@@ -48,7 +48,7 @@ class ReloadCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         this.instance.reload();
-        sender.sendMessage(Message.getPrefix() + "§aPlugin has been reloaded!");
+        sender.sendMessage(Message.PREFIX + "§aPlugin has been reloaded!");
     }
 
     @Override

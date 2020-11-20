@@ -61,7 +61,7 @@ public final class Debug {
     }
 
     public static void log(String message) {
-        Bukkit.getConsoleSender().sendMessage(Message.getPrefix() + Message.setColors(message));
+        Bukkit.getConsoleSender().sendMessage(Message.PREFIX + Message.setColors(message));
     }
 
 }

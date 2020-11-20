@@ -58,7 +58,7 @@ class DatabaseCommand implements Subcommand {
 
         if (args.size() == 2) {
             if (args.get(1).equalsIgnoreCase("upload")) {
-                sender.sendMessage(Message.getPrefix() + "§7Uploading data to database. This could take a while...");
+                sender.sendMessage(Message.PREFIX + "§7Uploading data to database. This could take a while...");
                 instance.getDataMigration().upload();
             }
         } else {

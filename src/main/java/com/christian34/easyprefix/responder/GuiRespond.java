@@ -260,7 +260,7 @@ public class GuiRespond {
                 clickedIcon.getClickAction().execute();
             } catch (Exception ex) {
                 e.getWhoClicked().closeInventory();
-                e.getWhoClicked().sendMessage(Message.getPrefix() + "§cHey there! This page isn't available. Please try again later!");
+                e.getWhoClicked().sendMessage(Message.PREFIX + "§cHey there! This page isn't available. Please try again later!");
                 Debug.captureException(ex);
             }
 
