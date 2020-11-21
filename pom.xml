@@ -43,7 +43,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>copy-files-on-build</id>
@@ -52,7 +52,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>D:\Daten\My Games\Minecraft\Server\1.16 paper\plugins</outputDirectory>
+                            <outputDirectory>D:\Daten\My Games\Minecraft\Server.16 paper\plugins</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/target</directory>
@@ -130,14 +130,14 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
+            <version>20.1.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- XSeries -->
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>7.6.0</version>
+            <version>7.6.0.0.1</version>
         </dependency>
         <!-- ConfigUpdater -->
         <dependency>
@@ -149,7 +149,7 @@
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
-            <version>3.0.0</version>
+            <version>3.2.0</version>
         </dependency>
         <!-- bStats Metrics -->
         <dependency>
