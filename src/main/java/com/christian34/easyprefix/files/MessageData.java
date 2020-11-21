@@ -1,8 +1,8 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.utils.Debug;
+import com.christian34.easyprefix.utils.Message;
 import com.christian34.easyprefix.utils.VersionController;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.configuration.file.FileConfiguration;

@@ -1,7 +1,6 @@
-package com.christian34.easyprefix.responder;
+package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

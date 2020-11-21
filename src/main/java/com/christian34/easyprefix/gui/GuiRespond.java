@@ -1,10 +1,9 @@
-package com.christian34.easyprefix.responder;
+package com.christian34.easyprefix.gui;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.responder.gui.Icon;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
+import com.christian34.easyprefix.utils.Message;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

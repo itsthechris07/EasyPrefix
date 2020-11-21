@@ -2,9 +2,9 @@ package com.christian34.easyprefix.commands.set;
 
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
-import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
+import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

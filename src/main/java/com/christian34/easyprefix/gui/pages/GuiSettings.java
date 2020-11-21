@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.responder.gui.pages;
+package com.christian34.easyprefix.gui.pages;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
@@ -6,16 +6,11 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.groups.gender.Gender;
-import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.responder.ChatRespond;
-import com.christian34.easyprefix.responder.GuiRespond;
-import com.christian34.easyprefix.responder.gui.ClickAction;
-import com.christian34.easyprefix.responder.gui.Icon;
+import com.christian34.easyprefix.gui.ClickAction;
+import com.christian34.easyprefix.gui.GuiRespond;
+import com.christian34.easyprefix.gui.Icon;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.ChatFormatting;
-import com.christian34.easyprefix.utils.Color;
-import com.christian34.easyprefix.utils.ListUtils;
-import com.christian34.easyprefix.utils.VersionController;
+import com.christian34.easyprefix.utils.*;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.commands.set;
 
 import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.messages.Message;
+import com.christian34.easyprefix.utils.Message;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 

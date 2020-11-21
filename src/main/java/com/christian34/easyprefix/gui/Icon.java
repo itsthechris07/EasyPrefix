@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.responder.gui;
+package com.christian34.easyprefix.gui;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;

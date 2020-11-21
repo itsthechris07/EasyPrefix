@@ -1,7 +1,5 @@
 package com.christian34.easyprefix.utils;
 
-import com.christian34.easyprefix.messages.Message;
-
 /**
  * EasyPrefix 2020.
  *

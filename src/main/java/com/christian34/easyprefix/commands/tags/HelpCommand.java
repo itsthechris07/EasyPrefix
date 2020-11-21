@@ -1,8 +1,8 @@
 package com.christian34.easyprefix.commands.tags;
 
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.user.UserPermission;
+import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 

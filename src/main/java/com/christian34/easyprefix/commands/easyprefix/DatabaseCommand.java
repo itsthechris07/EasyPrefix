@@ -2,9 +2,9 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.UserPermission;
+import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 

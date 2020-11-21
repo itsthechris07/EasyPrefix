@@ -1,17 +1,17 @@
-package com.christian34.easyprefix.responder.gui.pages;
+package com.christian34.easyprefix.gui.pages;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.groups.gender.GenderedLayout;
-import com.christian34.easyprefix.messages.Message;
-import com.christian34.easyprefix.responder.ChatRespond;
-import com.christian34.easyprefix.responder.GuiRespond;
-import com.christian34.easyprefix.responder.gui.Icon;
+import com.christian34.easyprefix.gui.GuiRespond;
+import com.christian34.easyprefix.gui.Icon;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
+import com.christian34.easyprefix.utils.ChatRespond;
 import com.christian34.easyprefix.utils.Color;
+import com.christian34.easyprefix.utils.Message;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;

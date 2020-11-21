@@ -2,7 +2,6 @@ package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.messages.Message;
 import io.sentry.HubAdapter;
 import io.sentry.IHub;
 import io.sentry.Sentry;

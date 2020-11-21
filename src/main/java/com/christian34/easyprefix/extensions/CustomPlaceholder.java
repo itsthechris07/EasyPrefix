@@ -1,9 +1,9 @@
 package com.christian34.easyprefix.extensions;
 
-import com.christian34.easyprefix.messages.Message;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Debug;
+import com.christian34.easyprefix.utils.Message;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;

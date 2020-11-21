@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.utils;
 
-import com.christian34.easyprefix.messages.Message;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

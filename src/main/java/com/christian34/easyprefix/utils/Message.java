@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.messages;
+package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.files.MessageData;
 import org.bukkit.Bukkit;
