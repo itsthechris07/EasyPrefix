@@ -88,7 +88,11 @@ public class SetPrefixCommand implements Subcommand {
             user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_PREFIX_CONFIRM.getText()
                     .replace("%content%", input), "/ep setprefix " + input + " submit"));
         } else {
-            user.setPrefix(input);
+            if (input.equals("null")) {
+                user.setPrefix(null);
+            } else {
+                user.setPrefix(input);
+            }
             user.saveData("custom_prefix_update", currentTime.toString());
             user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText()
                     .replace("%content%", user.getPrefix().replace("§", "&")));

@@ -263,9 +263,11 @@ public class GuiSettings {
                     ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.getText()
                             .replace("%content%", user.getPrefix().replace("§", "&")));
 
-                    responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
-                            user.getPlayer().performCommand("ep setprefix " + respond))
-                    );
+                    responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {
+                                String cmd = respond == null ? "reset" : respond;
+                                user.getPlayer().performCommand("ep setprefix " + cmd);
+                            }
+                    ));
                 });
 
         List<String> suffixLore = ListUtils.replace(Message.LORE_CHANGE_SUFFIX.getList(),
@@ -277,8 +279,10 @@ public class GuiSettings {
                             .replace("%content%", user.getSuffix().replace("§", "&")));
 
                     responder.getInput((respond) ->
-                            Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () ->
-                                    user.getPlayer().performCommand("ep setsuffix " + respond))
+                            Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {
+                                String cmd = respond == null ? "reset" : respond;
+                                user.getPlayer().performCommand("ep setsuffix " + cmd);
+                            })
                     );
                 });
 

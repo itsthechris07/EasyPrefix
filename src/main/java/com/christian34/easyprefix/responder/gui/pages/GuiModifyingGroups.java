@@ -182,11 +182,13 @@ public class GuiModifyingGroups {
         String DIVIDER = "§7-------------------------";
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, "§aChange Prefix", 2, 4)
                 .setLore(DIVIDER, "§7Current: §7«§f" + prefix + "§7»", " ");
+        String finalPrefix = prefix.replace("§", "&");
         prefixIcon.onClick(() -> {
-            ChatRespond chatRespond = new ChatRespond(user, "prefix");
+            ChatRespond chatRespond = new ChatRespond(user, "§aPlease write the prefix in the chat! §7Current: \""
+                    + finalPrefix + "\"");
             chatRespond.getInput(input -> {
                 easyGroup.setPrefix(input, gender);
-                user.sendMessage("success");
+                user.sendAdminMessage("The prefix for group " + easyGroup.getName() + " (" + gender.getName() + ") has been updated!");
             });
         });
 
@@ -195,11 +197,13 @@ public class GuiModifyingGroups {
         }
         Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, "§aChange Suffix", 2, 6)
                 .setLore(DIVIDER, "§7Current: §7«§f" + suffix + "§7»", " ");
+        String finalSuffix = suffix.replace("§", "&");
         suffixIcon.onClick(() -> {
-            ChatRespond chatRespond = new ChatRespond(user, "suffix");
+            ChatRespond chatRespond = new ChatRespond(user, "§aPlease write the suffix in the chat! §7Current: \""
+                    + finalSuffix + "\"");
             chatRespond.getInput(input -> {
                 easyGroup.setSuffix(input, gender);
-                user.sendMessage("success");
+                user.sendAdminMessage("The prefix for group §b" + easyGroup.getName() + " §7(§b" + gender.getName() + "§7) has been updated!");
             });
         });
 

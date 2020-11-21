@@ -76,22 +76,26 @@ public class SetSuffixCommand implements Subcommand {
             if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                 user.setSuffix(null);
                 user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText()
-                        .replace("%suffix%", user.getSuffix().replace("§", "&")));
+                        .replace("%content%", user.getSuffix().replace("§", "&")));
             } else {
                 user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_SUFFIX_RESET.getText()
-                        .replace("%suffix%", input), "/ep setsuffix reset submit"));
+                        .replace("%content%", input), "/ep setsuffix reset submit"));
             }
             return;
         }
 
         if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
             user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_SUFFIX_CONFIRM.getText()
-                    .replace("%suffix%", input), "/ep setsuffix " + input + " submit"));
+                    .replace("%content%", input), "/ep setsuffix " + input + " submit"));
         } else {
-            user.setSuffix(input);
+            if (input.equals("null")) {
+                user.setSuffix(null);
+            } else {
+                user.setSuffix(input);
+            }
             user.saveData("custom_suffix_update", currentTime.toString());
             user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText()
-                    .replace("%suffix%", user.getSuffix().replace("§", "&")));
+                    .replace("%content%", user.getSuffix().replace("§", "&")));
         }
     }
 
