@@ -48,7 +48,7 @@ class GroupCommand implements Subcommand {
     @Override
     @NotNull
     public String getCommandUsage() {
-        return "group <group> <argument>";
+        return "group <group> (<argument>)";
     }
 
     @Override
@@ -72,20 +72,20 @@ class GroupCommand implements Subcommand {
     }
 
     private void showInfo(CommandSender sender, Group group) {
-        sender.sendMessage(" \n§7--------------=== §5§l" + group.getName() + " §7===--------------\n ");
-        sender.sendMessage("§5Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
-        sender.sendMessage("§5Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
+        sender.sendMessage(" \n§7--------------=== §9§l" + group.getName() + " §7===--------------\n ");
+        sender.sendMessage("§9Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
+        sender.sendMessage("§9Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
         String cc = group.getChatColor().getCode();
         if (group.getChatFormatting() != null) cc = cc + group.getChatFormatting().getCode();
-        sender.sendMessage("§5Chat color§f: §7" + cc.replace("§", "&"));
-        sender.sendMessage("§5Join message§f: §7" + group.getJoinMessageText());
-        sender.sendMessage("§5Quit message§f: §7" + group.getQuitMessageText());
+        sender.sendMessage("§9Chat color§f: §7" + cc.replace("§", "&"));
+        sender.sendMessage("§9Join message§f: §7" + group.getJoinMessageText());
+        sender.sendMessage("§9Quit message§f: §7" + group.getQuitMessageText());
         sender.sendMessage(" \n§7-----------------------------------------------\n ");
     }
 
     private void showHelp(CommandSender sender) {
-        sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix Group §7===--------------\n ");
-        sender.sendMessage("§7/§5EasyPrefix group <Group> info §f| §7get information about the group");
+        sender.sendMessage(" \n§7--------------=== §9§lEasyPrefix Group §7===--------------\n ");
+        sender.sendMessage("§7/§9EasyPrefix group <Group> info §f| §7get information about the group");
         sender.sendMessage(" \n§7----------------------------------------------------\n ");
     }
 

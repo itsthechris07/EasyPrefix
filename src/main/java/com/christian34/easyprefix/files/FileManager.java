@@ -30,10 +30,6 @@ public class FileManager {
         return pluginFolder;
     }
 
-    public MessageData getMessageData() {
-        return messageData;
-    }
-
     public void load() {
         File userFolder = new File(getPluginFolder() + "/user");
         if (!userFolder.exists()) {

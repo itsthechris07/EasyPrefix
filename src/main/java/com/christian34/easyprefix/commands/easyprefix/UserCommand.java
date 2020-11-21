@@ -54,7 +54,7 @@ class UserCommand implements Subcommand {
     @Override
     @NotNull
     public String getCommandUsage() {
-        return "user <player> (<arguments>)";
+        return "user <player> (<argument>)";
     }
 
     @Override

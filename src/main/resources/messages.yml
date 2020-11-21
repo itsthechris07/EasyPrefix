@@ -62,6 +62,7 @@ chat_input_layout:
   - '%prefix% &a%text%'
   - ' '
   - '&7&oType "quit" to cancel or "empty" to clear the current value.'
+
 chat_input_prefix: 'Please write the prefix in the chat! &7Current: "%content%"'
 # value of "chat_button_confirm" will be displayed after the text (clickable button)
 chat_input_prefix_confirm: '%prefix% &7Do you want to set your prefix to &7»&f%content%&7«?'

@@ -26,7 +26,6 @@ public class TagsCommand implements EasyCommand {
 
     public TagsCommand(EasyPrefix instance) {
         this.instance = instance;
-
         this.subcommands = new ArrayList<>();
         subcommands.add(new HelpCommand(this));
         subcommands.add(new ListCommand(instance));

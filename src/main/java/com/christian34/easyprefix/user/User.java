@@ -328,15 +328,6 @@ public class User {
         return groupHandler.getGroup("default");
     }
 
-    private Subgroup getSubgroupPerPerms() {
-        for (Subgroup subgroup : this.instance.getGroupHandler().getSubgroups()) {
-            if (player.hasPermission("EasyPrefix.subgroup." + subgroup.getName())) {
-                return subgroup;
-            }
-        }
-        return null;
-    }
-
     public boolean hasPermission(UserPermission userPermission) {
         return player.hasPermission(userPermission.toString());
     }
