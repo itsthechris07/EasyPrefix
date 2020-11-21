@@ -47,9 +47,9 @@ class HelpCommand implements Subcommand {
     }
 
     @Override
-    public void handleCommand(CommandSender sender, List<String> args) {
-        sender.sendMessage(" \n§7---------------=== §5§lEasyPrefix §7===---------------\n ");
-        String prefix = "§7/§5EasyPrefix ";
+    public void handleCommand(@NotNull CommandSender sender, List<String> args) {
+        sender.sendMessage(" \n§7---------------=== §9§lEasyPrefix §7===---------------\n ");
+        String prefix = "§7/§9EasyPrefix ";
 
         for (Subcommand cmd : parentCommand.getSubcommands()) {
             if (cmd.getName().equals("set")) continue;
@@ -60,7 +60,7 @@ class HelpCommand implements Subcommand {
 
         sender.sendMessage(" \n§7------------------------------------------------\n"
                 + "§7Version: " + this.instance.getPlugin().getDescription().getVersion() + "\n"
-                + "§7EasyPrefix by §5§lChristian34");
+                + "§7EasyPrefix by §9§lChristian34");
     }
 
     @Override

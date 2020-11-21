@@ -54,17 +54,17 @@ class DebugCommand implements Subcommand {
 
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
-        sender.sendMessage(" \n§7------------=== §5§lEasyPrefix DEBUG §7===------------");
-        sender.sendMessage("§5Version: §7" + VersionController.getPluginVersion());
-        sender.sendMessage("§5Groups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
-        sender.sendMessage("§5Users cached: §7" + this.instance.getUsers().size());
-        sender.sendMessage("§5Genders cached: §7" + groupHandler.getGenderTypes().size());
-        sender.sendMessage("§5Bukkit Version: §7" + Bukkit.getVersion());
-        sender.sendMessage("§5Java Version: §7" + System.getProperty("java.version"));
-        sender.sendMessage("§5Version Name: §7" + Bukkit.getBukkitVersion());
-        sender.sendMessage("§5Storage: §7" + ((this.instance.getStorageType() == StorageType.SQL) ? "MySQL" : "local"));
-        sender.sendMessage("§5active EventHandler: §7" + HandlerList.getRegisteredListeners(this.instance.getPlugin()).size());
-        sender.sendMessage("§5Client ID: §7" + ConfigKeys.CLIENT_ID.toString());
+        sender.sendMessage(" \n§7------------=== §9§lEasyPrefix DEBUG §7===------------");
+        sender.sendMessage("§9Version: §7" + VersionController.getPluginVersion());
+        sender.sendMessage("§9Groups/Subgroup: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
+        sender.sendMessage("§9Users cached: §7" + this.instance.getUsers().size());
+        sender.sendMessage("§9Genders cached: §7" + groupHandler.getGenderTypes().size());
+        sender.sendMessage("§9Bukkit Version: §7" + Bukkit.getVersion());
+        sender.sendMessage("§9Java Version: §7" + System.getProperty("java.version"));
+        sender.sendMessage("§9Version Name: §7" + Bukkit.getBukkitVersion());
+        sender.sendMessage("§9Storage: §7" + ((this.instance.getStorageType() == StorageType.SQL) ? "MySQL" : "local"));
+        sender.sendMessage("§9active EventHandler: §7" + HandlerList.getRegisteredListeners(this.instance.getPlugin()).size());
+        sender.sendMessage("§9Client ID: §7" + ConfigKeys.CLIENT_ID.toString());
     }
 
     @Override

@@ -89,7 +89,7 @@ public enum Message {
     TAG_SET_TO_PLAYER("chat_cmd_tags_set_player"),
     TAGS_CLEARED_FOR_PLAYER("chat_cmd_tags_cleared_player");
 
-    public static final String PREFIX = "§7[§5EasyPrefix§7] ";
+    public static final String PREFIX = "§7[§9EasyPrefix§7] ";
     public static final String CHAT_PLAYER_ONLY = "&cYou can''t use this from console!";
     private static MessageData messageData;
     private final String key;

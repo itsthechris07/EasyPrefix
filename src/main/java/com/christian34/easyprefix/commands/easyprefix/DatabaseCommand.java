@@ -62,8 +62,8 @@ class DatabaseCommand implements Subcommand {
                 instance.getDataMigration().upload();
             }
         } else {
-            sender.sendMessage(" \n§7---------------=== §5§lEasyPrefix §7===---------------\n ");
-            sender.sendMessage("§7/§5EasyPrefix database upload §f| §7upload local data to mysql, this could take a while... (necessary for bungeecord)");
+            sender.sendMessage(" \n§7---------------=== §9§lEasyPrefix §7===---------------\n ");
+            sender.sendMessage("§7/§9EasyPrefix database upload §f| §7upload local data to mysql, this could take a while... (necessary for bungeecord)");
             sender.sendMessage(" \n§7------------------------------------------------\n ");
         }
 

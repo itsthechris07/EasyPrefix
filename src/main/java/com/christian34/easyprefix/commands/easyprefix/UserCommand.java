@@ -120,28 +120,28 @@ class UserCommand implements Subcommand {
         String subgroup = (targetUser.getSubgroup() != null) ? targetUser.getSubgroup().getName() : "-";
         String cc = targetUser.getChatColor().getCode();
 
-        sender.sendMessage(" \n§7--------------=== §5§l" + targetUser.getPlayer().getName() + " §7===--------------\n ");
-        sender.sendMessage("§5Group§f: §7" + targetUser.getGroup().getName());
-        sender.sendMessage("§5Subgroup§f: §7" + subgroup);
-        sender.sendMessage("§5Prefix§f: §8«§7" + targetUser.getPrefix().replace("§", "&") + "§8»" + (targetUser.hasCustomPrefix() ? " §7(§5customized§7)" : ""));
+        sender.sendMessage(" \n§7--------------=== §9§l" + targetUser.getPlayer().getName() + " §7===--------------\n ");
+        sender.sendMessage("§9Group§f: §7" + targetUser.getGroup().getName());
+        sender.sendMessage("§9Subgroup§f: §7" + subgroup);
+        sender.sendMessage("§9Prefix§f: §8«§7" + targetUser.getPrefix().replace("§", "&") + "§8»" + (targetUser.hasCustomPrefix() ? " §7(§9customized§7)" : ""));
         if (targetUser.hasCustomPrefix()) {
-            sender.sendMessage(" §7↳ §5last update§f: §7" + new Timestamp(targetUser.getLastPrefixUpdate()).toString());
+            sender.sendMessage(" §7↳ §9last update§f: §7" + new Timestamp(targetUser.getLastPrefixUpdate()).toString());
         }
-        sender.sendMessage("§5Suffix§f: §8«§7" + targetUser.getSuffix().replace("§", "&") + "§8»" + (targetUser.hasCustomSuffix() ? " §7(§5customized§7)" : ""));
+        sender.sendMessage("§9Suffix§f: §8«§7" + targetUser.getSuffix().replace("§", "&") + "§8»" + (targetUser.hasCustomSuffix() ? " §7(§9customized§7)" : ""));
         if (targetUser.hasCustomSuffix()) {
-            sender.sendMessage(" §7↳ §5last update§f: §7" + new Timestamp(targetUser.getLastSuffixUpdate()).toString());
+            sender.sendMessage(" §7↳ §9last update§f: §7" + new Timestamp(targetUser.getLastSuffixUpdate()).toString());
         }
         if (targetUser.getChatFormatting() != null) cc = cc + targetUser.getChatFormatting().getCode();
-        sender.sendMessage("§5Chatcolor§f: §7" + cc.replace("§", "&"));
+        sender.sendMessage("§9Chatcolor§f: §7" + cc.replace("§", "&"));
         if (targetUser.getGenderType() != null) {
-            sender.sendMessage("§5Gender§f: §7" + targetUser.getGenderType().getDisplayName() + "§7/§7" + targetUser.getGenderType().getName());
+            sender.sendMessage("§9Gender§f: §7" + targetUser.getGenderType().getDisplayName() + "§7/§7" + targetUser.getGenderType().getName());
         }
         sender.sendMessage(" \n§7-----------------------------------------------\n ");
     }
 
     private void showHelp(CommandSender sender) {
-        sender.sendMessage(" \n§7--------------=== §5§lEasyPrefix User §7===--------------\n ");
-        String prefix = "§7/§5EasyPrefix user <Player> ";
+        sender.sendMessage(" \n§7--------------=== §9§lEasyPrefix User §7===--------------\n ");
+        String prefix = "§7/§9EasyPrefix user <Player> ";
         sender.sendMessage(prefix + "info §f| §7get information about the player");
         sender.sendMessage(prefix + "setgroup <Group> §f| §7force group to player");
         sender.sendMessage(prefix + "setsubgroup <Subgroup> §f| §7set subgroup to player");

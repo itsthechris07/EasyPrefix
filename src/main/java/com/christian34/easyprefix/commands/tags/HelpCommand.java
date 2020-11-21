@@ -47,7 +47,7 @@ class HelpCommand implements Subcommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         sender.sendMessage(Message.CHAT_TAGS_HEADER.getText().replace("%newline%", "\n"));
-        String prefix = "§7/§5tags ";
+        String prefix = "§7/§9tags ";
 
         for (Subcommand cmd : parentCommand.getSubcommands()) {
             sender.sendMessage(prefix + cmd.getCommandUsage());

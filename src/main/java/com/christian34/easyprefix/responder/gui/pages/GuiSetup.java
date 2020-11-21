@@ -29,7 +29,7 @@ import java.util.List;
  * @author Christian34
  */
 public class GuiSetup {
-    private final String DIVIDER = "§7-------------------------";
+    private static final String DIVIDER = "§7-------------------------";
     private final User user;
     private final GuiModifyingGroups guiModifyingGroups;
 
@@ -39,20 +39,20 @@ public class GuiSetup {
     }
 
     public void mainPage() {
-        GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §8Configuration", 3);
-        guiRespond.addIcon(XMaterial.CHEST.parseItem(), "§5Groups", 2, 3).onClick(this::groupsList);
+        GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Configuration", 3);
+        guiRespond.addIcon(XMaterial.CHEST.parseItem(), "§9Groups", 2, 3).onClick(this::groupsList);
 
-        guiRespond.addIcon(Material.NETHER_STAR, "§5Settings", 2, 5).onClick(this::pluginSettingsGui);
+        guiRespond.addIcon(Material.NETHER_STAR, "§9Settings", 2, 5).onClick(this::pluginSettingsGui);
 
         ItemStack icon = (VersionController.getMinorVersion() <= 12) ? XMaterial.CHEST.parseItem() : XMaterial.WRITABLE_BOOK.parseItem();
-        guiRespond.addIcon(icon, "§5Tags §8(Subgroups)", 2, 7).onClick(this::openSubgroupsList);
+        guiRespond.addIcon(icon, "§9Tags §8(Subgroups)", 2, 7).onClick(this::openSubgroupsList);
 
         guiRespond.addCloseButton();
         guiRespond.openInventory();
     }
 
     public void pluginSettingsGui() {
-        GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §5Settings", 3);
+        GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §9Settings", 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
         boolean useCp = ConfigKeys.CUSTOM_LAYOUT.toBoolean();
@@ -60,7 +60,7 @@ public class GuiSetup {
         String DISABLED = "§cdisabled";
         String cpText = "§aCustom Layout §7(" + ((useCp) ? ENABLED : DISABLED) + "§7)";
         guiRespond.addIcon(Material.BEACON, cpText, 2, 3)
-                .setLore("§5Enable/Disable custom prefixes and suffixes")
+                .setLore("§9Enable/Disable custom prefixes and suffixes")
                 .onClick(() -> {
                     configData.set(ConfigKeys.CUSTOM_LAYOUT.getPath(), !useCp);
                     EasyPrefix.getInstance().reload();
@@ -70,7 +70,7 @@ public class GuiSetup {
         boolean useGender = ConfigKeys.USE_GENDER.toBoolean();
         String genderText = "§aGender §7(" + ((useGender) ? ENABLED : DISABLED) + "§7)";
         guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 5)
-                .setLore("§5Enable/Disable players gender")
+                .setLore("§9Enable/Disable players gender")
                 .onClick(() -> {
                     boolean use = !useGender;
                     configData.set(ConfigKeys.USE_GENDER.getPath(), use);
@@ -81,7 +81,7 @@ public class GuiSetup {
         boolean useColors = ConfigKeys.HANDLE_COLORS.toBoolean();
         String colorsText = "§aHandle colors §7(" + ((useColors) ? ENABLED : DISABLED) + "§7)";
         guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 7)
-                .setLore("§5Translate color and formatting codes")
+                .setLore("§9Translate color and formatting codes")
                 .onClick(() -> {
                     boolean use = !useColors;
                     configData.set(ConfigKeys.HANDLE_COLORS.getPath(), use);
@@ -95,7 +95,7 @@ public class GuiSetup {
 
     public void createGroup() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
-        ChatRespond responder = new ChatRespond(user, "§5Please write the name of the new group in the chat!");
+        ChatRespond responder = new ChatRespond(user, "§9Please write the name of the new group in the chat!");
 
         responder.addInputReader((answer) -> {
             if (answer == null || answer.split(" ").length != 1) {
@@ -120,7 +120,7 @@ public class GuiSetup {
 
     public void groupsList() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
-        GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §8Groups", 5);
+        GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Groups", 5);
         final String divider = "§7-------------------------------";
         for (Group group : groupHandler.getGroups()) {
             String prefix = group.getPrefix(null, false);
@@ -157,7 +157,7 @@ public class GuiSetup {
     }
 
     public void openSubgroupsList() {
-        GuiRespond guiRespond = new GuiRespond(user, "§5EasyPrefix §8» §8Subgroups", 5);
+        GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Subgroups", 5);
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         for (final Subgroup subgroup : groupHandler.getSubgroups()) {
             String prefix = subgroup.getPrefix(null, false);
@@ -201,7 +201,7 @@ public class GuiSetup {
     }
 
     private void openGroupProfile(Group group) {
-        GuiRespond guiRespond = new GuiRespond(user, "§5Group §8» §7" + group.getGroupColor() + group.getName(), 3);
+        GuiRespond guiRespond = new GuiRespond(user, "§9Group §8» §7" + group.getGroupColor() + group.getName(), 3);
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, "§aChange Prefix", 2, 2);
         prefixIcon.setLore(DIVIDER, "§7Current: §7«§f" + group.getPrefix(null, false) + "§7»", " ");
         prefixIcon.onClick(() -> this.guiModifyingGroups.editPrefix(group));
@@ -243,7 +243,7 @@ public class GuiSetup {
     }
 
     private void openSubgroupProfile(Subgroup subgroup) {
-        GuiRespond guiRespond = new GuiRespond(user, "§5Tag (Subgroup) §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 3);
+        GuiRespond guiRespond = new GuiRespond(user, "§9Tag (Subgroup) §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 3);
 
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, "§aChange Prefix", 2, 3);
         prefixIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + subgroup.getPrefix(null, false) + "§7»", " "));

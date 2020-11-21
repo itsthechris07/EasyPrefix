@@ -167,7 +167,7 @@ public class GuiModifyingGroups {
     }
 
     private void modifyLayout(EasyGroup easyGroup, Gender gender) {
-        GuiRespond guiRespond = new GuiRespond(user, "§5Group §8» §8" + easyGroup.getName() + " (" + gender.getName() + ")", 3);
+        GuiRespond guiRespond = new GuiRespond(user, "§9Group §8» §8" + easyGroup.getName() + " (" + gender.getName() + ")", 3);
         GenderedLayout genderedLayout = easyGroup.getGenderedLayout();
 
         String prefix = null, suffix = null;
