@@ -7,10 +7,6 @@
 
 config:
   enabled: true
-  # do not modify the version
-  version: 1.6.5
-  # default language (en_EN, de_DE, it_IT)
-  lang: en_EN
   # do not edit the id
   client: id
   # connect multiple servers
@@ -34,7 +30,7 @@ config:
     # requires permission EasyPrefix.custom.prefix or EasyPrefix.custom.suffix
     # EasyPrefix.custom.gui shows icon in /ep settings
     custom-layout:
-      enabled: false
+      enabled: true
       # cool down for changing prefix or suffix in hours
       # can be bypassed with permission EasyPrefix.custom.bypass
       cooldown: 0.5

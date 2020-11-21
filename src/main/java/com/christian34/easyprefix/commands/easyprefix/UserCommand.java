@@ -131,7 +131,7 @@ class UserCommand implements Subcommand {
         if (targetUser.hasCustomSuffix()) {
             sender.sendMessage(" §7↳ §9last update§f: §7" + new Timestamp(targetUser.getLastSuffixUpdate()).toString());
         }
-        if (targetUser.getChatFormatting() != null) cc = cc + targetUser.getChatFormatting().getCode();
+        if (targetUser.getChatFormatting() != null) cc += targetUser.getChatFormatting().getCode();
         sender.sendMessage("§9Chatcolor§f: §7" + cc.replace("§", "&"));
         if (targetUser.getGenderType() != null) {
             sender.sendMessage("§9Gender§f: §7" + targetUser.getGenderType().getDisplayName() + "§7/§7" + targetUser.getGenderType().getName());

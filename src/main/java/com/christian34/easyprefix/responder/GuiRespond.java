@@ -28,7 +28,6 @@ import java.util.Objects;
  * @author Christian34
  */
 public class GuiRespond {
-    private static final Icon closeIcon = null;
     private final Icon nextPage, prevPage;
     private final int guiLines;
     private final int maxSlots;

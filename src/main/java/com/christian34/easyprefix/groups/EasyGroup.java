@@ -112,7 +112,7 @@ public abstract class EasyGroup {
         if (prefix != null && prefix.contains("&")) {
             if (!prefix.startsWith("&")) {
                 String temp = prefix;
-                while (!temp.startsWith("&") && temp.length() > 0) {
+                while (!temp.startsWith("&") && !temp.isEmpty()) {
                     temp = temp.substring(1);
                 }
                 color = ChatColor.getByChar(temp.substring(1, 2));

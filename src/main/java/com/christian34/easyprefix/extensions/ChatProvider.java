@@ -42,8 +42,7 @@ class ChatProvider {
         @Override
         public String getPlayerPrefix(String world, String player) {
             User user = getUser(player);
-            if (user == null) return "";
-            return user.getPrefix();
+            return user == null ? "" : user.getPrefix();
         }
 
         @Override
@@ -169,8 +168,7 @@ class ChatProvider {
 
         private User getUser(String username) {
             Player player = Bukkit.getPlayer(username);
-            if (player == null) return null;
-            return expansionManager.getInstance().getUser(player);
+            return player == null ? null : expansionManager.getInstance().getUser(player);
         }
 
     }

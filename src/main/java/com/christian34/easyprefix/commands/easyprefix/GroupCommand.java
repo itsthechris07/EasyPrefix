@@ -76,7 +76,7 @@ class GroupCommand implements Subcommand {
         sender.sendMessage("§9Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
         sender.sendMessage("§9Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
         String cc = group.getChatColor().getCode();
-        if (group.getChatFormatting() != null) cc = cc + group.getChatFormatting().getCode();
+        if (group.getChatFormatting() != null) cc += group.getChatFormatting().getCode();
         sender.sendMessage("§9Chat color§f: §7" + cc.replace("§", "&"));
         sender.sendMessage("§9Join message§f: §7" + group.getJoinMessageText());
         sender.sendMessage("§9Quit message§f: §7" + group.getQuitMessageText());

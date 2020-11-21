@@ -16,7 +16,7 @@ import java.util.UUID;
  *
  * @author Christian34
  */
-public final class Debug {
+public class Debug {
     private static final IHub hub;
 
     static {

@@ -53,8 +53,7 @@ subgroups:
     # fallback if user hasn't chosen a gender yet
     prefix: '&6VIP'
     suffix: ''
-    # specific prefixs and/or suffixes for each genders
-    # you can add more genders in config.yml
+    # specific prefixes and/or suffixes for each gender
     genders:
       female:
         prefix: '&5VIP'

@@ -53,9 +53,7 @@ public enum ChatFormatting {
     }
 
     public String getCode() {
-        if (code == null)
-            return "";
-        return "§" + code;
+        return code == null ? "" : "§" + code;
     }
 
 }
