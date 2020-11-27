@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.utils.Debug;
 
 import java.io.File;
 
@@ -21,7 +20,7 @@ public class FileManager {
         try {
             load();
         } catch (Exception ex) {
-            Debug.captureException(ex);
+         ex.printStackTrace();
         }
     }
 
@@ -34,7 +33,8 @@ public class FileManager {
         if (!userFolder.exists()) {
             if (!userFolder.mkdirs()) throw new RuntimeException("Couldn't create folder 'users'!");
         }
-        this.configData = new ConfigData(this.instance).load();
+        this.configData = new ConfigData(this.instance);
+        configData.load();
         this.groupsData = new GroupsData(this.instance);
         if (!configData.getData().getBoolean("config.sql.enabled")) {
             groupsData.load();

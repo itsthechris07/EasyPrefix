@@ -41,7 +41,6 @@ public class GroupsData {
             data.save(file);
         } catch (IOException e) {
             Debug.captureException(e);
-            e.printStackTrace();
         }
         load();
     }

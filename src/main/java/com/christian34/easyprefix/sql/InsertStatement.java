@@ -3,11 +3,13 @@ package com.christian34.easyprefix.sql;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * EasyPrefix 2020.
@@ -16,7 +18,7 @@ import java.util.HashMap;
  */
 public class InsertStatement {
     private final String table;
-    private final HashMap<String, Object> values;
+    private final Map<String, Object> values;
 
     public InsertStatement(String table) {
         this.table = table;
@@ -32,11 +34,10 @@ public class InsertStatement {
         try (PreparedStatement stmt = buildStatement()) {
             stmt.executeUpdate();
             return true;
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            throw new RuntimeException(ex.getMessage());
         } catch (SQLException ex) {
-            if (ex instanceof SQLIntegrityConstraintViolationException) {
-                throw new RuntimeException(ex.getMessage());
-            }
-            ex.printStackTrace();
+            Debug.captureException(ex);
         }
         return false;
     }

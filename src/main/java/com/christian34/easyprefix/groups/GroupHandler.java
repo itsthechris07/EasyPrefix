@@ -35,6 +35,7 @@ public class GroupHandler {
     private SQLDatabase database;
 
     public GroupHandler(EasyPrefix instance) {
+        Debug.recordAction("initializing group handler");
         this.instance = instance;
         this.groupsData = instance.getFileManager().getGroupsData();
 
@@ -102,7 +103,7 @@ public class GroupHandler {
                     if (!value.equals("default")) groupNames.add(value);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Debug.captureException(e);
                 return;
             }
 
@@ -113,7 +114,7 @@ public class GroupHandler {
                     subgroupNames.add(value);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Debug.captureException(e);
                 return;
             }
         }

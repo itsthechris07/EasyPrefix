@@ -24,7 +24,7 @@ public class ConfigData {
         this.instance = instance;
     }
 
-    public ConfigData load() {
+    public void load() {
         this.file = new File(FileManager.getPluginFolder(), "config.yml");
         if (!file.exists()) {
             this.instance.getPlugin().saveResource("config.yml", true);
@@ -32,11 +32,10 @@ public class ConfigData {
             try {
                 ConfigUpdater.update(this.instance, "config.yml", file, new ArrayList<>());
             } catch (IOException ex) {
-                Debug.captureException(ex);
+                ex.printStackTrace();
             }
         }
         this.data = YamlConfiguration.loadConfiguration(file);
-        return this;
     }
 
     public void save() {
@@ -45,7 +44,6 @@ public class ConfigData {
             data.save(file);
         } catch (IOException e) {
             Debug.captureException(e);
-            e.printStackTrace();
         }
         load();
     }

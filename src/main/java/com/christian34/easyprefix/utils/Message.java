@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.files.MessageData;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +89,7 @@ public enum Message {
     TAGS_CLEARED_FOR_PLAYER("chat_cmd_tags_cleared_player");
 
     public static final String PREFIX = "§7[§9EasyPrefix§7] ";
-    public static final String CHAT_PLAYER_ONLY = "&cYou can''t use this from console!";
+    public static final String CHAT_PLAYER_ONLY = "§cYou can't use this from console!";
     private static MessageData messageData;
     private final String key;
 
@@ -114,7 +113,6 @@ public enum Message {
         if (text == null) return null;
 
         text = setColors(text);
-
         return text
                 .replace("%prefix%", PREFIX_ALT.getText())
                 .replace("%newline%", "\n");
@@ -139,10 +137,6 @@ public enum Message {
 
     public String getText(boolean setPlaceholders) {
         String text = messageData.getText(key);
-
-        if (text.isEmpty()) {
-            Bukkit.broadcastMessage("MESSAGE NULL: " + this.name() + "/" + this.getPath());
-        }
 
         if (!setPlaceholders) {
             return text;

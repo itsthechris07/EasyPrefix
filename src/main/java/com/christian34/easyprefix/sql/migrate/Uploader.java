@@ -55,7 +55,7 @@ class Uploader {
                 update.execute();
             } catch (Exception ex) {
                 Debug.log("§cCouldn't upload group '" + name + "'!");
-                ex.printStackTrace();
+                Debug.captureException(ex);
             }
         }
         return true;
@@ -85,7 +85,7 @@ class Uploader {
                 update.execute();
             } catch (Exception ex) {
                 Debug.log("§cCouldn't upload subgroup '" + name + "'!");
-                ex.printStackTrace();
+                Debug.captureException(ex);
             }
         }
         return true;
@@ -114,7 +114,7 @@ class Uploader {
                     insert.execute();
                 } catch (Exception ex) {
                     Debug.log("§cCouldn't upload the gendered layout for group '" + name + "'!");
-                    ex.printStackTrace();
+                    Debug.captureException(ex);
                 }
             }
         }
@@ -144,7 +144,7 @@ class Uploader {
                     insert.execute();
                 } catch (Exception ex) {
                     Debug.log("§cCouldn't upload the gendered layout for subgroup '" + name + "'!");
-                    ex.printStackTrace();
+                    Debug.captureException(ex);
                 }
             }
         }
@@ -194,6 +194,7 @@ class Uploader {
                 }
             } catch (Exception ex) {
                 Debug.log("§cAn error occurred while uploading the data for user '" + uniqueId.toString() + "'!");
+                Debug.captureException(ex);
             }
         }
         return false;

@@ -3,6 +3,7 @@ package com.christian34.easyprefix.sql;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,7 +60,7 @@ public class SelectQuery {
         try {
             data = new Data(retrieveData().get());
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Debug.captureException(e);
             data = new Data(null);
         }
         return data;

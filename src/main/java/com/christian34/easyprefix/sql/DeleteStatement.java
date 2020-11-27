@@ -3,10 +3,12 @@ package com.christian34.easyprefix.sql;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -17,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class DeleteStatement {
     private final String table;
-    private final HashMap<String, String> conditions;
+    private final Map<String, String> conditions;
 
     public DeleteStatement(String table) {
         this.table = table;
@@ -64,6 +66,7 @@ public class DeleteStatement {
                 stmt.executeUpdate();
                 return true;
             } catch (SQLException ex) {
+                Debug.captureException(ex);
                 return false;
             }
         });

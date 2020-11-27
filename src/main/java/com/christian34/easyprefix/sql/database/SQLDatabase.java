@@ -36,6 +36,7 @@ public class SQLDatabase implements Database {
     @Override
     public boolean connect() {
         synchronized (this) {
+            Debug.recordAction("initializing connection to MySQL");
             try {
                 if (connection != null && !connection.isClosed()) return true;
                 Class.forName("com.mysql.jdbc.Driver");
@@ -52,6 +53,7 @@ public class SQLDatabase implements Database {
                 Debug.log("§cPlease check if the sql server is running and you entered the right username and password.");
             } catch (ClassNotFoundException e) {
                 Debug.log("§cYour installation does not support sql!");
+                Debug.captureException(e);
             }
             return false;
         }
@@ -76,7 +78,6 @@ public class SQLDatabase implements Database {
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException e) {
             Debug.captureException(e);
-            e.printStackTrace();
             return null;
         }
     }
@@ -89,7 +90,6 @@ public class SQLDatabase implements Database {
             stmt.close();
         } catch (SQLException e) {
             Debug.captureException(e);
-            e.printStackTrace();
         }
     }
 

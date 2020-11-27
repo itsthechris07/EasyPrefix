@@ -20,13 +20,13 @@ public class ExpansionManager {
         this.instance = instance;
 
         if (isEnabled("PlaceholderAPI")) {
-            Debug.recordAction("Hooking into PlaceholderAPI...");
+            Debug.recordAction("hooking into PlaceholderAPI");
             this.usingPapi = true;
             new CustomPlaceholder(this);
         }
 
         if (isEnabled("Vault")) {
-            Debug.recordAction("Hooking into Vault...");
+            Debug.recordAction("hooking into Vault");
             new ChatProvider(this);
         }
     }

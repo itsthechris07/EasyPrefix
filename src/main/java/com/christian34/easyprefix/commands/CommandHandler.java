@@ -3,6 +3,7 @@ package com.christian34.easyprefix.commands;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
 import com.christian34.easyprefix.commands.tags.TagsCommand;
+import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,11 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         for (EasyCommand easyCommand : commands) {
             if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
-                easyCommand.handleCommand(sender, Arrays.asList(args));
+                try {
+                    easyCommand.handleCommand(sender, Arrays.asList(args));
+                } catch (Exception e) {
+                    Debug.captureException(e);
+                }
                 break;
             }
         }
@@ -53,7 +58,11 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         for (EasyCommand easyCommand : commands) {
             if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
-                return easyCommand.getTabCompletion(sender, Arrays.asList(args));
+                try {
+                    return easyCommand.getTabCompletion(sender, Arrays.asList(args));
+                } catch (Exception e) {
+                    Debug.captureException(e);
+                }
             }
         }
 

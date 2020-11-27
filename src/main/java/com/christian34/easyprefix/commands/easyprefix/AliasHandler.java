@@ -2,6 +2,7 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.utils.Debug;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
@@ -90,7 +91,7 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
                 Field field = FieldUtils.getDeclaredField(spm.getClass(), "commandMap", true);
                 return (CommandMap) field.get(spm);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Debug.captureException(e);
             }
         }
         return null;

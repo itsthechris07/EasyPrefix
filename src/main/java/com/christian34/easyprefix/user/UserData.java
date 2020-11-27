@@ -89,6 +89,7 @@ public class UserData {
 
     @SuppressWarnings("deprecation")
     private void updateData() {
+        Debug.recordAction("updating user data for user '" + uniqueId + "'");
         UserDataFile userDataFile = new UserDataFile(uniqueId);
         if (userDataFile.getFile() == null || userDataFile.getFileData() == null) return;
         OfflinePlayer op = Bukkit.getOfflinePlayer(uniqueId);
@@ -113,8 +114,7 @@ public class UserData {
                 }
             } catch (Exception ex) {
                 Debug.log("§cAn exception occurred while updating " + op.getName() + "´s data...");
-                Debug.log("§cError: " + ex.getMessage());
-                ex.printStackTrace();
+                Debug.captureException(ex);
             }
         }
         if (userDataFile.getFileData().getBoolean("force-group")) {

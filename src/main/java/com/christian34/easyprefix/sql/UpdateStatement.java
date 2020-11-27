@@ -3,6 +3,7 @@ package com.christian34.easyprefix.sql;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -84,8 +85,7 @@ public class UpdateStatement {
 
     public boolean execute() {
         CompletableFuture<Boolean> compFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                PreparedStatement stmt = buildStatement();
+            try (PreparedStatement stmt = buildStatement()) {
                 stmt.executeUpdate();
                 stmt.close();
                 return true;
