@@ -35,7 +35,6 @@ public class GroupHandler {
     private SQLDatabase database;
 
     public GroupHandler(EasyPrefix instance) {
-        Debug.recordAction("initializing group handler");
         this.instance = instance;
         this.groupsData = instance.getFileManager().getGroupsData();
 

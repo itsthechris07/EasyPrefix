@@ -68,10 +68,12 @@ class CustomPlaceholder extends PlaceholderExpansion {
                 }
                 return "";
             case "user_subgroup_prefix":
+            case "tag_prefix":
                 if (user.getSubgroup() == null) return "";
                 String prefix = user.getSubgroup().getPrefix(user, true);
                 return (prefix == null) ? "" : prefix;
             case "user_subgroup_suffix":
+            case "tag_suffix":
                 if (user.getSubgroup() == null) return "";
                 String suffix = user.getSubgroup().getSuffix(user, true);
                 return (suffix == null) ? "" : suffix;
