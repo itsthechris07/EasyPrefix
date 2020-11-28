@@ -36,7 +36,6 @@ public class SQLDatabase implements Database {
     @Override
     public boolean connect() {
         synchronized (this) {
-            Debug.recordAction("initializing connection to MySQL");
             try {
                 if (connection != null && !connection.isClosed()) return true;
                 Class.forName("com.mysql.jdbc.Driver");

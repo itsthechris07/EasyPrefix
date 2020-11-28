@@ -20,7 +20,7 @@ public class RainbowEffect {
         for (String color : ConfigKeys.COLOR_RAINBOW_COLORS.toStringList()) {
             try {
                 enabledColors.add(ChatColor.valueOf(color));
-            } catch (Exception ignored) {
+            } catch (IllegalArgumentException ignored) {
                 Debug.log("Couldn't find a color with name '" + color + "'!");
             }
         }

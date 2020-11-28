@@ -41,7 +41,6 @@ public class LocalDatabase implements Database {
     @Override
     public boolean connect() {
         synchronized (this) {
-            Debug.recordAction("initializing connection to sqllite");
             try {
                 if (connection != null && !connection.isClosed()) return true;
                 Class.forName("org.sqlite.JDBC");

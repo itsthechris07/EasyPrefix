@@ -42,10 +42,10 @@ public class GroupHandler {
             GroupsData groupsData = getGroupsData();
             FileConfiguration fileData = groupsData.getData();
             if (fileData.getString("groups.default.join-msg") == null) {
-                groupsData.set("groups.default.join-msg", "&8» %ep_user_prefix% %player% &8joined the game");
+                groupsData.set("groups.default.join-msg", "&8» %ep_user_prefix%%player% &8joined the game");
             }
             if (fileData.getString("groups.default.quit-msg") == null) {
-                groupsData.set("groups.default.quit-msg", "&8« %ep_user_prefix% %player% &8left the game");
+                groupsData.set("groups.default.quit-msg", "&8« %ep_user_prefix%%player% &8left the game");
             }
             groupsData.save();
         } else {

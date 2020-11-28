@@ -33,8 +33,8 @@ public class User {
     private final UUID uniqueId;
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
-    private ArrayList<Color> colors;
-    private ArrayList<ChatFormatting> chatFormattings;
+    private List<Color> colors;
+    private List<ChatFormatting> chatFormattings;
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
