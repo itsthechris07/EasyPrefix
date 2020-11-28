@@ -12,29 +12,29 @@ import org.jetbrains.annotations.Nullable;
  * @author Christian34
  */
 public enum Color {
-    BLACK("0", Message.COLOR_BLACK, XMaterial.BLACK_TERRACOTTA),
-    DARK_BLUE("1", Message.COLOR_DARK_BLUE, XMaterial.BLUE_TERRACOTTA),
-    DARK_GREEN("2", Message.COLOR_DARK_GREEN, XMaterial.GREEN_TERRACOTTA),
-    DARK_AQUA("3", Message.COLOR_DARK_AQUA, XMaterial.LIGHT_BLUE_TERRACOTTA),
-    DARK_RED("4", Message.COLOR_DARK_RED, XMaterial.RED_TERRACOTTA),
-    DARK_PURPLE("5", Message.COLOR_PURPLE, XMaterial.PURPLE_TERRACOTTA),
-    GOLD("6", Message.COLOR_GOLD, XMaterial.ORANGE_TERRACOTTA),
-    GRAY("7", Message.COLOR_LIGHT_GRAY, XMaterial.LIGHT_GRAY_TERRACOTTA),
-    DARK_GRAY("8", Message.COLOR_GRAY, XMaterial.GRAY_TERRACOTTA),
-    BLUE("9", Message.COLOR_DARK_BLUE, XMaterial.CYAN_TERRACOTTA),
-    GREEN("a", Message.COLOR_DARK_GREEN, XMaterial.LIME_TERRACOTTA),
-    AQUA("b", Message.COLOR_AQUA, XMaterial.CYAN_TERRACOTTA),
-    RED("c", Message.COLOR_RED, XMaterial.PINK_TERRACOTTA),
-    LIGHT_PURPLE("d", Message.COLOR_MAGENTA, XMaterial.MAGENTA_TERRACOTTA),
-    YELLOW("e", Message.COLOR_YELLOW, XMaterial.YELLOW_TERRACOTTA),
-    WHITE("f", Message.COLOR_WHITE, XMaterial.WHITE_TERRACOTTA),
+    BLACK("0", Message.COLOR_BLACK.getText(), XMaterial.BLACK_TERRACOTTA),
+    DARK_BLUE("1", Message.COLOR_DARK_BLUE.getText(), XMaterial.BLUE_TERRACOTTA),
+    DARK_GREEN("2", Message.COLOR_DARK_GREEN.getText(), XMaterial.GREEN_TERRACOTTA),
+    DARK_AQUA("3", Message.COLOR_DARK_AQUA.getText(), XMaterial.LIGHT_BLUE_TERRACOTTA),
+    DARK_RED("4", Message.COLOR_DARK_RED.getText(), XMaterial.RED_TERRACOTTA),
+    DARK_PURPLE("5", Message.COLOR_PURPLE.getText(), XMaterial.PURPLE_TERRACOTTA),
+    GOLD("6", Message.COLOR_GOLD.getText(), XMaterial.ORANGE_TERRACOTTA),
+    GRAY("7", Message.COLOR_LIGHT_GRAY.getText(), XMaterial.LIGHT_GRAY_TERRACOTTA),
+    DARK_GRAY("8", Message.COLOR_GRAY.getText(), XMaterial.GRAY_TERRACOTTA),
+    BLUE("9", Message.COLOR_DARK_BLUE.getText(), XMaterial.CYAN_TERRACOTTA),
+    GREEN("a", Message.COLOR_DARK_GREEN.getText(), XMaterial.LIME_TERRACOTTA),
+    AQUA("b", Message.COLOR_AQUA.getText(), XMaterial.CYAN_TERRACOTTA),
+    RED("c", Message.COLOR_RED.getText(), XMaterial.PINK_TERRACOTTA),
+    LIGHT_PURPLE("d", Message.COLOR_MAGENTA.getText(), XMaterial.MAGENTA_TERRACOTTA),
+    YELLOW("e", Message.COLOR_YELLOW.getText(), XMaterial.YELLOW_TERRACOTTA),
+    WHITE("f", Message.COLOR_WHITE.getText(), XMaterial.WHITE_TERRACOTTA),
     UNDEFINED("r", null, XMaterial.BLACK_TERRACOTTA);
 
     private final String code;
-    private final Message name;
+    private final String name;
     private final ItemStack itemStack;
 
-    Color(String code, Message name, XMaterial material) {
+    Color(String code, String name, XMaterial material) {
         this.code = code;
         this.name = name;
         this.itemStack = material.parseItem();
@@ -60,9 +60,13 @@ public enum Color {
         return null;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
-        return getCode() + name.getText();
+        return getCode() + getName();
     }
 
     @NotNull

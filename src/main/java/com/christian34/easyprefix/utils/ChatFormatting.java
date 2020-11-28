@@ -6,17 +6,18 @@ package com.christian34.easyprefix.utils;
  * @author Christian34
  */
 public enum ChatFormatting {
-    BOLD("l", Message.FORMATTING_BOLD),
-    ITALIC("o", Message.FORMATTING_ITALIC),
-    RAINBOW("r", Message.FORMATTING_RAINBOW),
-    STRIKETHROUGH("m", Message.FORMATTING_STRIKETHROUGH),
-    UNDEFINED("", null),
-    UNDERLINE("n", Message.FORMATTING_UNDERLINE);
+    BOLD("l", Message.FORMATTING_BOLD.getText()),
+    ITALIC("o", Message.FORMATTING_ITALIC.getText()),
+    RAINBOW("r", Message.FORMATTING_RAINBOW.getText()),
+    STRIKETHROUGH("m", Message.FORMATTING_STRIKETHROUGH.getText()),
+    UNDERLINE("n", Message.FORMATTING_UNDERLINE.getText()),
+    UNDEFINED("@", null),
+    INHERIT("", null);
 
     private final String code;
-    private final Message name;
+    private final String name;
 
-    ChatFormatting(String code, Message name) {
+    ChatFormatting(String code, String name) {
         this.code = code;
         this.name = name;
     }
@@ -29,23 +30,27 @@ public enum ChatFormatting {
     }
 
     public static ChatFormatting[] getValues() {
-        ChatFormatting[] formattings = new ChatFormatting[values().length - 1];
+        ChatFormatting[] formattings = new ChatFormatting[values().length - 2];
         int i = 0;
         for (ChatFormatting formatting : values()) {
-            if (formatting == UNDEFINED) continue;
+            if (formatting == UNDEFINED || formatting == INHERIT) continue;
             formattings[i] = formatting;
             i++;
         }
         return formattings;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         if (code != null) {
             if (code.equals("r")) {
-                return getCode() + RainbowEffect.addRainbowEffect(name.getText());
+                return getCode() + RainbowEffect.addRainbowEffect(getName());
             }
-            return getCode() + name.getText();
+            return getCode() + getName();
         }
         return "";
     }

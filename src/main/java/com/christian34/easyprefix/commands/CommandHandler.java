@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.color.ColorCommand;
 import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
 import com.christian34.easyprefix.commands.tags.TagsCommand;
 import com.christian34.easyprefix.utils.Debug;
@@ -25,6 +26,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
         commands.add(new EasyPrefixCommand(instance));
         commands.add(new TagsCommand(instance));
+        commands.add(new ColorCommand(instance));
 
         for (EasyCommand command : commands) {
             PluginCommand pluginCommand = instance.getCommand(command.getName());

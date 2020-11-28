@@ -86,7 +86,10 @@ public enum Message {
     TAGS_INVALID_NAME("chat_cmd_tags_not_found"),
     TAGS_PLAYER_SELECT("chat_cmd_tags_selected"),
     TAG_SET_TO_PLAYER("chat_cmd_tags_set_player"),
-    TAGS_CLEARED_FOR_PLAYER("chat_cmd_tags_cleared_player");
+    TAGS_CLEARED_FOR_PLAYER("chat_cmd_tags_cleared_player"),
+    COLOR_SET_TO_PLAYER("chat_cmd_color_set_player"),
+    COLOR_PLAYER_SELECT("chat_cmd_color_selected"),
+    COLOR_NOT_FOUND("chat_cmd_color_not_found");
 
     public static final String PREFIX = "§7[§9EasyPrefix§7] ";
     public static final String CHAT_PLAYER_ONLY = "§cYou can't use this from console!";
