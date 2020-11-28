@@ -86,6 +86,9 @@ chat_cmd_tags_not_found: '%prefix% &cCouldn''t find tag &7%tag%&c!'
 chat_cmd_tags_selected: '%prefix% &aYour tag has been set to &7%tag%&a!'
 chat_cmd_tags_set_player: '%prefix% &aThe tag for %player% has been set to &7%tag%&a!'
 chat_cmd_tags_cleared_player: '%prefix% &aThe tag for %player% has been removed&a!'
+chat_cmd_color_not_found: '%prefix% &cCouldn''t find color &7%color%&c!'
+chat_cmd_color_selected: '%prefix% &aYour color has been set to &7%color%&a!'
+chat_cmd_color_set_player: '%prefix% &aThe color for %player% has been set to &7%color%&a!'
 
 colors:
   black: 'Black'
