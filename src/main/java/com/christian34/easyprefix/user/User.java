@@ -66,13 +66,19 @@ public class User {
         this.colors = new ArrayList<>();
         this.chatFormattings = new ArrayList<>();
 
-        if (!hasPermission("Color.all") && ConfigKeys.HANDLE_COLORS.toBoolean()) {
-            for (Color color : Color.values()) {
-                if (hasPermission("Color." + color.name())) colors.add(color);
+        if (ConfigKeys.HANDLE_COLORS.toBoolean()) {
+            boolean hasAll = hasPermission("color.all");
+
+            for (Color color : Color.getValues()) {
+                if (hasAll || hasPermission("Color." + color.name())) {
+                    colors.add(color);
+                }
             }
-            for (ChatFormatting formatting : ChatFormatting.values()) {
+            for (ChatFormatting formatting : ChatFormatting.getValues()) {
                 if (formatting.equals(ChatFormatting.RAINBOW)) continue;
-                if (hasPermission("Color." + formatting.name())) chatFormattings.add(formatting);
+                if (hasAll || hasPermission("Color." + formatting.name())) {
+                    chatFormattings.add(formatting);
+                }
             }
         }
 
@@ -104,7 +110,9 @@ public class User {
 
         String formatting = userData.getString("chat_formatting");
         if (formatting != null && formatting.length() > 1) {
-            if (formatting.equals("%r")) {
+            if (formatting.equals("&@")) {
+                this.chatFormatting = ChatFormatting.UNDEFINED;
+            } else if (formatting.equals("%r")) {
                 this.chatFormatting = ChatFormatting.RAINBOW;
             } else {
                 this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
