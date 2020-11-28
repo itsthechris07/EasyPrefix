@@ -49,7 +49,7 @@ public class GuiSettings {
                 openGroupsListPage();
             }
         });
-        Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).onClick(this::openColorsPage);
+        Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).onClick(() -> openColorsPage(null));
         if (ConfigKeys.USE_GENDER.toBoolean()) {
             guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.BTN_CHANGE_GENDER, 2, 5).onClick(this::openGenderSelectPage);
         } else {
@@ -125,7 +125,7 @@ public class GuiSettings {
         guiRespond.openInventory();
     }
 
-    public void openColorsPage() {
+    public void openColorsPage(ClickAction backAction) {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), 5);
         boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
 
@@ -142,7 +142,7 @@ public class GuiSettings {
             guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, +slot).onClick(() -> {
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {
                     user.setChatColor(color);
-                    openColorsPage();
+                    openColorsPage(null);
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
@@ -175,12 +175,10 @@ public class GuiSettings {
                 ChatFormatting formatting = chatFormatting;
                 if (user.getPlayer().hasPermission("EasyPrefix.Color." + formatting.name().toLowerCase())) {
                     if (user.getChatFormatting() != null && user.getChatFormatting().equals(formatting)) {
-                        if (!user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                            formatting = null;
-                        }
+                        formatting = ChatFormatting.UNDEFINED;
                     }
                     user.setChatFormatting(formatting);
-                    openColorsPage();
+                    openColorsPage(null);
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
@@ -191,10 +189,14 @@ public class GuiSettings {
         guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET, 5, 9).onClick(() -> {
             user.setChatColor(null);
             user.setChatFormatting(null);
-            openColorsPage();
+            openColorsPage(null);
         });
 
-        guiRespond.addCloseButton().onClick(this::openWelcomePage);
+        if (backAction != null) {
+            guiRespond.addCloseButton().onClick(backAction);
+        } else {
+            guiRespond.addCloseButton().onClick(this::openWelcomePage);
+        }
         guiRespond.openInventory();
     }
 
