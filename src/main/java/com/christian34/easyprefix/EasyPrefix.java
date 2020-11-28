@@ -204,6 +204,7 @@ public class EasyPrefix extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (storageType == StorageType.SQL) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
         metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "true" : "false"));
+        metrics.addCustomChart(new Metrics.SimplePie("custom_layout", () -> (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) ? "true" : "false"));
     }
 
 }
