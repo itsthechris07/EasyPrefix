@@ -13,3 +13,6 @@ commands:
     aliases: [ ep, easyp, eprefix ]
   tags:
     description: tag command
+  color:
+    description: color command for modifying chat color and formatting
+    aliases: [ chatcolor ]

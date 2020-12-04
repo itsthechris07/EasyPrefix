@@ -115,6 +115,7 @@ public class SelectCommand implements Subcommand {
         }
 
         List<String> names = new ArrayList<>();
+        names.add("default");
         User user = instance.getUser((Player) sender);
         for (Color color : user.getColors()) {
             names.add(color.getName());
