@@ -5,6 +5,8 @@ import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +78,7 @@ public class SetPrefixCommand implements Subcommand {
             if (args.size() > 2 && args.get(2).equalsIgnoreCase("submit")) {
                 user.setPrefix(null);
                 user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText()
-                        .replace("%content%", user.getPrefix().replace("§", "&")));
+                        .replace("%content%", ChatColor.translateAlternateColorCodes('§', user.getPrefix())));
             } else {
                 user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_PREFIX_RESET.getText()
                         .replace("%content%", input), "/ep setprefix reset submit"));
@@ -86,7 +88,7 @@ public class SetPrefixCommand implements Subcommand {
 
         if (!args.get(args.size() - 1).equalsIgnoreCase("submit")) {
             user.getPlayer().spigot().sendMessage(CommandUtils.buildConfirmComponent(Message.CHAT_INPUT_PREFIX_CONFIRM.getText()
-                    .replace("%content%", input), "/ep setprefix " + input + " submit"));
+                    .replace("%content%", input), "/ep setprefix " + ChatColor.translateAlternateColorCodes('§', input) + " submit"));
         } else {
             if (input.equals("null")) {
                 user.setPrefix(null);
@@ -95,7 +97,7 @@ public class SetPrefixCommand implements Subcommand {
             }
             user.saveData("custom_prefix_update", currentTime.toString());
             user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText()
-                    .replace("%content%", user.getPrefix().replace("§", "&")));
+                    .replace("%content%", ChatColor.translateAlternateColorCodes('§', user.getPrefix())));
         }
     }
 
