@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author Christian34
  */
-public class Icon implements Cloneable {
+public class Icon {
     private final ItemStack itemStack;
     private final String displayName;
     private ClickAction clickAction;
@@ -85,14 +85,6 @@ public class Icon implements Cloneable {
     public Icon setSlot(int line, int slot) {
         this.slot = (line - 1) * 9 + slot - 1;
         return this;
-    }
-
-    public Icon clone() {
-        try {
-            return (Icon) super.clone();
-        } catch (CloneNotSupportedException ignored) {
-            return null;
-        }
     }
 
 }

@@ -27,7 +27,6 @@ public class EasyPrefixCommand implements EasyCommand {
 
     public EasyPrefixCommand(EasyPrefix instance) {
         this.instance = instance;
-
         this.subcommands = new ArrayList<>();
         subcommands.add(new UserCommand(this));
         subcommands.add(new HelpCommand(this));
