@@ -57,7 +57,7 @@ gui_title_gender: '&8Gender'
 gui_title_tags: '&9My tags'
 chat_value_reset: '%prefix% &aThe content has been reset.'
 chat_value_save: '%prefix% &aYour input has been saved!'
-chat_button_confirm: '&7[&aConfirm&7]'
+chat_button_confirm: ' &7[&aConfirm&7]'
 chat_input_layout:
   - '%prefix% &a%text%'
   - ' '

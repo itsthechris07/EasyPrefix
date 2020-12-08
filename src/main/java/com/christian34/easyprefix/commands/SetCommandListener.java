@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.commands.setlistener;
+package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
@@ -43,6 +43,9 @@ public class SetCommandListener implements Listener {
         }
         e.setCancelled(true);
 
+        boolean isPrefix = false;
+        boolean isSuffix = false;
+
         User user = instance.getUser(e.getPlayer());
 
         if (StringUtils.startsWithIgnoreCase(request, "ep ")) {
@@ -55,6 +58,12 @@ public class SetCommandListener implements Listener {
             request = "setsuffix" + request.substring(SUFFIX_ALIAS.length());
         }
 
+        if (StringUtils.startsWithIgnoreCase(request, "setprefix")) {
+            isPrefix = true;
+        } else {
+            isSuffix = true;
+        }
+
 
         Timestamp next = getNextTimestamp(user.getLastPrefixUpdate());
         if (!next.before(new Timestamp(System.currentTimeMillis()))
@@ -63,14 +72,10 @@ public class SetCommandListener implements Listener {
             return;
         }
 
-        if (request.startsWith("setprefix")) {
-            if (!user.hasPermission(UserPermission.CUSTOM_PREFIX)) {
-                user.getPlayer().sendMessage(Message.CHAT_NO_PERMS.getText());
-            }
-        } else if (request.startsWith("setsuffix")) {
-            if (!user.hasPermission(UserPermission.CUSTOM_SUFFIX)) {
-                user.getPlayer().sendMessage(Message.CHAT_NO_PERMS.getText());
-            }
+        if ((isPrefix && !user.hasPermission(UserPermission.CUSTOM_PREFIX))
+                || (isSuffix && !user.hasPermission(UserPermission.CUSTOM_SUFFIX))) {
+            user.getPlayer().sendMessage(Message.CHAT_NO_PERMS.getText());
+            return;
         }
 
         String filtered = request
@@ -82,7 +87,20 @@ public class SetCommandListener implements Listener {
             return;
         }
 
-        String text = Message.CHAT_INPUT_PREFIX_CONFIRM.getText().replace("%content%", filtered);
+        String text;
+        if (filtered.equalsIgnoreCase("reset")) {
+            if (isPrefix) {
+                text = Message.CHAT_INPUT_PREFIX_RESET.getText();
+            } else {
+                text = Message.CHAT_INPUT_SUFFIX_RESET.getText();
+            }
+        } else {
+            if (isPrefix) {
+                text = Message.CHAT_INPUT_PREFIX_CONFIRM.getText().replace("%content%", filtered);
+            } else {
+                text = Message.CHAT_INPUT_SUFFIX_CONFIRM.getText().replace("%content%", filtered);
+            }
+        }
         ChatButtonConfirm chatButtonConfirm = new ChatButtonConfirm(user.getPlayer(), text, Message.CHAT_BTN_CONFIRM.getText());
         String finalRequest = request;
         chatButtonConfirm.onClick(() -> applyValue(user, finalRequest));

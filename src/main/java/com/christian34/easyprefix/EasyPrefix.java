@@ -1,7 +1,7 @@
 package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandHandler;
-import com.christian34.easyprefix.commands.setlistener.SetCommandListener;
+import com.christian34.easyprefix.commands.SetCommandListener;
 import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
