@@ -153,6 +153,8 @@ public class Group extends EasyGroup {
             if (!updateStatement.execute()) {
                 Debug.log("Couldn't save data to database! Error GDB1");
             }
+
+            instance.getSqlSynchronizer().sendSyncInstruction();
         } else {
             groupsData.setAndSave(getFileKey() + key.replace("_", "-"), value);
         }

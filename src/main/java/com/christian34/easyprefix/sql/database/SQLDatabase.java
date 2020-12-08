@@ -52,7 +52,6 @@ public class SQLDatabase implements Database {
                 Debug.log("§cPlease check if the sql server is running and you entered the right username and password.");
             } catch (ClassNotFoundException e) {
                 Debug.log("§cYour installation does not support sql!");
-                Debug.captureException(e);
             }
             return false;
         }
@@ -119,6 +118,7 @@ public class SQLDatabase implements Database {
         update(create + "`%p%subgroups` ( `group` VARCHAR(64) NOT NULL , UNIQUE(`group`), `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null ) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update(create + "`%p%groups_gendered` ( `id` INT NOT NULL AUTO_INCREMENT , `group` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
         update(create + "`%p%subgroups_gendered` ( `id` INT NOT NULL AUTO_INCREMENT , `group` VARCHAR(64) NOT NULL , `gender` VARCHAR(32) NOT NULL , `prefix` VARCHAR(128) default NULL null , `suffix` VARCHAR(128) default NULL null , PRIMARY KEY (`id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
+        update(create + "`%p%options` ( `option_id` INT NOT NULL AUTO_INCREMENT , `option_name` VARCHAR(64) NOT NULL , `option_value` LONGTEXT NOT NULL , PRIMARY KEY (`option_id`)) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin;");
 
         String alter = "ALTER TABLE `%p%users` ADD ";
         alterTable(alter + "`username` VARCHAR(20) NULL AFTER `uuid`; ");

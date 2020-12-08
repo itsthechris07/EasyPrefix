@@ -11,6 +11,7 @@ import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
+import com.christian34.easyprefix.sql.database.SQLSynchronizer;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.sql.migrate.DataMigration;
 import com.christian34.easyprefix.user.User;
@@ -44,6 +45,12 @@ public class EasyPrefix extends JavaPlugin {
     private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
     private DataMigration dataMigration = null;
+
+    private SQLSynchronizer sqlSynchronizer;
+
+    public SQLSynchronizer getSqlSynchronizer() {
+        return sqlSynchronizer;
+    }
 
     public static EasyPrefix getInstance() {
         return instance;
@@ -108,6 +115,7 @@ public class EasyPrefix extends JavaPlugin {
             if (!this.sqlDatabase.connect()) {
                 return;
             }
+            this.sqlSynchronizer = new SQLSynchronizer(this);
         } else {
             setLocalDatabase(new LocalDatabase());
             this.storageType = StorageType.LOCAL;
@@ -180,6 +188,7 @@ public class EasyPrefix extends JavaPlugin {
 
     public void reload() {
         Debug.recordAction("Reloading Plugin");
+        this.users = new ArrayList<>();
         this.fileManager = new FileManager(this);
         if (storageType == StorageType.SQL) {
             this.sqlDatabase.close();

@@ -2,6 +2,7 @@ package com.christian34.easyprefix.sql;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
+import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 
@@ -17,6 +18,16 @@ import java.util.Map;
  * @author Christian34
  */
 public class InsertStatement {
+    private static final Database database;
+    private static final EasyPrefix instance;
+
+    static {
+        instance = EasyPrefix.getInstance();
+        database = instance.getStorageType() == StorageType.SQL
+                ? instance.getSqlDatabase()
+                : instance.getLocalDatabase();
+    }
+
     private final String table;
     private final Map<String, Object> values;
 
@@ -33,6 +44,9 @@ public class InsertStatement {
     public boolean execute() throws RuntimeException {
         try (PreparedStatement stmt = buildStatement()) {
             stmt.executeUpdate();
+            if (!this.table.equals("options") && database instanceof SQLDatabase) {
+                instance.getSqlSynchronizer().sendSyncInstruction();
+            }
             return true;
         } catch (SQLIntegrityConstraintViolationException ex) {
             throw new RuntimeException(ex.getMessage());
@@ -44,11 +58,6 @@ public class InsertStatement {
 
     private PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("INSERT INTO ");
-        EasyPrefix instance = EasyPrefix.getInstance();
-        Database database = instance.getStorageType() == StorageType.SQL
-                ? instance.getSqlDatabase()
-                : instance.getLocalDatabase();
-
         query.append("`").append(database.getTablePrefix()).append(this.table).append("`");
 
         int i = 1;

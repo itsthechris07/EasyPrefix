@@ -2,6 +2,7 @@ package com.christian34.easyprefix.sql;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
+import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 
@@ -18,6 +19,16 @@ import java.util.concurrent.ExecutionException;
  * @author Christian34
  */
 public class DeleteStatement {
+    private static final Database database;
+    private static final EasyPrefix instance;
+
+    static {
+        instance = EasyPrefix.getInstance();
+        database = instance.getStorageType() == StorageType.SQL
+                ? instance.getSqlDatabase()
+                : instance.getLocalDatabase();
+    }
+
     private final String table;
     private final Map<String, String> conditions;
 
@@ -33,11 +44,6 @@ public class DeleteStatement {
 
     private PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("DELETE FROM ");
-        EasyPrefix instance = EasyPrefix.getInstance();
-        Database database = instance.getStorageType() == StorageType.SQL
-                ? instance.getSqlDatabase()
-                : instance.getLocalDatabase();
-
         query.append("`").append(database.getTablePrefix()).append(this.table).append("`");
 
         int i = 1;
@@ -64,6 +70,9 @@ public class DeleteStatement {
         CompletableFuture<Boolean> compFuture = CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement stmt = buildStatement()) {
                 stmt.executeUpdate();
+                if (!this.table.equals("options") && database instanceof SQLDatabase) {
+                    instance.getSqlSynchronizer().sendSyncInstruction();
+                }
                 return true;
             } catch (SQLException ex) {
                 Debug.captureException(ex);

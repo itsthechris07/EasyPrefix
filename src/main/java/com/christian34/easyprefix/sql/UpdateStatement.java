@@ -3,7 +3,6 @@ package com.christian34.easyprefix.sql;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
 import com.christian34.easyprefix.sql.database.StorageType;
-import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,6 +17,16 @@ import java.util.concurrent.ExecutionException;
  * @author Christian34
  */
 public class UpdateStatement {
+    private static final Database database;
+    private static final EasyPrefix instance;
+
+    static {
+        instance = EasyPrefix.getInstance();
+        database = instance.getStorageType() == StorageType.SQL
+                ? instance.getSqlDatabase()
+                : instance.getLocalDatabase();
+    }
+
     private final HashMap<String, Object> values;
     private final HashMap<String, String> conditions;
     private final String table;
@@ -40,11 +49,6 @@ public class UpdateStatement {
 
     private PreparedStatement buildStatement() throws SQLException {
         StringBuilder query = new StringBuilder("UPDATE ");
-        EasyPrefix instance = EasyPrefix.getInstance();
-        Database database = instance.getStorageType() == StorageType.SQL
-                ? instance.getSqlDatabase()
-                : instance.getLocalDatabase();
-
         query.append("`").append(database.getTablePrefix()).append(this.table).append("`");
 
         int i = 1;
@@ -87,7 +91,6 @@ public class UpdateStatement {
         CompletableFuture<Boolean> compFuture = CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement stmt = buildStatement()) {
                 stmt.executeUpdate();
-                stmt.close();
                 return true;
             } catch (SQLException ex) {
                 return false;
