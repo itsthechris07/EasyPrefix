@@ -38,13 +38,14 @@ public class Debug {
             user.setId(ConfigKeys.CLIENT_ID.toString());
             scope.setUser(user);
         });
-
-        hub.setTag("plugin-version", VersionController.getPluginVersion());
-        hub.setTag("api", Bukkit.getBukkitVersion());
-        hub.setTag("server", Bukkit.getVersion());
-        hub.setTag("java", System.getProperty("java.version"));
-        hub.setTag("storage", instance.getStorageType().name().toLowerCase());
-        hub.setTag("groups", String.valueOf(instance.getGroupHandler().getGroups().size()));
+        Bukkit.getScheduler().runTaskLater(instance, () -> {
+            hub.setTag("plugin-version", VersionController.getPluginVersion());
+            hub.setTag("api", Bukkit.getBukkitVersion());
+            hub.setTag("server", Bukkit.getVersion());
+            hub.setTag("java", System.getProperty("java.version"));
+            hub.setTag("storage", instance.getStorageType().name().toLowerCase());
+            hub.setTag("groups", String.valueOf(instance.getGroupHandler().getGroups().size()));
+        }, 20);
     }
 
     public static void recordAction(String message) {

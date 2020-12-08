@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.sql.database;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.utils.Debug;
@@ -29,6 +30,9 @@ public class SQLSynchronizer {
                 sendSyncInstruction();
             }
         } else {
+            InsertStatement insert = new InsertStatement("options")
+                    .setValue("option_name", "perform_sync");
+            insert.execute();
             sendSyncInstruction();
         }
         startTimer();
@@ -43,7 +47,7 @@ public class SQLSynchronizer {
                 this.taskId = UUID.fromString(syncId);
                 instance.reload();
             }
-        }, 20 * 60 * 5, 20 * 60 * 5);
+        }, 20 * 60 * 3, 20 * 60 * 3);
     }
 
     private String getIdFromDatabase() {

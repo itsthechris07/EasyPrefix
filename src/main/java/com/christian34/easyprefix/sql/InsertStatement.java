@@ -81,8 +81,8 @@ public class InsertStatement {
                 query.append(")");
             }
         }
-        PreparedStatement stmt = database.getConnection().prepareStatement(query.toString());
 
+        PreparedStatement stmt = database.getConnection().prepareStatement(query.toString());
         i = 1;
         for (Object value : values.values()) {
             stmt.setObject(i, value);
