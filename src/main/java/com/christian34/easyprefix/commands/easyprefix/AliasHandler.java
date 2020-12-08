@@ -23,7 +23,6 @@ import java.util.List;
  * @author Christian34
  */
 public class AliasHandler implements CommandExecutor, TabCompleter {
-    private final String prefixAlias, suffixAlias;
     private final EasyPrefixCommand parentCommand;
     private final EasyPrefix instance;
 
@@ -31,8 +30,8 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
         this.parentCommand = parentCommand;
         this.instance = parentCommand.getInstance();
 
-        this.prefixAlias = ConfigKeys.PREFIX_ALIAS.toString().replace("/", "");
-        this.suffixAlias = ConfigKeys.SUFFIX_ALIAS.toString().replace("/", "");
+        String prefixAlias = ConfigKeys.PREFIX_ALIAS.toString().replace("/", "");
+        String suffixAlias = ConfigKeys.SUFFIX_ALIAS.toString().replace("/", "");
 
         CommandMap commandMap = getCommandMapInstance();
         if (commandMap == null) {
@@ -53,14 +52,6 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         if (args.length == 0) {
             parentCommand.getSubcommand("help").handleCommand(sender, null);
-            return true;
-        }
-
-        List<String> value = Arrays.asList(args);
-        if (cmd.getName().equalsIgnoreCase(this.prefixAlias)) {
-            parentCommand.getSubcommand("setprefix").handleCommand(sender, value);
-        } else if (cmd.getName().equalsIgnoreCase(this.suffixAlias)) {
-            parentCommand.getSubcommand("setsuffix").handleCommand(sender, value);
         }
         return true;
     }
