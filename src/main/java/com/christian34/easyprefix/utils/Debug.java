@@ -16,9 +16,9 @@ import java.util.UUID;
  * @author Christian34
  */
 public class Debug {
-    private static final IHub hub;
+    private static IHub hub = null;
 
-    static {
+    private static void initSentry() {
         Sentry.init(options -> {
             options.setDsn("https://593815c87f604f2da4620b5031945126@o393387.ingest.sentry.io/5242398");
             options.setEnableExternalConfiguration(false);
@@ -48,10 +48,18 @@ public class Debug {
     }
 
     public static void recordAction(String message) {
+        if (hub == null) {
+            initSentry();
+        }
+
         hub.addBreadcrumb(message);
     }
 
     public static void captureException(Exception exception) {
+        if (hub == null) {
+            initSentry();
+        }
+
         Sentry.captureException(exception);
         Debug.log("&cAn error occurred while using EasyPrefix. If you think this is an error, please report following exception to GitHub!");
         Debug.log("&c------ ERROR ------");
