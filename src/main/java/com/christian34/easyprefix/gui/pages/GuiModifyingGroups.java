@@ -117,7 +117,7 @@ public class GuiModifyingGroups {
         for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
             List<String> lore = Message.LORE_SELECT_COLOR.getList();
             if (!chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                lore.add(Message.LORE_SELECT_COLOR_NC.getText());
+                lore.addAll(Message.LORE_SELECT_COLOR_NC.getList());
             }
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
