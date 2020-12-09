@@ -79,12 +79,14 @@ public class SetCommandListener implements Listener {
         }
 
         String filtered = request
-                .replace("setprefix ", "")
-                .replace("setsuffix ", "");
+                .replace("setprefix", "")
+                .replace("setsuffix", "");
 
-        if (filtered.replace(" ", "").isEmpty()) {
+        if (filtered.isEmpty()) {
             e.setCancelled(false);
             return;
+        } else {
+            filtered = filtered.substring(1);
         }
 
         String text;
