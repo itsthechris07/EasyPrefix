@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author Christian34
  */
 @Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.7")
+@ApiStatus.ScheduledForRemoval(inVersion = "1.8")
 class UserDataFile {
     private final UUID uniqueId;
     private File file;

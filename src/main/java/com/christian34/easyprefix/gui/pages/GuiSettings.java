@@ -40,11 +40,7 @@ public class GuiSettings {
         Icon prefix = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_PREFIXES, 2, 3).onClick(() -> {
             int userGroups = user.getAvailableGroups().size();
             if (userGroups <= 1) {
-                if (user.getAvailableSubgroups().size() > 1) {
-                    openSubgroupsPage(this::openWelcomePage);
-                } else {
-                    openCustomLayoutPage(this::openWelcomePage);
-                }
+                openSubgroupsPage(this::openWelcomePage);
             } else {
                 openGroupsListPage();
             }
@@ -127,7 +123,7 @@ public class GuiSettings {
 
     public void openColorsPage(ClickAction backAction) {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), 5);
-        boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
+        final boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
 
         int line = 2, slot = 1;
         for (Color color : Color.getValues()) {

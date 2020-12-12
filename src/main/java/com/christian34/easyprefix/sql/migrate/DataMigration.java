@@ -59,13 +59,13 @@ public class DataMigration {
         Debug.log("§cThe data migration has started. This could take a while.");
 
         if (uploader.sendGroups()) {
-            Debug.log("Groups has been migrated.");
+            Debug.log("Groups have been migrated.");
         } else {
             Debug.log("§cCouldn't migrate groups! If you think this is an error, please create an issue on github.");
         }
 
         if (uploader.sendSubgroups()) {
-            Debug.log("Subgroups has been migrated.");
+            Debug.log("Subgroups have been migrated.");
         } else {
             Debug.log("§cCouldn't migrate subgroups! If you think this is an error, please create an issue on github.");
         }

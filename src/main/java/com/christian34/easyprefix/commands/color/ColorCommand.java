@@ -31,10 +31,6 @@ public class ColorCommand implements EasyCommand {
         this.subcommands.add(new SelectCommand(this, instance));
     }
 
-    public List<Subcommand> getSubcommands() {
-        return subcommands;
-    }
-
     @Override
     @NotNull
     public String getName() {

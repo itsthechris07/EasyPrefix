@@ -4,9 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
-import com.christian34.easyprefix.utils.Updater;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -45,11 +43,6 @@ public class JoinListener implements Listener {
     public void notifyOnJoin(PlayerJoinEvent event) {
         User user = this.instance.getUser(event.getPlayer());
         Bukkit.getScheduler().runTaskAsynchronously(instance.getPlugin(), () -> {
-            if (user.hasPermission(UserPermission.ADMIN)) {
-                if (instance.getUpdater().checkForUpdates()) {
-                    user.sendMessage(Updater.UPDATE_MSG);
-                }
-            }
             if (ConfigKeys.USE_GENDER.toBoolean() && ConfigKeys.FORCE_GENDER.toBoolean()) {
                 if (user.getGenderType() == null) {
                     TextComponent msg = new TextComponent(TextComponent.fromLegacyText(Message.CHAT_NOTIFY_GENDER_TEXT.getText()));

@@ -55,9 +55,9 @@ public class GuiSetup {
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §9Settings", 3);
         ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
 
-        boolean useCp = ConfigKeys.CUSTOM_LAYOUT.toBoolean();
-        String ENABLED = "§aenabled";
-        String DISABLED = "§cdisabled";
+        final boolean useCp = ConfigKeys.CUSTOM_LAYOUT.toBoolean();
+        final String ENABLED = "§aenabled";
+        final String DISABLED = "§cdisabled";
         String cpText = "§aCustom Layout §7(" + ((useCp) ? ENABLED : DISABLED) + "§7)";
         guiRespond.addIcon(Material.BEACON, cpText, 2, 3)
                 .setLore("§9Enable/Disable custom prefixes and suffixes")

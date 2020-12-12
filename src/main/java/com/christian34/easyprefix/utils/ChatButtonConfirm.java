@@ -62,9 +62,7 @@ public class ChatButtonConfirm implements Listener {
                     || !e.getMessage().endsWith(uniqueId.toString()))
                 return;
 
-
             e.setCancelled(true);
-
             buttonClickEvent.execute();
             HandlerList.unregisterAll(this);
         }

@@ -187,10 +187,11 @@ public class GuiRespond {
 
     private class GuiPage {
         private final int page;
-        private final ArrayList<Icon> icons = new ArrayList<>();
+        private final List<Icon> icons;
 
         public GuiPage(int page) {
             this.page = page;
+            this.icons = new ArrayList<>();
         }
 
         public int getPage() {

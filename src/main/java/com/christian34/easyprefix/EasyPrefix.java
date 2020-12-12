@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance = null;
-    private ArrayList<User> users;
+    private List<User> users;
     private Plugin plugin;
     private GroupHandler groupHandler;
     private Updater updater;
