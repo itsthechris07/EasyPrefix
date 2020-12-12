@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.CommandNotFoundException;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetPrefixCommand;
@@ -95,6 +96,7 @@ public class EasyPrefixCommand implements EasyCommand {
         }
         sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
                 + " to get a command overview.");
+        throw new CommandNotFoundException("easyprefix " + args.toString());
     }
 
     @Override

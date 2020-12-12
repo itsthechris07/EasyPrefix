@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands.color;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.CommandNotFoundException;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.gui.pages.GuiSettings;
@@ -68,6 +69,7 @@ public class ColorCommand implements EasyCommand {
         }
         sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command! Type '/color help'"
                 + " to get a command overview.");
+        throw new CommandNotFoundException("color " + args.toString());
     }
 
     @Override

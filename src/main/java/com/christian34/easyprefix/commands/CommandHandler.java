@@ -32,7 +32,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         for (EasyCommand command : commands) {
             PluginCommand pluginCommand = instance.getCommand(command.getName());
             if (pluginCommand == null) {
-                throw new RuntimeException("Unknown command '" + command.getName() + "'!");
+                throw new CommandNotFoundException(command.getName());
             }
 
             pluginCommand.setExecutor(this);
@@ -48,6 +48,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
                 try {
                     easyCommand.handleCommand(sender, Arrays.asList(args));
+                } catch (CommandNotFoundException e) {
+
                 } catch (Exception e) {
                     Debug.captureException(e);
                 }
