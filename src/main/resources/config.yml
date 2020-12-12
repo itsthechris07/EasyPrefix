@@ -39,9 +39,9 @@ config:
         prefix: /prefix
         # requires permission EasyPrefix.custom.suffix
         suffix: /suffix
-  # groups can mixed with subgroups - please look up at my github wiki for more information
-  subgroups:
-    # show context menu for subgroups | only visible if necessary
+  # groups can mixed with tags - please look up at my github wiki for more information
+  tags:
+    # show context menu for tags | only visible if necessary
     enabled: true
   # allow players to define their gender (placeholder: %ep_user_gender%) | works only if subgroups are enabled!
   gender:
