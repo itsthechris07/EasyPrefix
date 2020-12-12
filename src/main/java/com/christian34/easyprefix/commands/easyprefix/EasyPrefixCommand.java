@@ -35,6 +35,7 @@ public class EasyPrefixCommand implements EasyCommand {
         subcommands.add(new SettingsCommand(this));
         subcommands.add(new ReloadCommand(this));
         subcommands.add(new DebugCommand(this));
+        subcommands.add(new GuiCommand(instance));
 
         if (instance.getStorageType() == StorageType.SQL) {
             subcommands.add(new DatabaseCommand(this));

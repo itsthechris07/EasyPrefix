@@ -1,4 +1,4 @@
-package com.christian34.easyprefix.commands;
+package com.christian34.easyprefix.commands.easyprefix.set;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
@@ -63,7 +63,6 @@ public class SetCommandListener implements Listener {
         } else {
             isSuffix = true;
         }
-
 
         Timestamp next = getNextTimestamp(user.getLastPrefixUpdate());
         if (!next.before(new Timestamp(System.currentTimeMillis()))

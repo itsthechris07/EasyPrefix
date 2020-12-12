@@ -56,7 +56,7 @@ class DebugCommand implements Subcommand {
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         sender.sendMessage(" \n§7------------=== §9§lEasyPrefix DEBUG §7===------------");
         sender.sendMessage("§9Version: §7" + VersionController.getPluginVersion());
-        sender.sendMessage("§9Groups/Subgroup: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
+        sender.sendMessage("§9Groups/Subgroups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
         sender.sendMessage("§9Users cached: §7" + this.instance.getUsers().size());
         sender.sendMessage("§9Genders cached: §7" + groupHandler.getGenderTypes().size());
         sender.sendMessage("§9Bukkit Version: §7" + Bukkit.getVersion());

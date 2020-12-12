@@ -92,7 +92,7 @@ class UserCommand implements Subcommand {
                     sender.sendMessage(Message.CHAT_GROUP_NOT_FOUND.getText());
                 }
             }
-        } else if (args.get(2).equalsIgnoreCase("setsubgroup")) {
+        } else if (args.get(2).equalsIgnoreCase("setsubgroup") || args.get(2).equalsIgnoreCase("settag")) {
             if (args.size() != 4) {
                 showHelp(sender);
             } else {
@@ -122,7 +122,7 @@ class UserCommand implements Subcommand {
 
         sender.sendMessage(" \n§7--------------=== §9§l" + targetUser.getPlayer().getName() + " §7===--------------\n ");
         sender.sendMessage("§9Group§f: §7" + targetUser.getGroup().getName());
-        sender.sendMessage("§9Subgroup§f: §7" + subgroup);
+        sender.sendMessage("§9Tag§f: §7" + subgroup);
         sender.sendMessage("§9Prefix§f: §8«§7" + targetUser.getPrefix().replace("§", "&") + "§8»" + (targetUser.hasCustomPrefix() ? " §7(§9customized§7)" : ""));
         if (targetUser.hasCustomPrefix()) {
             sender.sendMessage(" §7↳ §9last update§f: §7" + new Timestamp(targetUser.getLastPrefixUpdate()).toString());
@@ -132,7 +132,7 @@ class UserCommand implements Subcommand {
             sender.sendMessage(" §7↳ §9last update§f: §7" + new Timestamp(targetUser.getLastSuffixUpdate()).toString());
         }
         if (targetUser.getChatFormatting() != null) cc += targetUser.getChatFormatting().getCode();
-        sender.sendMessage("§9Chatcolor§f: §7" + cc.replace("§", "&"));
+        sender.sendMessage("§9Chat color§f: §7" + cc.replace("§", "&"));
         if (targetUser.getGenderType() != null) {
             sender.sendMessage("§9Gender§f: §7" + targetUser.getGenderType().getDisplayName() + "§7/§7" + targetUser.getGenderType().getName());
         }
@@ -144,7 +144,7 @@ class UserCommand implements Subcommand {
         String prefix = "§7/§9EasyPrefix user <Player> ";
         sender.sendMessage(prefix + "info §f| §7get information about the player");
         sender.sendMessage(prefix + "setgroup <Group> §f| §7force group to player");
-        sender.sendMessage(prefix + "setsubgroup <Subgroup> §f| §7set subgroup to player");
+        sender.sendMessage(prefix + "settag <Tag> §f| §7set tag to player");
         sender.sendMessage(prefix + "setgender <Gender> §f| §7set gender");
         sender.sendMessage(" \n§7----------------------------------------------------\n ");
     }
@@ -164,7 +164,7 @@ class UserCommand implements Subcommand {
         if (args.size() == 2) {
             return null;
         } else if (args.size() == 3) {
-            List<String> matches = Arrays.asList("reload", "info", "setgroup", "setgender", "setsubgroup");
+            List<String> matches = Arrays.asList("reload", "info", "setgroup", "setgender", "settag");
             if (args.get(2).isEmpty()) {
                 return matches;
             } else {
@@ -182,7 +182,7 @@ class UserCommand implements Subcommand {
                 for (Group group : this.instance.getGroupHandler().getGroups()) {
                     matches.add(group.getName());
                 }
-            } else if (args.get(2).equalsIgnoreCase("setsubgroup")) {
+            } else if (args.get(2).equalsIgnoreCase("settag")) {
                 for (Subgroup group : this.instance.getGroupHandler().getSubgroups()) {
                     matches.add(group.getName());
                 }

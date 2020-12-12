@@ -52,7 +52,7 @@ class HelpCommand implements Subcommand {
         String prefix = "§7/§9EasyPrefix ";
 
         for (Subcommand cmd : parentCommand.getSubcommands()) {
-            if (cmd.getName().equals("set")) continue;
+            if (cmd.getName().equals("gui")) continue;
 
             sender.sendMessage(prefix + cmd.getCommandUsage());
             sender.sendMessage("  §7" + cmd.getDescription());
