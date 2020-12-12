@@ -3,8 +3,10 @@ package com.christian34.easyprefix.commands;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.color.ColorCommand;
 import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
+import com.christian34.easyprefix.commands.easyprefix.set.SetCommandListener;
 import com.christian34.easyprefix.commands.tags.TagsCommand;
 import com.christian34.easyprefix.utils.Debug;
+import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +25,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
     public CommandHandler(EasyPrefix instance) {
         this.commands = new ArrayList<>();
-
         commands.add(new EasyPrefixCommand(instance));
         commands.add(new TagsCommand(instance));
         commands.add(new ColorCommand(instance));
@@ -37,6 +38,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             pluginCommand.setExecutor(this);
             pluginCommand.setTabCompleter(this);
         }
+
+        Bukkit.getPluginManager().registerEvents(new SetCommandListener(instance), instance);
     }
 
     @Override

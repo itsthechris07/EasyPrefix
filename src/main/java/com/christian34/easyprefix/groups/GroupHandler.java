@@ -28,9 +28,9 @@ import java.util.List;
 public class GroupHandler {
     private final EasyPrefix instance;
     private final GroupsData groupsData;
-    private ArrayList<Group> groups;
-    private ArrayList<Subgroup> subgroups;
-    private ArrayList<Gender> genders = new ArrayList<>();
+    private List<Group> groups;
+    private List<Subgroup> subgroups;
+    private List<Gender> genders = new ArrayList<>();
     private Group defaultGroup;
     private SQLDatabase database;
 
@@ -91,7 +91,7 @@ public class GroupHandler {
                     load();
                 }
             }
-            if (ConfigKeys.USE_SUBGROUPS.toBoolean()) {
+            if (ConfigKeys.USE_TAGS.toBoolean()) {
                 subgroupNames.addAll(groupsData.getSection("subgroups"));
             }
         } else {

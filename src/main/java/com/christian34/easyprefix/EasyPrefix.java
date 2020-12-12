@@ -1,7 +1,6 @@
 package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandHandler;
-import com.christian34.easyprefix.commands.SetCommandListener;
 import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
@@ -206,7 +205,6 @@ public class EasyPrefix extends JavaPlugin {
         pluginManager.registerEvents(new ChatListener(this), this);
         pluginManager.registerEvents(new JoinListener(this), this);
         pluginManager.registerEvents(new QuitListener(this), this);
-        pluginManager.registerEvents(new SetCommandListener(this), this);
     }
 
     private void hookMetrics() {

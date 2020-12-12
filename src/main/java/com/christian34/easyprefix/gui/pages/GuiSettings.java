@@ -47,7 +47,7 @@ public class GuiSettings {
         });
         Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).onClick(() -> openColorsPage(null));
         if (ConfigKeys.USE_GENDER.toBoolean()) {
-            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.BTN_CHANGE_GENDER, 2, 5).onClick(this::openGenderSelectPage);
+            guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.BTN_CHANGE_GENDER, 2, 5).onClick(() -> openGenderSelectPage(null));
         } else {
             prefix.setSlot(2, 4);
             formattings.setSlot(2, 6);
@@ -57,7 +57,7 @@ public class GuiSettings {
         guiRespond.openInventory();
     }
 
-    public void openGenderSelectPage() {
+    public void openGenderSelectPage(ClickAction backAction) {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_GENDER), 3);
         String genderName = "n/A";
@@ -74,10 +74,14 @@ public class GuiSettings {
                 Gender nextGender = groupHandler.getGenderTypes().get(index);
                 user.setGenderType(nextGender);
             }
-            openGenderSelectPage();
+            openGenderSelectPage(backAction);
         });
 
-        guiRespond.addCloseButton().onClick(this::openWelcomePage);
+        if (backAction != null) {
+            guiRespond.addCloseButton().onClick(backAction);
+        } else {
+            guiRespond.addCloseButton().onClick(this::openWelcomePage);
+        }
         guiRespond.openInventory();
     }
 

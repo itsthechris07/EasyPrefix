@@ -33,7 +33,7 @@ groups:
     join-msg: '&8» &aMaster Builder %player% &7joined the game'
     quit-msg: '&8« %ep_user_prefix%%player% &7left the game'
   Vip:
-    prefix: '%ep_user_subgroup_prefix% &7| &e'
+    prefix: '%ep_tag_prefix% &7| &e'
     suffix: '&f:'
     chat-formatting: '%r'
   Premium:

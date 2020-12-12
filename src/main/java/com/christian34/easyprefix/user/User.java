@@ -96,7 +96,7 @@ public class User {
             }
         }
 
-        if (ConfigKeys.USE_SUBGROUPS.toBoolean()) {
+        if (ConfigKeys.USE_TAGS.toBoolean()) {
             String subgroupName = userData.getString("subgroup");
             if (subgroupName != null) {
                 this.subgroup = groupHandler.getSubgroup(subgroupName);
@@ -319,7 +319,8 @@ public class User {
     public List<Subgroup> getAvailableSubgroups() {
         List<Subgroup> availableGroups = new ArrayList<>();
         for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
-            if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())) {
+            if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())
+                    || player.hasPermission("EasyPrefix.tag." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);
             }
         }
