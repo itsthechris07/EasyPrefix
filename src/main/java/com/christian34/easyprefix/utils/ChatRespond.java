@@ -51,7 +51,7 @@ public class ChatRespond {
     public void sendMessage() {
         RESPONDER.getPlayer().closeInventory();
         for (String msg : Message.CHAT_INPUT_LAYOUT.getList()) {
-            RESPONDER.getPlayer().sendMessage(msg.replace("%text%", TEXT.replace("%newline%", "\n")));
+            RESPONDER.getPlayer().sendMessage(msg.replace("%text%", TEXT));
         }
     }
 
