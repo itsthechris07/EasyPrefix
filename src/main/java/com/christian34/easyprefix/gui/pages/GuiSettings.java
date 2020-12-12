@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * EasyPrefix 2020.
@@ -251,8 +252,8 @@ public class GuiSettings {
         }
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), 3);
 
-        List<String> prefixLore = ListUtils.replace(Message.LORE_CHANGE_PREFIX.getList(),
-                "%content%", user.getPrefix().replace("§", "&"));
+        List<String> prefixLore = replaceInList(Message.LORE_CHANGE_PREFIX.getList(),
+                user.getPrefix().replace("§", "&"));
 
         guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4)
                 .setLore(prefixLore)
@@ -267,8 +268,8 @@ public class GuiSettings {
                     ));
                 });
 
-        List<String> suffixLore = ListUtils.replace(Message.LORE_CHANGE_SUFFIX.getList(),
-                "%content%", user.getSuffix().replace("§", "&"));
+        List<String> suffixLore = replaceInList(Message.LORE_CHANGE_SUFFIX.getList(),
+                user.getSuffix().replace("§", "&"));
         guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.getText(), 2, 6)
                 .setLore(suffixLore)
                 .onClick(() -> {
@@ -296,6 +297,10 @@ public class GuiSettings {
         }
 
         guiRespond.openInventory();
+    }
+
+    private List<String> replaceInList(List<String> list, String value) {
+        return list.stream().map(val -> val.replace("%content%", value)).collect(Collectors.toList());
     }
 
     private String setTitle(Message sub) {
