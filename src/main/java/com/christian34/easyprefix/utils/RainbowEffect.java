@@ -13,21 +13,12 @@ import java.util.Random;
  * @author Christian34
  */
 public final class RainbowEffect {
-    private static final List<ChatColor> rainbowColors;
-
-    static {
-        List<ChatColor> enabledColors = new ArrayList<>();
-        for (String color : ConfigKeys.COLOR_RAINBOW_COLORS.toStringList()) {
-            try {
-                enabledColors.add(ChatColor.valueOf(color));
-            } catch (IllegalArgumentException ignored) {
-                Debug.log("Couldn't find a color with name '" + color + "'!");
-            }
-        }
-        rainbowColors = enabledColors;
-    }
+    private static List<ChatColor> rainbowColors;
 
     public static String addRainbowEffect(String text) {
+        if (getRainbowColors().size() <= 1) {
+            return text;
+        }
         String[] letters = text.split("(?<!^)");
         StringBuilder rainbow = new StringBuilder();
         ChatColor last = ChatColor.WHITE;
@@ -48,6 +39,16 @@ public final class RainbowEffect {
     }
 
     public static List<ChatColor> getRainbowColors() {
+        if (rainbowColors == null || rainbowColors.isEmpty()) {
+            rainbowColors = new ArrayList<>();
+            for (String color : ConfigKeys.COLOR_RAINBOW_COLORS.toStringList()) {
+                try {
+                    rainbowColors.add(ChatColor.valueOf(color));
+                } catch (IllegalArgumentException ignored) {
+                    Debug.log("Couldn't find a color with name '" + color + "'!");
+                }
+            }
+        }
         return rainbowColors;
     }
 
