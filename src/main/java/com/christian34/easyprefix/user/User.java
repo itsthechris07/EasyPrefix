@@ -260,13 +260,11 @@ public class User {
     public void setGroup(Group group, Boolean force) {
         this.group = group;
         saveData("group", group.getName());
-        saveData("custom_prefix", null);
-        saveData("custom_suffix", null);
-        saveData("chat_color", null);
-        saveData("chat_formatting", null);
-        saveData("group", group.getName());
         saveData("force_group", force);
-        this.instance.getUsers().remove(this);
+        setPrefix(null);
+        setSuffix(null);
+        setChatColor(null);
+        setChatFormatting(null);
     }
 
     public Subgroup getSubgroup() {
@@ -274,7 +272,6 @@ public class User {
     }
 
     public void setSubgroup(Subgroup subgroup) {
-        this.subgroup = subgroup;
         String name = (subgroup != null) ? subgroup.getName() : null;
         saveData("subgroup", name);
     }
