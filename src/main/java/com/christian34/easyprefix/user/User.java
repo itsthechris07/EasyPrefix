@@ -176,7 +176,6 @@ public class User {
             prefix = prefix.replace("&", "§");
         }
         this.customPrefix = prefix;
-        this.instance.unloadUser(getPlayer());
     }
 
     public boolean hasCustomPrefix() {
@@ -201,7 +200,6 @@ public class User {
             suffix = suffix.replace("&", "§");
         }
         this.customSuffix = suffix;
-        this.instance.unloadUser(getPlayer());
     }
 
     @NotNull
@@ -227,7 +225,6 @@ public class User {
             }
         }
         saveData("chat_color", value);
-        this.instance.unloadUser(getPlayer());
     }
 
     public List<ChatFormatting> getChatFormattings() {
@@ -254,7 +251,6 @@ public class User {
             }
         }
         saveData("chat_formatting", value);
-        this.instance.unloadUser(getPlayer());
     }
 
     public Group getGroup() {
@@ -264,16 +260,13 @@ public class User {
     public void setGroup(Group group, Boolean force) {
         this.group = group;
         saveData("group", group.getName());
-        this.customPrefix = null;
         saveData("custom_prefix", null);
-        this.customSuffix = null;
         saveData("custom_suffix", null);
-        this.chatColor = null;
         saveData("chat_color", null);
-        this.chatFormatting = null;
+        saveData("chat_formatting", null);
         saveData("group", group.getName());
         saveData("force_group", force);
-        this.instance.unloadUser(getPlayer());
+        this.instance.getUsers().remove(this);
     }
 
     public Subgroup getSubgroup() {
@@ -284,7 +277,6 @@ public class User {
         this.subgroup = subgroup;
         String name = (subgroup != null) ? subgroup.getName() : null;
         saveData("subgroup", name);
-        this.instance.unloadUser(getPlayer());
     }
 
     public Gender getGenderType() {
@@ -294,7 +286,6 @@ public class User {
     public void setGenderType(Gender gender) {
         this.gender = gender;
         saveData("gender", gender.getName());
-        this.instance.unloadUser(getPlayer());
     }
 
     public Player getPlayer() {
