@@ -6,6 +6,7 @@ import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetCommandListener;
 import com.christian34.easyprefix.commands.tags.TagsCommand;
 import com.christian34.easyprefix.utils.Debug;
+import io.sentry.Sentry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 try {
                     easyCommand.handleCommand(sender, Arrays.asList(args));
                 } catch (CommandNotFoundException e) {
-
+                    Sentry.captureException(e);
                 } catch (Exception e) {
                     Debug.captureException(e);
                 }

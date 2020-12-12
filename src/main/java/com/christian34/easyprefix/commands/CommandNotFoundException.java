@@ -1,7 +1,5 @@
 package com.christian34.easyprefix.commands;
 
-import io.sentry.Sentry;
-
 /**
  * EasyPrefix 2020.
  *
@@ -14,7 +12,6 @@ public class CommandNotFoundException extends RuntimeException {
                 .replace("[", "")
                 .replace("]", "")
                 .replace(",", "") + "' was not found!");
-        Sentry.captureException(this);
     }
 
 }
