@@ -15,7 +15,7 @@ import java.util.UUID;
  *
  * @author Christian34
  */
-public class Debug {
+public final class Debug {
     private static IHub hub = null;
 
     private static void initSentry() {

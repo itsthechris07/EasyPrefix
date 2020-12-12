@@ -12,7 +12,7 @@ import java.util.Random;
  *
  * @author Christian34
  */
-public class RainbowEffect {
+public final class RainbowEffect {
     private static final List<ChatColor> rainbowColors;
 
     static {
