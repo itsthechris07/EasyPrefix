@@ -69,8 +69,7 @@ class UserCommand implements Subcommand {
             sender.sendMessage(Message.CHAT_PLAYER_NOT_FOUND.getText());
             return;
         }
-        User target = new User(player);
-        target.login();
+        User target = instance.getUser(player);
 
         if (args.size() < 3 || args.get(2).equalsIgnoreCase("info")) {
             showInfo(sender, target);
