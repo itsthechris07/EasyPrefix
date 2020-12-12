@@ -89,9 +89,9 @@ public class UserData {
 
     @SuppressWarnings("deprecation")
     private void updateData() {
-        Debug.recordAction("updating user data for user '" + uniqueId + "'");
         UserDataFile userDataFile = new UserDataFile(uniqueId);
         if (userDataFile.getFile() == null || userDataFile.getFileData() == null) return;
+        Debug.recordAction("updating user data for user '" + uniqueId + "'");
         OfflinePlayer op = Bukkit.getOfflinePlayer(uniqueId);
         Debug.log("Updating " + op.getName() + "´s data...");
 
