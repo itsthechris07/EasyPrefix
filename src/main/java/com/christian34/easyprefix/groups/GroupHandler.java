@@ -208,7 +208,25 @@ public class GroupHandler {
 
         Group group = new Group(this, groupName);
         groups.add(group);
+        return true;
+    }
 
+    public boolean createSubgroup(String groupName) {
+        if (database == null) {
+            String path = "subgroups." + groupName + ".";
+            getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");
+            getGroupsData().set(path + "suffix", "&f:");
+            getGroupsData().save();
+        } else {
+            InsertStatement insertStatement = new InsertStatement("subgroups").setValue("group", groupName);
+            if (!insertStatement.execute()) {
+                Debug.log("Couldn't save new group!");
+                return false;
+            }
+        }
+
+        Subgroup group = new Subgroup(this, groupName);
+        subgroups.add(group);
         return true;
     }
 

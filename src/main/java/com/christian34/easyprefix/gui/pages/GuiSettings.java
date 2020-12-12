@@ -185,7 +185,7 @@ public class GuiSettings {
         guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET, 5, 9).onClick(() -> {
             user.setChatColor(null);
             user.setChatFormatting(null);
-            openColorsPage(null);
+            openColorsPage(backAction);
         });
 
         if (backAction != null) {

@@ -118,6 +118,31 @@ public class GuiSetup {
         });
     }
 
+    public void createSubgroup() {
+        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        ChatRespond responder = new ChatRespond(user, "§9Please write the name of the new tag in the chat!");
+
+        responder.addInputReader((answer) -> {
+            if (answer == null || answer.split(" ").length != 1) {
+                user.sendMessage("§cPlease enter one word without spaces! Please try again.");
+                return false;
+            }
+
+            if (groupHandler.getSubgroup(answer) != null) {
+                user.sendMessage("§cThis group already exists! Please try again.");
+                return false;
+            }
+
+            return true;
+        });
+
+        responder.getInput((respond) -> {
+            if (groupHandler.createSubgroup(respond)) {
+                user.sendMessage("§aTag has been created!");
+            }
+        });
+    }
+
     public void groupsList() {
         GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Groups", 5);
@@ -180,13 +205,15 @@ public class GuiSetup {
                 lore.add("§7Prefix: §7«§f" + prefix + "§7»");
             }
             lore.add("§7Suffix: §7«§f" + suffix + "§7»");
-            lore.add("§7Permission: §fEasyPrefix.subgroup." + subgroup.getName());
+            lore.add("§7Permission: §fEasyPrefix.tag." + subgroup.getName());
 
             ItemStack sgBtn = VersionController.getMinorVersion() <= 12
                     ? XMaterial.CHEST.parseItem()
                     : XMaterial.WRITABLE_BOOK.parseItem();
             guiRespond.addIcon(sgBtn, prefixColor + subgroup.getName()).setLore(lore).onClick(() -> openSubgroupProfile(subgroup));
         }
+
+        guiRespond.addIcon(Material.NETHER_STAR, "§2Add Tag", 5, 9).onClick(this::createSubgroup);
 
         guiRespond.addCloseButton().onClick(this::mainPage);
         guiRespond.openInventory();
