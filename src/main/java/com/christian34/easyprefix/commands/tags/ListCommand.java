@@ -43,7 +43,7 @@ class ListCommand implements Subcommand {
     @Override
     @NotNull
     public String getCommandUsage() {
-        return "list <player>";
+        return "list (<player>)";
     }
 
     @Override
@@ -54,6 +54,7 @@ class ListCommand implements Subcommand {
 
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
+        boolean setToOtherPlayer = false;
         Player player;
         if (args.size() < 2) {
             if (!(sender instanceof Player)) {
@@ -63,16 +64,26 @@ class ListCommand implements Subcommand {
                 player = (Player) sender;
             }
         } else {
+            if (!sender.hasPermission(UserPermission.ADMIN.toString())) {
+                sender.sendMessage(Message.CHAT_NO_PERMS.getText());
+                return;
+            }
+
+            setToOtherPlayer = true;
             player = Bukkit.getPlayer(args.get(1));
             if (player == null) {
-                sender.sendMessage(Message.PREFIX + Message.CHAT_PLAYER_NOT_FOUND);
+                sender.sendMessage(Message.CHAT_PLAYER_NOT_FOUND.getText());
+                return;
             }
         }
 
         User user = instance.getUser(player);
         List<Subgroup> subgroups = user.getAvailableSubgroups();
-        sender.sendMessage(Message.CHAT_TAGS_AVAILABLE.getText()
-                .replace("%tags%", Integer.toString(subgroups.size())));
+
+        Message text = (setToOtherPlayer) ? Message.CHAT_TAGS_AVAILABLE_OTHERS : Message.CHAT_TAGS_AVAILABLE;
+        sender.sendMessage(text.getText()
+                .replace("%tags%", Integer.toString(subgroups.size()))
+                .replace("%player%", player.getName()));
 
         final String itemTitle = Message.TAGS_ITEM_TITLE.getText();
         final String lore = Message.TAGS_ITEM_LORE.getText();
@@ -96,7 +107,11 @@ class ListCommand implements Subcommand {
                     .replace("%tag_prefix%", tagPrefix)
                     .replace("%tag_suffix%", tagSuffix);
 
-            list.addExtra(getText(name, "/tags select " + subgroup.getName(), hoverText));
+            if (setToOtherPlayer) {
+                list.addExtra(getText(name, "/tags set " + player.getName() + " " + subgroup.getName(), hoverText));
+            } else {
+                list.addExtra(getText(name, "/tags select " + subgroup.getName(), hoverText));
+            }
             if (i != subgroups.size() - 1) {
                 list.addExtra("§7, ");
             }
@@ -115,6 +130,11 @@ class ListCommand implements Subcommand {
 
     @Override
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+        if (sender.hasPermission(UserPermission.ADMIN.toString())) {
+            if (args.size() == 2) {
+                return null;
+            }
+        }
         return Collections.emptyList();
     }
 

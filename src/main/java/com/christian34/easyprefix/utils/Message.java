@@ -81,6 +81,7 @@ public enum Message {
     CHAT_LAYOUT_UPDATE_COOLDOWN("chat_layout_update_cooldown"),
     CHAT_TAGS_HEADER("chat_cmd_tags_help_head"),
     CHAT_TAGS_AVAILABLE("chat_cmd_tags_list_info"),
+    CHAT_TAGS_AVAILABLE_OTHERS("chat_cmd_tags_list_info_others"),
     TAGS_ITEM_TITLE("chat_cmd_tags_name"),
     TAGS_ITEM_LORE("chat_cmd_tags_hover"),
     TAGS_INVALID_NAME("chat_cmd_tags_not_found"),
