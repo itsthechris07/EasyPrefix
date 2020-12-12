@@ -3,7 +3,6 @@ package com.christian34.easyprefix.extensions;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Debug;
-import com.christian34.easyprefix.utils.Message;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -55,9 +54,9 @@ class CustomPlaceholder extends PlaceholderExpansion {
             case "user_chatcolor":
                 String color = user.getChatColor().getCode();
                 if (user.getChatFormatting() != null) {
-                    if (user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                        color = Message.FORMATTING_RAINBOW.getText();
-                    } else {
+                    if (!user.getChatFormatting().equals(ChatFormatting.RAINBOW)
+                            && !user.getChatFormatting().equals(ChatFormatting.UNDEFINED)
+                            && !user.getChatFormatting().equals(ChatFormatting.INHERIT)) {
                         color += user.getChatFormatting().getCode();
                     }
                 }
