@@ -37,7 +37,6 @@ public class EasyPrefix extends JavaPlugin {
     private List<User> users;
     private Plugin plugin;
     private GroupHandler groupHandler;
-    private Updater updater;
     private FileManager fileManager;
     private ExpansionManager expansionManager;
     private StorageType storageType;
@@ -129,7 +128,7 @@ public class EasyPrefix extends JavaPlugin {
             return;
         }
         this.expansionManager = new ExpansionManager(this);
-        this.updater = new Updater(this);
+        new Updater(this);
         hookMetrics();
         Debug.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Debug.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
@@ -171,10 +170,6 @@ public class EasyPrefix extends JavaPlugin {
 
     public Plugin getPlugin() {
         return plugin;
-    }
-
-    public Updater getUpdater() {
-        return updater;
     }
 
     public FileManager getFileManager() {
