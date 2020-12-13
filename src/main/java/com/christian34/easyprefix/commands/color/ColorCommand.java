@@ -78,6 +78,8 @@ public class ColorCommand implements EasyCommand {
         if (args.size() == 1) {
             List<String> matches = new ArrayList<>();
             for (Subcommand subcmd : subcommands) {
+                if (subcmd.getDescription() == null) continue;
+
                 if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
                     if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
                         matches.add(subcmd.getName());
@@ -87,6 +89,8 @@ public class ColorCommand implements EasyCommand {
             return matches;
         } else {
             for (Subcommand subcmd : subcommands) {
+                if (subcmd.getDescription() == null) continue;
+
                 if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
                     if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
                         return subcmd.getTabCompletion(sender, args);
