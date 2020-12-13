@@ -66,7 +66,10 @@ public class Group extends EasyGroup {
         String formatting = data.getString("chat_formatting");
         if (formatting != null && formatting.length() == 2) {
             this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
-            if (this.chatFormatting == null) setChatFormatting(null);
+            if (this.chatFormatting == null) {
+                Debug.log("Couldn't find chat formatting '" + formatting + "'! (group: " + name + ")");
+                this.chatFormatting = null;
+            }
         }
 
         String color = data.getString("chat_color");
@@ -78,6 +81,10 @@ public class Group extends EasyGroup {
             }
         } else {
             this.chatColor = Color.getByCode(color.substring(1, 2));
+            if (chatColor == null) {
+                Debug.log("Couldn't find chat color '" + color + "'! (group: " + name + ")");
+                this.chatColor = Color.GRAY;
+            }
         }
 
         this.groupColor = getGroupColor(prefix);
