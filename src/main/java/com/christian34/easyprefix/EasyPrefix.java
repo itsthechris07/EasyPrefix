@@ -44,8 +44,8 @@ public class EasyPrefix extends JavaPlugin {
     private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
     private DataMigration dataMigration = null;
-
     private SQLSynchronizer sqlSynchronizer;
+    private CommandHandler commandHandler;
 
     public static EasyPrefix getInstance() {
         return instance;
@@ -53,6 +53,10 @@ public class EasyPrefix extends JavaPlugin {
 
     private synchronized static void setInstance(EasyPrefix instance) {
         EasyPrefix.instance = instance;
+    }
+
+    public CommandHandler getCommandHandler() {
+        return commandHandler;
     }
 
     public SQLSynchronizer getSqlSynchronizer() {
@@ -122,7 +126,7 @@ public class EasyPrefix extends JavaPlugin {
 
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
-        new CommandHandler(this);
+        this.commandHandler = new CommandHandler(this);
         registerEvents();
         if (!ConfigKeys.ENABLED.toBoolean()) {
             Bukkit.getPluginManager().disablePlugin(this);
