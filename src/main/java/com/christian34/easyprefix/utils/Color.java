@@ -60,6 +60,9 @@ public enum Color {
         return null;
     }
 
+    /**
+     * @return the translated name
+     */
     public String getName() {
         return name;
     }
