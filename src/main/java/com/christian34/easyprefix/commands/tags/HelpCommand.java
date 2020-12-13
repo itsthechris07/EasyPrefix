@@ -5,6 +5,7 @@ import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,7 @@ class HelpCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "shows all commands";
     }
@@ -50,8 +51,12 @@ class HelpCommand implements Subcommand {
         String prefix = "§7/§9tags ";
 
         for (Subcommand cmd : parentCommand.getSubcommands()) {
-            sender.sendMessage(prefix + cmd.getCommandUsage());
-            sender.sendMessage("  §7" + cmd.getDescription());
+            if (cmd.getDescription() == null) return;
+
+            if (cmd.getPermission() == null || sender.hasPermission(cmd.getPermission().toString())) {
+                sender.sendMessage(prefix + cmd.getCommandUsage());
+                sender.sendMessage("  §7" + cmd.getDescription());
+            }
         }
     }
 
