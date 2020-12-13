@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ class UserCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "shows some important information about the given player and allows a configuration";
     }

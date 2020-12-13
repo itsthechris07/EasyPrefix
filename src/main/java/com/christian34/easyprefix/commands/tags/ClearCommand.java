@@ -35,7 +35,7 @@ public class ClearCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "clears a player's tag";
     }

@@ -63,9 +63,9 @@ public class GuiCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
-        return "";
+        return null;
     }
 
     @Override

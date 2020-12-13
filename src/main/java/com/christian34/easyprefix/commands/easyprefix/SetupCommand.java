@@ -9,6 +9,7 @@ import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,7 @@ class SetupCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "opens the graphical user interface which allows you to setup the plugin";
     }

@@ -42,7 +42,7 @@ public class SetCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "sets a players tag";
     }

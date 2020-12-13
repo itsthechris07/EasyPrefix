@@ -6,6 +6,7 @@ import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,7 @@ class ReloadCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "reloads the plugin (not recommended, please stop and start the server)";
     }

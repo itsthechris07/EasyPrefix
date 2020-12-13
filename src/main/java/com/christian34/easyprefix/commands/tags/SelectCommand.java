@@ -41,7 +41,7 @@ public class SelectCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "changes your tag";
     }

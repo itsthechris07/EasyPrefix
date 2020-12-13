@@ -14,7 +14,7 @@ public interface Subcommand extends EasyCommand {
     @Nullable
     UserPermission getPermission();
 
-    @NotNull
+    @Nullable
     String getDescription();
 
     @NotNull

@@ -7,6 +7,7 @@ import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,7 @@ class DatabaseCommand implements Subcommand {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getDescription() {
         return "allows the configuration of the database";
     }
