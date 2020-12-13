@@ -18,10 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * EasyPrefix 2020.
@@ -33,8 +30,6 @@ public class User {
     private final UUID uniqueId;
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
-    private List<Color> colors;
-    private List<ChatFormatting> chatFormattings;
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
@@ -63,24 +58,6 @@ public class User {
     public void login() {
         UserData userData = new UserData(uniqueId);
         userData.loadData();
-        this.colors = new ArrayList<>();
-        this.chatFormattings = new ArrayList<>();
-
-        if (ConfigKeys.HANDLE_COLORS.toBoolean()) {
-            boolean hasAll = hasPermission("color.all");
-
-            for (Color color : Color.getValues()) {
-                if (hasAll || hasPermission("Color." + color.name())) {
-                    colors.add(color);
-                }
-            }
-            for (ChatFormatting formatting : ChatFormatting.getValues()) {
-                if (formatting.equals(ChatFormatting.RAINBOW)) continue;
-                if (hasAll || hasPermission("Color." + formatting.name())) {
-                    chatFormattings.add(formatting);
-                }
-            }
-        }
 
         this.isGroupForced = userData.getBoolean("force_group");
 
@@ -203,8 +180,18 @@ public class User {
     }
 
     @NotNull
-    public List<Color> getColors() {
-        return colors;
+    public Set<Color> getColors() {
+        if (hasPermission("color.all")) {
+            return new HashSet<>(Arrays.asList(Color.getValues()));
+        } else {
+            Set<Color> colors = new HashSet<>();
+            for (Color color : Color.getValues()) {
+                if (hasPermission("color." + color.name())) {
+                    colors.add(color);
+                }
+            }
+            return Collections.unmodifiableSet(colors);
+        }
     }
 
     @NotNull
@@ -227,8 +214,19 @@ public class User {
         saveData("chat_color", value);
     }
 
-    public List<ChatFormatting> getChatFormattings() {
-        return chatFormattings;
+    @NotNull
+    public Set<ChatFormatting> getChatFormattings() {
+        if (hasPermission("color.all")) {
+            return new HashSet<>(Arrays.asList(ChatFormatting.getValues()));
+        } else {
+            Set<ChatFormatting> formattings = new HashSet<>();
+            for (ChatFormatting formatting : ChatFormatting.getValues()) {
+                if (hasPermission("color." + formatting.name())) {
+                    formattings.add(formatting);
+                }
+            }
+            return Collections.unmodifiableSet(formattings);
+        }
     }
 
     @Nullable
