@@ -77,12 +77,12 @@ public class SelectCommand implements Subcommand {
                 user.setChatFormatting(ChatFormatting.UNDEFINED);
             }
         } else {
-            for (Color chatcolor : Color.getValues()) {
+            for (Color chatcolor : user.getColors()) {
                 if (chatcolor.getName().equalsIgnoreCase(name)) {
                     color = chatcolor;
                 }
             }
-            for (ChatFormatting formatting : ChatFormatting.getValues()) {
+            for (ChatFormatting formatting : user.getChatFormattings()) {
                 if (formatting.getName().equalsIgnoreCase(name)) {
                     chatFormatting = formatting;
                 }
