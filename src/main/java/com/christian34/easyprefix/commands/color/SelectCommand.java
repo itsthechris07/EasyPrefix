@@ -115,7 +115,6 @@ public class SelectCommand implements Subcommand {
         }
 
         List<String> names = new ArrayList<>();
-        names.add("default");
         User user = instance.getUser((Player) sender);
         for (Color color : user.getColors()) {
             names.add(color.getName());
@@ -123,6 +122,9 @@ public class SelectCommand implements Subcommand {
 
         for (ChatFormatting formatting : user.getChatFormattings()) {
             names.add(formatting.getName());
+        }
+        if (!names.isEmpty()) {
+            names.add("default");
         }
 
         String input = args.get(1);
