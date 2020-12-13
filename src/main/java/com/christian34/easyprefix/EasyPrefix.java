@@ -184,17 +184,17 @@ public class EasyPrefix extends JavaPlugin {
     public void reload() {
         Debug.recordAction("Reloading Plugin");
         this.updater.check();
-        this.users = new ArrayList<>();
         this.fileManager = new FileManager(this);
         if (storageType == StorageType.SQL) {
             this.sqlDatabase.close();
             this.sqlDatabase = new SQLDatabase();
             this.sqlDatabase.connect();
         }
-        new CommandHandler(this);
         RainbowEffect.getRainbowColors().clear();
-        this.groupHandler = new GroupHandler(this);
         this.groupHandler.load();
+        for (User user : users) {
+            user.login();
+        }
     }
 
     private void registerEvents() {
