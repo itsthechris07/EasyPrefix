@@ -75,7 +75,7 @@ public class SQLDatabase implements Database {
             Statement stmt = connection.createStatement();
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException e) {
-            Debug.captureException(e);
+            Debug.handleException(e);
             return null;
         }
     }
@@ -87,7 +87,7 @@ public class SQLDatabase implements Database {
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
         } catch (SQLException e) {
-            Debug.captureException(e);
+            Debug.handleException(e);
         }
     }
 

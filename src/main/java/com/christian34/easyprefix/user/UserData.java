@@ -39,7 +39,7 @@ public class UserData {
             try {
                 updateData();
             } catch (Exception ex) {
-                Debug.captureException(ex);
+                Debug.handleException(ex);
             }
         }
     }
@@ -114,7 +114,7 @@ public class UserData {
                 }
             } catch (Exception ex) {
                 Debug.log("§cAn exception occurred while updating " + op.getName() + "´s data...");
-                Debug.captureException(ex);
+                Debug.handleException(ex);
             }
         }
         if (userDataFile.getFileData().getBoolean("force-group")) {

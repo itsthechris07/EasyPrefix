@@ -61,7 +61,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 } catch (CommandNotFoundException e) {
                     Sentry.captureException(e);
                 } catch (Exception e) {
-                    Debug.captureException(e);
+                    Debug.handleException(e);
                 }
                 break;
             }
@@ -78,7 +78,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 try {
                     return easyCommand.getTabCompletion(sender, Arrays.asList(args));
                 } catch (Exception e) {
-                    Debug.captureException(e);
+                    Debug.handleException(e);
                 }
             }
         }

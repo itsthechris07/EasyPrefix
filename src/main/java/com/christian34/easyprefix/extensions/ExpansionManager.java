@@ -46,7 +46,7 @@ public class ExpansionManager {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
             return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(offlinePlayer, text);
         } catch (Exception ex) {
-            Debug.captureException(ex);
+            Debug.handleException(ex);
             return text;
         }
     }

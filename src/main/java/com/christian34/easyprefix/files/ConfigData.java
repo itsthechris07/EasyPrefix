@@ -43,7 +43,7 @@ public class ConfigData {
             data.options().copyDefaults(true);
             data.save(file);
         } catch (IOException e) {
-            Debug.captureException(e);
+            Debug.handleException(e);
         }
         load();
     }

@@ -60,7 +60,7 @@ public class ColorCommand implements EasyCommand {
                     try {
                         subCmd.handleCommand(sender, args);
                     } catch (Exception ex) {
-                        Debug.captureException(ex);
+                        Debug.handleException(ex);
                     }
                 } else {
                     sender.sendMessage(Message.CHAT_NO_PERMS.getText());

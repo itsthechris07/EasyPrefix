@@ -51,7 +51,7 @@ public class InsertStatement {
         } catch (SQLIntegrityConstraintViolationException ex) {
             throw new RuntimeException(ex.getMessage());
         } catch (SQLException ex) {
-            Debug.captureException(ex);
+            Debug.catchException(ex);
         }
         return false;
     }

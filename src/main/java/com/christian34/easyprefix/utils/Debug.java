@@ -56,12 +56,15 @@ public final class Debug {
         hub.addBreadcrumb(message);
     }
 
-    public static void captureException(Exception exception) {
+    public static void catchException(Exception exception) {
         if (hub == null) {
             initSentry();
         }
-
         Sentry.captureException(exception);
+    }
+
+    public static void handleException(Exception exception) {
+        catchException(exception);
         Debug.log("&cAn error occurred while using EasyPrefix. If you think this is an error, please report following exception to GitHub!");
         Debug.log("&c------ ERROR ------");
         exception.printStackTrace();

@@ -36,7 +36,7 @@ public class GenderedLayout {
         } catch (Exception e) {
             Debug.log("§cAn error occurred while loading a gendered layout for "
                     + easyGroupType + " '" + easyGroup.getName() + "'!");
-            Debug.captureException(e);
+            Debug.handleException(e);
         }
     }
 

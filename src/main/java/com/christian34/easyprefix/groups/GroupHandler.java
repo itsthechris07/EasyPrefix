@@ -102,7 +102,7 @@ public class GroupHandler {
                     if (!value.equals("default")) groupNames.add(value);
                 }
             } catch (SQLException e) {
-                Debug.captureException(e);
+                Debug.handleException(e);
                 return;
             }
 
@@ -113,7 +113,7 @@ public class GroupHandler {
                     subgroupNames.add(value);
                 }
             } catch (SQLException e) {
-                Debug.captureException(e);
+                Debug.handleException(e);
                 return;
             }
         }
@@ -123,7 +123,7 @@ public class GroupHandler {
             try {
                 groups.add(new Group(this, name));
             } catch (Exception ex) {
-                Debug.captureException(ex);
+                Debug.handleException(ex);
             }
         }
 
@@ -131,7 +131,7 @@ public class GroupHandler {
             try {
                 subgroups.add(new Subgroup(this, name));
             } catch (Exception ex) {
-                Debug.captureException(ex);
+                Debug.handleException(ex);
             }
         }
     }
@@ -146,7 +146,7 @@ public class GroupHandler {
             try {
                 this.genders.add(new Gender(name));
             } catch (Exception ex) {
-                Debug.captureException(ex);
+                Debug.handleException(ex);
             }
         }
     }

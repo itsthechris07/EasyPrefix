@@ -75,7 +75,7 @@ public class DeleteStatement {
                 }
                 return true;
             } catch (SQLException ex) {
-                Debug.captureException(ex);
+                Debug.handleException(ex);
                 return false;
             }
         });

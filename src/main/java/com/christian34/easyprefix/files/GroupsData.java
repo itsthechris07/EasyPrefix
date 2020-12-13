@@ -40,7 +40,7 @@ public class GroupsData {
         try {
             data.save(file);
         } catch (IOException e) {
-            Debug.captureException(e);
+            Debug.handleException(e);
         }
         load();
     }

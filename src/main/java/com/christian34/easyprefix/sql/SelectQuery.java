@@ -60,7 +60,7 @@ public class SelectQuery {
         try {
             data = new Data(retrieveData().get());
         } catch (InterruptedException | ExecutionException e) {
-            Debug.captureException(e);
+            Debug.handleException(e);
             data = new Data(null);
         }
         return data;

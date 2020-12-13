@@ -159,7 +159,7 @@ public class EasyPrefix extends JavaPlugin {
                 user.login();
                 users.add(user);
             } catch (Exception ex) {
-                Debug.captureException(ex);
+                Debug.handleException(ex);
             }
         }
         return user;

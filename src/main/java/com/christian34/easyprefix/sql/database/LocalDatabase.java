@@ -81,7 +81,7 @@ public class LocalDatabase implements Database {
             stmt = connection.createStatement();
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException e) {
-            Debug.captureException(e);
+            Debug.handleException(e);
             e.printStackTrace();
             return null;
         } finally {

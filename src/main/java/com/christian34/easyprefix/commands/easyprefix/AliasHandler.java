@@ -82,7 +82,7 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
                 Field field = FieldUtils.getDeclaredField(spm.getClass(), "commandMap", true);
                 return (CommandMap) field.get(spm);
             } catch (IllegalAccessException e) {
-                Debug.captureException(e);
+                Debug.handleException(e);
             }
         }
         return null;
