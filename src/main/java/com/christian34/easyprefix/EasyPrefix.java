@@ -40,15 +40,12 @@ public class EasyPrefix extends JavaPlugin {
     private FileManager fileManager;
     private ExpansionManager expansionManager;
     private StorageType storageType;
+    private Updater updater;
     private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
     private DataMigration dataMigration = null;
 
     private SQLSynchronizer sqlSynchronizer;
-
-    public SQLSynchronizer getSqlSynchronizer() {
-        return sqlSynchronizer;
-    }
 
     public static EasyPrefix getInstance() {
         return instance;
@@ -56,6 +53,10 @@ public class EasyPrefix extends JavaPlugin {
 
     private synchronized static void setInstance(EasyPrefix instance) {
         EasyPrefix.instance = instance;
+    }
+
+    public SQLSynchronizer getSqlSynchronizer() {
+        return sqlSynchronizer;
     }
 
     public DataMigration getDataMigration() {
@@ -128,7 +129,7 @@ public class EasyPrefix extends JavaPlugin {
             return;
         }
         this.expansionManager = new ExpansionManager(this);
-        new Updater(this);
+        this.updater = new Updater(this);
         hookMetrics();
         Debug.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Debug.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
@@ -182,6 +183,7 @@ public class EasyPrefix extends JavaPlugin {
 
     public void reload() {
         Debug.recordAction("Reloading Plugin");
+        this.updater.check();
         this.users = new ArrayList<>();
         this.fileManager = new FileManager(this);
         if (storageType == StorageType.SQL) {

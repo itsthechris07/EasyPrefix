@@ -20,7 +20,7 @@ import java.net.URL;
  * @author Christian34
  */
 public class Updater implements Listener {
-    public final String UPDATE_MSG;
+    private final String UPDATE_MSG;
     private final EasyPrefix instance;
     private String spigotPluginVersion;
     private boolean available;
@@ -32,25 +32,9 @@ public class Updater implements Listener {
         this.available = false;
         Bukkit.getPluginManager().registerEvents(this, instance);
         check();
-        if (isAvailable()) {
-            Bukkit.getConsoleSender().sendMessage(UPDATE_MSG);
-        }
-        startTimer();
     }
 
-    private void startTimer() {
-        long hour = 20 * 60 * 60;
-        Bukkit.getScheduler().runTaskTimer(instance, () -> {
-            Bukkit.getConsoleSender().sendMessage(UPDATE_MSG);
-            for (User user : instance.getUsers()) {
-                if (user.hasPermission(UserPermission.ADMIN)) {
-                    user.sendMessage(UPDATE_MSG);
-                }
-            }
-        }, hour, hour * 3);
-    }
-
-    private void check() {
+    public void check() {
         Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
             try {
                 HttpsURLConnection connection = (HttpsURLConnection)
@@ -58,7 +42,8 @@ public class Updater implements Listener {
                 connection.setRequestMethod("GET");
                 this.spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
                 if (!VersionController.getPluginVersion().equals(spigotPluginVersion)) {
-                    available = true;
+                    this.available = true;
+                    instance.getServer().getConsoleSender().sendMessage(UPDATE_MSG);
                 }
             } catch (IOException ignored) {
                 Debug.log("§cUpdate checker failed!");
