@@ -7,6 +7,7 @@ import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.sql.database.Database;
+import com.christian34.easyprefix.sql.database.DuplicateEntryException;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.Bukkit;
@@ -53,28 +54,31 @@ public class UserData {
     }
 
     public void loadData() {
-        SelectQuery selectQuery = new SelectQuery("users", "group", "username", "force_group", "subgroup", "custom_prefix",
-                "custom_prefix_update", "custom_suffix", "custom_suffix_update", "gender", "chat_color",
+        String username = player.getName();
+        SelectQuery selectQuery = new SelectQuery("users", "group", "username", "force_group", "subgroup",
+                "custom_prefix", "custom_prefix_update", "custom_suffix", "custom_suffix_update", "gender", "chat_color",
                 "chat_formatting").addCondition("uuid", uniqueId.toString()).setDatabase(database);
+
         this.data = selectQuery.getData();
-        String username = Bukkit.getOfflinePlayer(uniqueId).getName();
         if (data.isEmpty()) {
             InsertStatement insertStatement = new InsertStatement("users")
                     .setValue("uuid", uniqueId.toString())
                     .setValue("username", username);
-            if (!insertStatement.execute()) {
-                Debug.log("§cCouldn't update database! Error UDDB3");
-            }
-        } else {
-            if (player != null && username != null) {
-                if (!username.equals(data.getString("username"))) {
-                    UpdateStatement updateStatement = new UpdateStatement("users")
-                            .addCondition("uuid", player.getUniqueId().toString())
-                            .setValue("username", player.getName());
-                    if (!updateStatement.execute()) {
-                        Debug.log("§cCouldn't update username for player '" + player.getName() + "'!");
-                    }
+            try {
+                if (!insertStatement.execute()) {
+                    Debug.log("§cCouldn't update database! Error UDDB3");
                 }
+            } catch (DuplicateEntryException ex) {
+                Debug.catchException(ex);
+            }
+        }
+
+        if (username == null || !username.equals(data.getString("username"))) {
+            UpdateStatement updateStatement = new UpdateStatement("users")
+                    .addCondition("uuid", player.getUniqueId().toString())
+                    .setValue("username", player.getName());
+            if (!updateStatement.execute()) {
+                Debug.log("§cCouldn't update username for player '" + player.getName() + "'!");
             }
         }
     }

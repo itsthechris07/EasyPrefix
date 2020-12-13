@@ -2,6 +2,7 @@ package com.christian34.easyprefix.sql;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
+import com.christian34.easyprefix.sql.database.DuplicateEntryException;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
@@ -41,7 +42,7 @@ public class InsertStatement {
         return this;
     }
 
-    public boolean execute() throws RuntimeException {
+    public boolean execute() throws DuplicateEntryException {
         try (PreparedStatement stmt = buildStatement()) {
             stmt.executeUpdate();
             if (!this.table.equals("options") && database instanceof SQLDatabase) {
@@ -49,7 +50,7 @@ public class InsertStatement {
             }
             return true;
         } catch (SQLIntegrityConstraintViolationException ex) {
-            throw new RuntimeException(ex.getMessage());
+            throw new DuplicateEntryException(table, ex.getMessage().split("'")[1]);
         } catch (SQLException ex) {
             Debug.catchException(ex);
         }
