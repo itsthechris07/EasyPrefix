@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.CommandHandler;
 import com.christian34.easyprefix.commands.CommandNotFoundException;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
@@ -23,10 +24,10 @@ import java.util.List;
  * @author Christian34
  */
 public class EasyPrefixCommand implements EasyCommand {
-    private final List<Subcommand> subcommands;
     private final EasyPrefix instance;
+    private final List<Subcommand> subcommands;
 
-    public EasyPrefixCommand(EasyPrefix instance) {
+    public EasyPrefixCommand(EasyPrefix instance, CommandHandler commandHandler) {
         this.instance = instance;
         this.subcommands = new ArrayList<>();
         subcommands.add(new UserCommand(this));
@@ -37,6 +38,8 @@ public class EasyPrefixCommand implements EasyCommand {
         subcommands.add(new ReloadCommand(this));
         subcommands.add(new DebugCommand(this));
         subcommands.add(new GuiCommand(instance));
+        subcommands.add(new ColorAliasCommand(commandHandler));
+        subcommands.add(new TagsAliasCommand(commandHandler));
 
         if (instance.getStorageType() == StorageType.SQL) {
             subcommands.add(new DatabaseCommand(this));

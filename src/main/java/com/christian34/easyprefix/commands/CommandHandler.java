@@ -26,7 +26,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
     public CommandHandler(EasyPrefix instance) {
         this.commands = new ArrayList<>();
-        commands.add(new EasyPrefixCommand(instance));
+        commands.add(new EasyPrefixCommand(instance, this));
         commands.add(new TagsCommand(instance));
         commands.add(new ColorCommand(instance));
 
@@ -41,6 +41,15 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         }
 
         Bukkit.getPluginManager().registerEvents(new SetCommandListener(instance), instance);
+    }
+
+    public EasyCommand getCommand(String name) {
+        for (EasyCommand command : commands) {
+            if (command.getName().equals(name)) {
+                return command;
+            }
+        }
+        throw new CommandNotFoundException(name);
     }
 
     @Override
