@@ -96,7 +96,9 @@ public abstract class EasyGroup {
                         .replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false))
                         .replace("%ep_user_group%", user.getGroup().getName())
                         .replace("%ep_user_subgroup_prefix%", sgPrefix)
-                        .replace("%ep_user_subgroup_suffix%", sgSuffix);
+                        .replace("%ep_tag_prefix%", sgPrefix)
+                        .replace("%ep_user_subgroup_suffix%", sgSuffix)
+                        .replace("%ep_tag_suffix%", sgSuffix);
             } else {
                 text = expansionManager.setPapi(user.getPlayer(), text);
             }
