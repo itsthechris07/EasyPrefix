@@ -30,6 +30,7 @@ public class ColorCommand implements EasyCommand {
         this.subcommands = new ArrayList<>();
         this.subcommands.add(new SetCommand(this, instance));
         this.subcommands.add(new SelectCommand(this, instance));
+        this.subcommands.add(new HelpCommand(this));
     }
 
     @Override
@@ -110,4 +111,7 @@ public class ColorCommand implements EasyCommand {
         throw new NullPointerException("Couldn't find subcommand with name '" + name + "'");
     }
 
+    public List<Subcommand> getSubcommands() {
+        return subcommands;
+    }
 }
