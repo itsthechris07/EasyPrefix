@@ -71,8 +71,7 @@ public class SQLDatabase implements Database {
 
     public ResultSet getValue(String statement) {
         try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
+            Statement stmt = getConnection().createStatement();
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException e) {
             Debug.handleException(e);
@@ -82,8 +81,7 @@ public class SQLDatabase implements Database {
 
     private void update(String statement) {
         try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
+            Statement stmt = getConnection().createStatement();
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
         } catch (SQLException e) {
@@ -98,13 +96,19 @@ public class SQLDatabase implements Database {
 
     @Override
     public Connection getConnection() {
+        try {
+            if (connection != null && connection.isClosed()) {
+                connect();
+            }
+        } catch (SQLException ex) {
+            Debug.handleException(ex);
+        }
         return connection;
     }
 
     public void alterTable(String statement) {
         try {
-            if (connection.isClosed()) connect();
-            Statement stmt = connection.createStatement();
+            Statement stmt = getConnection().createStatement();
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
         } catch (SQLException ignored) {
