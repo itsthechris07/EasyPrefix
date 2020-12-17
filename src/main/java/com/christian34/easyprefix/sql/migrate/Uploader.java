@@ -6,6 +6,7 @@ import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.user.UserData;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,8 @@ import java.util.*;
  *
  * @author Christian34
  */
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.8")
 class Uploader {
     private final DataMigration dataMigration;
     private final GroupsData groupsData;
@@ -159,7 +162,8 @@ class Uploader {
                 try {
                     UUID uniqueId = UUID.fromString(result.getString("uuid"));
                     users.add(uniqueId);
-                } catch (IllegalArgumentException ignored) {
+                } catch (IllegalArgumentException ex) {
+                    Debug.catchException(ex);
                     continue;
                 }
                 result.close();

@@ -4,24 +4,26 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
-import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * EasyPrefix 2020.
  *
  * @author Christian34
  */
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.8")
 public class DataMigration {
     private final EasyPrefix instance;
     private final Uploader uploader;
     private final GroupsData groupsData;
     boolean connected = false;
     private LocalDatabase localDatabase;
+    private SQLDatabase sqlDatabase;
 
     public DataMigration(EasyPrefix instance) {
         this.instance = instance;
-
         this.groupsData = instance.getFileManager().getGroupsData();
         if (groupsData.getData() == null) {
             groupsData.load();
@@ -33,13 +35,14 @@ public class DataMigration {
     private void connect() {
         this.localDatabase = instance.getLocalDatabase();
         if (localDatabase == null) {
-            instance.setLocalDatabase(new LocalDatabase());
-            this.localDatabase = instance.getLocalDatabase();
+            this.localDatabase = new LocalDatabase();
+            this.localDatabase.connect();
         }
 
-        SQLDatabase sqlDatabase = instance.getSqlDatabase();
+        this.sqlDatabase = instance.getSqlDatabase();
         if (sqlDatabase == null) {
-            instance.setSqlDatabase(new SQLDatabase());
+            this.sqlDatabase = new SQLDatabase(instance);
+            this.sqlDatabase.connect();
         }
         this.connected = true;
     }
@@ -93,13 +96,16 @@ public class DataMigration {
 
 
     private void close() {
-        if (instance.getStorageType() == StorageType.SQL) {
-            instance.getLocalDatabase().close();
-            instance.setLocalDatabase(null);
-        } else {
-            instance.getSqlDatabase().close();
-            instance.setSqlDatabase(null);
+        if (this.localDatabase != null) {
+            this.localDatabase.close();
+            this.localDatabase = null;
         }
+
+        if (this.sqlDatabase != null) {
+            this.sqlDatabase.close();
+            this.sqlDatabase = null;
+        }
+
         this.connected = false;
     }
 
