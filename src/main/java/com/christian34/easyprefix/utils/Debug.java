@@ -45,6 +45,7 @@ public final class Debug {
             hub.setTag("java", System.getProperty("java.version"));
             hub.setTag("storage", instance.getStorageType().name().toLowerCase());
             hub.setTag("groups", String.valueOf(instance.getGroupHandler().getGroups().size()));
+            hub.setTag("subgroups", String.valueOf(instance.getGroupHandler().getSubgroups().size()));
         }, 20);
     }
 
