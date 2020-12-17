@@ -30,6 +30,7 @@ public class User {
     private final UUID uniqueId;
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
+    private final UserData userData;
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
@@ -45,6 +46,7 @@ public class User {
         this.uniqueId = player.getUniqueId();
         this.instance = EasyPrefix.getInstance();
         this.groupHandler = this.instance.getGroupHandler();
+        this.userData = new UserData(uniqueId);
     }
 
     public long getLastPrefixUpdate() {
@@ -56,7 +58,6 @@ public class User {
     }
 
     public void login() {
-        UserData userData = new UserData(uniqueId);
         userData.loadData();
 
         this.isGroupForced = userData.getBoolean("force_group");
