@@ -45,15 +45,10 @@ public class EasyPrefix extends JavaPlugin {
     private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
     private DataMigration dataMigration = null;
-    private SQLSynchronizer sqlSynchronizer;
     private CommandHandler commandHandler;
 
     public static EasyPrefix getInstance() {
         return instance;
-    }
-
-    private synchronized static void setInstance(EasyPrefix instance) {
-        EasyPrefix.instance = instance;
     }
 
     public CommandHandler getCommandHandler() {
@@ -100,7 +95,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void onEnable() {
-        setInstance(this);
+        EasyPrefix.instance = this;
         this.plugin = this;
         this.users = Collections.synchronizedSet(new HashSet<>());
         this.fileManager = new FileManager(this);
