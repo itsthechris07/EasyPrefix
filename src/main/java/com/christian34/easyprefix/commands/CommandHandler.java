@@ -59,7 +59,9 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 try {
                     easyCommand.handleCommand(sender, Arrays.asList(args));
                 } catch (CommandNotFoundException e) {
-                    Sentry.captureException(e);
+                    if (!(e.getSubcommand() != null && e.getSubcommand().equals("confirm"))) {
+                        Sentry.captureMessage(e.getMessage());
+                    }
                 } catch (Exception e) {
                     Debug.handleException(e);
                 }
