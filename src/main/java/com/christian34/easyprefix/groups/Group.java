@@ -153,6 +153,7 @@ public class Group extends EasyGroup {
     }
 
     private void saveData(@NotNull String key, @Nullable Object value) {
+        Debug.recordAction("Saving group '" + getName() + "'");
         if (instance.getStorageType() == StorageType.SQL) {
             UpdateStatement updateStatement = new UpdateStatement("groups")
                     .addCondition("group", this.NAME)
@@ -165,7 +166,6 @@ public class Group extends EasyGroup {
         } else {
             groupsData.setAndSave(getFileKey() + key.replace("_", "-"), value);
         }
-        this.groupHandler.getInstance().getGroupHandler().load();
     }
 
     @Override
