@@ -226,9 +226,12 @@ public class GuiRespond {
 
     private class ListenUp implements Listener {
 
-        @EventHandler(ignoreCancelled = true)
+        @EventHandler
         public void onInventoryClick(InventoryClickEvent e) {
-            if (!e.getWhoClicked().getName().equals(holder.getPlayer().getName()) || e.getClickedInventory() == null || e.getCurrentItem() == null || e.getCurrentItem().getItemMeta() == null) {
+            if (!e.getWhoClicked().getName().equals(holder.getPlayer().getName())
+                    || e.getClickedInventory() == null
+                    || e.getCurrentItem() == null
+                    || e.getCurrentItem().getItemMeta() == null) {
                 return;
             }
             e.setCancelled(true);
