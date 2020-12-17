@@ -196,7 +196,7 @@ public class GuiSettings {
             slot++;
         }
 
-        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET, 5, 9).onClick(() -> {
+        guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.getText(), 5, 9).onClick(() -> {
             user.setChatColor(null);
             user.setChatFormatting(null);
             openColorsPage(backAction);
@@ -264,7 +264,7 @@ public class GuiSettings {
         List<String> prefixLore = replaceInList(Message.LORE_CHANGE_PREFIX.getList(),
                 user.getPrefix().replace("§", "&"));
 
-        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX, 2, 4)
+        guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX.getText(), 2, 4)
                 .setLore(prefixLore)
                 .onClick(() -> {
                     ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.getText()

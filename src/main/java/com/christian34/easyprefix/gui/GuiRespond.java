@@ -36,7 +36,7 @@ public class GuiRespond {
     private Inventory inventory;
     private int page = 1;
     private Icon closeInventoryIcon;
-    private ArrayList<GuiPage> pages = new ArrayList<>();
+    private List<GuiPage> pages = new ArrayList<>();
 
     public GuiRespond(User holder, String title, int lines) {
         this.holder = holder;
@@ -88,10 +88,6 @@ public class GuiRespond {
 
     public Icon addIcon(Material material, String displayName, int line, int slot) {
         return addIcon(new ItemStack(material), displayName, line, slot);
-    }
-
-    public Icon addIcon(Material material, Message displayName, int line, int slot) {
-        return addIcon(new ItemStack(material), displayName.getText(), line, slot);
     }
 
     public Icon addIcon(ItemStack itemStack, Message displayName, int line, int slot) {
