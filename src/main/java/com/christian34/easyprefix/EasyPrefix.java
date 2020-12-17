@@ -181,8 +181,8 @@ public class EasyPrefix extends JavaPlugin {
 
     public void reload() {
         Debug.recordAction("Reloading Plugin");
-        this.updater.check();
         this.fileManager = new FileManager(this);
+        this.updater.check();
         if (storageType == StorageType.SQL) {
             this.sqlDatabase.close();
             this.sqlDatabase = new SQLDatabase(this);

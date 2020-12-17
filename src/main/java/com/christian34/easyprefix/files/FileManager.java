@@ -14,18 +14,23 @@ public class FileManager {
     private final EasyPrefix instance;
     private ConfigData configData;
     private GroupsData groupsData;
+    private MessageData messageData;
 
     public FileManager(EasyPrefix instance) {
         this.instance = instance;
         try {
             load();
         } catch (Exception ex) {
-         ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 
     public static File getPluginFolder() {
         return pluginFolder;
+    }
+
+    public MessageData getMessageData() {
+        return messageData;
     }
 
     public void load() {
@@ -39,7 +44,7 @@ public class FileManager {
         if (!configData.getData().getBoolean("config.sql.enabled")) {
             groupsData.load();
         }
-        new MessageData(this.instance);
+        this.messageData = new MessageData(this.instance);
     }
 
     public ConfigData getConfig() {

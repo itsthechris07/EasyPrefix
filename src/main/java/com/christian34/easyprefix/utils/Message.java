@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.utils;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.MessageData;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -95,16 +96,16 @@ public enum Message {
 
     public static final String PREFIX = "§7[§9EasyPrefix§7] ";
     public static final String CHAT_PLAYER_ONLY = "§cYou can't use this from console!";
-    private static MessageData messageData;
+    private static final MessageData messageData;
     private final String key;
+
+    static {
+        messageData = EasyPrefix.getInstance().getFileManager().getMessageData();
+    }
 
 
     Message(String key) {
         this.key = key;
-    }
-
-    public static void setData(MessageData data) {
-        messageData = data;
     }
 
     @Nullable
