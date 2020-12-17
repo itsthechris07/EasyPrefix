@@ -18,9 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -131,19 +129,26 @@ public class GuiSettings {
         final boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
 
         int line = 2, slot = 1;
-        for (Color color : Color.getValues()) {
-            if (!showAll && !user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {
+        Set<Color> colors = showAll ? new HashSet<>(Arrays.asList(Color.getValues())) : user.getColors();
+        for (Color color : colors) {
+            if (!showAll && !user.hasPermission("color." + color.name())) {
                 continue;
             }
-            if (line == 3 && slot == 1) slot++;
-            ItemStack itemStack = color.toItemStack();
-            if (user.getChatColor().equals(color) && (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)))
-                itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
 
-            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, +slot).onClick(() -> {
-                if (user.getPlayer().hasPermission("EasyPrefix.Color." + color.name().toLowerCase())) {
+            if (line == 3 && slot == 1) slot++;
+
+            ItemStack itemStack = color.toItemStack();
+            if (user.getChatColor().equals(color)) {
+                if (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+                    itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                }
+            }
+
+            guiRespond.addIcon(itemStack, "§r" + color.toString(), line, +slot).onClick(() -> {
+                if (user.hasPermission("color." + color.name())) {
                     user.setChatColor(color);
-                    openColorsPage(null);
+                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", color.getName()));
+                    openColorsPage(backAction);
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
@@ -160,8 +165,11 @@ public class GuiSettings {
         slot = 3;
         final List<String> infoNotCompatible = Message.LORE_SELECT_COLOR_NC.getList();
         final List<String> loreList = Message.LORE_SELECT_COLOR.getList();
-        for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
-            if (!showAll && !user.getPlayer().hasPermission("EasyPrefix.Color." + chatFormatting.name().toLowerCase())) {
+        Set<ChatFormatting> formattings = showAll
+                ? new HashSet<>(Arrays.asList(ChatFormatting.getValues()))
+                : user.getChatFormattings();
+        for (ChatFormatting chatFormatting : formattings) {
+            if (!showAll && !user.hasPermission("color." + chatFormatting.name())) {
                 continue;
             }
             List<String> lore = new ArrayList<>(loreList);
@@ -174,12 +182,13 @@ public class GuiSettings {
             }
             guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).onClick(() -> {
                 ChatFormatting formatting = chatFormatting;
-                if (user.getPlayer().hasPermission("EasyPrefix.Color." + formatting.name().toLowerCase())) {
+                if (user.getPlayer().hasPermission("color." + formatting.name().toLowerCase())) {
                     if (user.getChatFormatting() != null && user.getChatFormatting().equals(formatting)) {
                         formatting = ChatFormatting.UNDEFINED;
                     }
                     user.setChatFormatting(formatting);
-                    openColorsPage(null);
+                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", formatting.getName()));
+                    openColorsPage(backAction);
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
