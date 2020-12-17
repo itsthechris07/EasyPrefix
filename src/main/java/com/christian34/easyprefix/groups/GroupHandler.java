@@ -68,9 +68,9 @@ public class GroupHandler {
     }
 
     public void load() {
+        Debug.recordAction("Loading groups...");
         this.groups = new ArrayList<>();
         this.subgroups = new ArrayList<>();
-        this.instance.getUsers().clear();
         if (ConfigKeys.USE_GENDER.toBoolean()) {
             loadGenders();
         }
