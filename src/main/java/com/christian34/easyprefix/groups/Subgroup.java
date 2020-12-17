@@ -60,6 +60,7 @@ public class Subgroup extends EasyGroup {
     }
 
     private void saveData(String key, Object value) {
+        Debug.recordAction("Saving subgroup '" + getName() + "'");
         if (value instanceof String) value = ((String) value).replace("§", "&");
         if (instance.getStorageType() == StorageType.LOCAL) {
             key = key.replace("_", "-");
@@ -72,7 +73,6 @@ public class Subgroup extends EasyGroup {
                 Debug.log("Couldn't save data to database! Error SDB1");
             }
         }
-        instance.getGroupHandler().load();
     }
 
     @Override
@@ -214,7 +214,7 @@ public class Subgroup extends EasyGroup {
             }
         }
         instance.getGroupHandler().getSubgroups().remove(this);
-        instance.getUsers().clear();
+        instance.reloadUsers();
     }
 
 }
