@@ -3,6 +3,7 @@ package com.christian34.easyprefix.sql;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.Database;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -93,6 +94,7 @@ public class UpdateStatement {
                 stmt.executeUpdate();
                 return true;
             } catch (SQLException ex) {
+                Debug.catchException(ex);
                 return false;
             }
         });
