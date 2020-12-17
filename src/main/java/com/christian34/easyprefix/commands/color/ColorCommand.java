@@ -8,7 +8,6 @@ import com.christian34.easyprefix.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -109,7 +108,6 @@ public class ColorCommand implements EasyCommand {
             ArrayList<String> list = new ArrayList<>();
             list.add("select");
             list.addAll(args);
-            Bukkit.broadcastMessage(list.toString());
             matches.addAll(getSubcommand("select").getTabCompletion(sender, list));
             return matches;
         } else {
