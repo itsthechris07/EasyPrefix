@@ -55,10 +55,6 @@ public class EasyPrefix extends JavaPlugin {
         return commandHandler;
     }
 
-    public SQLSynchronizer getSqlSynchronizer() {
-        return sqlSynchronizer;
-    }
-
     public DataMigration getDataMigration() {
         if (dataMigration == null) {
             this.dataMigration = new DataMigration(this);
@@ -101,14 +97,13 @@ public class EasyPrefix extends JavaPlugin {
         this.fileManager = new FileManager(this);
 
         if (ConfigKeys.SQL_ENABLED.toBoolean()) {
-            setSqlDatabase(new SQLDatabase());
+            this.sqlDatabase = new SQLDatabase(this);
             this.storageType = StorageType.SQL;
             if (!this.sqlDatabase.connect()) {
                 return;
             }
-            this.sqlSynchronizer = new SQLSynchronizer(this);
         } else {
-            setLocalDatabase(new LocalDatabase());
+            this.localDatabase = new LocalDatabase();
             this.storageType = StorageType.LOCAL;
         }
 
@@ -190,7 +185,7 @@ public class EasyPrefix extends JavaPlugin {
         this.fileManager = new FileManager(this);
         if (storageType == StorageType.SQL) {
             this.sqlDatabase.close();
-            this.sqlDatabase = new SQLDatabase();
+            this.sqlDatabase = new SQLDatabase(this);
             this.sqlDatabase.connect();
         }
         RainbowEffect.getRainbowColors().clear();

@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.sql.database;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.utils.Debug;
 
@@ -18,9 +19,12 @@ public class SQLDatabase implements Database {
     private final String tablePrefix;
     private final String password;
     private final int port;
+    private final EasyPrefix instance;
     private Connection connection;
+    private SQLSynchronizer sqlSynchronizer;
 
-    public SQLDatabase() {
+    public SQLDatabase(EasyPrefix instance) {
+        this.instance = instance;
         this.host = ConfigKeys.SQL_HOST.toString();
         this.database = ConfigKeys.SQL_DATABASE.toString();
         this.username = ConfigKeys.SQL_USERNAME.toString();
@@ -31,6 +35,10 @@ public class SQLDatabase implements Database {
             tPrefix = "";
         } else if (!tPrefix.endsWith("_")) tPrefix += "_";
         this.tablePrefix = tPrefix;
+    }
+
+    public SQLSynchronizer getSqlSynchronizer() {
+        return sqlSynchronizer;
     }
 
     @Override
@@ -44,6 +52,7 @@ public class SQLDatabase implements Database {
                                 + "&autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID(),
                         username, password);
                 updateTables();
+                this.sqlSynchronizer = new SQLSynchronizer(instance);
                 return true;
             } catch (SQLSyntaxErrorException e) {
                 Debug.log("§cDatabase '" + database + "' does not exist!");
