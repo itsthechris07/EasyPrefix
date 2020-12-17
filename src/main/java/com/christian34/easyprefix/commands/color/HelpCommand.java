@@ -50,6 +50,9 @@ class HelpCommand implements Subcommand {
         sender.sendMessage(Message.CHAT_COLOR_HEADER.getText().replace("%newline%", "\n"));
         String prefix = "§7/§9color ";
 
+        sender.sendMessage(prefix + "<color>");
+        sender.sendMessage("  §7sets your default chat color");
+
         for (Subcommand cmd : parentCommand.getSubcommands()) {
             if (cmd.getDescription() == null) return;
 

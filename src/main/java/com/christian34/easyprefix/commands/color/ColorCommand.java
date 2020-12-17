@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.commands.color;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.commands.CommandNotFoundException;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigKeys;
@@ -9,11 +8,13 @@ import com.christian34.easyprefix.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,9 +80,16 @@ public class ColorCommand implements EasyCommand {
                 return;
             }
         }
-        sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command! Type '/color help'"
-                + " to get a command overview.");
-        throw new CommandNotFoundException("color " + args.toString());
+
+        if (sender instanceof Player) {
+            String name = args.get(0);
+            if (args.size() == 2) {
+                name += " " + args.get(1);
+            }
+            getSubcommand("select").handleCommand(sender, Arrays.asList("select", name));
+        } else {
+            getSubcommand("help").handleCommand(sender, Collections.emptyList());
+        }
     }
 
     @Override
@@ -98,6 +106,11 @@ public class ColorCommand implements EasyCommand {
                     }
                 }
             }
+            ArrayList<String> list = new ArrayList<>();
+            list.add("select");
+            list.addAll(args);
+            Bukkit.broadcastMessage(list.toString());
+            matches.addAll(getSubcommand("select").getTabCompletion(sender, list));
             return matches;
         } else {
             for (Subcommand subcmd : subcommands) {
@@ -115,7 +128,7 @@ public class ColorCommand implements EasyCommand {
 
     public Subcommand getSubcommand(String name) {
         for (Subcommand subCmd : subcommands) {
-            if (subCmd.getName().equalsIgnoreCase(name)) {
+            if (subCmd.getName().equals(name)) {
                 return subCmd;
             }
         }
@@ -125,4 +138,5 @@ public class ColorCommand implements EasyCommand {
     public List<Subcommand> getSubcommands() {
         return subcommands;
     }
+
 }
