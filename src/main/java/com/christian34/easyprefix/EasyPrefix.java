@@ -128,6 +128,12 @@ public class EasyPrefix extends JavaPlugin {
                 Debug.log("§c--------------------------------------");
             }
         }, 20 * 3);
+
+        if (expansionManager.isUsingPapi()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                @SuppressWarnings("unused") User user = getUser(player);
+            }
+        }
     }
 
     public boolean formatChat() {
