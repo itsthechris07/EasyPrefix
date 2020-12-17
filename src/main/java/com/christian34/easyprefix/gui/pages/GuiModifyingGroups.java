@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * EasyPrefix 2020.
@@ -99,10 +98,12 @@ public class GuiModifyingGroups {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
 
-            guiRespond.addIcon(itemStack, "§r" + Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName(), line, slot).onClick(() -> {
-                group.setChatColor(color);
-                editChatColor(easyGroup);
-            });
+            guiRespond.addIcon(itemStack, "§r" + color.toString(), line, slot)
+                    .setLore(" ", "§7Permission: §fEasyPrefix.color." + color.name().toLowerCase())
+                    .onClick(() -> {
+                        group.setChatColor(color);
+                        editChatColor(easyGroup);
+                    });
             slot++;
             if (slot == 10) {
                 slot = 1;
@@ -121,6 +122,7 @@ public class GuiModifyingGroups {
             if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
+            lore.add("§7Permission: §fEasyPrefix.color." + chatFormatting.name().toLowerCase());
             guiRespond.addIcon(itemStack, "§r" + chatFormatting.toString(), line, slot).setLore(lore).onClick(() -> {
                 ChatFormatting formatting = chatFormatting;
                 if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
