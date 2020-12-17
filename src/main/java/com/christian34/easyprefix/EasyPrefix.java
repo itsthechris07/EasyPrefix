@@ -10,7 +10,6 @@ import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
-import com.christian34.easyprefix.sql.database.SQLSynchronizer;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.sql.migrate.DataMigration;
 import com.christian34.easyprefix.user.User;
@@ -23,9 +22,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * EasyPrefix 2020.
@@ -34,7 +35,7 @@ import java.util.List;
  */
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance = null;
-    private List<User> users;
+    private Set<User> users;
     private Plugin plugin;
     private GroupHandler groupHandler;
     private FileManager fileManager;
@@ -74,20 +75,12 @@ public class EasyPrefix extends JavaPlugin {
         return localDatabase;
     }
 
-    public void setLocalDatabase(LocalDatabase localDatabase) {
-        this.localDatabase = localDatabase;
-    }
-
     public StorageType getStorageType() {
         return storageType;
     }
 
     public SQLDatabase getSqlDatabase() {
         return sqlDatabase;
-    }
-
-    public void setSqlDatabase(SQLDatabase sqlDatabase) {
-        this.sqlDatabase = sqlDatabase;
     }
 
     public ExpansionManager getExpansionManager() {
@@ -109,7 +102,7 @@ public class EasyPrefix extends JavaPlugin {
     public void onEnable() {
         setInstance(this);
         this.plugin = this;
-        this.users = new ArrayList<>();
+        this.users = Collections.synchronizedSet(new HashSet<>());
         this.fileManager = new FileManager(this);
 
         if (ConfigKeys.SQL_ENABLED.toBoolean()) {
@@ -155,13 +148,14 @@ public class EasyPrefix extends JavaPlugin {
         return groupHandler;
     }
 
+    @NotNull
     public User getUser(Player player) {
-        User user = this.users.stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(null);
+        User user = getUsers().stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(null);
         if (user == null) {
             user = new User(player);
-            this.users.add(user);
             try {
                 user.login();
+                getUsers().add(user);
             } catch (Exception ex) {
                 Debug.handleException(ex);
             }
@@ -169,7 +163,17 @@ public class EasyPrefix extends JavaPlugin {
         return user;
     }
 
-    public List<User> getUsers() {
+    public void reloadUsers() {
+        for (User user : getUsers()) {
+            try {
+                user.login();
+            } catch (Exception ex) {
+                Debug.handleException(ex);
+            }
+        }
+    }
+
+    public Set<User> getUsers() {
         return users;
     }
 
@@ -182,7 +186,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public void unloadUser(final Player player) {
-        users.removeIf(user -> user.getPlayer().getName().equals(player.getName()));
+        getUsers().removeIf(user -> user.getPlayer().getName().equals(player.getName()));
     }
 
     public void reload() {
@@ -196,9 +200,7 @@ public class EasyPrefix extends JavaPlugin {
         }
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler.load();
-        for (User user : users) {
-            user.login();
-        }
+        reloadUsers();
     }
 
     private void registerEvents() {
