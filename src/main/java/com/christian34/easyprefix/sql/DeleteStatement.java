@@ -10,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * EasyPrefix 2020.
@@ -67,21 +65,14 @@ public class DeleteStatement {
     }
 
     public boolean execute() {
-        CompletableFuture<Boolean> compFuture = CompletableFuture.supplyAsync(() -> {
-            try (PreparedStatement stmt = buildStatement()) {
-                stmt.executeUpdate();
-                if (!this.table.equals("options") && database instanceof SQLDatabase) {
-                    instance.getSqlSynchronizer().sendSyncInstruction();
-                }
-                return true;
-            } catch (SQLException ex) {
-                Debug.handleException(ex);
-                return false;
+        try (PreparedStatement stmt = buildStatement()) {
+            stmt.executeUpdate();
+            if (!this.table.equals("options") && database instanceof SQLDatabase) {
+                instance.getSqlDatabase().getSqlSynchronizer().sendSyncInstruction();
             }
-        });
-        try {
-            return compFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
+            return true;
+        } catch (SQLException ex) {
+            Debug.handleException(ex);
             return false;
         }
     }
