@@ -46,7 +46,7 @@ public class InsertStatement {
         try (PreparedStatement stmt = buildStatement()) {
             stmt.executeUpdate();
             if (!this.table.equals("options") && database instanceof SQLDatabase) {
-                instance.getSqlSynchronizer().sendSyncInstruction();
+                instance.getSqlDatabase().getSqlSynchronizer().sendSyncInstruction();
             }
             return true;
         } catch (SQLIntegrityConstraintViolationException ex) {

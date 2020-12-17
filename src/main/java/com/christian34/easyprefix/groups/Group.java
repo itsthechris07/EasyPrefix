@@ -161,7 +161,7 @@ public class Group extends EasyGroup {
                 Debug.log("Couldn't save data to database! Error GDB1");
             }
 
-            instance.getSqlSynchronizer().sendSyncInstruction();
+            instance.getSqlDatabase().getSqlSynchronizer().sendSyncInstruction();
         } else {
             groupsData.setAndSave(getFileKey() + key.replace("_", "-"), value);
         }
@@ -304,7 +304,7 @@ public class Group extends EasyGroup {
             }
         }
         instance.getGroupHandler().getGroups().remove(this);
-        instance.getUsers().clear();
+        instance.reloadUsers();
     }
 
     @NotNull
