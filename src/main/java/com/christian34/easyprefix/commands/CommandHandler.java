@@ -33,7 +33,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         for (EasyCommand command : commands) {
             PluginCommand pluginCommand = instance.getCommand(command.getName());
             if (pluginCommand == null) {
-                throw new CommandNotFoundException(command.getName());
+                throw new CommandNotFoundException(command.getName(), "");
             }
 
             pluginCommand.setExecutor(this);
@@ -49,7 +49,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 return command;
             }
         }
-        throw new CommandNotFoundException(name);
+        throw new CommandNotFoundException(name, null);
     }
 
     @Override

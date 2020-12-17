@@ -76,7 +76,7 @@ public class TagsCommand implements EasyCommand {
         }
         sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command! Type '/tags help'"
                 + " to get a command overview.");
-        throw new CommandNotFoundException("tags " + args.toString());
+        throw new CommandNotFoundException("tags", subcommand);
     }
 
     @Override

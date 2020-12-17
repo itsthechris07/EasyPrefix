@@ -99,7 +99,7 @@ public class EasyPrefixCommand implements EasyCommand {
         }
         sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
                 + " to get a command overview.");
-        throw new CommandNotFoundException("easyprefix " + args.toString());
+        throw new CommandNotFoundException("easyprefix", subcommand);
     }
 
     @Override
