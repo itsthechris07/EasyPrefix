@@ -59,18 +59,10 @@ public class GuiSetup {
 
         final String ENABLED = "§aenabled";
         final String DISABLED = "§cdisabled";
-        String cpText = "§aCustom Layout §7(" + ((useCp) ? ENABLED : DISABLED) + "§7)";
-        guiRespond.addIcon(Material.BEACON, cpText, 2, 3)
-                .setLore("§9Enable/Disable custom prefixes and suffixes")
-                .onClick(() -> {
-                    configData.set(ConfigKeys.CUSTOM_LAYOUT.getPath(), !useCp);
-                    EasyPrefix.getInstance().reload();
-                    pluginSettingsGui();
-                });
 
         boolean useGender = ConfigKeys.USE_GENDER.toBoolean();
         String genderText = "§aGender §7(" + ((useGender) ? ENABLED : DISABLED) + "§7)";
-        guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 5)
+        guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 4)
                 .setLore("§9Enable/Disable players gender")
                 .onClick(() -> {
                     boolean use = !useGender;
@@ -81,7 +73,7 @@ public class GuiSetup {
 
         boolean useColors = ConfigKeys.HANDLE_COLORS.toBoolean();
         String colorsText = "§aHandle colors §7(" + ((useColors) ? ENABLED : DISABLED) + "§7)";
-        guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 7)
+        guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 6)
                 .setLore("§9Translate color and formatting codes")
                 .onClick(() -> {
                     boolean use = !useColors;
