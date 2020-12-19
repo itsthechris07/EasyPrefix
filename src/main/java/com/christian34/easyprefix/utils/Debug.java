@@ -57,6 +57,15 @@ public final class Debug {
         hub.addBreadcrumb(message);
     }
 
+    public static void recordActionAndLog(String message) {
+        if (hub == null) {
+            initSentry();
+        }
+
+        hub.addBreadcrumb(message);
+        log(message);
+    }
+
     public static void catchException(Exception exception) {
         if (hub == null) {
             initSentry();

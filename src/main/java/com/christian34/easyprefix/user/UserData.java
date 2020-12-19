@@ -97,11 +97,11 @@ public class UserData {
         if (userDataFile.getFile() == null || userDataFile.getFileData() == null) return;
         Debug.recordAction("updating user data for user '" + uniqueId + "'");
         OfflinePlayer op = Bukkit.getOfflinePlayer(uniqueId);
-        Debug.log("Updating " + op.getName() + "´s data...");
+        Debug.recordActionAndLog("Updating " + op.getName() + "´s data...");
 
         SelectQuery selectQuery = new SelectQuery("users", "uuid").addCondition("uuid", this.uniqueId.toString());
         if (selectQuery.getData().isEmpty()) {
-            Debug.log("Creating database for user...");
+            Debug.recordActionAndLog("Creating database for user...");
             InsertStatement insertStatement = new InsertStatement("users").setValue("uuid", this.uniqueId.toString());
             if (!insertStatement.execute()) {
                 Debug.log("Couldn't save data to database! Error UDDB4");
