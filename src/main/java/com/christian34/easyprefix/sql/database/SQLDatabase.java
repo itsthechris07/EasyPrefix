@@ -79,8 +79,7 @@ public class SQLDatabase implements Database {
     }
 
     public ResultSet getValue(String statement) {
-        try {
-            Statement stmt = getConnection().createStatement();
+        try (Statement stmt = getConnection().createStatement()) {
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException e) {
             Debug.handleException(e);
@@ -89,8 +88,7 @@ public class SQLDatabase implements Database {
     }
 
     private void update(String statement) {
-        try {
-            Statement stmt = getConnection().createStatement();
+        try (Statement stmt = getConnection().createStatement()) {
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
         } catch (SQLException e) {
@@ -116,8 +114,7 @@ public class SQLDatabase implements Database {
     }
 
     public void alterTable(String statement) {
-        try {
-            Statement stmt = getConnection().createStatement();
+        try (Statement stmt = getConnection().createStatement()) {
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
             stmt.close();
         } catch (SQLException ignored) {
