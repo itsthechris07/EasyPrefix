@@ -11,8 +11,8 @@ public enum ChatFormatting {
     RAINBOW("r", Message.FORMATTING_RAINBOW.getText()),
     STRIKETHROUGH("m", Message.FORMATTING_STRIKETHROUGH.getText()),
     UNDERLINE("n", Message.FORMATTING_UNDERLINE.getText()),
-    UNDEFINED("@", null),
-    INHERIT("", null);
+    UNDEFINED("@", ""),
+    INHERIT("", "");
 
     private final String code;
     private final String name;
