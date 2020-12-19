@@ -97,12 +97,12 @@ public enum Message {
     public static final String PREFIX = "§7[§9EasyPrefix§7] ";
     public static final String CHAT_PLAYER_ONLY = "§cYou can't use this from console!";
     private static final MessageData messageData;
-    private final String key;
 
     static {
         messageData = EasyPrefix.getInstance().getFileManager().getMessageData();
     }
 
+    private final String key;
 
     Message(String key) {
         this.key = key;
