@@ -26,8 +26,6 @@ import java.util.List;
 public class EasyPrefixCommand implements EasyCommand {
     private final EasyPrefix instance;
     private final List<Subcommand> subcommands;
-    private final String CMD_NOT_FOUND = Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
-            + " to get a command overview.";
 
     public EasyPrefixCommand(EasyPrefix instance, CommandHandler commandHandler) {
         this.instance = instance;
@@ -86,6 +84,8 @@ public class EasyPrefixCommand implements EasyCommand {
 
         String subcommand = args.get(0);
 
+        final String CMD_NOT_FOUND = Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
+                + " to get a command overview.";
         if (!ConfigKeys.CUSTOM_LAYOUT.toBoolean() &&
                 (subcommand.equalsIgnoreCase("setprefix") || subcommand.equalsIgnoreCase("setsuffix"))) {
             Debug.log("This is not available because you disabled it in the configuration. Open 'config.yml' and set 'custom-layout.enabled' to 'true'. Please restart the server.");
