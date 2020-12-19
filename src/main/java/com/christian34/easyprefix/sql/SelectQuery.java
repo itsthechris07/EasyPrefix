@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * EasyPrefix 2020.
@@ -57,29 +55,22 @@ public class SelectQuery {
             return data;
         }
 
-        try {
-            data = new Data(retrieveData().get());
-        } catch (InterruptedException | ExecutionException e) {
-            Debug.handleException(e);
-            data = new Data(null);
-        }
+        this.data = new Data(retrieveData());
         return data;
     }
 
-    private CompletableFuture<HashMap<String, Object>> retrieveData() {
-        return CompletableFuture.supplyAsync(() -> {
-            HashMap<String, Object> map = new HashMap<>();
-            try (ResultSet result = prepareStatement().executeQuery()) {
-                if (result.next()) {
-                    for (String key : columns) {
-                        map.put(key, result.getString(key));
-                    }
+    private HashMap<String, Object> retrieveData() {
+        HashMap<String, Object> map = new HashMap<>();
+        try (ResultSet result = prepareStatement().executeQuery()) {
+            if (result.next()) {
+                for (String key : columns) {
+                    map.put(key, result.getString(key));
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             }
-            return map;
-        });
+        } catch (SQLException ex) {
+            Debug.catchException(ex);
+        }
+        return map;
     }
 
     private PreparedStatement prepareStatement() throws SQLException {
