@@ -32,9 +32,11 @@ public class GuiSetup {
     private static final String DIVIDER = "§7-------------------------";
     private final User user;
     private final GuiModifyingGroups guiModifyingGroups;
+    private final EasyPrefix instance;
 
     public GuiSetup(User user) {
         this.user = user;
+        this.instance = EasyPrefix.getInstance();
         this.guiModifyingGroups = new GuiModifyingGroups(user);
     }
 
@@ -53,9 +55,8 @@ public class GuiSetup {
 
     public void pluginSettingsGui() {
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §9Settings", 3);
-        ConfigData configData = EasyPrefix.getInstance().getFileManager().getConfig();
+        ConfigData configData = this.instance.getFileManager().getConfig();
 
-        final boolean useCp = ConfigKeys.CUSTOM_LAYOUT.toBoolean();
         final String ENABLED = "§aenabled";
         final String DISABLED = "§cdisabled";
         String cpText = "§aCustom Layout §7(" + ((useCp) ? ENABLED : DISABLED) + "§7)";
@@ -74,7 +75,7 @@ public class GuiSetup {
                 .onClick(() -> {
                     boolean use = !useGender;
                     configData.set(ConfigKeys.USE_GENDER.getPath(), use);
-                    EasyPrefix.getInstance().reload();
+                    this.instance.reload();
                     pluginSettingsGui();
                 });
 
@@ -85,7 +86,7 @@ public class GuiSetup {
                 .onClick(() -> {
                     boolean use = !useColors;
                     configData.set(ConfigKeys.HANDLE_COLORS.getPath(), use);
-                    EasyPrefix.getInstance().reload();
+                    this.instance.reload();
                     pluginSettingsGui();
                 });
 
@@ -94,7 +95,7 @@ public class GuiSetup {
     }
 
     public void createGroup() {
-        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        GroupHandler groupHandler = this.instance.getGroupHandler();
         ChatRespond responder = new ChatRespond(user, "§9Please write the name of the new group in the chat!");
 
         responder.addInputReader((answer) -> {
@@ -119,7 +120,7 @@ public class GuiSetup {
     }
 
     public void createSubgroup() {
-        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        GroupHandler groupHandler = this.instance.getGroupHandler();
         ChatRespond responder = new ChatRespond(user, "§9Please write the name of the new tag in the chat!");
 
         responder.addInputReader((answer) -> {
@@ -144,7 +145,7 @@ public class GuiSetup {
     }
 
     public void groupsList() {
-        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        GroupHandler groupHandler = this.instance.getGroupHandler();
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Groups", 5);
         final String divider = "§7-------------------------------";
         for (Group group : groupHandler.getGroups()) {
@@ -183,7 +184,7 @@ public class GuiSetup {
 
     public void openSubgroupsList() {
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Subgroups", 5);
-        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        GroupHandler groupHandler = this.instance.getGroupHandler();
         for (final Subgroup subgroup : groupHandler.getSubgroups()) {
             String prefix = subgroup.getPrefix(null, false);
             if (prefix == null) {

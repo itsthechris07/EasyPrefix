@@ -29,9 +29,11 @@ import java.util.stream.Collectors;
 public class GuiSettings {
     private final String TITLE = Message.GUI_SETTINGS_TITLE.getText();
     private final User user;
+    private final EasyPrefix instance;
 
     public GuiSettings(User user) {
         this.user = user;
+        this.instance = EasyPrefix.getInstance();
     }
 
     public void openWelcomePage() {
@@ -57,7 +59,7 @@ public class GuiSettings {
     }
 
     public void openGenderSelectPage(ClickAction backAction) {
-        GroupHandler groupHandler = EasyPrefix.getInstance().getGroupHandler();
+        GroupHandler groupHandler = this.instance.getGroupHandler();
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_GENDER), 3);
         String genderName = "n/A";
         if (user.getGenderType() != null) genderName = user.getGenderType().getDisplayName();
