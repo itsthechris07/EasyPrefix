@@ -37,7 +37,7 @@ public class GuiSetup {
     public GuiSetup(User user) {
         this.user = user;
         this.instance = EasyPrefix.getInstance();
-        this.guiModifyingGroups = new GuiModifyingGroups(user);
+        this.guiModifyingGroups = new GuiModifyingGroups(user, this);
     }
 
     public void mainPage() {

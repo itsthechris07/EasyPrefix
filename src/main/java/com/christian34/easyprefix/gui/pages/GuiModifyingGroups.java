@@ -29,10 +29,10 @@ public class GuiModifyingGroups {
     private final EasyPrefix instance;
     private final GuiSetup guiSetup;
 
-    public GuiModifyingGroups(User user) {
+    public GuiModifyingGroups(User user, GuiSetup guiSetup) {
         this.user = user;
         this.instance = EasyPrefix.getInstance();
-        this.guiSetup = new GuiSetup(user);
+        this.guiSetup = guiSetup;
     }
 
     public void editPrefix(EasyGroup easyGroup) {
