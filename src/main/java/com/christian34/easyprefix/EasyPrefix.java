@@ -35,6 +35,9 @@ import java.util.Set;
  */
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance = null;
+    private SQLDatabase sqlDatabase = null;
+    private LocalDatabase localDatabase = null;
+    private DataMigration dataMigration = null;
     private Set<User> users;
     private Plugin plugin;
     private GroupHandler groupHandler;
