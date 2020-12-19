@@ -1,5 +1,8 @@
 package com.christian34.easyprefix.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * EasyPrefix 2020.
  *
@@ -22,6 +25,7 @@ public enum ChatFormatting {
         this.name = name;
     }
 
+    @Nullable
     public static ChatFormatting getByCode(String code) {
         for (ChatFormatting formatting : ChatFormatting.values()) {
             if (formatting.code.equals(code)) return formatting;
@@ -29,6 +33,7 @@ public enum ChatFormatting {
         return null;
     }
 
+    @NotNull
     public static ChatFormatting[] getValues() {
         ChatFormatting[] formattings = new ChatFormatting[values().length - 2];
         int i = 0;
@@ -40,6 +45,7 @@ public enum ChatFormatting {
         return formattings;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }
@@ -55,6 +61,7 @@ public enum ChatFormatting {
         return "";
     }
 
+    @NotNull
     public String getCode() {
         return code == null ? "" : "§" + code;
     }
