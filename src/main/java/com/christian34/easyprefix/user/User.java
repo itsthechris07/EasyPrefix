@@ -27,7 +27,6 @@ import java.util.*;
  */
 public class User {
     private final Player player;
-    private final UUID uniqueId;
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
     private final UserData userData;
@@ -43,10 +42,9 @@ public class User {
 
     public User(@NotNull Player player) {
         this.player = player;
-        this.uniqueId = player.getUniqueId();
         this.instance = EasyPrefix.getInstance();
         this.groupHandler = this.instance.getGroupHandler();
-        this.userData = new UserData(uniqueId);
+        this.userData = new UserData(player.getUniqueId());
     }
 
     public long getLastPrefixUpdate() {
