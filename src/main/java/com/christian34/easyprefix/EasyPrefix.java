@@ -198,7 +198,7 @@ public class EasyPrefix extends JavaPlugin {
             this.sqlDatabase.connect();
         } else {
             this.localDatabase.close();
-            this.sqlDatabase.connect();
+            this.localDatabase.connect();
         }
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler.load();
