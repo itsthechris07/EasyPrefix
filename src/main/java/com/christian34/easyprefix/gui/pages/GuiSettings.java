@@ -18,7 +18,10 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -131,7 +134,7 @@ public class GuiSettings {
         final boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
 
         int line = 2, slot = 1;
-        Set<Color> colors = showAll ? new HashSet<>(Arrays.asList(Color.getValues())) : user.getColors();
+        List<Color> colors = showAll ? Arrays.asList(Color.getValues()) : new ArrayList<>(user.getColors());
         for (Color color : colors) {
             if (!showAll && !user.hasPermission("color." + color.name())) {
                 continue;
@@ -149,7 +152,17 @@ public class GuiSettings {
             guiRespond.addIcon(itemStack, "§r" + color.toString(), line, +slot).onClick(() -> {
                 if (user.hasPermission("color." + color.name())) {
                     user.setChatColor(color);
-                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", color.getName()));
+
+                    String name = color.getCode();
+                    ChatFormatting formatting = user.getChatFormatting();
+                    if (formatting != null && (!formatting.equals(ChatFormatting.UNDEFINED)
+                            && !formatting.equals(ChatFormatting.INHERIT))) {
+                        name += formatting.getCode() + color.getName() + " " + formatting.getName();
+                    } else {
+                        name += color.getName();
+                    }
+
+                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", name));
                     openColorsPage(backAction);
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
@@ -167,9 +180,9 @@ public class GuiSettings {
         slot = 3;
         final List<String> infoNotCompatible = Message.LORE_SELECT_COLOR_NC.getList();
         final List<String> loreList = Message.LORE_SELECT_COLOR.getList();
-        Set<ChatFormatting> formattings = showAll
-                ? new HashSet<>(Arrays.asList(ChatFormatting.getValues()))
-                : user.getChatFormattings();
+        List<ChatFormatting> formattings = showAll
+                ? Arrays.asList(ChatFormatting.getValues())
+                : new ArrayList<>(user.getChatFormattings());
         for (ChatFormatting chatFormatting : formattings) {
             if (!showAll && !user.hasPermission("color." + chatFormatting.name())) {
                 continue;
@@ -189,7 +202,19 @@ public class GuiSettings {
                         formatting = ChatFormatting.UNDEFINED;
                     }
                     user.setChatFormatting(formatting);
-                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", formatting.getName()));
+
+                    Color color = user.getChatColor();
+                    String name;
+                    if (formatting.equals(ChatFormatting.RAINBOW)) {
+                        name = formatting.toString();
+                    } else {
+                        if (formatting.equals(ChatFormatting.UNDEFINED)) {
+                            name = color.toString();
+                        } else {
+                            name = color.getCode() + formatting.getCode() + color.getName() + " " + formatting.getName();
+                        }
+                    }
+                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", name));
                     openColorsPage(backAction);
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
