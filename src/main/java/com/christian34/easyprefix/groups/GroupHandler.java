@@ -95,8 +95,7 @@ public class GroupHandler {
                 subgroupNames.addAll(groupsData.getSection("subgroups"));
             }
         } else {
-            ResultSet groupsResult = database.getValue("SELECT `group` FROM `%p%groups`");
-            try {
+            try (ResultSet groupsResult = database.getValue("SELECT `group` FROM `%p%groups`")) {
                 while (groupsResult.next()) {
                     String value = groupsResult.getString("group");
                     if (!value.equals("default")) groupNames.add(value);
@@ -106,8 +105,7 @@ public class GroupHandler {
                 return;
             }
 
-            ResultSet subgroupsResult = database.getValue("SELECT `group` FROM `%p%subgroups`");
-            try {
+            try (ResultSet subgroupsResult = database.getValue("SELECT `group` FROM `%p%subgroups`")) {
                 while (subgroupsResult.next()) {
                     String value = subgroupsResult.getString("group");
                     subgroupNames.add(value);

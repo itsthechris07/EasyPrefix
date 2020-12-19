@@ -155,18 +155,15 @@ class Uploader {
     }
 
     boolean sendUsers() {
-        ResultSet result = dataMigration.getLocalDatabase().getValue("SELECT `uuid` FROM `%p%users`");
         List<UUID> users = new ArrayList<>();
-        try {
-            while (result.next()) {
+        try (ResultSet result = dataMigration.getLocalDatabase().getValue("SELECT `uuid` FROM `%p%users`")) {
+            while (result != null && result.next()) {
                 try {
                     UUID uniqueId = UUID.fromString(result.getString("uuid"));
                     users.add(uniqueId);
                 } catch (IllegalArgumentException ex) {
                     Debug.catchException(ex);
-                    continue;
                 }
-                result.close();
             }
         } catch (SQLException ignored) {
         }

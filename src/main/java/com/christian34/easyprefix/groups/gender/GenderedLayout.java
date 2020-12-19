@@ -46,8 +46,7 @@ public class GenderedLayout {
             String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%" + easyGroupType + "s_gendered` " +
                     "WHERE `group` = '" + easyGroup.getName() + "'";
             ResultSet result = database.getValue(sql);
-            if (result == null) return;
-            while (result.next()) {
+            while (result != null && result.next()) {
                 Gender gender = instance.getGroupHandler().getGender(result.getString("gender"));
 
                 if (gender == null) {
@@ -64,6 +63,9 @@ public class GenderedLayout {
                 if (suffix != null) {
                     suffixes.put(gender, suffix);
                 }
+            }
+            if (result != null) {
+                result.close();
             }
         } else {
             GroupsData groupsData = instance.getFileManager().getGroupsData();
