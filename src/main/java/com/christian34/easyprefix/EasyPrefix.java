@@ -207,12 +207,17 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     private void hookMetrics() {
-        Metrics metrics = new Metrics(this, 2646);
-        metrics.addCustomChart(new Metrics.SimplePie("placeholderapi", () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
-        metrics.addCustomChart(new Metrics.SimplePie("sql", () -> (storageType == StorageType.SQL) ? "true" : "false"));
-        metrics.addCustomChart(new Metrics.SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
-        metrics.addCustomChart(new Metrics.SimplePie("genders", () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "true" : "false"));
-        metrics.addCustomChart(new Metrics.SimplePie("custom_layout", () -> (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) ? "true" : "false"));
+        Metrics metrics = new Metrics(this, 9682);
+        metrics.addCustomChart(new Metrics.SimplePie("placeholderapi",
+                () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
+        metrics.addCustomChart(new Metrics.SimplePie("storage",
+                () -> storageType.name().toLowerCase()));
+        metrics.addCustomChart(new Metrics.SimplePie("chat",
+                () -> (formatChat()) ? "true" : "false"));
+        metrics.addCustomChart(new Metrics.SimplePie("genders",
+                () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "enabled" : "disabled"));
+        metrics.addCustomChart(new Metrics.SimplePie("custom_layout",
+                () -> (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) ? "enabled" : "disabled"));
     }
 
 }
