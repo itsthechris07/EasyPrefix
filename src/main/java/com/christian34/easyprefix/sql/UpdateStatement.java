@@ -28,8 +28,8 @@ public class UpdateStatement {
                 : instance.getLocalDatabase();
     }
 
-    private final HashMap<String, Object> values;
-    private final HashMap<String, String> conditions;
+    private final Map<String, Object> values;
+    private final Map<String, String> conditions;
     private final String table;
 
     public UpdateStatement(String table) {
