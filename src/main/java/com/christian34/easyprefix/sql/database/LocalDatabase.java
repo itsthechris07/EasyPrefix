@@ -55,7 +55,7 @@ public class LocalDatabase implements Database {
                 return true;
             } catch (SQLException e) {
                 Debug.log("§cCouldn't connect to local storage!");
-                e.printStackTrace();
+                Debug.handleException(e);
             } catch (ClassNotFoundException e) {
                 Debug.log("§cYour installation does not support sqlite!");
             }
@@ -84,17 +84,9 @@ public class LocalDatabase implements Database {
     public ResultSet getValue(String statement) {
         try (Statement stmt = getConnection().createStatement()) {
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
-        } catch (SQLException e) {
-            Debug.handleException(e);
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Debug.handleException(ex);
             return null;
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException ignored) {
-                }
-            }
         }
     }
 
