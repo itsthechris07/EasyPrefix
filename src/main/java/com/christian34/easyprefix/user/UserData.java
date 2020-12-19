@@ -55,7 +55,7 @@ public class UserData {
 
     public void loadData() {
         String username = player.getName();
-        SelectQuery selectQuery = new SelectQuery("users", "group", "username", "force_group", "subgroup",
+        SelectQuery selectQuery = new SelectQuery("users", "uuid", "group", "username", "force_group", "subgroup",
                 "custom_prefix", "custom_prefix_update", "custom_suffix", "custom_suffix_update", "gender", "chat_color",
                 "chat_formatting").addCondition("uuid", uniqueId.toString()).setDatabase(database);
 
