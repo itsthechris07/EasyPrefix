@@ -27,10 +27,12 @@ import java.util.List;
 public class GuiModifyingGroups {
     private final User user;
     private final EasyPrefix instance;
+    private final GuiSetup guiSetup;
 
     public GuiModifyingGroups(User user) {
         this.user = user;
         this.instance = EasyPrefix.getInstance();
+        this.guiSetup = new GuiSetup(user);
     }
 
     public void editPrefix(EasyGroup easyGroup) {
@@ -136,7 +138,7 @@ public class GuiModifyingGroups {
             slot++;
         }
 
-        guiRespond.addCloseButton().onClick(() -> new GuiSetup(user).openProfile(easyGroup));
+        guiRespond.addCloseButton().onClick(() -> this.guiSetup.openProfile(easyGroup));
         guiRespond.openInventory();
     }
 
@@ -162,7 +164,7 @@ public class GuiModifyingGroups {
                     .onClick(() -> modifyLayout(easyGroup, gender));
         }
 
-        guiRespond.addCloseButton().onClick(() -> new GuiSetup(user).openProfile(easyGroup));
+        guiRespond.addCloseButton().onClick(() -> this.guiSetup.openProfile(easyGroup));
         guiRespond.openInventory();
     }
 
@@ -207,7 +209,7 @@ public class GuiModifyingGroups {
             });
         });
 
-        guiRespond.addCloseButton().onClick(() -> new GuiSetup(user).openProfile(easyGroup));
+        guiRespond.addCloseButton().onClick(() -> this.guiSetup.openProfile(easyGroup));
         guiRespond.openInventory();
     }
 
@@ -218,7 +220,7 @@ public class GuiModifyingGroups {
             new GuiSetup(user).groupsList();
         });
         guiRespond.addIcon(Color.RED.toItemStack(), "§cNo", 2, 6).onClick(() ->
-                new GuiSetup(user).openProfile(easyGroup)
+                this.guiSetup.openProfile(easyGroup)
         );
         guiRespond.preventClose(true);
         guiRespond.openInventory();
