@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.utils.Debug;
 
 import java.io.File;
 
@@ -34,6 +35,7 @@ public class FileManager {
     }
 
     public void load() {
+        Debug.recordAction("loading files");
         File userFolder = new File(getPluginFolder() + "/user");
         if (!userFolder.exists()) {
             if (!userFolder.mkdirs()) throw new RuntimeException("Couldn't create folder 'users'!");
