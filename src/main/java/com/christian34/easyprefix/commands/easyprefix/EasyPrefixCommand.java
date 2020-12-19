@@ -26,6 +26,8 @@ import java.util.List;
 public class EasyPrefixCommand implements EasyCommand {
     private final EasyPrefix instance;
     private final List<Subcommand> subcommands;
+    private final String CMD_NOT_FOUND = Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
+            + " to get a command overview.";
 
     public EasyPrefixCommand(EasyPrefix instance, CommandHandler commandHandler) {
         this.instance = instance;
@@ -83,6 +85,14 @@ public class EasyPrefixCommand implements EasyCommand {
         }
 
         String subcommand = args.get(0);
+
+        if (!ConfigKeys.CUSTOM_LAYOUT.toBoolean() &&
+                (subcommand.equalsIgnoreCase("setprefix") || subcommand.equalsIgnoreCase("setsuffix"))) {
+            Debug.log("This is not available because you disabled it in the configuration. Open 'config.yml' and set 'custom-layout.enabled' to 'true'. Please restart the server.");
+            sender.sendMessage(CMD_NOT_FOUND);
+            return;
+        }
+
         for (Subcommand subCmd : subcommands) {
             if (subCmd.getName().equalsIgnoreCase(subcommand) || subCmd.getName().startsWith(subcommand)) {
                 if (subCmd.getPermission() == null || sender.hasPermission(subCmd.getPermission().toString())) {
@@ -97,8 +107,7 @@ public class EasyPrefixCommand implements EasyCommand {
                 return;
             }
         }
-        sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
-                + " to get a command overview.");
+        sender.sendMessage(CMD_NOT_FOUND);
         throw new CommandNotFoundException("easyprefix", subcommand);
     }
 
