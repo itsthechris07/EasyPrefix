@@ -217,7 +217,11 @@ public class GuiModifyingGroups {
         GuiRespond guiRespond = new GuiRespond(user, "§4Delete " + easyGroup.getName() + "?", 3);
         guiRespond.addIcon(Color.GREEN.toItemStack(), "§aYes", 2, 4).onClick(() -> {
             easyGroup.delete();
-            new GuiSetup(user).groupsList();
+            if (easyGroup instanceof Group) {
+                this.guiSetup.groupsList();
+            } else {
+                this.guiSetup.openSubgroupsList();
+            }
         });
         guiRespond.addIcon(Color.RED.toItemStack(), "§cNo", 2, 6).onClick(() ->
                 this.guiSetup.openProfile(easyGroup)

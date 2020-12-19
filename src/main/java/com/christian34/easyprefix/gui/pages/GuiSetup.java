@@ -283,6 +283,9 @@ public class GuiSetup {
         Icon genderedLayoutIcon = guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), "§aGendered Layout", 2, 8);
         genderedLayoutIcon.onClick(() -> this.guiModifyingGroups.modifyGenderedLayout(subgroup));
 
+        guiRespond.addIcon(Material.BARRIER, "§4Delete", 3, 9)
+                .onClick(() -> this.guiModifyingGroups.deleteConfirmation(subgroup));
+
         guiRespond.addCloseButton().onClick(this::openSubgroupsList);
         guiRespond.openInventory();
     }
