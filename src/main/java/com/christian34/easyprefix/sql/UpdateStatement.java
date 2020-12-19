@@ -101,6 +101,7 @@ public class UpdateStatement {
         try {
             return compFuture.get();
         } catch (InterruptedException | ExecutionException e) {
+            Debug.catchException(e);
             return false;
         }
     }
