@@ -45,9 +45,6 @@ public class EasyPrefix extends JavaPlugin {
     private ExpansionManager expansionManager;
     private StorageType storageType;
     private Updater updater;
-    private SQLDatabase sqlDatabase = null;
-    private LocalDatabase localDatabase = null;
-    private DataMigration dataMigration = null;
     private CommandHandler commandHandler;
 
     public static EasyPrefix getInstance() {

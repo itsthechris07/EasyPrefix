@@ -336,7 +336,9 @@ public class User {
         if (!message.contains("%prefix%")) {
             message = Message.PREFIX + message;
         } else {
-            message = message.replace("%prefix%", Message.PREFIX);
+            message = message
+                    .replace("%prefix%", Message.PREFIX)
+                    .replace("  ", " ");
         }
         player.sendMessage(Objects.requireNonNull(Message.setPlaceholders(message)));
     }
