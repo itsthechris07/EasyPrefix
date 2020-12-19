@@ -84,7 +84,9 @@ public class LocalDatabase implements Database {
 
     @Nullable
     public ResultSet getValue(String statement) {
-        try (Statement stmt = getConnection().createStatement()) {
+        try {
+            if (connection.isClosed()) connect();
+            Statement stmt = connection.createStatement();
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));
         } catch (SQLException ex) {
             Debug.handleException(ex);
