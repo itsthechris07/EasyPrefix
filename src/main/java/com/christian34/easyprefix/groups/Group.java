@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * EasyPrefix 2020.
@@ -46,7 +47,7 @@ public class Group extends EasyGroup {
             SelectQuery selectQuery = new SelectQuery("groups").setColumns(keys).addCondition("group", name);
             data = selectQuery.getData();
         } else {
-            HashMap<String, Object> storage = new HashMap<>();
+            Map<String, Object> storage = new HashMap<>();
             for (String key : keys) {
                 storage.put(key, getGroupsData().getData().getString(getFileKey() + key.replace("_", "-")));
             }

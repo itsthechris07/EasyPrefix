@@ -10,6 +10,7 @@ import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,8 +19,8 @@ import java.util.Set;
  * @author Christian34
  */
 public class GenderedLayout {
-    private final HashMap<Gender, String> prefixes;
-    private final HashMap<Gender, String> suffixes;
+    private final Map<Gender, String> prefixes;
+    private final Map<Gender, String> suffixes;
     private final EasyGroup easyGroup;
     private final EasyPrefix instance;
     private final String easyGroupType;

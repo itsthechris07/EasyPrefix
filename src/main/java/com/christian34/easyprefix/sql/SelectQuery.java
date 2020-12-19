@@ -8,10 +8,7 @@ import com.christian34.easyprefix.utils.Debug;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * EasyPrefix 2020.
@@ -19,7 +16,7 @@ import java.util.List;
  * @author Christian34
  */
 public class SelectQuery {
-    private final HashMap<String, String> conditions = new HashMap<>();
+    private final Map<String, String> conditions = new HashMap<>();
     private final String table;
     private List<String> columns;
     private Data data = null;
