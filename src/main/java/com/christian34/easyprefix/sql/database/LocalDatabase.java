@@ -2,6 +2,7 @@ package com.christian34.easyprefix.sql.database;
 
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.utils.Debug;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +82,7 @@ public class LocalDatabase implements Database {
         return "";
     }
 
+    @Nullable
     public ResultSet getValue(String statement) {
         try (Statement stmt = getConnection().createStatement()) {
             return stmt.executeQuery(statement.replace("%p%", getTablePrefix()));

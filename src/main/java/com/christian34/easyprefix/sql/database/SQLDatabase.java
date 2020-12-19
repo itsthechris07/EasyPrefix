@@ -90,7 +90,6 @@ public class SQLDatabase implements Database {
     private void update(String statement) {
         try (Statement stmt = getConnection().createStatement()) {
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
-            stmt.close();
         } catch (SQLException e) {
             Debug.handleException(e);
         }
@@ -116,7 +115,6 @@ public class SQLDatabase implements Database {
     public void alterTable(String statement) {
         try (Statement stmt = getConnection().createStatement()) {
             stmt.executeUpdate(statement.replace("%p%", getTablePrefix()));
-            stmt.close();
         } catch (SQLException ignored) {
         }
     }
