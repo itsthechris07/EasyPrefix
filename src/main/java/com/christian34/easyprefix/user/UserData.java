@@ -68,8 +68,7 @@ public class UserData {
                 if (!insertStatement.execute()) {
                     Debug.log("§cCouldn't update database! Error UDDB3");
                 }
-            } catch (DuplicateEntryException ex) {
-                Debug.catchException(ex);
+            } catch (DuplicateEntryException ignored) {
             }
         }
 
