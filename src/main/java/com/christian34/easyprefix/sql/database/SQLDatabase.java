@@ -55,12 +55,12 @@ public class SQLDatabase implements Database {
                 this.sqlSynchronizer = new SQLSynchronizer(instance);
                 return true;
             } catch (SQLSyntaxErrorException e) {
-                Debug.log("§cDatabase '" + database + "' does not exist!");
+                Debug.warn("§cDatabase '" + database + "' does not exist!");
             } catch (SQLException e) {
-                Debug.log("§cAccess denied for user '" + this.username + "'@'" + this.host + "'");
-                Debug.log("§cPlease check if the sql server is running and you entered the right username and password.");
+                Debug.warn("§cAccess denied for user '" + this.username + "'@'" + this.host + "'");
+                Debug.warn("§cPlease check if the sql server is running and you entered the right username and password.");
             } catch (ClassNotFoundException e) {
-                Debug.log("§cYour installation does not support sql!");
+                Debug.warn("§cYour installation does not support sql!");
             }
             return false;
         }

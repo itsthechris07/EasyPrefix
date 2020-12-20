@@ -45,7 +45,7 @@ public class ColorCommand implements EasyCommand {
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         if (!ConfigKeys.HANDLE_COLORS.toBoolean()) {
-            Debug.log("&cYou can't use the command 'color' as it has been disabled in config.yml! " +
+            Debug.warn("&cYou can't use the command 'color' as it has been disabled in config.yml! " +
                     "Set 'handle-colors' to 'true' and restart the server.");
             EasyCommand command = instance.getCommandHandler().getCommand("easyprefix");
             command.handleCommand(sender, Collections.singletonList("help"));

@@ -46,7 +46,7 @@ public class Updater implements Listener {
                     instance.getServer().getConsoleSender().sendMessage(UPDATE_MSG);
                 }
             } catch (IOException ignored) {
-                Debug.log("§cUpdate checker failed!");
+                Debug.warn("§cUpdate checker failed!");
             }
         });
     }

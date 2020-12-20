@@ -60,9 +60,10 @@ public class GroupHandler {
                         .setValue("join_msg", "&8» %ep_user_prefix%%player% &7joined the game")
                         .setValue("quit_msg", "&8« %ep_user_prefix%%player% &7left the game");
                 if (!insertStatement.execute()) {
-                    Debug.log("Couldn't upload default group to database!");
+                    Debug.warn("Couldn't upload default group to database!");
                 }
-                Debug.log("&cError: You haven't uploaded any data to the sql database yet. Please upload your data with: /easyprefix database upload");
+                // todo upload default groups, the data migration will be removed by v1.8
+                Debug.warn("&cError: You haven't uploaded any data to the sql database yet. Please upload your data with: /easyprefix database upload");
             }
         }
     }
