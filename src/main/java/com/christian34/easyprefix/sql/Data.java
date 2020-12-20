@@ -1,5 +1,9 @@
 package com.christian34.easyprefix.sql;
 
+import com.christian34.easyprefix.utils.Debug;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 
 /**
@@ -18,12 +22,14 @@ public class Data {
         return hash == null || hash.keySet().isEmpty();
     }
 
+    @Nullable
     public String getString(String key) {
         if (hash == null) return null;
         return (String) hash.get(key);
     }
 
-    public String getStringOr(String key, String alternative) {
+    @NotNull
+    public String getStringOr(@NotNull String key, @NotNull String alternative) {
         String value = getString(key);
         return value == null ? alternative : value;
     }
@@ -32,14 +38,15 @@ public class Data {
         return hash;
     }
 
-    public int getInt(String key) {
-        String val = getString(key);
-        if (val == null) return 0;
-        return Integer.parseInt(getString(key));
-    }
-
     public boolean getBoolean(String key) {
-        return getInt(key) == 1;
+        String val = getString(key);
+        if (val == null) return false;
+        try {
+            return Integer.parseInt(val) == 1;
+        } catch (NumberFormatException ex) {
+            Debug.warn("Column '" + key + "' must contain a valid boolean! (1 = true, 0 = false)");
+            return false;
+        }
     }
 
 }
