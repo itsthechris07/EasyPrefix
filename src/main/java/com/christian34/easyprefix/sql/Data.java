@@ -19,7 +19,7 @@ public class Data {
     }
 
     public boolean isEmpty() {
-        return hash == null || hash.keySet().isEmpty();
+        return hash == null || hash.isEmpty();
     }
 
     @Nullable
