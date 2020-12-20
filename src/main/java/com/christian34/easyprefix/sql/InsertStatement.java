@@ -52,6 +52,9 @@ public class InsertStatement {
         } catch (SQLIntegrityConstraintViolationException ex) {
             throw new DuplicateEntryException(table, ex.getMessage().split("'")[1]);
         } catch (SQLException ex) {
+            if (ex.getMessage().startsWith("[SQLITE_CONSTRAINT]")) {
+                throw new DuplicateEntryException(table, "constraint violation");
+            }
             Debug.catchException(ex);
         }
         return false;
