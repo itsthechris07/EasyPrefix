@@ -79,27 +79,27 @@ public abstract class EasyGroup {
         if (text == null) return null;
 
         if (user != null) {
+            String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user, false) : "";
+            if (sgPrefix == null) {
+                sgPrefix = "";
+            }
+
+            String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user, false) : "";
+            if (sgSuffix == null) {
+                sgSuffix = "";
+            }
+
+            text = text
+                    .replace("%ep_user_prefix%", user.getGroup().getPrefix(null, false))
+                    .replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false))
+                    .replace("%ep_user_group%", user.getGroup().getName())
+                    .replace("%ep_user_subgroup_prefix%", sgPrefix)
+                    .replace("%ep_tag_prefix%", sgPrefix)
+                    .replace("%ep_user_subgroup_suffix%", sgSuffix)
+                    .replace("%ep_tag_suffix%", sgSuffix);
+
             ExpansionManager expansionManager = EasyPrefix.getInstance().getExpansionManager();
-            if (!expansionManager.isUsingPapi()) {
-                String sgPrefix = (user.getSubgroup() != null) ? user.getSubgroup().getPrefix(user, false) : "";
-                if (sgPrefix == null) {
-                    sgPrefix = "";
-                }
-
-                String sgSuffix = (user.getSubgroup() != null) ? user.getSubgroup().getSuffix(user, false) : "";
-                if (sgSuffix == null) {
-                    sgSuffix = "";
-                }
-
-                text = text
-                        .replace("%ep_user_prefix%", user.getGroup().getPrefix(null, false))
-                        .replace("%ep_user_suffix%", user.getGroup().getSuffix(null, false))
-                        .replace("%ep_user_group%", user.getGroup().getName())
-                        .replace("%ep_user_subgroup_prefix%", sgPrefix)
-                        .replace("%ep_tag_prefix%", sgPrefix)
-                        .replace("%ep_user_subgroup_suffix%", sgSuffix)
-                        .replace("%ep_tag_suffix%", sgSuffix);
-            } else {
+            if (expansionManager.isUsingPapi()) {
                 text = expansionManager.setPapi(user.getPlayer(), text);
             }
             text = text.replace("%player%", user.getPlayer().getDisplayName());
