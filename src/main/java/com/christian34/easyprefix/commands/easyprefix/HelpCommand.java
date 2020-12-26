@@ -55,12 +55,14 @@ class HelpCommand implements Subcommand {
         for (Subcommand cmd : parentCommand.getSubcommands()) {
             if (cmd.getDescription() == null) continue;
 
-            sender.sendMessage(prefix + cmd.getCommandUsage());
-            sender.sendMessage("  §7" + cmd.getDescription());
+            if (cmd.getPermission() == null || sender.hasPermission(cmd.getPermission().toString())) {
+                sender.sendMessage(prefix + cmd.getCommandUsage());
+                sender.sendMessage("  §7" + cmd.getDescription());
+            }
         }
 
         sender.sendMessage(" \n§7------------------------------------------------\n"
-                + "§7Version: " + this.instance.getPlugin().getDescription().getVersion() + "\n"
+                + "§7Version: §9§l" + this.instance.getPlugin().getDescription().getVersion() + "\n"
                 + "§7EasyPrefix by §9§lChristian34");
     }
 
