@@ -99,6 +99,13 @@ public class Group extends EasyGroup {
         return genderedLayout;
     }
 
+    /**
+     * todo remove arg User.class, placeholders will no longer be set by Group.class or EasyGroup.class
+     *
+     * @param user
+     * @return
+     */
+    @Deprecated
     @Nullable
     public String getJoinMessage(User user) {
         String message = getJoinMessageText();
@@ -124,6 +131,12 @@ public class Group extends EasyGroup {
         saveData("join-msg", this.joinMessage);
     }
 
+    /**
+     * also look at getJoinMessage(User user)
+     *
+     * @param user
+     * @return
+     */
     @Nullable
     public String getQuitMessage(@NotNull User user) {
         String message = getQuitMessageText();
