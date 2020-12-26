@@ -151,7 +151,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     @NotNull
-    public User getUser(Player player) {
+    public synchronized User getUser(Player player) {
         User user = getUsers().stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(null);
         if (user == null) {
             user = new User(player);
