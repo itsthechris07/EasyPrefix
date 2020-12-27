@@ -11,6 +11,7 @@ import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +49,9 @@ public class Group extends EasyGroup {
             data = selectQuery.getData();
         } else {
             Map<String, Object> storage = new HashMap<>();
+            FileConfiguration fileData = getGroupsData().getData();
             for (String key : keys) {
-                storage.put(key, getGroupsData().getData().getString(getFileKey() + key.replace("_", "-")));
+                storage.put(key, fileData.getString(getFileKey() + key.replace("_", "-")));
             }
             data = new Data(storage);
         }
