@@ -2,12 +2,14 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
+import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
+import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -16,10 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * EasyPrefix 2020.
@@ -76,7 +75,6 @@ class UserCommand implements Subcommand {
             showInfo(sender, target);
         } else if (args.get(2).equalsIgnoreCase("reload")) {
             Bukkit.getScheduler().runTaskLaterAsynchronously(EasyPrefix.getInstance().getPlugin(), () -> {
-                instance.unloadUser(target.getPlayer());
                 instance.getUser(target.getPlayer()).login();
                 sender.sendMessage(Message.PREFIX + "User has been reloaded!");
             }, 20L);
@@ -116,25 +114,36 @@ class UserCommand implements Subcommand {
         }
     }
 
-    private void showInfo(CommandSender sender, User targetUser) {
-        String subgroup = (targetUser.getSubgroup() != null) ? targetUser.getSubgroup().getName() : "-";
-        String cc = targetUser.getChatColor().getCode();
+    private void showInfo(CommandSender sender, User user) {
+        String subgroup = (user.getSubgroup() != null) ? user.getSubgroup().getName() : "-";
+        String chatColor = user.getChatColor().getCode();
+        ChatFormatting chatFormatting = user.getChatFormatting();
+        String formatting = "";
+        if (chatFormatting != null) {
+            if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
+                formatting = "rainbow";
+            } else {
+                formatting = chatFormatting.getCode();
+            }
+        }
 
-        sender.sendMessage(" \n§7--------------=== §9§l" + targetUser.getPlayer().getName() + " §7===--------------\n ");
-        sender.sendMessage("§9Group§f: §7" + targetUser.getGroup().getName());
+        sender.sendMessage(" \n§7--------------=== §9§l" + user.getPlayer().getName() + " §7===--------------");
+        sender.sendMessage("§9Group§f: §7" + user.getGroup().getName());
         sender.sendMessage("§9Tag§f: §7" + subgroup);
-        sender.sendMessage("§9Prefix§f: §8«§7" + targetUser.getPrefix().replace("§", "&") + "§8»" + (targetUser.hasCustomPrefix() ? " §7(§9customized§7)" : ""));
-        if (targetUser.hasCustomPrefix()) {
-            sender.sendMessage(" §7↳ §9last update§f: §7" + new Timestamp(targetUser.getLastPrefixUpdate()).toString());
+        sender.sendMessage("§9Prefix§f: §8«§7" + Optional.ofNullable(user.getPrefix()).orElse("-") + "§8»"
+                + (user.hasCustomPrefix() ? " §7(§9customized§7)"
+                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastPrefixUpdate()).toString() : ""));
+        sender.sendMessage("§9Suffix§f: §8«§7" + Optional.ofNullable(user.getSuffix()).orElse("-") + "§8»"
+                + (user.hasCustomSuffix() ? " §7(§9customized§7)"
+                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastSuffixUpdate()).toString() : ""));
+        if (chatFormatting == null || !chatFormatting.equals(ChatFormatting.RAINBOW)) {
+            sender.sendMessage(" §9chat color§f: §7" + chatColor.replace("§", "&"));
         }
-        sender.sendMessage("§9Suffix§f: §8«§7" + targetUser.getSuffix().replace("§", "&") + "§8»" + (targetUser.hasCustomSuffix() ? " §7(§9customized§7)" : ""));
-        if (targetUser.hasCustomSuffix()) {
-            sender.sendMessage(" §7↳ §9last update§f: §7" + new Timestamp(targetUser.getLastSuffixUpdate()).toString());
+        if (chatFormatting != null) {
+            sender.sendMessage(" §9chat formatting§f: §7" + formatting.replace("§", "&"));
         }
-        if (targetUser.getChatFormatting() != null) cc += targetUser.getChatFormatting().getCode();
-        sender.sendMessage("§9Chat color§f: §7" + cc.replace("§", "&"));
-        if (targetUser.getGenderType() != null) {
-            sender.sendMessage("§9Gender§f: §7" + targetUser.getGenderType().getDisplayName() + "§7/§7" + targetUser.getGenderType().getName());
+        if (user.getGenderType() != null) {
+            sender.sendMessage(" §9Gender§f: §7" + user.getGenderType().getName());
         }
         sender.sendMessage(" \n§7-----------------------------------------------\n ");
     }
