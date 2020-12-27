@@ -110,6 +110,7 @@ public class Debug {
         Sentry.init(options -> {
             options.setDsn("https://593815c87f604f2da4620b5031945126@o393387.ingest.sentry.io/5242398");
             options.setEnableExternalConfiguration(false);
+            options.setRelease(instance.getDescription().getVersion());
         });
         Sentry.configureScope(scope -> {
             User user = new User();
