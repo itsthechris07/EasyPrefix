@@ -33,8 +33,8 @@ public class QuitListener implements Listener {
             e.setQuitMessage(null);
         } else {
             if (e.getQuitMessage() != null) {
-                String quitMsg = Message.setColors(user.getGroup().getQuitMessage());
-                e.setQuitMessage(quitMsg);
+                String quitMsg = instance.setPlaceholders(user, user.getGroup().getQuitMessage());
+                e.setQuitMessage(Message.setColors(quitMsg));
             }
         }
         this.instance.unloadUser(e.getPlayer());

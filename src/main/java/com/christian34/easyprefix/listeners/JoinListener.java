@@ -32,8 +32,8 @@ public class JoinListener implements Listener {
         if (ConfigKeys.HIDE_JOIN_QUIT.toBoolean()) {
             e.setJoinMessage(null);
         } else if (e.getJoinMessage() != null) {
-            String joinMsg = Message.setColors(user.getGroup().getJoinMessage());
-            e.setJoinMessage(joinMsg);
+            String joinMsg = instance.setPlaceholders(user, user.getGroup().getJoinMessage());
+            e.setJoinMessage(Message.setColors(joinMsg));
         }
     }
 
