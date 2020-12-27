@@ -40,7 +40,7 @@ public class ExpansionManager {
     }
 
     @NotNull
-    public String setPapi(@NotNull Player player, @NotNull String text) {
+    public String setPlaceholders(@NotNull Player player, @NotNull String text) {
         if (!isUsingPapi()) return text;
         try {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());

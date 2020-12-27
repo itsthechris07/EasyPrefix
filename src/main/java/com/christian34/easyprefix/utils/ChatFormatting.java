@@ -61,6 +61,10 @@ public enum ChatFormatting {
         return "";
     }
 
+    public boolean isBukkit() {
+        return !this.equals(RAINBOW) && !this.equals(UNDEFINED) && !this.equals(INHERIT);
+    }
+
     @NotNull
     public String getCode() {
         return code == null ? "" : "§" + code;
