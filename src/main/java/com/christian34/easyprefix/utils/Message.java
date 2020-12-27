@@ -3,6 +3,7 @@ package com.christian34.easyprefix.utils;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.MessageData;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,6 +115,7 @@ public enum Message {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 
+    @Contract("!null -> !null; null -> null")
     @Nullable
     public static String setPlaceholders(@Nullable String text) {
         if (text == null) return null;

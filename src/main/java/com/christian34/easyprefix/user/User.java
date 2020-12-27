@@ -327,7 +327,7 @@ public class User {
     }
 
     public void sendMessage(@NotNull String message) {
-        player.sendMessage(Objects.requireNonNull(Message.setPlaceholders(message)));
+        player.sendMessage(Message.setPlaceholders(message));
     }
 
     public void sendAdminMessage(@NotNull String message) {
@@ -338,7 +338,7 @@ public class User {
                     .replace("%prefix%", Message.PREFIX)
                     .replace("  ", " ");
         }
-        player.sendMessage(Objects.requireNonNull(Message.setPlaceholders(message)));
+        player.sendMessage(Message.setPlaceholders(message));
     }
 
     public void sendAdminMessage(Message message) {
