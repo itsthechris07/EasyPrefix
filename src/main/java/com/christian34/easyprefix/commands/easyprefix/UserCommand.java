@@ -144,8 +144,12 @@ class UserCommand implements Subcommand {
         String prefix = "§7/§9EasyPrefix user <Player> ";
         sender.sendMessage(prefix + "info §f| §7get information about the player");
         sender.sendMessage(prefix + "setgroup <Group> §f| §7force group to player");
-        sender.sendMessage(prefix + "settag <Tag> §f| §7set tag to player");
-        sender.sendMessage(prefix + "setgender <Gender> §f| §7set gender");
+        if (ConfigKeys.USE_TAGS.toBoolean()) {
+            sender.sendMessage(prefix + "settag <Tag> §f| §7set tag to player");
+        }
+        if (ConfigKeys.USE_GENDER.toBoolean()) {
+            sender.sendMessage(prefix + "setgender <Gender> §f| §7set gender");
+        }
         sender.sendMessage(" \n§7----------------------------------------------------\n ");
     }
 
@@ -164,7 +168,13 @@ class UserCommand implements Subcommand {
         if (args.size() == 2) {
             return null;
         } else if (args.size() == 3) {
-            List<String> matches = Arrays.asList("reload", "info", "setgroup", "setgender", "settag");
+            List<String> matches = Arrays.asList("reload", "info", "setgroup");
+            if (ConfigKeys.USE_GENDER.toBoolean()) {
+                matches.add("setgender");
+            }
+            if (ConfigKeys.USE_TAGS.toBoolean()) {
+                matches.add("settag");
+            }
             if (args.get(2).isEmpty()) {
                 return matches;
             } else {
