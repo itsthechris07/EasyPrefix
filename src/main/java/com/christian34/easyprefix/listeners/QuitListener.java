@@ -2,8 +2,8 @@ package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.utils.Message;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,8 +33,7 @@ public class QuitListener implements Listener {
             e.setQuitMessage(null);
         } else {
             if (e.getQuitMessage() != null) {
-                Group group = user.getGroup();
-                String quitMsg = group.getQuitMessage(user);
+                String quitMsg = Message.setColors(user.getGroup().getQuitMessage());
                 e.setQuitMessage(quitMsg);
             }
         }

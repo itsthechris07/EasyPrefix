@@ -94,12 +94,12 @@ class ListCommand implements Subcommand {
             Subgroup subgroup = subgroups.get(i);
             String name = itemTitle.replace("%name%", subgroup.getName());
             String hoverText = lore;
-            String tagPrefix = subgroup.getPrefix(null, false);
+            String tagPrefix = subgroup.getPrefix();
             if (tagPrefix == null || tagPrefix.isEmpty()) {
                 tagPrefix = "-/-";
             }
 
-            String tagSuffix = subgroup.getSuffix(null, false);
+            String tagSuffix = subgroup.getSuffix();
             if (tagSuffix == null || tagSuffix.isEmpty()) {
                 tagSuffix = "-/-";
             }

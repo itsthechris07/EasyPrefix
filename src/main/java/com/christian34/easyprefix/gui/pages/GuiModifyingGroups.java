@@ -36,7 +36,7 @@ public class GuiModifyingGroups {
     }
 
     public void editPrefix(EasyGroup easyGroup) {
-        String text = "§aPlease type the prefix in the chat!%newline%§7Current: §7«§f" + easyGroup.getPrefix(null, false) + "§7»";
+        String text = "§aPlease type the prefix in the chat!%newline%§7Current: §7«§f" + easyGroup.getPrefix() + "§7»";
         ChatRespond responder = new ChatRespond(user, text);
         responder.getInput((respond) -> {
             easyGroup.setPrefix(respond);
@@ -49,7 +49,7 @@ public class GuiModifyingGroups {
     }
 
     public void editSuffix(EasyGroup easyGroup) {
-        String text = "§aPlease type the suffix in the chat!%newline%§7Current: §7«§f" + easyGroup.getSuffix(null, false) + "§7»";
+        String text = "§aPlease type the suffix in the chat!%newline%§7Current: §7«§f" + easyGroup.getSuffix() + "§7»";
         ChatRespond responder = new ChatRespond(user, text);
         responder.getInput((respond) -> {
             easyGroup.setSuffix(respond);
@@ -62,7 +62,8 @@ public class GuiModifyingGroups {
     }
 
     public void editJoinMessage(Group group) {
-        ChatRespond responder = new ChatRespond(user, "§aPlease type in the join message!%newline%§7Current: §7«§f" + group.getJoinMessageText() + "§7»");
+        ChatRespond responder = new ChatRespond(user, "§aPlease type in the join message!%newline%§7Current: §7«§f"
+                + group.getJoinMessage() + "§7»");
         responder.getInput((respond) -> {
             group.setJoinMessage(respond);
             if (respond == null) {
@@ -74,7 +75,7 @@ public class GuiModifyingGroups {
     }
 
     public void editQuitMessage(Group group) {
-        ChatRespond responder = new ChatRespond(user, "§aPlease type in the join message!%newline%§7Current: §7«§f" + group.getQuitMessageText() + "§7»");
+        ChatRespond responder = new ChatRespond(user, "§aPlease type in the join message!%newline%§7Current: §7«§f" + group.getQuitMessage() + "§7»");
         responder.getInput((respond) -> {
             group.setQuitMessage(respond);
             if (respond == null) {

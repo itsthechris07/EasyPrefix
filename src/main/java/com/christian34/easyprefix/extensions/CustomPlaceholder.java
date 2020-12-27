@@ -69,12 +69,12 @@ class CustomPlaceholder extends PlaceholderExpansion {
             case "user_subgroup_prefix":
             case "tag_prefix":
                 if (user.getSubgroup() == null) return "";
-                String prefix = user.getSubgroup().getPrefix(user, true);
+                String prefix = user.getSubgroup().getPrefix();
                 return (prefix == null) ? "" : prefix;
             case "user_subgroup_suffix":
             case "tag_suffix":
                 if (user.getSubgroup() == null) return "";
-                String suffix = user.getSubgroup().getSuffix(user, true);
+                String suffix = user.getSubgroup().getSuffix();
                 return (suffix == null) ? "" : suffix;
             default:
                 Debug.log("§aWarning: You've used an invalid placeholder! (" + this.getIdentifier() + "_" + identifier + ")");

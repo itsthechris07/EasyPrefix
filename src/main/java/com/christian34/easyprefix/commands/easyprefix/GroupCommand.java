@@ -74,13 +74,13 @@ class GroupCommand implements Subcommand {
 
     private void showInfo(CommandSender sender, Group group) {
         sender.sendMessage(" \n§7--------------=== §9§l" + group.getName() + " §7===--------------\n ");
-        sender.sendMessage("§9Prefix§f: §8«§7" + group.getPrefix(null, false) + "§8»");
-        sender.sendMessage("§9Suffix§f: §8«§7" + group.getSuffix(null, false) + "§8»");
+        sender.sendMessage("§9Prefix§f: §8«§7" + group.getPrefix() + "§8»");
+        sender.sendMessage("§9Suffix§f: §8«§7" + group.getSuffix() + "§8»");
         String cc = group.getChatColor().getCode();
         if (group.getChatFormatting() != null) cc += group.getChatFormatting().getCode();
         sender.sendMessage("§9Chat color§f: §7" + cc.replace("§", "&"));
-        sender.sendMessage("§9Join message§f: §7" + group.getJoinMessageText());
-        sender.sendMessage("§9Quit message§f: §7" + group.getQuitMessageText());
+        sender.sendMessage("§9Join message§f: §7" + group.getJoinMessage());
+        sender.sendMessage("§9Quit message§f: §7" + group.getQuitMessage());
         sender.sendMessage(" \n§7-----------------------------------------------\n ");
     }
 

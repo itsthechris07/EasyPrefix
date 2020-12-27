@@ -5,6 +5,7 @@ import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.GroupHandler;
+import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
@@ -16,6 +17,7 @@ import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
+import org.apache.commons.lang.Validate;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,9 +25,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -163,6 +167,37 @@ public class EasyPrefix extends JavaPlugin {
             }
         }
         return user;
+    }
+
+    @Nullable
+    public String setPlaceholders(@NotNull User user, @Nullable String text) {
+        if (text == null) return null;
+        Validate.notNull(user);
+        String subPrefix = "", subSuffix = "";
+
+        Subgroup subgroup = user.getSubgroup();
+        if (subgroup != null) {
+            subPrefix = Optional.ofNullable(subgroup.getPrefix(user.getGenderType())).orElse("");
+            subSuffix = Optional.ofNullable(subgroup.getSuffix(user.getGenderType())).orElse("");
+        }
+
+        String prefix = Optional.ofNullable(user.getPrefix()).orElse("");
+        String suffix = Optional.ofNullable(user.getSuffix()).orElse("");
+
+        text = text
+                .replace("%ep_user_prefix%", prefix)
+                .replace("%ep_user_suffix%", suffix)
+                .replace("%ep_user_group%", user.getGroup().getName())
+                .replace("%ep_user_subgroup_prefix%", subPrefix)
+                .replace("%ep_tag_prefix%", subPrefix)
+                .replace("%ep_user_subgroup_suffix%", subSuffix)
+                .replace("%ep_tag_suffix%", subSuffix)
+                .replace("%player%", user.getPlayer().getDisplayName());
+
+        if (expansionManager.isUsingPapi()) {
+            text = expansionManager.setPapi(user.getPlayer(), text);
+        }
+        return text;
     }
 
     public void reloadUsers() {

@@ -2,7 +2,6 @@ package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Message;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -33,8 +32,7 @@ public class JoinListener implements Listener {
         if (ConfigKeys.HIDE_JOIN_QUIT.toBoolean()) {
             e.setJoinMessage(null);
         } else if (e.getJoinMessage() != null) {
-            Group group = user.getGroup();
-            String joinMsg = group.getJoinMessage(user);
+            String joinMsg = Message.setColors(user.getGroup().getJoinMessage());
             e.setJoinMessage(joinMsg);
         }
     }

@@ -141,8 +141,8 @@ public class GuiSetup {
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Groups", 5);
         final String divider = "§7-------------------------------";
         for (Group group : groupHandler.getGroups()) {
-            String prefix = group.getPrefix(null, false);
-            String suffix = group.getSuffix(null, false);
+            String prefix = group.getPrefix();
+            String suffix = group.getSuffix();
             ChatColor prefixColor = group.getGroupColor();
             List<String> lore = new ArrayList<>();
             lore.add(divider);
@@ -178,12 +178,12 @@ public class GuiSetup {
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Subgroups", 5);
         GroupHandler groupHandler = this.instance.getGroupHandler();
         for (final Subgroup subgroup : groupHandler.getSubgroups()) {
-            String prefix = subgroup.getPrefix(null, false);
+            String prefix = subgroup.getPrefix();
             if (prefix == null) {
                 prefix = "-";
             }
 
-            String suffix = subgroup.getSuffix(null, false);
+            String suffix = subgroup.getSuffix();
             if (suffix == null) {
                 suffix = "-";
             }
@@ -223,11 +223,11 @@ public class GuiSetup {
     private void openGroupProfile(Group group) {
         GuiRespond guiRespond = new GuiRespond(user, "§9Group §8» §7" + group.getGroupColor() + group.getName(), 3);
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, "§aChange Prefix", 2, 2);
-        prefixIcon.setLore(DIVIDER, "§7Current: §7«§f" + group.getPrefix(null, false) + "§7»", " ");
+        prefixIcon.setLore(DIVIDER, "§7Current: §7«§f" + group.getPrefix() + "§7»", " ");
         prefixIcon.onClick(() -> this.guiModifyingGroups.editPrefix(group));
 
         Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, "§aChange Suffix", 2, 3);
-        suffixIcon.setLore(DIVIDER, "§7Current: §7«§f" + group.getSuffix(null, false) + "§7»", " ");
+        suffixIcon.setLore(DIVIDER, "§7Current: §7«§f" + group.getSuffix() + "§7»", " ");
         suffixIcon.onClick(() -> this.guiModifyingGroups.editSuffix(group));
 
         String groupChatColor = group.getChatColor().getCode().replace("§", "&");
@@ -243,11 +243,11 @@ public class GuiSetup {
         guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), "§aChange Color", 2, 4).setLore(loreChatColor).onClick(() -> this.guiModifyingGroups.editChatColor(group));
 
         Icon joinMsgIcon = guiRespond.addIcon(Material.BLAZE_ROD, "§aJoin Message", 2, 6);
-        joinMsgIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + group.getJoinMessageText() + "§7»", " "));
+        joinMsgIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + group.getJoinMessage() + "§7»", " "));
         joinMsgIcon.onClick(() -> this.guiModifyingGroups.editJoinMessage(group));
 
         Icon quitMsgIcon = guiRespond.addIcon(Material.STICK, "§aQuit Message", 2, 7);
-        quitMsgIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + group.getQuitMessageText() + "§7»", " "));
+        quitMsgIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + group.getQuitMessage() + "§7»", " "));
         quitMsgIcon.onClick(() -> this.guiModifyingGroups.editQuitMessage(group));
 
         ItemStack head = Icon.playerHead(user.getPlayer().getName());
@@ -266,11 +266,11 @@ public class GuiSetup {
         GuiRespond guiRespond = new GuiRespond(user, "§9Tag (Subgroup) §8» §7" + subgroup.getGroupColor() + subgroup.getName(), 3);
 
         Icon prefixIcon = guiRespond.addIcon(Material.IRON_INGOT, "§aChange Prefix", 2, 3);
-        prefixIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + subgroup.getPrefix(null, false) + "§7»", " "));
+        prefixIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + subgroup.getPrefix() + "§7»", " "));
         prefixIcon.onClick(() -> this.guiModifyingGroups.editPrefix(subgroup));
 
         Icon suffixIcon = guiRespond.addIcon(Material.GOLD_INGOT, "§aChange Suffix", 2, 5);
-        suffixIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + subgroup.getSuffix(null, false) + "§7»", " "));
+        suffixIcon.setLore(Arrays.asList(DIVIDER, "§7Current: §7«§f" + subgroup.getSuffix() + "§7»", " "));
         suffixIcon.onClick(() -> this.guiModifyingGroups.editSuffix(subgroup));
 
         Icon genderedLayoutIcon = guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), "§aGendered Layout", 2, 8);

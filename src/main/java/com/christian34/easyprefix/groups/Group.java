@@ -6,7 +6,6 @@ import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.sql.*;
 import com.christian34.easyprefix.sql.database.StorageType;
-import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Debug;
@@ -101,26 +100,10 @@ public class Group extends EasyGroup {
         return genderedLayout;
     }
 
-    /**
-     * todo remove arg User.class, placeholders will no longer be set by Group.class or EasyGroup.class
-     *
-     * @param user
-     * @return
-     */
-    @Deprecated
     @Nullable
-    public String getJoinMessage(User user) {
-        String message = getJoinMessageText();
-        if (message != null) {
-            return translate(message, user);
-        }
-        return null;
-    }
-
-    @Nullable
-    public String getJoinMessageText() {
+    public String getJoinMessage() {
         if ((this.joinMessage == null || this.joinMessage.isEmpty()) && !getName().equals("default")) {
-            this.joinMessage = this.groupHandler.getGroup("default").getJoinMessageText();
+            return this.groupHandler.getGroup("default").getJoinMessage();
         }
         return joinMessage;
     }
@@ -133,25 +116,10 @@ public class Group extends EasyGroup {
         saveData("join-msg", this.joinMessage);
     }
 
-    /**
-     * also look at getJoinMessage(User user)
-     *
-     * @param user
-     * @return
-     */
     @Nullable
-    public String getQuitMessage(@NotNull User user) {
-        String message = getQuitMessageText();
-        if (message != null) {
-            return translate(message, user);
-        }
-        return null;
-    }
-
-    @Nullable
-    public String getQuitMessageText() {
+    public String getQuitMessage() {
         if ((this.quitMessage == null || this.quitMessage.isEmpty()) && !getName().equals("default")) {
-            this.quitMessage = this.groupHandler.getGroup("default").getQuitMessageText();
+            return this.groupHandler.getGroup("default").getQuitMessage();
         }
         return quitMessage;
     }
@@ -191,16 +159,8 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    @NotNull
-    public String getPrefix(@Nullable User user, boolean translate) {
-        String prefix;
-        if (this.groupHandler.handleGenders() && user != null) {
-            prefix = this.genderedLayout.getPrefix(user.getGenderType());
-            if (prefix == null) prefix = this.prefix;
-        } else {
-            prefix = this.prefix;
-        }
-        if (translate) prefix = translate(prefix, user);
+    @Nullable
+    public String getPrefix() {
         return prefix;
     }
 
@@ -211,6 +171,16 @@ public class Group extends EasyGroup {
         }
         this.prefix = prefix;
         saveData("prefix", this.prefix);
+    }
+
+    @Nullable
+    @Override
+    public String getPrefix(Gender gender) {
+        if (this.groupHandler.handleGenders() && gender != null) {
+            String text = this.genderedLayout.getPrefix(gender);
+            if (text != null) return text;
+        }
+        return getPrefix();
     }
 
     @Override
@@ -245,17 +215,9 @@ public class Group extends EasyGroup {
     }
 
     @Override
-    @NotNull
-    public String getSuffix(@Nullable User user, boolean translate) {
-        String groupSuffix;
-        if (this.groupHandler.handleGenders() && user != null) {
-            groupSuffix = this.genderedLayout.getSuffix(user.getGenderType());
-            if (groupSuffix == null) groupSuffix = this.suffix;
-        } else {
-            groupSuffix = this.suffix;
-        }
-        if (translate) groupSuffix = translate(groupSuffix, user);
-        return groupSuffix;
+    @Nullable
+    public String getSuffix() {
+        return suffix;
     }
 
     @Override
@@ -265,6 +227,16 @@ public class Group extends EasyGroup {
         }
         this.suffix = suffix;
         saveData("suffix", this.suffix);
+    }
+
+    @Nullable
+    @Override
+    public String getSuffix(Gender gender) {
+        if (this.groupHandler.handleGenders() && gender != null) {
+            String text = this.genderedLayout.getSuffix(gender);
+            if (text != null) return text;
+        }
+        return getSuffix();
     }
 
     @Override

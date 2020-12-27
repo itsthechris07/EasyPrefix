@@ -6,7 +6,6 @@ import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.sql.*;
 import com.christian34.easyprefix.sql.database.StorageType;
-import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -82,16 +81,16 @@ public class Subgroup extends EasyGroup {
 
     @Override
     @Nullable
-    public String getPrefix(User user, boolean translate) {
-        String prefix;
-        if (this.groupHandler.handleGenders() && user != null) {
-            prefix = this.genderedLayout.getPrefix(user.getGenderType());
-            if (prefix == null) prefix = this.prefix;
-        } else {
-            prefix = this.prefix;
-        }
-        if (translate) prefix = translate(prefix, user);
+    public String getPrefix() {
         return prefix;
+    }
+
+    @Override
+    public String getPrefix(Gender gender) {
+        if (this.groupHandler.handleGenders() && gender != null) {
+            return this.genderedLayout.getPrefix(gender);
+        }
+        return getPrefix();
     }
 
     @Override
@@ -141,16 +140,16 @@ public class Subgroup extends EasyGroup {
 
     @Override
     @Nullable
-    public String getSuffix(User user, boolean translate) {
-        String suffix;
-        if (this.groupHandler.handleGenders() && user != null) {
-            suffix = this.genderedLayout.getSuffix(user.getGenderType());
-            if (suffix == null) suffix = this.suffix;
-        } else {
-            suffix = this.suffix;
-        }
-        if (translate) suffix = translate(suffix, user);
+    public String getSuffix() {
         return suffix;
+    }
+
+    @Override
+    public String getSuffix(Gender gender) {
+        if (this.groupHandler.handleGenders() && gender != null) {
+            return this.genderedLayout.getSuffix(gender);
+        }
+        return getSuffix();
     }
 
     @Override

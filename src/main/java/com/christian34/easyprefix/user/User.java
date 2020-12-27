@@ -143,7 +143,7 @@ public class User {
         if (hasPermission("custom.prefix") && customPrefix != null) {
             return customPrefix;
         }
-        return group.getPrefix(this, true);
+        return group.getPrefix(gender);
     }
 
     public void setPrefix(String prefix) {
@@ -167,7 +167,7 @@ public class User {
         if (hasPermission("custom.suffix") && customSuffix != null) {
             return customSuffix;
         }
-        return group.getSuffix(this, true);
+        return group.getSuffix(gender);
     }
 
     public void setSuffix(String suffix) {

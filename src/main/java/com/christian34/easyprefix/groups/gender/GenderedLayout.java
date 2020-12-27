@@ -7,6 +7,7 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -95,10 +96,12 @@ public class GenderedLayout {
         }
     }
 
+    @Nullable
     public String getPrefix(Gender gender) {
         return this.prefixes.get(gender);
     }
 
+    @Nullable
     public String getSuffix(Gender gender) {
         return this.suffixes.get(gender);
     }
