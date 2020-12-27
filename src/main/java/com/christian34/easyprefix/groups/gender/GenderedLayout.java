@@ -4,12 +4,14 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
+import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,42 +34,36 @@ public class GenderedLayout {
         this.prefixes = new HashMap<>();
         this.suffixes = new HashMap<>();
         this.easyGroupType = easyGroup instanceof Group ? "group" : "subgroup";
-
-        try {
-            load();
-        } catch (Exception e) {
-            Debug.log("§cAn error occurred while loading a gendered layout for "
-                    + easyGroupType + " '" + easyGroup.getName() + "'!");
-            Debug.handleException(e);
-        }
+        load();
     }
 
-    private void load() throws Exception {
+    private void load() {
+        GroupHandler groupHandler = instance.getGroupHandler();
         if (instance.getStorageType() == StorageType.SQL) {
             SQLDatabase database = instance.getSqlDatabase();
             String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%" + easyGroupType + "s_gendered` " +
                     "WHERE `group` = '" + easyGroup.getName() + "'";
-            ResultSet result = database.getValue(sql);
-            while (result != null && result.next()) {
-                Gender gender = instance.getGroupHandler().getGender(result.getString("gender"));
+            try (ResultSet result = database.getValue(sql)) {
+                while (result != null && result.next()) {
+                    Gender gender = groupHandler.getGender(result.getString("gender"));
 
-                if (gender == null) {
-                    Debug.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
-                    continue;
-                }
+                    if (gender == null) {
+                        Debug.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
+                        continue;
+                    }
 
-                String prefix = result.getString("prefix");
-                if (prefix != null) {
-                    prefixes.put(gender, prefix);
-                }
+                    String prefix = result.getString("prefix");
+                    if (prefix != null) {
+                        prefixes.put(gender, prefix);
+                    }
 
-                String suffix = result.getString("suffix");
-                if (suffix != null) {
-                    suffixes.put(gender, suffix);
+                    String suffix = result.getString("suffix");
+                    if (suffix != null) {
+                        suffixes.put(gender, suffix);
+                    }
                 }
-            }
-            if (result != null) {
-                result.close();
+            } catch (SQLException ex) {
+                Debug.catchException(ex);
             }
         } else {
             GroupsData groupsData = instance.getFileManager().getGroupsData();
@@ -76,7 +72,7 @@ public class GenderedLayout {
                 return;
             }
             for (String name : set) {
-                Gender gender = instance.getGroupHandler().getGender(name);
+                Gender gender = groupHandler.getGender(name);
 
                 if (gender == null) {
                     Debug.log("§cYou've used an invalid gender for " + easyGroupType + " '" + easyGroup.getName() + "'!");
