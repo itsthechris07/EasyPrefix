@@ -177,7 +177,7 @@ class UserCommand implements Subcommand {
         if (args.size() == 2) {
             return null;
         } else if (args.size() == 3) {
-            List<String> matches = Arrays.asList("reload", "info", "setgroup");
+            List<String> matches = new ArrayList<>(Arrays.asList("reload", "info", "setgroup"));
             if (ConfigKeys.USE_GENDER.toBoolean()) {
                 matches.add("setgender");
             }
