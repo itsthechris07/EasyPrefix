@@ -46,8 +46,9 @@ public class SQLDatabase implements Database {
         synchronized (this) {
             try {
                 if (connection != null && !connection.isClosed()) return true;
+                Debug.recordAction("initialize connection to mysql");
                 Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database
+                this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database
                                 + "?useSSL=false&useUnicode=true&characterEncoding=utf-8"
                                 + "&autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID(),
                         username, password);
