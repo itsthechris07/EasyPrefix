@@ -190,6 +190,7 @@ public class EasyPrefix extends JavaPlugin {
         if (expansionManager.isUsingPapi()) {
             text = expansionManager.setPlaceholders(user.getPlayer(), text);
         }
+        text = text.replace("%player%", user.getPlayer().getDisplayName());
         return text;
     }
 
