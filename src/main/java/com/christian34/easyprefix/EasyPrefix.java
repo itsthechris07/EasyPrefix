@@ -80,10 +80,6 @@ public class EasyPrefix extends JavaPlugin {
         return sqlDatabase;
     }
 
-    public ExpansionManager getExpansionManager() {
-        return expansionManager;
-    }
-
     public void onDisable() {
         if (sqlDatabase != null) {
             this.sqlDatabase.close();
@@ -131,19 +127,16 @@ public class EasyPrefix extends JavaPlugin {
         Debug.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
         Debug.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
         Debug.log("This software uses Sentry for anonymous user statistics. License: https://github.com/getsentry/sentry/blob/master/LICENSE");
+        PluginManager pluginManager = Bukkit.getPluginManager();
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            if (formatChat() && (Bukkit.getPluginManager().isPluginEnabled("EssentialsChat") || Bukkit.getPluginManager().isPluginEnabled("MultiChat"))) {
+            if (formatChat() && (pluginManager.isPluginEnabled("EssentialsChat")
+                    || pluginManager.isPluginEnabled("MultiChat"))) {
                 Debug.warn("§c--------------------------------------");
-                Debug.warn("§cYou are using a different chat management plugin. To avoid issues, please set 'handle-chat' in config.yml to false");
+                Debug.warn("§cYou are using a different chat management plugin. To avoid issues, " +
+                        "please set 'handle-chat' in config.yml to false");
                 Debug.warn("§c--------------------------------------");
             }
         }, 20 * 3);
-
-        if (expansionManager.isUsingPapi()) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                @SuppressWarnings("unused") User user = getUser(player);
-            }
-        }
     }
 
     public boolean formatChat() {

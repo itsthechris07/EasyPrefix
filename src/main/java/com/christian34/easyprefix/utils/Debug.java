@@ -69,7 +69,8 @@ public class Debug {
 
     public static void handleException(Exception exception) {
         catchException(exception);
-        warn("&cAn error occurred while using EasyPrefix. If you think this is an error, please report following exception to GitHub!");
+        warn("&cAn error occurred while using EasyPrefix. If you think this is an error," +
+                " please report following exception to GitHub!");
         warn("&c------ ERROR ------");
         exception.printStackTrace();
         warn("&c------ END OF ERROR ------");
@@ -119,6 +120,7 @@ public class Debug {
         hub.setTag("api", Bukkit.getBukkitVersion());
         hub.setTag("server", Bukkit.getVersion());
         hub.setTag("java", System.getProperty("java.version"));
+        hub.setTag("offline-players", Bukkit.getOfflinePlayers().length + "");
         // set tags after plugin was loaded
         Bukkit.getScheduler().runTaskLater(instance, () -> {
             hub.setTag("storage", instance.getStorageType().name().toLowerCase());
