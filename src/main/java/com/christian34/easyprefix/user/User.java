@@ -268,6 +268,7 @@ public class User {
     }
 
     public void setSubgroup(Subgroup subgroup) {
+        this.subgroup = subgroup;
         String name = (subgroup != null) ? subgroup.getName() : null;
         saveData("subgroup", name);
     }
