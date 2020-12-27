@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * EasyPrefix 2020.
@@ -141,8 +142,8 @@ public class GuiSetup {
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §8Groups", 5);
         final String divider = "§7-------------------------------";
         for (Group group : groupHandler.getGroups()) {
-            String prefix = group.getPrefix();
-            String suffix = group.getSuffix();
+            String prefix = Optional.ofNullable(group.getPrefix()).orElse("-");
+            String suffix = Optional.ofNullable(group.getSuffix()).orElse("-");
             ChatColor prefixColor = group.getGroupColor();
             List<String> lore = new ArrayList<>();
             lore.add(divider);

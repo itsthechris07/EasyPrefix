@@ -18,10 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -289,13 +286,13 @@ public class GuiSettings {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), 3);
 
         List<String> prefixLore = replaceInList(Message.LORE_CHANGE_PREFIX.getList(),
-                user.getPrefix().replace("§", "&"));
+                user.getPrefix());
 
         guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX.getText(), 2, 4)
                 .setLore(prefixLore)
                 .onClick(() -> {
                     ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.getText()
-                            .replace("%content%", user.getPrefix().replace("§", "&")));
+                            .replace("%content%", Optional.ofNullable(user.getPrefix()).orElse("-")));
 
                     responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {
                                 String cmd = respond == null ? "reset" : respond;
@@ -305,12 +302,12 @@ public class GuiSettings {
                 });
 
         List<String> suffixLore = replaceInList(Message.LORE_CHANGE_SUFFIX.getList(),
-                user.getSuffix().replace("§", "&"));
+                user.getSuffix());
         guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.getText(), 2, 6)
                 .setLore(suffixLore)
                 .onClick(() -> {
                     ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.getText()
-                            .replace("%content%", user.getSuffix().replace("§", "&")));
+                            .replace("%content%", Optional.ofNullable(user.getSuffix()).orElse("-")));
 
                     responder.getInput((respond) ->
                             Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {
