@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.commands.tags;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.commands.CommandNotFoundException;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.gui.pages.GuiSettings;
@@ -76,7 +75,6 @@ public class TagsCommand implements EasyCommand {
         }
         sender.sendMessage(Message.PREFIX + "§cCouldn't find requested command! Type '/tags help'"
                 + " to get a command overview.");
-        throw new CommandNotFoundException("tags", subcommand);
     }
 
     @Override

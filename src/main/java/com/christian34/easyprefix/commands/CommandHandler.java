@@ -6,7 +6,6 @@ import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetCommandListener;
 import com.christian34.easyprefix.commands.tags.TagsCommand;
 import com.christian34.easyprefix.utils.Debug;
-import io.sentry.Sentry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +32,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         for (EasyCommand command : commands) {
             PluginCommand pluginCommand = instance.getCommand(command.getName());
             if (pluginCommand == null) {
-                throw new CommandNotFoundException(command.getName(), "");
+                Debug.catchException(new CommandException("Command '" + command.getName() + "' was not found!"));
+                continue;
             }
 
             pluginCommand.setExecutor(this);
@@ -49,7 +49,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 return command;
             }
         }
-        throw new CommandNotFoundException(name, null);
+        Debug.catchException(new CommandException("Command '" + name + "' was not found!"));
+        return null;
     }
 
     @Override
@@ -58,10 +59,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
                 try {
                     easyCommand.handleCommand(sender, Arrays.asList(args));
-                } catch (CommandNotFoundException e) {
-                    if (!(e.getSubcommand() != null && e.getSubcommand().equals("confirm"))) {
-                        Sentry.captureMessage(e.getMessage());
-                    }
                 } catch (Exception e) {
                     Debug.handleException(e);
                 }
