@@ -6,6 +6,7 @@ import com.christian34.easyprefix.sql.database.DuplicateEntryException;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
+import org.bukkit.Bukkit;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -54,6 +55,15 @@ public class InsertStatement {
         } catch (SQLException ex) {
             if (ex.getMessage().startsWith("[SQLITE_CONSTRAINT]")) {
                 throw new DuplicateEntryException(table, "constraint violation");
+            } else if (instance.getStorageType() == StorageType.LOCAL) {
+                if (ex.getMessage().startsWith("[SQLITE_READONLY]")) {
+                    Debug.warn("************************************************************");
+                    Debug.warn("* WARNING: File 'storage.db' is not writable!");
+                    Debug.warn("* stopping plugin...");
+                    Debug.warn("************************************************************");
+                    Bukkit.getScheduler().runTask(instance, () -> Bukkit.getPluginManager().disablePlugin(instance));
+                    return false;
+                }
             }
             Debug.catchException(ex);
         }
