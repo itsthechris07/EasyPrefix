@@ -95,18 +95,16 @@ public class User {
             }
         }
 
-        String cstmPrefix = userData.getString("custom_prefix");
-        if (hasPermission("custom.prefix") && ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-            if (cstmPrefix != null) {
-                this.customPrefix = cstmPrefix.replace("&", "§");
+        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
+            if (hasPermission("custom.prefix")) {
+                this.customPrefix = userData.getString("custom_prefix");
             }
-        }
-
-        String cstmSuffix = userData.getString("custom_suffix");
-        if (hasPermission("custom.suffix") && ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
-            if (cstmSuffix != null) {
-                this.customSuffix = cstmSuffix.replace("&", "§");
+            if (hasPermission("custom.suffix")) {
+                this.customSuffix = userData.getString("custom_suffix");
             }
+        } else {
+            this.customPrefix = null;
+            this.customSuffix = null;
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
@@ -138,7 +136,7 @@ public class User {
         return true;
     }
 
-    @NotNull
+    @Nullable
     public String getPrefix() {
         if (hasPermission("custom.prefix") && customPrefix != null) {
             return customPrefix;
@@ -162,7 +160,7 @@ public class User {
         return customSuffix != null;
     }
 
-    @NotNull
+    @Nullable
     public String getSuffix() {
         if (hasPermission("custom.suffix") && customSuffix != null) {
             return customSuffix;
@@ -250,6 +248,7 @@ public class User {
         saveData("chat_formatting", value);
     }
 
+    @NotNull
     public Group getGroup() {
         return group;
     }

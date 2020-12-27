@@ -168,7 +168,7 @@ class ChatProvider {
 
         private User getUser(String username) {
             Player player = Bukkit.getPlayer(username);
-            return player == null ? null : expansionManager.getInstance().getUser(player);
+            return player == null ? null : EasyPrefix.getInstance().getUser(player);
         }
 
     }
