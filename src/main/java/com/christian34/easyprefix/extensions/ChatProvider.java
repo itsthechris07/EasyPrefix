@@ -1,5 +1,6 @@
 package com.christian34.easyprefix.extensions;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import net.milkbowl.vault.chat.Chat;
