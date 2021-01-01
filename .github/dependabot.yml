@@ -9,5 +9,5 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-     ignore:
-       - dependency-name: "annotations"
+    ignore:
+      - dependency-name: "annotations"
