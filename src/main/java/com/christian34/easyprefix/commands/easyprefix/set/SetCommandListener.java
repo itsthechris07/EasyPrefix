@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * EasyPrefix 2020.
@@ -119,7 +119,7 @@ public class SetCommandListener implements Listener {
 
             user.saveData("custom_prefix_update", currentTime.toString());
             user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText()
-                    .replace("%content%", Objects.requireNonNull(user.getPrefix())));
+                    .replace("%content%", Optional.ofNullable(user.getPrefix()).orElse("-")));
         } else if (request.startsWith("setsuffix")) {
             if (value.equals("reset")) {
                 value = null;
@@ -128,7 +128,7 @@ public class SetCommandListener implements Listener {
 
             user.saveData("custom_suffix_update", currentTime.toString());
             user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText()
-                    .replace("%content%", Objects.requireNonNull(user.getSuffix())));
+                    .replace("%content%", Optional.ofNullable(user.getSuffix()).orElse("-")));
         }
     }
 

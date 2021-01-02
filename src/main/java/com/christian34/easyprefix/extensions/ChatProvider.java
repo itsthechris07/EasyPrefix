@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 
+import java.util.Optional;
+
 
 /**
  * EasyPrefix 2020.
@@ -59,7 +61,7 @@ class ChatProvider {
             String chatColor = user.getChatColor().getCode();
             if (chatFormatting != null) chatColor += chatFormatting.getCode();
 
-            return user.getSuffix() + chatColor;
+            return Optional.ofNullable(user.getSuffix()).orElse("") + chatColor;
         }
 
         @Override

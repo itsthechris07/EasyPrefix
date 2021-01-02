@@ -13,6 +13,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Optional;
+
 /**
  * EasyPrefix 2020.
  *
@@ -30,9 +32,8 @@ public class ChatListener implements Listener {
         if (!this.instance.formatChat()) return;
         User user = instance.getUser(e.getPlayer());
 
-        String prefix = Message.setColors(instance.setPlaceholders(user, user.getPrefix()));
-
-        String suffix = Message.setColors(instance.setPlaceholders(user, user.getSuffix()));
+        String prefix = Optional.ofNullable(Message.setColors(instance.setPlaceholders(user, user.getPrefix()))).orElse("");
+        String suffix = Optional.ofNullable(Message.setColors(instance.setPlaceholders(user, user.getSuffix()))).orElse("");
 
         String msg = e.getMessage();
         String chatColor = "";

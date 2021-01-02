@@ -63,10 +63,10 @@ class CustomPlaceholder extends PlaceholderExpansion {
         switch (identifier) {
             case "prefix":
             case "user_prefix":
-                return user.getPrefix();
+                return Optional.ofNullable(user.getPrefix()).orElse("");
             case "suffix":
             case "user_suffix":
-                return user.getSuffix();
+                return Optional.ofNullable(user.getSuffix()).orElse("");
             case "user_group":
                 return user.getGroup().getName();
             case "user_chatcolor":
