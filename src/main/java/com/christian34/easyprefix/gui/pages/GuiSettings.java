@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -293,12 +294,14 @@ public class GuiSettings {
                 .onClick(() -> {
                     ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_PREFIX.getText()
                             .replace("%content%", Optional.ofNullable(user.getPrefix()).orElse("-")));
-
-                    responder.getInput((respond) -> Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {
-                                String cmd = respond == null ? "reset" : respond;
-                                user.getPlayer().performCommand("ep setprefix " + cmd);
-                            }
-                    ));
+                    responder.getInput((respond) -> {
+                        // this is just a temporary solution, will be updated in v1.8
+                        PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(user.getPlayer(),
+                                "/ep setprefix " + respond);
+                        Bukkit.getScheduler().runTask(instance, () -> {
+                            Bukkit.getServer().getPluginManager().callEvent(event);
+                        });
+                    });
                 });
 
         List<String> suffixLore = replaceInList(Message.LORE_CHANGE_SUFFIX.getList(),
@@ -308,13 +311,14 @@ public class GuiSettings {
                 .onClick(() -> {
                     ChatRespond responder = new ChatRespond(user, Message.CHAT_INPUT_SUFFIX.getText()
                             .replace("%content%", Optional.ofNullable(user.getSuffix()).orElse("-")));
-
-                    responder.getInput((respond) ->
-                            Bukkit.getScheduler().runTask(EasyPrefix.getInstance(), () -> {
-                                String cmd = respond == null ? "reset" : respond;
-                                user.getPlayer().performCommand("ep setsuffix " + cmd);
-                            })
-                    );
+                    responder.getInput((respond) -> {
+                        // this is just a temporary solution, will be updated in v1.8
+                        PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(user.getPlayer(),
+                                "/ep setsuffix " + respond);
+                        Bukkit.getScheduler().runTask(instance, () -> {
+                            Bukkit.getServer().getPluginManager().callEvent(event);
+                        });
+                    });
                 });
 
         guiRespond.addIcon(Material.BARRIER, Message.BTN_RESET.getText(), 3, 9).onClick(() -> {
