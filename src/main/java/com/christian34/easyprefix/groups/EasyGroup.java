@@ -18,11 +18,6 @@ public abstract class EasyGroup {
      */
     public abstract String getName();
 
-    /**
-     * @param user      target user
-     * @param translate set colors/formattings and placeholders
-     * @return String
-     */
     public abstract String getPrefix();
 
     public abstract String getPrefix(Gender gender);
@@ -37,11 +32,6 @@ public abstract class EasyGroup {
 
     public abstract void setPrefix(@Nullable String prefix, @NotNull Gender gender);
 
-    /**
-     * @param user      target user
-     * @param translate set placeholders and formattings
-     * @return suffix
-     */
     public abstract String getSuffix();
 
     public abstract String getSuffix(Gender gender);

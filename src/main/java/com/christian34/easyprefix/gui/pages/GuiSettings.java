@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -287,7 +288,7 @@ public class GuiSettings {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), 3);
 
         List<String> prefixLore = replaceInList(Message.LORE_CHANGE_PREFIX.getList(),
-                user.getPrefix());
+                Optional.ofNullable(user.getPrefix()).orElse("-"));
 
         guiRespond.addIcon(Material.IRON_INGOT, Message.BTN_CHANGE_PREFIX.getText(), 2, 4)
                 .setLore(prefixLore)
@@ -305,7 +306,7 @@ public class GuiSettings {
                 });
 
         List<String> suffixLore = replaceInList(Message.LORE_CHANGE_SUFFIX.getList(),
-                user.getSuffix());
+                Optional.ofNullable(user.getSuffix()).orElse("-"));
         guiRespond.addIcon(Material.GOLD_INGOT, Message.BTN_CHANGE_SUFFIX.getText(), 2, 6)
                 .setLore(suffixLore)
                 .onClick(() -> {
@@ -336,7 +337,7 @@ public class GuiSettings {
         guiRespond.openInventory();
     }
 
-    private List<String> replaceInList(List<String> list, String value) {
+    private List<String> replaceInList(@NotNull List<String> list, @NotNull String value) {
         return list.stream().map(val -> val.replace("%content%", value)).collect(Collectors.toList());
     }
 
