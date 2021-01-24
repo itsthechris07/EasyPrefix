@@ -19,16 +19,8 @@ import java.util.concurrent.ExecutionException;
  * @author Christian34
  */
 public class UpdateStatement {
-    private static final Database database;
-    private static final EasyPrefix instance;
-
-    static {
-        instance = EasyPrefix.getInstance();
-        database = instance.getStorageType() == StorageType.SQL
-                ? instance.getSqlDatabase()
-                : instance.getLocalDatabase();
-    }
-
+    private final Database database;
+    private final EasyPrefix instance;
     private final Map<String, Object> values;
     private final Map<String, String> conditions;
     private final String table;
@@ -37,6 +29,10 @@ public class UpdateStatement {
         this.table = table;
         this.values = new HashMap<>();
         this.conditions = new HashMap<>();
+        this.instance = EasyPrefix.getInstance();
+        this.database = instance.getStorageType() == StorageType.SQL
+                ? instance.getSqlDatabase()
+                : instance.getLocalDatabase();
     }
 
     public UpdateStatement setValue(String column, Object value) {

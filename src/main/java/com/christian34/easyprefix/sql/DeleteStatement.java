@@ -17,22 +17,18 @@ import java.util.Map;
  * @author Christian34
  */
 public class DeleteStatement {
-    private static final Database database;
-    private static final EasyPrefix instance;
-
-    static {
-        instance = EasyPrefix.getInstance();
-        database = instance.getStorageType() == StorageType.SQL
-                ? instance.getSqlDatabase()
-                : instance.getLocalDatabase();
-    }
-
+    private final Database database;
+    private final EasyPrefix instance;
     private final String table;
     private final Map<String, String> conditions;
 
     public DeleteStatement(String table) {
         this.table = table;
         this.conditions = new HashMap<>();
+        this.instance = EasyPrefix.getInstance();
+        this.database = instance.getStorageType() == StorageType.SQL
+                ? instance.getSqlDatabase()
+                : instance.getLocalDatabase();
     }
 
     public DeleteStatement addCondition(String column, String value) {
