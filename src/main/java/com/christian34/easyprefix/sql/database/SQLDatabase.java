@@ -110,10 +110,11 @@ public class SQLDatabase implements Database {
             if (connection == null || connection.isClosed()) {
                 connect();
             }
+            return connection;
         } catch (SQLException ex) {
             Debug.handleException(ex);
         }
-        return connection;
+        return null;
     }
 
     public void alterTable(String statement) {

@@ -40,10 +40,11 @@ public class LocalDatabase implements Database {
             if (connection != null && connection.isClosed()) {
                 connect();
             }
+            return connection;
         } catch (SQLException ex) {
             Debug.handleException(ex);
         }
-        return connection;
+        return null;
     }
 
     @Override
