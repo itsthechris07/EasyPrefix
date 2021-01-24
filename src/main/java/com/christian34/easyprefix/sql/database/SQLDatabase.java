@@ -3,6 +3,7 @@ package com.christian34.easyprefix.sql.database;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.utils.Debug;
+import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.TimeZone;
@@ -63,7 +64,8 @@ public class SQLDatabase implements Database {
             } catch (ClassNotFoundException e) {
                 Debug.warn("§cYour installation does not support sql!");
             }
-            return false;
+            Bukkit.getPluginManager().disablePlugin(instance);
+            throw new Error("Couldn't enable plugin, because the database is not working!");
         }
     }
 
