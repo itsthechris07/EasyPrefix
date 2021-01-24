@@ -44,8 +44,13 @@ public class SQLSynchronizer {
             if (syncId != null && !syncId.equals(this.taskId.toString())) {
                 Debug.recordAction("Syncing data...");
                 Debug.log("Plugin has been synced with database!");
-                this.taskId = UUID.fromString(syncId);
-                instance.reload();
+                try {
+                    this.taskId = UUID.fromString(syncId);
+                } catch (IllegalArgumentException ignored) {
+                    sendSyncInstruction();
+                }
+                instance.getGroupHandler().load();
+                instance.reloadUsers();
             }
         }, 20 * 60 * 3, 20 * 60 * 3);
     }
