@@ -24,7 +24,7 @@ public class Data {
 
     @Nullable
     public String getString(String key) {
-        if (hash == null) return null;
+        if (hash == null || !hash.containsKey(key)) return null;
         return (String) hash.get(key);
     }
 
