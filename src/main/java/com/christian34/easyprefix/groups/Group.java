@@ -50,7 +50,8 @@ public class Group extends EasyGroup {
             Map<String, Object> storage = new HashMap<>();
             FileConfiguration fileData = getGroupsData().getData();
             for (String key : keys) {
-                storage.put(key, fileData.getString(getFileKey() + key.replace("_", "-")));
+                Object val = fileData.getString(getFileKey() + key.replace("_", "-"));
+                if (val != null) storage.put(key, val);
             }
             data = new Data(storage);
         }
