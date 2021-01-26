@@ -92,7 +92,7 @@ public class UpdateStatement {
                 return true;
             } catch (SQLException ex) {
                 if (instance.getStorageType() == StorageType.LOCAL) {
-                    if (ex.getMessage().startsWith("[SQLITE_READONLY]")) {
+                    if (ex.getMessage().startsWith("[SQLITE_READONLY")) {
                         Debug.warn("************************************************************");
                         Debug.warn("* WARNING: File 'storage.db' is not writable!");
                         Debug.warn("* stopping plugin...");
