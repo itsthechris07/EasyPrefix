@@ -19,6 +19,7 @@ import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
 import org.apache.commons.lang.Validate;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -80,18 +81,6 @@ public class EasyPrefix extends JavaPlugin {
         return sqlDatabase;
     }
 
-    public void onDisable() {
-        if (sqlDatabase != null) {
-            this.sqlDatabase.close();
-        }
-        if (localDatabase != null) {
-            this.localDatabase.close();
-        }
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player != null) player.closeInventory();
-        }
-    }
-
     public void onEnable() {
         EasyPrefix.instance = this;
         this.plugin = this;
@@ -137,6 +126,18 @@ public class EasyPrefix extends JavaPlugin {
                 Debug.warn("§c--------------------------------------");
             }
         }, 20 * 3);
+    }
+
+    public void onDisable() {
+        if (sqlDatabase != null) {
+            this.sqlDatabase.close();
+        }
+        if (localDatabase != null) {
+            this.localDatabase.close();
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player != null) player.closeInventory();
+        }
     }
 
     public boolean formatChat() {
@@ -246,15 +247,15 @@ public class EasyPrefix extends JavaPlugin {
 
     private void hookMetrics() {
         Metrics metrics = new Metrics(this, 9682);
-        metrics.addCustomChart(new Metrics.SimplePie("placeholderapi",
+        metrics.addCustomChart(new SimplePie("placeholderapi",
                 () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
-        metrics.addCustomChart(new Metrics.SimplePie("storage",
+        metrics.addCustomChart(new SimplePie("storage",
                 () -> storageType.name().toLowerCase()));
-        metrics.addCustomChart(new Metrics.SimplePie("chat",
+        metrics.addCustomChart(new SimplePie("chat",
                 () -> (formatChat()) ? "true" : "false"));
-        metrics.addCustomChart(new Metrics.SimplePie("genders",
+        metrics.addCustomChart(new SimplePie("genders",
                 () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "enabled" : "disabled"));
-        metrics.addCustomChart(new Metrics.SimplePie("custom_layout",
+        metrics.addCustomChart(new SimplePie("custom_layout",
                 () -> (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) ? "enabled" : "disabled"));
     }
 
