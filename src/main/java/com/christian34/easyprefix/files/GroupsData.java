@@ -60,7 +60,11 @@ public class GroupsData {
     }
 
     public void setAndSave(@NotNull String key, @Nullable Object value) {
-        getData().set(key, value);
+        try {
+            getData().set(key, value);
+        } catch (IllegalArgumentException ignored) {
+            getData().set(key, "");
+        }
         save();
     }
 
