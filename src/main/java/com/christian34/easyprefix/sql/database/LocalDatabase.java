@@ -37,7 +37,7 @@ public class LocalDatabase implements Database {
     @Override
     public Connection getConnection() {
         try {
-            if (connection != null && connection.isClosed()) {
+            if (connection == null || connection.isClosed()) {
                 connect();
             }
             return connection;
