@@ -12,7 +12,6 @@ import com.christian34.easyprefix.listeners.QuitListener;
 import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
-import com.christian34.easyprefix.sql.migrate.DataMigration;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.RainbowEffect;
@@ -42,7 +41,6 @@ public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance = null;
     private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
-    private DataMigration dataMigration = null;
     private Set<User> users;
     private Plugin plugin;
     private GroupHandler groupHandler;
@@ -60,13 +58,6 @@ public class EasyPrefix extends JavaPlugin {
 
     public CommandHandler getCommandHandler() {
         return commandHandler;
-    }
-
-    public DataMigration getDataMigration() {
-        if (dataMigration == null) {
-            this.dataMigration = new DataMigration(this);
-        }
-        return dataMigration;
     }
 
     public LocalDatabase getLocalDatabase() {
