@@ -111,6 +111,22 @@ public class Debug {
             options.setDsn("https://593815c87f604f2da4620b5031945126@o393387.ingest.sentry.io/5242398");
             options.setEnableExternalConfiguration(false);
             options.setRelease(instance.getDescription().getVersion());
+            options.setBeforeSend((event, hint) -> {
+                Throwable throwable = event.getThrowable();
+                boolean isFromPlugin = false;
+                if (throwable != null) {
+                    for (StackTraceElement element : throwable.getStackTrace()) {
+                        if (element.getClassName().startsWith("com.christian34.easyprefix")) {
+                            isFromPlugin = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isFromPlugin) {
+                    return null;
+                }
+                return event;
+            });
         });
         Sentry.configureScope(scope -> {
             User user = new User();
@@ -128,6 +144,7 @@ public class Debug {
             GroupHandler groupHandler = instance.getGroupHandler();
             hub.setTag("groups", String.valueOf(groupHandler.getGroups().size()));
             hub.setTag("subgroups", String.valueOf(groupHandler.getSubgroups().size()));
+            handleException(new NullPointerException("Please fuck me"));
         }, 20 * 10);
     }
 
