@@ -225,7 +225,15 @@ public class EasyPrefix extends JavaPlugin {
         Debug.recordAction("Reloading Plugin");
         this.fileManager = new FileManager(this);
         this.updater.check();
-        if (storageType == StorageType.SQL) {
+        if (ConfigKeys.SQL_ENABLED.toBoolean() && this.storageType == StorageType.LOCAL) {
+            Debug.warn("************************************************************");
+            Debug.warn("* WARNING: You MUST restart the server to enable sql!");
+            Debug.warn("* stopping plugin...");
+            Debug.warn("************************************************************");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+        if (ConfigKeys.SQL_ENABLED.toBoolean()) {
             this.sqlDatabase.close();
             this.sqlDatabase = new SQLDatabase(this);
             this.sqlDatabase.connect();
