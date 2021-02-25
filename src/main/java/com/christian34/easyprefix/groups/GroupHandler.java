@@ -178,7 +178,7 @@ public class GroupHandler {
     }
 
     public List<Group> getGroups() {
-        return groups;
+        return new ArrayList<>(groups);
     }
 
     public List<Subgroup> getSubgroups() {
