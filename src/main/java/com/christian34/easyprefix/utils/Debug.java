@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

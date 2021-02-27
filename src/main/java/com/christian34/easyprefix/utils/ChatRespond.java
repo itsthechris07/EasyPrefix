@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

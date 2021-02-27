@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

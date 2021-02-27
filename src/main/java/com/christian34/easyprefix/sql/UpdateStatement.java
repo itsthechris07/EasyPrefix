@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

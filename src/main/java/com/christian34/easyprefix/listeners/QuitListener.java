@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

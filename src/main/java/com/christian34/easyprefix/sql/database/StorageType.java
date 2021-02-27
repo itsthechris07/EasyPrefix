@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.sql.database;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

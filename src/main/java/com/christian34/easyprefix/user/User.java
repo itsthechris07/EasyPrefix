@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

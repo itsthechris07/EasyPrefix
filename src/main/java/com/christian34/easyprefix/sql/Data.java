@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

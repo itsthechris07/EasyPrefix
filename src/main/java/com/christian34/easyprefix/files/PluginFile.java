@@ -12,6 +12,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * EasyPrefix 2021.
+ *
+ * @author Christian34
+ */
 public abstract class PluginFile {
     private final File sourceFile;
     private final String dataPrefix;

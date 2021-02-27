@@ -4,7 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import org.bukkit.Bukkit;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */

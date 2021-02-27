@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * EasyPrefix 2020.
+ * EasyPrefix 2021.
  *
  * @author Christian34
  */
