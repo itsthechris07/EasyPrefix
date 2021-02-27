@@ -8,13 +8,13 @@ import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * EasyPrefix 2020.
@@ -67,11 +67,11 @@ public class GenderedLayout {
             }
         } else {
             GroupsData groupsData = instance.getFileManager().getGroupsData();
-            Set<String> set = groupsData.getSection(easyGroup.getFileKey() + "genders");
-            if (set.isEmpty()) {
+            ConfigurationSection section = groupsData.getSection(easyGroup.getFileKey() + "genders");
+            if (section == null) {
                 return;
             }
-            for (String name : set) {
+            for (String name : section.getKeys(false)) {
                 Gender gender = groupHandler.getGender(name);
 
                 if (gender == null) {

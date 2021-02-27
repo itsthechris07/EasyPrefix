@@ -149,7 +149,7 @@ public class Group extends EasyGroup {
 
             instance.getSqlDatabase().getSqlSynchronizer().sendSyncInstruction();
         } else {
-            groupsData.setAndSave(getFileKey() + key.replace("_", "-"), value);
+            groupsData.save(getFileKey() + key.replace("_", "-"), value);
         }
     }
 
@@ -209,8 +209,7 @@ public class Group extends EasyGroup {
                     .addCondition("gender", gender.getName());
             update.execute();
         } else {
-            GroupsData data = getGroupsData();
-            data.setAndSave(getFileKey() + "genders." + gender.getName() + ".prefix", prefix);
+            getGroupsData().save(getFileKey() + "genders." + gender.getName() + ".prefix", prefix);
         }
         groupHandler.reloadGroup(this);
     }
@@ -265,8 +264,7 @@ public class Group extends EasyGroup {
                     .addCondition("gender", gender.getName());
             update.execute();
         } else {
-            GroupsData data = getGroupsData();
-            data.setAndSave(getFileKey() + "genders." + gender.getName() + ".suffix", groupSuffix);
+            getGroupsData().save(getFileKey() + "genders." + gender.getName() + ".suffix", groupSuffix);
         }
         groupHandler.reloadGroup(this);
     }
@@ -285,7 +283,7 @@ public class Group extends EasyGroup {
     @Override
     public void delete() {
         if (instance.getStorageType() == StorageType.LOCAL) {
-            groupsData.setAndSave("groups." + getName(), null);
+            groupsData.save("groups." + getName(), null);
         } else {
             DeleteStatement deleteStatement = new DeleteStatement("groups").addCondition("group", getName());
             if (!deleteStatement.execute()) {

@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.utils.Debug;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
@@ -30,8 +30,11 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
         this.parentCommand = parentCommand;
         this.instance = parentCommand.getInstance();
 
-        String prefixAlias = ConfigKeys.PREFIX_ALIAS.toString().replace("/", "");
-        String suffixAlias = ConfigKeys.SUFFIX_ALIAS.toString().replace("/", "");
+        ConfigData config = instance.getConfigData();
+        String prefixAlias = config.getString(ConfigData.Keys.PREFIX_ALIAS, "")
+                .replace("/", "");
+        String suffixAlias = config.getString(ConfigData.Keys.SUFFIX_ALIAS, "")
+                .replace("/", "");
 
         CommandMap commandMap = getCommandMapInstance();
         if (commandMap == null) {

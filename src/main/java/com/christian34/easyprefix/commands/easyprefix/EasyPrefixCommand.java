@@ -6,7 +6,7 @@ import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetPrefixCommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetSuffixCommand;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
@@ -44,7 +44,7 @@ public class EasyPrefixCommand implements EasyCommand {
             subcommands.add(new DatabaseCommand(this));
         }
 
-        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) {
             subcommands.add(new SetPrefixCommand(this));
             subcommands.add(new SetSuffixCommand(this));
             new AliasHandler(this);
@@ -85,7 +85,7 @@ public class EasyPrefixCommand implements EasyCommand {
 
         final String CMD_NOT_FOUND = Message.PREFIX + "§cCouldn't find requested command!\nType '/easyprefix help'"
                 + " to get a command overview.";
-        if (!ConfigKeys.CUSTOM_LAYOUT.toBoolean() &&
+        if (!instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT) &&
                 (subcommand.equalsIgnoreCase("setprefix") || subcommand.equalsIgnoreCase("setsuffix"))) {
             Debug.log("This is not available because you disabled it in the configuration. Open 'config.yml' and set 'custom-layout.enabled' to 'true'. Please restart the server.");
             sender.sendMessage(CMD_NOT_FOUND);

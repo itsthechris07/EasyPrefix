@@ -2,7 +2,7 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.UserPermission;
@@ -65,7 +65,7 @@ class DebugCommand implements Subcommand {
         sender.sendMessage("§9Version Name: §7" + Bukkit.getBukkitVersion());
         sender.sendMessage("§9Storage: §7" + ((this.instance.getStorageType() == StorageType.SQL) ? "MySQL" : "local"));
         sender.sendMessage("§9active EventHandler: §7" + HandlerList.getRegisteredListeners(this.instance.getPlugin()).size());
-        sender.sendMessage("§9Client ID: §7" + ConfigKeys.CLIENT_ID.toString());
+        sender.sendMessage("§9Client ID: §7" + instance.getConfigData().getString(ConfigData.Keys.CLIENT_ID));
     }
 
     @Override

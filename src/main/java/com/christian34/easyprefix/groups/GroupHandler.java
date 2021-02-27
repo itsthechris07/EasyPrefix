@@ -1,8 +1,7 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
-import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.GroupsData;
 import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.sql.InsertStatement;
@@ -10,11 +9,10 @@ import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,11 +38,10 @@ public class GroupHandler {
 
         if (instance.getStorageType() == StorageType.LOCAL) {
             GroupsData groupsData = getGroupsData();
-            FileConfiguration fileData = groupsData.getData();
-            if (fileData.getString("groups.default.join-msg") == null) {
+            if (groupsData.getString("default.join-msg") == null) {
                 groupsData.set("groups.default.join-msg", "&8» %ep_user_prefix%%player% &8joined the game");
             }
-            if (fileData.getString("groups.default.quit-msg") == null) {
+            if (groupsData.getString("default.quit-msg") == null) {
                 groupsData.set("groups.default.quit-msg", "&8« %ep_user_prefix%%player% &8left the game");
             }
             groupsData.save();
@@ -72,7 +69,7 @@ public class GroupHandler {
         Debug.recordAction("Loading groups...");
         this.groups = new ArrayList<>();
         this.subgroups = new ArrayList<>();
-        if (ConfigKeys.USE_GENDER.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
             loadGenders();
         }
         this.defaultGroup = new Group(this, "default");
@@ -83,17 +80,15 @@ public class GroupHandler {
 
         if (instance.getStorageType() == StorageType.LOCAL) {
             GroupsData groupsData = getGroupsData();
-            groupNames = new ArrayList<>(getGroupsData().getSection("groups"));
-            if (groupNames.isEmpty()) {
-                File folder = FileManager.getPluginFolder();
-                File old = new File(folder, "groups.yml");
-                if (old.renameTo(new File(folder, "backup-groups.yml"))) {
-                    groupsData.load();
-                    load();
-                }
+            ConfigurationSection groupsSection = groupsData.getSection("groups");
+            if (groupsSection != null) {
+                groupNames.addAll(groupsSection.getKeys(false));
             }
-            if (ConfigKeys.USE_TAGS.toBoolean()) {
-                subgroupNames.addAll(groupsData.getSection("subgroups"));
+            if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
+                ConfigurationSection subgroupsSection = groupsData.getSection("subgroups");
+                if (subgroupsSection != null) {
+                    subgroupNames.addAll(subgroupsSection.getKeys(false));
+                }
             }
         } else {
             try (ResultSet groupsResult = database.getValue("SELECT `group` FROM `%p%groups`")) {
@@ -136,12 +131,14 @@ public class GroupHandler {
     }
 
     public boolean handleGenders() {
-        return ConfigKeys.USE_GENDER.toBoolean();
+        return instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER);
     }
 
     public void loadGenders() {
         this.genders = new ArrayList<>();
-        for (String name : ConfigKeys.GENDER_TYPES.toSection()) {
+        ConfigurationSection section = instance.getConfigData().getSection(ConfigData.Keys.GENDER_TYPES);
+        if (section == null) return;
+        for (String name : section.getKeys(false)) {
             try {
                 this.genders.add(new Gender(name));
             } catch (Exception ex) {

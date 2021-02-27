@@ -52,7 +52,7 @@ public class InsertStatement {
             if (ex.getMessage().startsWith("[SQLITE_CONSTRAINT]")) {
                 throw new DuplicateEntryException(table, "constraint violation");
             } else if (instance.getStorageType() == StorageType.LOCAL) {
-                if (ex.getMessage().startsWith("[SQLITE_READONLY]")) {
+                if (ex.getMessage().startsWith("[SQLITE_READONLY")) {
                     Debug.warn("************************************************************");
                     Debug.warn("* WARNING: File 'storage.db' is not writable!");
                     Debug.warn("* stopping plugin...");

@@ -144,7 +144,6 @@ public class Debug {
             GroupHandler groupHandler = instance.getGroupHandler();
             hub.setTag("groups", String.valueOf(groupHandler.getGroups().size()));
             hub.setTag("subgroups", String.valueOf(groupHandler.getSubgroups().size()));
-            handleException(new NullPointerException("Please fuck me"));
         }, 20 * 10);
     }
 

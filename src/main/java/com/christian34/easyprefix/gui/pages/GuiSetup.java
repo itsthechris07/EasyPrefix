@@ -2,7 +2,6 @@ package com.christian34.easyprefix.gui.pages;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.files.ConfigKeys;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
@@ -57,28 +56,27 @@ public class GuiSetup {
     public void pluginSettingsGui() {
         GuiRespond guiRespond = new GuiRespond(user, "§9EasyPrefix §8» §9Settings", 3);
         ConfigData configData = this.instance.getFileManager().getConfig();
-
         final String ENABLED = "§aenabled";
         final String DISABLED = "§cdisabled";
 
-        boolean useGender = ConfigKeys.USE_GENDER.toBoolean();
+        boolean useGender = instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER);
         String genderText = "§aGender §7(" + ((useGender) ? ENABLED : DISABLED) + "§7)";
         guiRespond.addIcon(Material.CHAINMAIL_HELMET, genderText, 2, 4)
                 .setLore("§9Enable/Disable players gender")
                 .onClick(() -> {
                     boolean use = !useGender;
-                    configData.set(ConfigKeys.USE_GENDER.getPath(), use);
+                    configData.save(ConfigData.Keys.USE_GENDER, use);
                     this.instance.reload();
                     pluginSettingsGui();
                 });
 
-        boolean useColors = ConfigKeys.HANDLE_COLORS.toBoolean();
+        boolean useColors = instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS);
         String colorsText = "§aHandle colors §7(" + ((useColors) ? ENABLED : DISABLED) + "§7)";
         guiRespond.addIcon(XMaterial.LIME_DYE.parseItem(), colorsText, 2, 6)
                 .setLore("§9Translate color and formatting codes")
                 .onClick(() -> {
                     boolean use = !useColors;
-                    configData.set(ConfigKeys.HANDLE_COLORS.getPath(), use);
+                    configData.save(ConfigData.Keys.HANDLE_COLORS, use);
                     this.instance.reload();
                     pluginSettingsGui();
                 });

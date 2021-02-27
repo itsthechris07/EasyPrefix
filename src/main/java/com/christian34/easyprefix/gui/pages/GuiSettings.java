@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.gui.pages;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -49,7 +49,7 @@ public class GuiSettings {
             }
         });
         Icon formattings = guiRespond.addIcon(XMaterial.CHEST.parseItem(), Message.BTN_MY_FORMATTINGS, 2, 7).onClick(() -> openColorsPage(null));
-        if (ConfigKeys.USE_GENDER.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
             guiRespond.addIcon(Icon.playerHead(user.getPlayer().getName()), Message.BTN_CHANGE_GENDER, 2, 5).onClick(() -> openGenderSelectPage(null));
         } else {
             prefix.setSlot(2, 4);
@@ -111,7 +111,7 @@ public class GuiSettings {
             });
         }
 
-        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
             guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_LAYOUT, 5, 9)
                     .setLore(Message.BTN_CUSTOM_LAYOUT_LORE.getList())
                     .onClick(() -> openCustomLayoutPage(this::openGroupsListPage));
@@ -130,7 +130,7 @@ public class GuiSettings {
 
     public void openColorsPage(ClickAction backAction) {
         GuiRespond guiRespond = new GuiRespond(user, setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), 5);
-        final boolean showAll = ConfigKeys.GUI_SHOW_ALL_CHATCOLORS.toBoolean();
+        final boolean showAll = instance.getConfigData().getBoolean(ConfigData.Keys.GUI_SHOW_ALL_CHATCOLORS);
 
         int line = 2, slot = 1;
         List<Color> colors = showAll ? Arrays.asList(Color.getValues()) : new ArrayList<>(user.getColors());
@@ -264,7 +264,7 @@ public class GuiSettings {
             });
         }
 
-        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean() && user.hasPermission("custom.gui")) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
             guiRespond.addIcon(new ItemStack(Material.NETHER_STAR), Message.BTN_CUSTOM_LAYOUT, lines, 9)
                     .setLore(Message.BTN_CUSTOM_LAYOUT_LORE.getList())
                     .onClick(() -> openCustomLayoutPage(() -> openSubgroupsPage(this::openWelcomePage)));
@@ -280,7 +280,7 @@ public class GuiSettings {
     }
 
     public void openCustomLayoutPage(ClickAction backAction) {
-        if (!ConfigKeys.CUSTOM_LAYOUT.toBoolean() || !user.hasPermission("custom.gui")) {
+        if (!instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT) || !user.hasPermission("custom.gui")) {
             if (backAction != null) {
                 backAction.execute();
             } else openGroupsListPage();

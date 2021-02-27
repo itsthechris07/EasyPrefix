@@ -2,7 +2,7 @@ package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandHandler;
 import com.christian34.easyprefix.extensions.ExpansionManager;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -72,17 +72,21 @@ public class EasyPrefix extends JavaPlugin {
         return sqlDatabase;
     }
 
+    public ConfigData getConfigData() {
+        return getFileManager().getConfig();
+    }
+
     public void onEnable() {
         EasyPrefix.instance = this;
         this.plugin = this;
         this.debug = new Debug(this);
         this.users = Collections.synchronizedSet(new HashSet<>());
         this.fileManager = new FileManager(this);
-        if (!debug.getClientID().equals(ConfigKeys.CLIENT_ID.toString("id"))) {
-            ConfigKeys.CLIENT_ID.set(debug.getClientID());
+        if (!debug.getClientID().equals(getConfigData().getString(ConfigData.Keys.CLIENT_ID))) {
+            getConfigData().save(ConfigData.Keys.CLIENT_ID, debug.getClientID());
         }
 
-        if (ConfigKeys.SQL_ENABLED.toBoolean()) {
+        if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED)) {
             this.sqlDatabase = new SQLDatabase(this);
             this.storageType = StorageType.SQL;
             if (!this.sqlDatabase.connect()) {
@@ -97,7 +101,7 @@ public class EasyPrefix extends JavaPlugin {
         groupHandler.load();
         this.commandHandler = new CommandHandler(this);
         registerEvents();
-        if (!ConfigKeys.ENABLED.toBoolean()) {
+        if (!getConfigData().getBoolean(ConfigData.Keys.ENABLED)) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -132,7 +136,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     public boolean formatChat() {
-        return ConfigKeys.HANDLE_CHAT.toBoolean();
+        return getConfigData().getBoolean(ConfigData.Keys.HANDLE_CHAT);
     }
 
     public GroupHandler getGroupHandler() {
@@ -216,7 +220,7 @@ public class EasyPrefix extends JavaPlugin {
         Debug.recordAction("Reloading Plugin");
         this.fileManager = new FileManager(this);
         this.updater.check();
-        if (ConfigKeys.SQL_ENABLED.toBoolean() && this.storageType == StorageType.LOCAL) {
+        if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED) && this.storageType == StorageType.LOCAL) {
             Debug.warn("************************************************************");
             Debug.warn("* WARNING: You MUST restart the server to enable sql!");
             Debug.warn("* stopping plugin...");
@@ -224,7 +228,7 @@ public class EasyPrefix extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        if (ConfigKeys.SQL_ENABLED.toBoolean()) {
+        if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED)) {
             this.sqlDatabase.close();
             this.sqlDatabase = new SQLDatabase(this);
             this.sqlDatabase.connect();
@@ -253,9 +257,9 @@ public class EasyPrefix extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("chat",
                 () -> (formatChat()) ? "true" : "false"));
         metrics.addCustomChart(new SimplePie("genders",
-                () -> (ConfigKeys.USE_GENDER.toBoolean()) ? "enabled" : "disabled"));
+                () -> (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) ? "enabled" : "disabled"));
         metrics.addCustomChart(new SimplePie("custom_layout",
-                () -> (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) ? "enabled" : "disabled"));
+                () -> (getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) ? "enabled" : "disabled"));
     }
 
 }

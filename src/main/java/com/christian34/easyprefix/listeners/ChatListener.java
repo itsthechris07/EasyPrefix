@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -39,7 +39,7 @@ public class ChatListener implements Listener {
         String chatColor = "";
 
 
-        if (ConfigKeys.HANDLE_COLORS.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS)) {
             ChatFormatting chatFormatting = user.getChatFormatting();
             chatColor = user.getChatColor().getCode();
             if (chatFormatting != null && !chatFormatting.equals(ChatFormatting.UNDEFINED)) {

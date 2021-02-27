@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.commands.easyprefix.set;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.ChatButtonConfirm;
@@ -29,10 +29,13 @@ public class SetCommandListener implements Listener {
 
     public SetCommandListener(EasyPrefix instance) {
         this.instance = instance;
-        this.PREFIX_ALIAS = ConfigKeys.PREFIX_ALIAS.toString().replace("/", "").toLowerCase();
+
+        this.PREFIX_ALIAS = instance.getConfigData().getString(ConfigData.Keys.PREFIX_ALIAS, "")
+                .replace("/", "").toLowerCase();
         this.PREFIX_CMD = "ep setprefix";
 
-        this.SUFFIX_ALIAS = ConfigKeys.SUFFIX_ALIAS.toString().replace("/", "").toLowerCase();
+        this.SUFFIX_ALIAS = instance.getConfigData().getString(ConfigData.Keys.PREFIX_ALIAS, "")
+                .replace("/", "").toLowerCase();
         this.SUFFIX_CMD = "ep setsuffix";
     }
 
@@ -141,7 +144,7 @@ public class SetCommandListener implements Listener {
     }
 
     private Timestamp getNextTimestamp(long last) {
-        double delay = ConfigKeys.CUSTOM_LAYOUT_COOLDOWN.toDouble();
+        double delay = instance.getConfigData().getDouble(ConfigData.Keys.CUSTOM_LAYOUT_COOLDOWN);
         long newTime = (long) (last + (delay * 60 * 60 * 1000));
         return new Timestamp(newTime);
     }

@@ -2,7 +2,7 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
@@ -41,7 +41,7 @@ public class GuiCommand implements Subcommand {
 
         if (args.get(1).equals("settings")) {
             if (args.size() == 3) {
-                if (!ConfigKeys.USE_GENDER.toBoolean()) {
+                if (!instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
                     return;
                 }
                 if (args.get(2).equals("gender")) {

@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Message;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -26,10 +26,10 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        if (!ConfigKeys.USE_JOIN_QUIT.toBoolean()) return;
+        if (!instance.getConfigData().getBoolean(ConfigData.Keys.USE_JOIN_QUIT)) return;
         User user = instance.getUser(e.getPlayer());
 
-        if (ConfigKeys.HIDE_JOIN_QUIT.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.HIDE_JOIN_QUIT)) {
             e.setJoinMessage(null);
         } else if (e.getJoinMessage() != null) {
             String joinMsg = instance.setPlaceholders(user, user.getGroup().getJoinMessage());
@@ -41,7 +41,8 @@ public class JoinListener implements Listener {
     public void notifyOnJoin(PlayerJoinEvent event) {
         User user = this.instance.getUser(event.getPlayer());
         Bukkit.getScheduler().runTaskAsynchronously(instance.getPlugin(), () -> {
-            if (ConfigKeys.USE_GENDER.toBoolean() && ConfigKeys.FORCE_GENDER.toBoolean()) {
+            ConfigData config = instance.getConfigData();
+            if (config.getBoolean(ConfigData.Keys.USE_GENDER) && config.getBoolean(ConfigData.Keys.FORCE_GENDER)) {
                 if (user.getGenderType() == null) {
                     TextComponent msg = new TextComponent(TextComponent.fromLegacyText(Message.CHAT_NOTIFY_GENDER_TEXT.getText()));
                     TextComponent change = new TextComponent(TextComponent.fromLegacyText(Message.CHAT_NOTIFY_GENDER_BTN.getText()));

@@ -3,7 +3,7 @@ package com.christian34.easyprefix.commands.color;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
@@ -29,7 +29,7 @@ public class ColorCommand implements EasyCommand {
     public ColorCommand(EasyPrefix instance) {
         this.instance = instance;
         this.subcommands = new ArrayList<>();
-        if (ConfigKeys.HANDLE_COLORS.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS)) {
             this.subcommands.add(new SetCommand(this, instance));
             this.subcommands.add(new SelectCommand(this, instance));
             this.subcommands.add(new HelpCommand(this));
@@ -44,7 +44,7 @@ public class ColorCommand implements EasyCommand {
 
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
-        if (!ConfigKeys.HANDLE_COLORS.toBoolean()) {
+        if (!instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS)) {
             Debug.warn("&cYou can't use the command 'color' as it has been disabled in config.yml! " +
                     "Set 'handle-colors' to 'true' and restart the server.");
             EasyCommand command = instance.getCommandHandler().getCommand("easyprefix");
@@ -93,7 +93,7 @@ public class ColorCommand implements EasyCommand {
 
     @Override
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
-        if (!ConfigKeys.HANDLE_COLORS.toBoolean()) {
+        if (!instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS)) {
             return Collections.emptyList();
         }
         String subcommand = args.get(0);

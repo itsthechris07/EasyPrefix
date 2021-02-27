@@ -2,7 +2,7 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -153,10 +153,10 @@ class UserCommand implements Subcommand {
         String prefix = "§7/§9EasyPrefix user <Player> ";
         sender.sendMessage(prefix + "info §f| §7get information about the player");
         sender.sendMessage(prefix + "setgroup <Group> §f| §7force group to player");
-        if (ConfigKeys.USE_TAGS.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
             sender.sendMessage(prefix + "settag <Tag> §f| §7set tag to player");
         }
-        if (ConfigKeys.USE_GENDER.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
             sender.sendMessage(prefix + "setgender <Gender> §f| §7set gender");
         }
         sender.sendMessage(" \n§7----------------------------------------------------\n ");
@@ -178,10 +178,10 @@ class UserCommand implements Subcommand {
             return null;
         } else if (args.size() == 3) {
             List<String> matches = new ArrayList<>(Arrays.asList("reload", "info", "setgroup"));
-            if (ConfigKeys.USE_GENDER.toBoolean()) {
+            if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
                 matches.add("setgender");
             }
-            if (ConfigKeys.USE_TAGS.toBoolean()) {
+            if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
                 matches.add("settag");
             }
             if (args.get(2).isEmpty()) {

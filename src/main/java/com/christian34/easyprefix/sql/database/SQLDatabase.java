@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.sql.database;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.utils.Debug;
 
 import java.sql.*;
@@ -25,12 +25,13 @@ public class SQLDatabase implements Database {
 
     public SQLDatabase(EasyPrefix instance) {
         this.instance = instance;
-        this.host = ConfigKeys.SQL_HOST.toString();
-        this.database = ConfigKeys.SQL_DATABASE.toString();
-        this.username = ConfigKeys.SQL_USERNAME.toString();
-        this.password = ConfigKeys.SQL_PASSWORD.toString();
-        this.port = ConfigKeys.SQL_PORT.toInt();
-        String tPrefix = ConfigKeys.SQL_TABLEPREFIX.toString();
+        ConfigData config = instance.getFileManager().getConfig();
+        this.host = config.getString("sql.host");
+        this.database = config.getString("sql.database");
+        this.username = config.getString("sql.username");
+        this.password = config.getString("sql.password");
+        this.port = config.getInt("sql.port");
+        String tPrefix = config.getString("sql.table-prefix");
         if (tPrefix == null || tPrefix.isEmpty()) {
             tPrefix = "";
         } else if (!tPrefix.endsWith("_")) tPrefix += "_";

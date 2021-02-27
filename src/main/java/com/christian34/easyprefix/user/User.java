@@ -1,7 +1,7 @@
 package com.christian34.easyprefix.user;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigKeys;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -72,7 +72,7 @@ public class User {
             }
         }
 
-        if (ConfigKeys.USE_TAGS.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
             String subgroupName = userData.getString("subgroup");
             if (subgroupName != null) {
                 this.subgroup = groupHandler.getSubgroup(subgroupName);
@@ -95,7 +95,7 @@ public class User {
             }
         }
 
-        if (ConfigKeys.CUSTOM_LAYOUT.toBoolean()) {
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) {
             if (hasPermission("custom.prefix")) {
                 this.customPrefix = userData.getString("custom_prefix");
             }

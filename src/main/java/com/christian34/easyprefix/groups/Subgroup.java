@@ -63,7 +63,7 @@ public class Subgroup extends EasyGroup {
         if (value instanceof String) value = ((String) value).replace("§", "&");
         if (instance.getStorageType() == StorageType.LOCAL) {
             key = key.replace("_", "-");
-            groupsData.setAndSave(getFileKey() + key, value);
+            groupsData.save(getFileKey() + key, value);
         } else {
             UpdateStatement updateStatement = new UpdateStatement("subgroups")
                     .addCondition("group", getName())
@@ -133,7 +133,7 @@ public class Subgroup extends EasyGroup {
                     .addCondition("gender", gender.getName());
             update.execute();
         } else {
-            groupsData.setAndSave(getFileKey() + "genders." + gender.getName() + ".prefix", prefix);
+            groupsData.save(getFileKey() + "genders." + gender.getName() + ".prefix", prefix);
         }
         groupHandler.reloadGroup(this);
     }
@@ -186,7 +186,7 @@ public class Subgroup extends EasyGroup {
                     .addCondition("gender", gender.getName());
             update.execute();
         } else {
-            groupsData.setAndSave(getFileKey() + "genders." + gender.getName() + ".suffix", suffix);
+            groupsData.save(getFileKey() + "genders." + gender.getName() + ".suffix", suffix);
         }
         groupHandler.reloadGroup(this);
     }
@@ -205,7 +205,7 @@ public class Subgroup extends EasyGroup {
     @Override
     public void delete() {
         if (instance.getStorageType() == StorageType.LOCAL) {
-            groupsData.setAndSave("subgroups." + getName(), null);
+            groupsData.save("subgroups." + getName(), null);
         } else {
             DeleteStatement deleteStatement = new DeleteStatement("subgroups").addCondition("group", getName());
             if (!deleteStatement.execute()) {
