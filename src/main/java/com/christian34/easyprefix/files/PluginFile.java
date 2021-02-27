@@ -1,6 +1,5 @@
 package com.christian34.easyprefix.files;
 
-import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.utils.Debug;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,7 +19,6 @@ import java.util.List;
 public abstract class PluginFile {
     private final File sourceFile;
     private final String dataPrefix;
-    private final EasyPrefix instance = EasyPrefix.getInstance();
     private FileConfiguration data;
 
     public PluginFile(File sourceFile, String dataPrefix) {
@@ -38,7 +36,7 @@ public abstract class PluginFile {
     }
 
     private void load() {
-        if (!sourceFile.exists()) {
+        if (!getSourceFile().exists()) {
             try {
                 createFile();
             } catch (IOException ex) {
@@ -48,9 +46,9 @@ public abstract class PluginFile {
         try {
             update();
         } catch (IOException ex) {
-            Debug.warn("Couldn't update file '" + sourceFile.getName() + "'!");
+            Debug.warn("Couldn't update file '" + getSourceFile().getName() + "'!");
         }
-        this.data = YamlConfiguration.loadConfiguration(sourceFile);
+        this.data = YamlConfiguration.loadConfiguration(getSourceFile());
     }
 
     public void set(String path, Object value) {
@@ -64,7 +62,7 @@ public abstract class PluginFile {
 
     public synchronized void save() {
         try {
-            data.save(sourceFile);
+            data.save(getSourceFile());
         } catch (IOException e) {
             e.printStackTrace();
         }
