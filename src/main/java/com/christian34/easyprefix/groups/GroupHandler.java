@@ -16,7 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * EasyPrefix 2021.
@@ -26,9 +28,9 @@ import java.util.List;
 public class GroupHandler {
     private final EasyPrefix instance;
     private final GroupsData groupsData;
-    private List<Group> groups;
-    private List<Subgroup> subgroups;
-    private List<Gender> genders = new ArrayList<>();
+    private Set<Group> groups;
+    private Set<Subgroup> subgroups;
+    private Set<Gender> genders = new HashSet<>();
     private Group defaultGroup;
     private SQLDatabase database;
 
@@ -36,7 +38,7 @@ public class GroupHandler {
         this.instance = instance;
         this.groupsData = instance.getFileManager().getGroupsData();
 
-        if (instance.getStorageType() == StorageType.LOCAL) {
+        if (instance.getStorageType() == StorageType.LOCAL && getGroupsData() != null) {
             GroupsData groupsData = getGroupsData();
             if (groupsData.getString("default.join-msg") == null) {
                 groupsData.set("groups.default.join-msg", "&8» %ep_user_prefix%%player% &8joined the game");
@@ -67,8 +69,8 @@ public class GroupHandler {
 
     public void load() {
         Debug.recordAction("Loading groups...");
-        this.groups = new ArrayList<>();
-        this.subgroups = new ArrayList<>();
+        this.groups = new HashSet<>();
+        this.subgroups = new HashSet<>();
         if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
             loadGenders();
         }
@@ -135,7 +137,7 @@ public class GroupHandler {
     }
 
     public void loadGenders() {
-        this.genders = new ArrayList<>();
+        this.genders = new HashSet<>();
         ConfigurationSection section = instance.getConfigData().getSection(ConfigData.Keys.GENDER_TYPES);
         if (section == null) return;
         for (String name : section.getKeys(false)) {
@@ -148,7 +150,7 @@ public class GroupHandler {
     }
 
     public List<Gender> getGenderTypes() {
-        return genders;
+        return new ArrayList<>(genders);
     }
 
     @Nullable
@@ -174,11 +176,11 @@ public class GroupHandler {
         return false;
     }
 
-    public List<Group> getGroups() {
-        return new ArrayList<>(groups);
+    public Set<Group> getGroups() {
+        return groups;
     }
 
-    public List<Subgroup> getSubgroups() {
+    public Set<Subgroup> getSubgroups() {
         return subgroups;
     }
 
