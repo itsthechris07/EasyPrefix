@@ -106,7 +106,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>7.8.0</version>
+            <version>7.9.0</version>
         </dependency>
         <!-- ConfigUpdater -->
         <dependency>
@@ -118,7 +118,7 @@
         <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry</artifactId>
-            <version>4.2.0</version>
+            <version>4.3.0</version>
         </dependency>
         <!-- bStats Metrics -->
         <dependency>
