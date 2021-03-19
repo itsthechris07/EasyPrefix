@@ -235,7 +235,8 @@ public class GuiRespond {
             String displayName = e.getCurrentItem().getItemMeta().getDisplayName();
             Icon clickedIcon = getPage(page).getIcon(e.getCurrentItem());
 
-            if (closeInventoryIcon != null && displayName.equals(closeInventoryIcon.getDisplayName())) {
+            //noinspection ConstantConditions
+            if (closeInventoryIcon != null && (displayName != null && displayName.equals(closeInventoryIcon.getDisplayName()))) {
                 if (closeInventoryIcon.getClickAction() == null) {
                     e.getWhoClicked().closeInventory();
                     unregister();
