@@ -3,9 +3,9 @@ package com.christian34.easyprefix.commands.easyprefix;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
+import com.christian34.easyprefix.utils.UserInterface;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,8 @@ public class GuiCommand implements Subcommand {
                     return;
                 }
                 if (args.get(2).equals("gender")) {
-                    new GuiSettings(user).openGenderSelectPage(() -> user.getPlayer().closeInventory());
+                    UserInterface gui = new UserInterface(user);
+                    gui.openSelectGenderPage();
                 }
             }
         }

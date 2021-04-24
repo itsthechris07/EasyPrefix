@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.UUID;
 
-
 /**
  * EasyPrefix 2021.
  *
@@ -30,7 +29,7 @@ public class ChatButtonConfirm implements Listener {
         this.uniqueId = UUID.randomUUID();
 
         TextComponent button = new TextComponent(TextComponent.fromLegacyText(buttonText));
-        button.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ep confirm " + uniqueId.toString()));
+        button.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ep confirm " + uniqueId));
         this.text = new TextComponent(TextComponent.fromLegacyText(text));
         this.text.addExtra(button);
 

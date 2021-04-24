@@ -4,10 +4,10 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigData;
-import com.christian34.easyprefix.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
+import com.christian34.easyprefix.utils.UserInterface;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +60,8 @@ public class ColorCommand implements EasyCommand {
 
             Player player = (Player) sender;
             User user = instance.getUser(player);
-            new GuiSettings(user).openColorsPage(player::closeInventory);
+            UserInterface gui = new UserInterface(user);
+            gui.openPageUserColors();
             return;
         }
 

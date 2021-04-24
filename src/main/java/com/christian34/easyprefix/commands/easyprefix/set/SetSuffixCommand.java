@@ -1,14 +1,19 @@
 package com.christian34.easyprefix.commands.easyprefix.set;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
+import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
+import com.christian34.easyprefix.utils.UserInterface;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,12 +22,7 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class SetSuffixCommand implements Subcommand {
-    private final EasyPrefixCommand parentCommand;
-
-    public SetSuffixCommand(EasyPrefixCommand parentCommand) {
-        this.parentCommand = parentCommand;
-    }
+public class SetSuffixCommand implements Subcommand, CommandExecutor {
 
     @Override
     @Nullable
@@ -33,13 +33,13 @@ public class SetSuffixCommand implements Subcommand {
     @Override
     @NotNull
     public String getDescription() {
-        return "changes your suffix, reset it to default value with command 'setsuffix reset'";
+        return "modify your suffix";
     }
 
     @Override
     @NotNull
     public String getCommandUsage() {
-        return "setsuffix <suffix> or setsuffix reset";
+        return "setsuffix";
     }
 
     @Override
@@ -55,9 +55,9 @@ public class SetSuffixCommand implements Subcommand {
             return;
         }
 
-        if (args.size() < 2) {
-            parentCommand.getSubcommand("help").handleCommand(sender, null);
-        }
+        User user = EasyPrefix.getInstance().getUser((Player) sender);
+        UserInterface gui = new UserInterface(user);
+        gui.showCustomSuffixGui();
     }
 
     @Override
@@ -65,4 +65,9 @@ public class SetSuffixCommand implements Subcommand {
         return Collections.emptyList();
     }
 
+    @Override
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        handleCommand(commandSender, Arrays.asList(strings));
+        return true;
+    }
 }

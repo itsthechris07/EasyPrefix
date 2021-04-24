@@ -132,10 +132,10 @@ class UserCommand implements Subcommand {
         sender.sendMessage("§9Tag§f: §7" + subgroup);
         sender.sendMessage("§9Prefix§f: §8«§7" + Optional.ofNullable(user.getPrefix()).orElse("-") + "§8»"
                 + (user.hasCustomPrefix() ? " §7(§9customized§7)"
-                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastPrefixUpdate()).toString() : ""));
+                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastPrefixUpdate()) : ""));
         sender.sendMessage("§9Suffix§f: §8«§7" + Optional.ofNullable(user.getSuffix()).orElse("-") + "§8»"
                 + (user.hasCustomSuffix() ? " §7(§9customized§7)"
-                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastSuffixUpdate()).toString() : ""));
+                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastSuffixUpdate()) : ""));
         if (chatFormatting == null || !chatFormatting.equals(ChatFormatting.RAINBOW)) {
             sender.sendMessage(" §9chat color§f: §7" + chatColor.replace("§", "&"));
         }
