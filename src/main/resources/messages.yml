@@ -23,8 +23,8 @@ gui_button_reset: '&4Reset'
 gui_button_user_prefixes: '&3My Prefixes'
 gui_button_user_formattings: '&3Chat Formattings'
 gui_button_user_gender: '&aChange Gender'
-gui_button_next: '&eNext'
-gui_button_previous: '&ePrevious'
+gui_button_next: '&enext page &7(&e%nextpage%&7)'
+gui_button_previous: '&eprevious page &7(&e%prevpage%&7)'
 gui_button_tags: '&9My Tags'
 gui_button_change_prefix: '&9Change Prefix'
 gui_button_change_prefix_lore:
@@ -43,12 +43,6 @@ gui_button_custom_layout_lore:
   - '&7This option allows you to set a custom prefix and suffix.'
 gui_button_lore_select_prefix: '&9Click me to select this prefix'
 gui_button_lore_select_tag: '&9Click me to select this tag'
-gui_button_lore_select_formatting_nc:
-  - '&9(not compatible with rainbow effect)'
-gui_button_lore_select_formatting:
-  - ' '
-  - '&7Click to mix the color'
-  - '&7with this formatting'
 gui_title: '&9Chat &8» %page%'
 gui_title_settings: '&9Settings'
 gui_title_formattings: '&8Formattings'

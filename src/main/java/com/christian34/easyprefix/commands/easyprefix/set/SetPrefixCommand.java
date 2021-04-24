@@ -1,14 +1,19 @@
 package com.christian34.easyprefix.commands.easyprefix.set;
 
+import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.commands.easyprefix.EasyPrefixCommand;
+import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
+import com.christian34.easyprefix.utils.UserInterface;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,12 +22,7 @@ import java.util.List;
  *
  * @author Christian34
  */
-public class SetPrefixCommand implements Subcommand {
-    private final EasyPrefixCommand parentCommand;
-
-    public SetPrefixCommand(EasyPrefixCommand parentCommand) {
-        this.parentCommand = parentCommand;
-    }
+public class SetPrefixCommand implements Subcommand, CommandExecutor {
 
     @Override
     @Nullable
@@ -33,13 +33,13 @@ public class SetPrefixCommand implements Subcommand {
     @Override
     @NotNull
     public String getDescription() {
-        return "changes your prefix, reset it to default value with command 'setprefix reset'";
+        return "modify your prefix";
     }
 
     @Override
     @NotNull
     public String getCommandUsage() {
-        return "setprefix <prefix> or setprefix reset";
+        return "setprefix";
     }
 
     @Override
@@ -55,9 +55,9 @@ public class SetPrefixCommand implements Subcommand {
             return;
         }
 
-        if (args.size() < 2) {
-            parentCommand.getSubcommand("help").handleCommand(sender, null);
-        }
+        User user = EasyPrefix.getInstance().getUser((Player) sender);
+        UserInterface gui = new UserInterface(user);
+        gui.showCustomPrefixGui();
     }
 
     @Override
@@ -65,4 +65,9 @@ public class SetPrefixCommand implements Subcommand {
         return Collections.emptyList();
     }
 
+    @Override
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        handleCommand(commandSender, Arrays.asList(strings));
+        return true;
+    }
 }

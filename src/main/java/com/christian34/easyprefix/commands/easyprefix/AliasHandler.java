@@ -1,6 +1,8 @@
 package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.easyprefix.set.SetPrefixCommand;
+import com.christian34.easyprefix.commands.easyprefix.set.SetSuffixCommand;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.utils.Debug;
 import org.apache.commons.lang.reflect.FieldUtils;
@@ -13,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,13 +42,18 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
             throw new CommandException("Couldn't find command map!");
         }
 
-        for (String name : Arrays.asList(prefixAlias, suffixAlias)) {
-            PluginCommand pluginCommand = createPluginCommand(name);
-            if (pluginCommand != null) {
-                pluginCommand.setExecutor(this);
-                pluginCommand.setTabCompleter(this);
-                commandMap.register(instance.getDescription().getName(), pluginCommand);
-            }
+        SetPrefixCommand prefixCommand = (SetPrefixCommand) parentCommand.getSubcommand("setprefix");
+        PluginCommand prefixAliasCmd = createPluginCommand(prefixAlias);
+        if (prefixAliasCmd != null) {
+            prefixAliasCmd.setExecutor(prefixCommand);
+            commandMap.register(instance.getDescription().getName(), prefixAliasCmd);
+        }
+
+        SetSuffixCommand suffixCommand = (SetSuffixCommand) parentCommand.getSubcommand("setsuffix");
+        PluginCommand suffixAliasCmd = createPluginCommand(suffixAlias);
+        if (suffixAliasCmd != null) {
+            suffixAliasCmd.setExecutor(suffixCommand);
+            commandMap.register(instance.getDescription().getName(), suffixAliasCmd);
         }
     }
 
@@ -61,9 +67,6 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        if (args.length == 1) {
-            return Collections.singletonList("reset");
-        }
         return Collections.emptyList();
     }
 

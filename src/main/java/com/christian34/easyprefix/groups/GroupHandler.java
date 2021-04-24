@@ -15,10 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * EasyPrefix 2021.
@@ -115,6 +112,7 @@ public class GroupHandler {
         }
 
         groupNames.remove("default");
+        Collections.sort(groupNames);
         for (String name : groupNames) {
             try {
                 groups.add(new Group(this, name));
@@ -123,6 +121,7 @@ public class GroupHandler {
             }
         }
 
+        Collections.sort(subgroupNames);
         for (String name : subgroupNames) {
             try {
                 subgroups.add(new Subgroup(this, name));

@@ -47,6 +47,23 @@ public class User {
         this.userData = new UserData(player.getUniqueId());
     }
 
+    public String getChatColorName() {
+        Color color = getChatColor();
+        ChatFormatting chatFormatting = getChatFormatting();
+        if (chatFormatting == null) chatFormatting = ChatFormatting.UNDEFINED;
+        String name;
+        if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
+            name = chatFormatting.toString();
+        } else {
+            if (chatFormatting.equals(ChatFormatting.UNDEFINED)) {
+                name = color.toString();
+            } else {
+                name = color.getCode() + chatFormatting.getCode() + color.getName() + " " + chatFormatting.getName();
+            }
+        }
+        return name;
+    }
+
     public long getLastPrefixUpdate() {
         return lastPrefixUpdate;
     }

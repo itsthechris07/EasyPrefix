@@ -94,7 +94,7 @@ public abstract class PluginFile {
         return data.getDouble(dataPrefix + key);
     }
 
-    public boolean getBoolean(@NotNull String key) {
+    public Boolean getBoolean(@NotNull String key) {
         return data.getBoolean(dataPrefix + key);
     }
 

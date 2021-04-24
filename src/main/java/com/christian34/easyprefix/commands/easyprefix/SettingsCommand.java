@@ -2,10 +2,10 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.gui.pages.GuiSettings;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
+import com.christian34.easyprefix.utils.UserInterface;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +53,8 @@ class SettingsCommand implements Subcommand {
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
         User user = sender instanceof Player ? instance.getUser((Player) sender) : null;
         if (user != null) {
-            new GuiSettings(user).openWelcomePage();
+            UserInterface gui = new UserInterface(user);
+            gui.openUserSettings();
         } else {
             sender.sendMessage(Message.PREFIX + Message.CHAT_PLAYER_ONLY);
         }

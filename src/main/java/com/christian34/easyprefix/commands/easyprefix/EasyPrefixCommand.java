@@ -45,8 +45,8 @@ public class EasyPrefixCommand implements EasyCommand {
         }
 
         if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) {
-            subcommands.add(new SetPrefixCommand(this));
-            subcommands.add(new SetSuffixCommand(this));
+            subcommands.add(new SetPrefixCommand());
+            subcommands.add(new SetSuffixCommand());
             new AliasHandler(this);
         }
     }
