@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.CmdUtils;
 import com.christian34.easyprefix.commands.CommandHandler;
 import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * EasyPrefix 2021.
@@ -113,17 +115,8 @@ public class EasyPrefixCommand implements EasyCommand {
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         String subcommand = args.get(0);
         if (args.size() == 1) {
-            List<String> matches = new ArrayList<>();
-            for (Subcommand subcmd : subcommands) {
-                if (subcmd.getDescription() == null) continue;
+            return CmdUtils.matches(subcommands.stream().map(Subcommand::getName).collect(Collectors.toList()), subcommand);
 
-                if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
-                    if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
-                        matches.add(subcmd.getName());
-                    }
-                }
-            }
-            return matches;
         } else {
             for (Subcommand subcmd : subcommands) {
                 if (subcmd.getDescription() == null) continue;
