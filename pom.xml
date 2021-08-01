@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.christian34.easyprefix</groupId>
     <artifactId>EasyPrefix</artifactId>
-    <version>1.7.7</version>
+    <version>1.8</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,12 +13,19 @@
         <author>Christian34</author>
     </properties>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-snapshots</id>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.3.0-SNAPSHOT</version>
                 <configuration>
                     <relocations>
                         <relocation>
@@ -45,12 +52,13 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
     <repositories>
         <repository>
             <id>spigot-repo</id>
@@ -81,19 +89,20 @@
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
     </repositories>
+
     <dependencies>
         <!-- Spigot API -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- Placeholder API -->
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.10.9</version>
+            <version>2.10.10</version>
             <scope>provided</scope>
         </dependency>
         <!-- Vault API -->
@@ -114,7 +123,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>8.1.0</version>
+            <version>8.3.0</version>
         </dependency>
         <!-- ConfigUpdater -->
         <dependency>
@@ -149,4 +158,5 @@
             <version>1.5.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
 </project>
