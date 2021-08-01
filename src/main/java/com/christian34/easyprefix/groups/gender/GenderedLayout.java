@@ -67,6 +67,7 @@ public class GenderedLayout {
             }
         } else {
             GroupsData groupsData = instance.getFileManager().getGroupsData();
+            assert groupsData != null;
             ConfigurationSection section = groupsData.getSection(easyGroup.getFileKey() + "genders");
             if (section == null) {
                 return;

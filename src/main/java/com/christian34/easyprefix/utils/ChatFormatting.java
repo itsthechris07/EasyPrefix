@@ -53,10 +53,7 @@ public enum ChatFormatting {
     @Override
     public String toString() {
         if (code != null) {
-            if (code.equals("r")) {
-                return getCode() + RainbowEffect.addRainbowEffect(getName());
-            }
-            return getCode() + getName();
+            return code.equals("r") ? getCode() + RainbowEffect.addRainbowEffect(getName()) : getCode() + getName();
         }
         return "";
     }

@@ -133,6 +133,7 @@ public class Group extends EasyGroup {
         saveData("quit-msg", this.quitMessage);
     }
 
+    @NotNull
     private GroupsData getGroupsData() {
         return groupsData;
     }

@@ -134,7 +134,7 @@ public class UserData {
                 Debug.log("§cCouldn't create backup folder!");
             }
         }
-        if (userDataFile.getFile().renameTo(new File(backupDir, uniqueId.toString() + ".yml"))) {
+        if (userDataFile.getFile().renameTo(new File(backupDir, uniqueId + ".yml"))) {
             if (!userDataFile.getFile().delete()) {
                 Debug.log("§cCouldn't delete user data for '" + uniqueId + "'!");
             }

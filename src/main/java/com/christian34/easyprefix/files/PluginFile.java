@@ -31,6 +31,7 @@ public abstract class PluginFile {
         load();
     }
 
+    @NotNull
     public FileConfiguration getData() {
         return data;
     }
@@ -48,7 +49,11 @@ public abstract class PluginFile {
         } catch (IOException ex) {
             Debug.warn("Couldn't update file '" + getSourceFile().getName() + "'!");
         }
-        this.data = YamlConfiguration.loadConfiguration(getSourceFile());
+        try {
+            this.data = YamlConfiguration.loadConfiguration(getSourceFile());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void set(String path, Object value) {

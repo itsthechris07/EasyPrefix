@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
  *
  * @author Christian34
  */
-public class VersionController {
+public final class VersionController {
     private static final String pluginVersion;
     private static final int minorVersion;
 

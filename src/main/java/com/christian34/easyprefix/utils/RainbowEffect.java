@@ -13,7 +13,7 @@ import java.util.Random;
  *
  * @author Christian34
  */
-public class RainbowEffect {
+public final class RainbowEffect {
     private static List<ChatColor> rainbowColors;
 
     public static String addRainbowEffect(String text) {
@@ -28,7 +28,7 @@ public class RainbowEffect {
             while (color.equals(last)) {
                 color = getRandomColor();
             }
-            rainbow.append(color.toString()).append(letter);
+            rainbow.append(color).append(letter);
             last = color;
         }
         return rainbow.toString();

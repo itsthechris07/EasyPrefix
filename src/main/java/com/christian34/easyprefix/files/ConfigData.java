@@ -34,7 +34,7 @@ public class ConfigData extends PluginFile {
                 new ArrayList<>());
     }
 
-    public static class Keys {
+    public static final class Keys {
         public static final String CLIENT_ID = "client";
         public static final String COLOR_RAINBOW_COLORS = "chat.color.rainbow.colors";
         public static final String CUSTOM_LAYOUT = "user.custom-layout.enabled";

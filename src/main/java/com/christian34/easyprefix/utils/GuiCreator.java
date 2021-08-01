@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Christian34
  */
-public final class GuiCreator {
+public class GuiCreator {
 
     public static InventoryGui createStatic(Player player, String title, List<String> pattern) {
         List<String> rows = new ArrayList<>();

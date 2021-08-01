@@ -121,9 +121,6 @@ public class EasyPrefix extends JavaPlugin {
                 Debug.warn("§c--------------------------------------");
             }
         }, 20 * 3);
-        for (int i = 1; i <= 50; i++) {
-            groupHandler.createSubgroup("Subgroup-" + i);
-        }
     }
 
     public void onDisable() {

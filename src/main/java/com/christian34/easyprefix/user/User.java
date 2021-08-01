@@ -128,15 +128,13 @@ public class User {
         if (userData.getString("custom_prefix_update") != null) {
             try {
                 this.lastPrefixUpdate = new Timestamp(dateFormat.parse(userData.getString("custom_prefix_update")).getTime()).getTime();
-            } catch (ParseException e) {
-                e.printStackTrace();
+            } catch (ParseException ignored) {
             }
         }
         if (userData.getString("custom_suffix_update") != null) {
             try {
                 this.lastSuffixUpdate = new Timestamp(dateFormat.parse(userData.getString("custom_suffix_update")).getTime()).getTime();
-            } catch (ParseException e) {
-                e.printStackTrace();
+            } catch (ParseException ignored) {
             }
         }
 

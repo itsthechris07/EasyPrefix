@@ -34,6 +34,7 @@ public class TextInput {
 
     public TextInput onComplete(Consumer<String> consumer) {
         this.completeConsumer = consumer;
+
         this.builder.onComplete((player, s) -> {
             completeConsumer.accept(s);
             return AnvilGUI.Response.close();
