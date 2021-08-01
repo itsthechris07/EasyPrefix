@@ -37,8 +37,10 @@ public class Subgroup extends EasyGroup {
             this.suffix = data.getString("suffix");
         } else {
             this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
-            this.prefix = groupsData.getString(getFileKey() + "prefix");
-            this.suffix = groupsData.getString(getFileKey() + "suffix");
+            if (groupsData != null) {
+                this.prefix = groupsData.getString(getFileKey() + "prefix");
+                this.suffix = groupsData.getString(getFileKey() + "suffix");
+            }
         }
 
         if (groupHandler.handleGenders()) {

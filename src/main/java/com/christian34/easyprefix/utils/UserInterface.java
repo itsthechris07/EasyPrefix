@@ -168,6 +168,15 @@ public class UserInterface {
             }, lore.toArray(new String[0])));
         }
         gui.addElement(elementGroup);
+
+        gui.addElement(new StaticGuiElement('q',
+                XMaterial.NETHER_STAR.parseItem(),
+                click -> {
+                    openGroupCreator();
+                    return true;
+                }, "§aAdd Group"
+        ));
+
         gui.show(user.getPlayer());
     }
 
@@ -178,7 +187,7 @@ public class UserInterface {
                 XMaterial.CHEST.parseItem(),
                 click -> {
                     int userGroups = user.getAvailableGroups().size();
-                    if (userGroups <= 1) {
+                    if (userGroups <= 1 && instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
                         openUserSubgroupsListPage();
                     } else {
                         openUserGroupsListPage();
@@ -644,7 +653,7 @@ public class UserInterface {
                     quitMsg = quitMsg == null ? " " : quitMsg.replace("§", "&");
                     TextInput textInput = new TextInput(user, "§cType in the quit message", quitMsg);
                     textInput.onComplete((input) -> {
-                        group.setJoinMessage(input);
+                        group.setQuitMessage(input);
                         user.sendAdminMessage(Message.INPUT_SAVED);
                     }).build();
                     return true;
@@ -701,7 +710,16 @@ public class UserInterface {
                 return true;
             }, lore.toArray(new String[0])));
         }
+
         gui.addElement(elementGroup);
+
+        gui.addElement(new StaticGuiElement('q',
+                XMaterial.NETHER_STAR.parseItem(),
+                click -> {
+                    openTagCreator();
+                    return true;
+                }, "§aAdd Tag"
+        ));
         gui.show(user.getPlayer());
     }
 
@@ -784,7 +802,7 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('f',
                 getPlayerHead(),
                 click -> {
-                    //   this.guiModifyingGroups.modifyGenderedLayout(group);
+                    openPageGroupGender(subgroup);
                     return true;
                 }, "§aGendered Layout", " "
         ));
@@ -798,6 +816,30 @@ public class UserInterface {
         ));
 
         gui.show(user.getPlayer());
+    }
+
+    private void openGroupCreator() {
+        TextInput textInput = new TextInput(user, "§cType in the name", "ExampleGroup");
+        textInput.onComplete((input) -> {
+            String name = input.replaceAll("[^a-zA-Z0-9_]", "");
+            if (this.instance.getGroupHandler().createGroup(name)) {
+                user.sendAdminMessage("&aGroup '" + name + "' has been created!");
+            } else {
+                user.sendAdminMessage("§cCouldn't create group!");
+            }
+        }).build();
+    }
+
+    private void openTagCreator() {
+        TextInput textInput = new TextInput(user, "§cType in the name", "ExampleGroup");
+        textInput.onComplete((input) -> {
+            String name = input.replaceAll("[^a-zA-Z0-9_]", "");
+            if (this.instance.getGroupHandler().createSubgroup(name)) {
+                user.sendAdminMessage("&aTag '" + name + "' has been created!");
+            } else {
+                user.sendAdminMessage("§cCouldn't create tag!");
+            }
+        }).build();
     }
 
     private String setTitle(Message sub) {

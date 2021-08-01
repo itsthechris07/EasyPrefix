@@ -188,9 +188,10 @@ public class GroupHandler {
     }
 
     public boolean createGroup(String groupName) {
+        if (isGroup(groupName)) return false;
         if (database == null) {
             String path = "groups." + groupName + ".";
-            getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");
+            getGroupsData().set(path + "prefix", "&9" + groupName + " &7| &8");
             getGroupsData().set(path + "suffix", "&f:");
             getGroupsData().set(path + "chat-color", "&7");
             getGroupsData().set(path + "chat-formatting", "&o");
