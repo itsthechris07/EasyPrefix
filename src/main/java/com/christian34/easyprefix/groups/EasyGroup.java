@@ -62,7 +62,7 @@ public abstract class EasyGroup {
     @NotNull
     public ChatColor getGroupColor(String prefix) {
         ChatColor color = null;
-        if (prefix != null && prefix.contains("&")) {
+        if (prefix != null && prefix.contains("&") && prefix.length() >= 2) {
             if (!prefix.startsWith("&")) {
                 String temp = prefix;
                 while (!temp.startsWith("&") && !temp.isEmpty()) {
