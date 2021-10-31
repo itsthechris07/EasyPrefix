@@ -20,6 +20,7 @@ import org.apache.commons.lang.Validate;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -141,6 +142,18 @@ public class EasyPrefix extends JavaPlugin {
 
     public GroupHandler getGroupHandler() {
         return groupHandler;
+    }
+
+    @Nullable
+    public synchronized User getUser(OfflinePlayer player) {
+        User user = new User(player);
+        try {
+            user.login();
+            return user;
+        } catch (Exception ex) {
+            Debug.handleException(ex);
+        }
+        return null;
     }
 
     @NotNull
