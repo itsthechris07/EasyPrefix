@@ -12,6 +12,7 @@ import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Message;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -64,12 +65,20 @@ class UserCommand implements Subcommand {
             return;
         }
 
+        User target;
+
         Player player = Bukkit.getPlayer(args.get(1));
-        if (player == null) {
-            sender.sendMessage(Message.CHAT_PLAYER_NOT_FOUND.getText());
-            return;
+        if (player != null) {
+            target = instance.getUser(player);
+        } else {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args.get(1));
+            target = instance.getUser(offlinePlayer);
+            if (!offlinePlayer.hasPlayedBefore() || target == null) {
+                sender.sendMessage(Message.CHAT_PLAYER_NOT_FOUND.getText());
+                return;
+            }
         }
-        User target = instance.getUser(player);
+
 
         if (args.size() < 3 || args.get(2).equalsIgnoreCase("info")) {
             showInfo(sender, target);
@@ -127,7 +136,7 @@ class UserCommand implements Subcommand {
             }
         }
 
-        sender.sendMessage(" \n§7--------------=== §9§l" + user.getPlayer().getName() + " §7===--------------");
+        sender.sendMessage(" \n§7--------------=== §9§l" + user.getName() + " §7===--------------");
         sender.sendMessage("§9Group§f: §7" + user.getGroup().getName());
         sender.sendMessage("§9Tag§f: §7" + subgroup);
         sender.sendMessage("§9Prefix§f: §8«§7" + Optional.ofNullable(user.getPrefix()).orElse("-") + "§8»"
@@ -175,7 +184,11 @@ class UserCommand implements Subcommand {
     @Override
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (args.size() == 2) {
-            return null;
+            List<String> names = new ArrayList<>();
+            for (OfflinePlayer op : Bukkit.getOfflinePlayers()) {
+                names.add(op.getName());
+            }
+            return names;
         } else if (args.size() == 3) {
             List<String> matches = new ArrayList<>(Arrays.asList("reload", "info", "setgroup"));
             if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {

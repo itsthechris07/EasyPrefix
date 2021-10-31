@@ -11,6 +11,7 @@ import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ public class User {
     private final EasyPrefix instance;
     private final GroupHandler groupHandler;
     private final UserData userData;
+    private OfflinePlayer offlinePlayer;
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
@@ -39,6 +41,14 @@ public class User {
     private boolean isGroupForced;
     private long lastPrefixUpdate, lastSuffixUpdate;
     private ChatFormatting chatFormatting = null;
+
+    public User(@NotNull OfflinePlayer player) {
+        this.player = null;
+        this.offlinePlayer = player;
+        this.instance = EasyPrefix.getInstance();
+        this.groupHandler = this.instance.getGroupHandler();
+        this.userData = new UserData(player.getUniqueId());
+    }
 
     public User(@NotNull Player player) {
         this.player = player;
@@ -360,9 +370,21 @@ public class User {
         sendAdminMessage(message.getText(false));
     }
 
+    public String getUniqueId() {
+        if (this.player != null) {
+            return this.player.getUniqueId().toString();
+        } else {
+            return this.offlinePlayer.getUniqueId().toString();
+        }
+    }
+
+    public String getName() {
+        return (this.player != null) ? this.player.getName() : this.offlinePlayer.getName();
+    }
+
     public void saveData(String key, Object value) {
         UpdateStatement updateStatement = new UpdateStatement("users")
-                .addCondition("uuid", getPlayer().getUniqueId().toString())
+                .addCondition("uuid", getUniqueId())
                 .setValue(key, value);
         if (!updateStatement.execute()) {
             Debug.log("Couldn't save data to database! Error UDB1");
