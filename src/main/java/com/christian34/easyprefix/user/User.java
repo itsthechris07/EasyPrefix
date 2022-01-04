@@ -340,7 +340,7 @@ public class User {
     private Group getGroupPerPerms() {
         for (Group group : groupHandler.getGroups()) {
             if (group.getName().equals("default")) continue;
-            if (player.hasPermission("EasyPrefix.group." + group.getName())) {
+            if (player != null && player.hasPermission("EasyPrefix.group." + group.getName())) {
                 return group;
             }
         }
