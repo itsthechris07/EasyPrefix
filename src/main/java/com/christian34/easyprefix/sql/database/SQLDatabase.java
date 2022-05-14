@@ -12,6 +12,9 @@ import java.util.TimeZone;
  *
  * @author Christian34
  */
+
+//https://github.com/ChestShop-authors/ChestShop-3/blob/d1bbcfce47801ce2649c1e5cb6e3fe804cd003d1/src/main/java/com/Acrobot/ChestShop/ChestShop.java#L270
+//https://ormlite.com/javadoc/ormlite-core/doc-files/ormlite.html#Statement-Builder
 public class SQLDatabase implements Database {
     private final String host;
     private final String database;
@@ -49,10 +52,7 @@ public class SQLDatabase implements Database {
                 if (connection != null && !connection.isClosed()) return true;
                 Debug.recordAction("initialize connection to mysql");
                 Class.forName("com.mysql.jdbc.Driver");
-                this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database
-                                + "?useSSL=false&useUnicode=true&characterEncoding=utf-8"
-                                + "&autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID(),
-                        username, password);
+                this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&useUnicode=true&characterEncoding=utf-8" + "&autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID(), username, password);
                 updateTables();
                 this.sqlSynchronizer = new SQLSynchronizer(instance);
                 return true;

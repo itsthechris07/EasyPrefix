@@ -75,7 +75,8 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
             Constructor<PluginCommand> constructor = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
             constructor.setAccessible(true);
             return constructor.newInstance(name, instance);
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException |
+                 InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;

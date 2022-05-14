@@ -15,17 +15,17 @@ public class Gender {
     private final String name;
     private String displayName = null;
 
-     public Gender(@NotNull String name) {
-         this.name = name.toLowerCase();
-         EasyPrefix instance = EasyPrefix.getInstance();
-         ConfigData config = instance.getFileManager().getConfig();
+    public Gender(@NotNull String name) {
+        this.name = name.toLowerCase();
+        EasyPrefix instance = EasyPrefix.getInstance();
+        ConfigData config = instance.getFileManager().getConfig();
 
-         String displayName = config.getData().getString("config.gender.types." + name + ".displayname");
-         if (displayName == null) {
-             Debug.log("You haven't set a display name for gender '" + name + "'!");
-             instance.getGroupHandler().getGenderTypes().remove(this);
-             return;
-         }
+        String displayName = config.getData().getString("config.gender.types." + name + ".displayname");
+        if (displayName == null) {
+            Debug.log("You haven't set a display name for gender '" + name + "'!");
+            instance.getGroupHandler().getGenderTypes().remove(this);
+            return;
+        }
         this.displayName = ChatColor.translateAlternateColorCodes('&', displayName);
     }
 
