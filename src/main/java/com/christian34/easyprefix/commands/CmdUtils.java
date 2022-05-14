@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

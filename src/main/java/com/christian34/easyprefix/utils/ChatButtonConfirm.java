@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import java.util.UUID;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

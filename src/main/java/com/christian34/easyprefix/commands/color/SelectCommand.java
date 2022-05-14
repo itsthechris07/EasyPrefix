@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

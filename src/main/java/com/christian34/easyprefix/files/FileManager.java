@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

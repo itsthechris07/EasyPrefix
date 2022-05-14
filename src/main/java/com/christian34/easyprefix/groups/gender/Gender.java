@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

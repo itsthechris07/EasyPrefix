@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

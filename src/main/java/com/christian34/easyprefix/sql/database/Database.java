@@ -3,7 +3,7 @@ package com.christian34.easyprefix.sql.database;
 import java.sql.Connection;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.sql.*;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

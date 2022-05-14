@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

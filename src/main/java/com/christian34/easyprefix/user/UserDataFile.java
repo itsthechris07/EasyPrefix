@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.UUID;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */

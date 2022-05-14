@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */
