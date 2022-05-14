@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.TimeZone;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */
