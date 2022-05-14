@@ -12,9 +12,6 @@ import java.util.TimeZone;
  *
  * @author Christian34
  */
-
-//https://github.com/ChestShop-authors/ChestShop-3/blob/d1bbcfce47801ce2649c1e5cb6e3fe804cd003d1/src/main/java/com/Acrobot/ChestShop/ChestShop.java#L270
-//https://ormlite.com/javadoc/ormlite-core/doc-files/ormlite.html#Statement-Builder
 public class SQLDatabase implements Database {
     private final String host;
     private final String database;
