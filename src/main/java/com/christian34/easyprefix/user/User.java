@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * EasyPrefix 2021.
+ * EasyPrefix 2022.
  *
  * @author Christian34
  */
@@ -329,8 +329,7 @@ public class User {
     public List<Subgroup> getAvailableSubgroups() {
         List<Subgroup> availableGroups = new ArrayList<>();
         for (Subgroup targetGroup : this.instance.getGroupHandler().getSubgroups()) {
-            if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName())
-                    || player.hasPermission("EasyPrefix.tag." + targetGroup.getName())) {
+            if (player.hasPermission("EasyPrefix.subgroup." + targetGroup.getName()) || player.hasPermission("EasyPrefix.tag." + targetGroup.getName())) {
                 availableGroups.add(targetGroup);
             }
         }
@@ -359,9 +358,7 @@ public class User {
         if (!message.contains("%prefix%")) {
             message = Message.PREFIX + message;
         } else {
-            message = message
-                    .replace("%prefix%", Message.PREFIX)
-                    .replace("  ", " ");
+            message = message.replace("%prefix%", Message.PREFIX).replace("  ", " ");
         }
         player.sendMessage(Message.setPlaceholders(message));
     }
@@ -383,9 +380,7 @@ public class User {
     }
 
     public void saveData(String key, Object value) {
-        UpdateStatement updateStatement = new UpdateStatement("users")
-                .addCondition("uuid", getUniqueId())
-                .setValue(key, value);
+        UpdateStatement updateStatement = new UpdateStatement("users").addCondition("uuid", getUniqueId()).setValue(key, value);
         if (!updateStatement.execute()) {
             Debug.log("Couldn't save data to database! Error UDB1");
         }
