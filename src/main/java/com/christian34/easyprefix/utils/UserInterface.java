@@ -436,7 +436,7 @@ public class UserInterface {
                 lore.add(loreSelectTag);
             }
 
-            elementGroup.addElement(new StaticGuiElement('b', XMaterial.BOOK.parseItem(), click -> {
+            elementGroup.addElement(new StaticGuiElement('b', bookItem, click -> {
                 if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
                     user.setSubgroup(null);
                 } else {
