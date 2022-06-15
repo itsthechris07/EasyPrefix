@@ -399,7 +399,7 @@ public class UserInterface {
                             user.sendMessage(Message.CHAT_NO_PERMS.getText());
                         }
                         return true;
-                    }, "§r" + chatFormatting
+                    }, "§r" + user.getChatColor().getCode() + chatFormatting
             ));
         }
 
@@ -418,64 +418,46 @@ public class UserInterface {
         gui.show(user.getPlayer());
     }
 
-    private void openPageColorGroup(Group group) {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(),
-                group.getGroupColor() + group.getName() + " §8» " + Message.GUI_SETTINGS_TITLE_FORMATTINGS.getText(),
-                Arrays.asList("aaaaaaaaa", " aaaaaaa ", "  bbbbb  "));
+    public void openUserSubgroupsListPage() {
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_TAGS), Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
+        GuiElementGroup elementGroup = new GuiElementGroup('a');
 
-        GuiElementGroup groupColors = new GuiElementGroup('a');
-        for (Color color : Color.getValues()) {
-            ItemStack itemStack = color.toItemStack();
-            if (group.getChatColor().equals(color) && (group.getChatFormatting() == null
-                    || !group.getChatFormatting().equals(ChatFormatting.RAINBOW))) {
-                itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+        final String loreSelectTag = Message.BTN_SETTINGS_SELECT_TAG.getText();
+        Material book = XMaterial.BOOK.parseMaterial();
+        for (Subgroup subgroup : user.getAvailableSubgroups()) {
+            List<String> lore = new ArrayList<>();
+            lore.add(subgroup.getGroupColor() + subgroup.getName());
+            ItemStack bookItem = new ItemStack(Objects.requireNonNull(book));
+
+            if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
+                bookItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
+            } else {
+                lore.add(" ");
+                lore.add(loreSelectTag);
             }
 
-            groupColors.addElement(new StaticGuiElement('a',
-                    itemStack,
+            elementGroup.addElement(new StaticGuiElement('b', XMaterial.BOOK.parseItem(), click -> {
+                if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
+                    user.setSubgroup(null);
+                } else {
+                    user.setSubgroup(subgroup);
+                }
+                openUserSubgroupsListPage();
+                return true;
+            }, lore.toArray(new String[0])));
+        }
+
+        if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
+            gui.addElement(new StaticGuiElement('q',
+                    new ItemStack(Material.NETHER_STAR),
                     click -> {
-                        group.setChatColor(color);
-                        openPageColorGroup(group);
+                        openCustomLayoutPage();
                         return true;
-                    }, "§r" + color, " ", "§7Permission: §fEasyPrefix.color." + color.name().toLowerCase()
+                    }, Message.BTN_CUSTOM_LAYOUT.getText(), " "
             ));
         }
 
-        GuiElementGroup groupFormattings = new GuiElementGroup('b');
-        for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
-            ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
-            if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
-                itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
-            }
-
-            groupFormattings.addElement(new StaticGuiElement('b',
-                    itemStack,
-                    click -> {
-                        ChatFormatting formatting = chatFormatting;
-                        if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
-                            if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                                formatting = null;
-                            }
-                        }
-                        group.setChatFormatting(formatting);
-                        openPageColorGroup(group);
-                        return true;
-                    }, "§r" + chatFormatting, " ", "§7Permission: §fEasyPrefix.color." + chatFormatting.name().toLowerCase()
-            ));
-        }
-
-        gui.addElement(new StaticGuiElement('q',
-                new ItemStack(Material.BARRIER),
-                click -> {
-                    user.setChatColor(null);
-                    user.setChatFormatting(null);
-                    openPageUserColors();
-                    return true;
-                }, Message.BTN_RESET.getText(), " "
-        ));
-
-        gui.addElement(groupColors);
-        gui.addElement(groupFormattings);
+        gui.addElement(elementGroup);
         gui.show(user.getPlayer());
     }
 
@@ -723,59 +705,64 @@ public class UserInterface {
         gui.show(user.getPlayer());
     }
 
-    public void openUserSubgroupsListPage() {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_TAGS), Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
-        GuiElementGroup elementGroup = new GuiElementGroup('a');
+    private void openPageColorGroup(Group group) {
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(),
+                group.getGroupColor() + group.getName() + " §8» " + Message.GUI_SETTINGS_TITLE_FORMATTINGS.getText(),
+                Arrays.asList("aaaaaaaaa", " aaaaaaa ", "  bbbbb  "));
 
-        final String loreSelectTag = Message.BTN_SETTINGS_SELECT_TAG.getText();
-        Material book = XMaterial.BOOK.parseMaterial();
-        for (Subgroup subgroup : user.getAvailableSubgroups()) {
-            List<String> lore = new ArrayList<>();
-            lore.add(subgroup.getGroupColor() + subgroup.getName());
-            ItemStack bookItem = new ItemStack(Objects.requireNonNull(book));
-
-            if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
-                bookItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
-            } else {
-                lore.add(" ");
-                lore.add(loreSelectTag);
+        GuiElementGroup groupColors = new GuiElementGroup('a');
+        for (Color color : Color.getValues()) {
+            ItemStack itemStack = color.toItemStack();
+            if (group.getChatColor().equals(color) && (group.getChatFormatting() == null
+                    || !group.getChatFormatting().equals(ChatFormatting.RAINBOW))) {
+                itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
             }
 
-            elementGroup.addElement(new StaticGuiElement('b', XMaterial.BOOK.parseItem(), click -> {
-                if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
-                    user.setSubgroup(null);
-                } else {
-                    user.setSubgroup(subgroup);
-                }
-                openUserSubgroupsListPage();
-                return true;
-            }, lore.toArray(new String[0])));
-        }
-
-        if (!user.getAvailableSubgroups().isEmpty()) {
-            ItemStack subgroupsMaterial = VersionController.getMinorVersion() <= 12
-                    ? XMaterial.CHEST.parseItem()
-                    : XMaterial.WRITABLE_BOOK.parseItem();
-            gui.addElement(new StaticGuiElement('w',
-                    subgroupsMaterial,
+            groupColors.addElement(new StaticGuiElement('a',
+                    itemStack,
                     click -> {
-                        //   openSubgroupsPage(this::openGroupsListPage)
+                        group.setChatColor(color);
+                        openPageColorGroup(group);
                         return true;
-                    }, Message.BTN_SETTINGS_TAGS.getText(), " "
+                    }, "§r" + color, " ", "§7Permission: §fEasyPrefix.color." + color.name().toLowerCase()
             ));
         }
 
-        if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT) && user.hasPermission("custom.gui")) {
-            gui.addElement(new StaticGuiElement('q',
-                    new ItemStack(Material.NETHER_STAR),
+        GuiElementGroup groupFormattings = new GuiElementGroup('b');
+        for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
+            ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
+            if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
+                itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+            }
+
+            groupFormattings.addElement(new StaticGuiElement('b',
+                    itemStack,
                     click -> {
-                        //   openCustomLayoutPage(this::openGroupsListPage)
+                        ChatFormatting formatting = chatFormatting;
+                        if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
+                            if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+                                formatting = null;
+                            }
+                        }
+                        group.setChatFormatting(formatting);
+                        openPageColorGroup(group);
                         return true;
-                    }, Message.BTN_CUSTOM_LAYOUT.getText(), " "
+                    }, "§r" + group.getChatColor().getCode() + chatFormatting, " ", "§7Permission: §fEasyPrefix.color." + chatFormatting.name().toLowerCase()
             ));
         }
 
-        gui.addElement(elementGroup);
+        gui.addElement(new StaticGuiElement('q',
+                new ItemStack(Material.BARRIER),
+                click -> {
+                    user.setChatColor(null);
+                    user.setChatFormatting(null);
+                    openPageUserColors();
+                    return true;
+                }, Message.BTN_RESET.getText(), " "
+        ));
+
+        gui.addElement(groupColors);
+        gui.addElement(groupFormattings);
         gui.show(user.getPlayer());
     }
 
@@ -785,7 +772,13 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('a',
                 XMaterial.IRON_INGOT.parseItem(),
                 click -> {
-                    //    this.guiModifyingGroups.editPrefix(subgroup);
+                    String prefix = subgroup.getPrefix();
+                    prefix = prefix == null ? " " : prefix.replace("§", "&");
+                    TextInput textInput = new TextInput(user, "§cType in the prefix", prefix);
+                    textInput.onComplete((input) -> {
+                        subgroup.setPrefix(input);
+                        user.sendAdminMessage(Message.INPUT_SAVED);
+                    }).build();
                     return true;
                 }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + subgroup.getPrefix() + "§7»", " "
         ));
@@ -793,7 +786,13 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('b',
                 XMaterial.GOLD_INGOT.parseItem(),
                 click -> {
-                    //   this.guiModifyingGroups.editSuffix(subgroup);
+                    String suffix = subgroup.getSuffix();
+                    suffix = suffix == null ? " " : suffix.replace("§", "&");
+                    TextInput textInput = new TextInput(user, "§cType in the suffix", suffix);
+                    textInput.onComplete((input) -> {
+                        subgroup.setSuffix(input);
+                        user.sendAdminMessage(Message.INPUT_SAVED);
+                    }).build();
                     return true;
                 }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + subgroup.getSuffix() + "§7»", " "
         ));
