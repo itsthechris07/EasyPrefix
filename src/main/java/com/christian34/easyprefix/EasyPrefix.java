@@ -113,16 +113,14 @@ public class EasyPrefix extends JavaPlugin {
         this.expansionManager = new ExpansionManager(this);
         this.updater = new Updater(this);
         hookMetrics();
-        Debug.log("§bPlugin has been enabled! §bVersion: §7" + getDescription().getVersion());
-        Debug.log("§bIf you like the plugin or you have suggestions, please write a review on spigotmc.org!");
+        Debug.log("Plugin has been enabled! Version: " + getDescription().getVersion());
+        Debug.log("If you like the plugin or you have suggestions, please write a review on spigotmc.org!");
         Debug.log("This software uses Sentry for anonymous user statistics. License: https://github.com/getsentry/sentry/blob/master/LICENSE");
         PluginManager pluginManager = Bukkit.getPluginManager();
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            if (formatChat() && (pluginManager.isPluginEnabled("EssentialsChat")
-                    || pluginManager.isPluginEnabled("MultiChat"))) {
+            if (formatChat() && (pluginManager.isPluginEnabled("EssentialsChat") || pluginManager.isPluginEnabled("MultiChat"))) {
                 Debug.warn("§c--------------------------------------");
-                Debug.warn("§cYou are using a different chat management plugin. To avoid issues, " +
-                        "please set 'handle-chat' in config.yml to false");
+                Debug.warn("§cYou are using a different chat management plugin. To avoid issues, " + "please set 'handle-chat' in config.yml to false");
                 Debug.warn("§c--------------------------------------");
             }
         }, 20 * 3);
@@ -205,15 +203,7 @@ public class EasyPrefix extends JavaPlugin {
         String prefix = Optional.ofNullable(user.getPrefix()).orElse("");
         String suffix = Optional.ofNullable(user.getSuffix()).orElse("");
 
-        text = text
-                .replace("%ep_user_prefix%", prefix)
-                .replace("%ep_user_suffix%", suffix)
-                .replace("%ep_user_group%", user.getGroup().getName())
-                .replace("%ep_user_subgroup_prefix%", subPrefix)
-                .replace("%ep_tag_prefix%", subPrefix)
-                .replace("%ep_user_subgroup_suffix%", subSuffix)
-                .replace("%ep_tag_suffix%", subSuffix)
-                .replace("%player%", user.getPlayer().getDisplayName());
+        text = text.replace("%ep_user_prefix%", prefix).replace("%ep_user_suffix%", suffix).replace("%ep_user_group%", user.getGroup().getName()).replace("%ep_user_subgroup_prefix%", subPrefix).replace("%ep_tag_prefix%", subPrefix).replace("%ep_user_subgroup_suffix%", subSuffix).replace("%ep_tag_suffix%", subSuffix).replace("%player%", user.getPlayer().getDisplayName());
 
         if (expansionManager.isUsingPapi()) {
             text = expansionManager.setPlaceholders(user.getPlayer(), text);
@@ -282,16 +272,11 @@ public class EasyPrefix extends JavaPlugin {
 
     private void hookMetrics() {
         Metrics metrics = new Metrics(this, 9682);
-        metrics.addCustomChart(new SimplePie("placeholderapi",
-                () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
-        metrics.addCustomChart(new SimplePie("storage",
-                () -> storageType.name().toLowerCase()));
-        metrics.addCustomChart(new SimplePie("chat",
-                () -> (formatChat()) ? "true" : "false"));
-        metrics.addCustomChart(new SimplePie("genders",
-                () -> (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) ? "enabled" : "disabled"));
-        metrics.addCustomChart(new SimplePie("custom_layout",
-                () -> (getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) ? "enabled" : "disabled"));
+        metrics.addCustomChart(new SimplePie("placeholderapi", () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
+        metrics.addCustomChart(new SimplePie("storage", () -> storageType.name().toLowerCase()));
+        metrics.addCustomChart(new SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
+        metrics.addCustomChart(new SimplePie("genders", () -> (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) ? "enabled" : "disabled"));
+        metrics.addCustomChart(new SimplePie("custom_layout", () -> (getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) ? "enabled" : "disabled"));
     }
 
 }
