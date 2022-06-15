@@ -1,7 +1,5 @@
 package com.christian34.easyprefix.commands;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class CmdUtils {
         } else {
             List<String> matches = new ArrayList<>();
             for (String arg : possible) {
-                if (StringUtils.startsWithIgnoreCase(arg, input)) {
+                if (arg.toLowerCase().startsWith(input.toLowerCase())) {
                     matches.add(arg);
                 }
             }
