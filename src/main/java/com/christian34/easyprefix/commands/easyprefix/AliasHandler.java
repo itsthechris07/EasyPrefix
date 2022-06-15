@@ -5,7 +5,6 @@ import com.christian34.easyprefix.commands.easyprefix.set.SetPrefixCommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetSuffixCommand;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.utils.Debug;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.plugin.Plugin;
@@ -84,11 +83,11 @@ public class AliasHandler implements CommandExecutor, TabCompleter {
 
     private CommandMap getCommandMapInstance() {
         if (Bukkit.getPluginManager() instanceof SimplePluginManager) {
-            SimplePluginManager spm = (SimplePluginManager) Bukkit.getPluginManager();
             try {
-                Field field = FieldUtils.getDeclaredField(spm.getClass(), "commandMap", true);
-                return (CommandMap) field.get(spm);
-            } catch (IllegalAccessException e) {
+                final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+                commandMapField.setAccessible(true);
+                return ((CommandMap) commandMapField.get(Bukkit.getServer()));
+            } catch (IllegalAccessException | NoSuchFieldException e) {
                 Debug.handleException(e);
             }
         }
