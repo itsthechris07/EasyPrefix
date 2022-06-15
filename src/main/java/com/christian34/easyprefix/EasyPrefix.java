@@ -16,10 +16,11 @@ import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.RainbowEffect;
 import com.christian34.easyprefix.utils.Updater;
-import org.apache.commons.lang.Validate;
+import com.christian34.easyprefix.utils.VersionController;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -32,6 +33,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * EasyPrefix 2022.
@@ -40,6 +43,7 @@ import java.util.Set;
  */
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance = null;
+    private final Pattern HEX_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
     private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
     private Set<User> users;
@@ -172,9 +176,24 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     @Nullable
+    public String translateHexColorCodes(final String message) {
+        if (VersionController.getMinorVersion() < 16) return message;
+        final char colorChar = ChatColor.COLOR_CHAR;
+
+        final Matcher matcher = HEX_PATTERN.matcher(message);
+        final StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
+
+        while (matcher.find()) {
+            final String group = matcher.group(1);
+            matcher.appendReplacement(buffer, colorChar + "x" + colorChar + group.charAt(0) + colorChar + group.charAt(1) + colorChar + group.charAt(2) + colorChar + group.charAt(3) + colorChar + group.charAt(4) + colorChar + group.charAt(5));
+        }
+
+        return matcher.appendTail(buffer).toString();
+    }
+
+    @Nullable
     public String setPlaceholders(@NotNull User user, @Nullable String text) {
         if (text == null) return null;
-        Validate.notNull(user);
         String subPrefix = "", subSuffix = "";
 
         Subgroup subgroup = user.getSubgroup();
