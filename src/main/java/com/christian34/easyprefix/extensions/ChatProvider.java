@@ -7,6 +7,7 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
 import java.util.Optional;
@@ -22,8 +23,15 @@ class ChatProvider {
 
     public ChatProvider(ExpansionManager expansionManager) {
         this.expansionManager = expansionManager;
-        Chat chatProvider = new Handler(null);
-        Bukkit.getServicesManager().register(Chat.class, chatProvider, this.expansionManager.getInstance(), ServicePriority.Highest);
+
+        RegisteredServiceProvider<Permission> rsp = expansionManager.getInstance().getServer().getServicesManager().getRegistration(Permission.class);
+        Permission perms = null;
+        if (rsp != null) {
+            perms = rsp.getProvider();
+        }
+
+        Chat chatProvider = new Handler(perms);
+        Bukkit.getServicesManager().register(Chat.class, chatProvider, expansionManager.getInstance(), ServicePriority.Highest);
     }
 
     private class Handler extends Chat {
