@@ -58,20 +58,18 @@ public class Subgroup extends EasyGroup {
         this.groupColor = getGroupColor(prefix);
     }
 
-    private void saveData(String key, Object value) {
-        Debug.recordAction("Saving subgroup '" + getName() + "'");
-        if (value instanceof String) value = ((String) value).replace("§", "&");
+    @Override
+    public void delete() {
         if (instance.getStorageType() == StorageType.LOCAL) {
-            key = key.replace("_", "-");
-            groupsData.save(getFileKey() + key, value);
+            groupsData.save("subgroups." + getName(), null);
         } else {
-            UpdateStatement updateStatement = new UpdateStatement("subgroups")
-                    .addCondition("group", getName())
-                    .setValue(key.replace("-", "_"), value);
-            if (!updateStatement.execute()) {
-                Debug.log("Couldn't save data to database! Error SDB1");
+            DeleteStatement deleteStatement = new DeleteStatement("subgroups").addCondition("group", getName());
+            if (!deleteStatement.execute()) {
+                Debug.log(String.format("§cCouldn't delete subgroup '%s'!", getName()));
             }
         }
+        instance.getGroupHandler().getSubgroups().remove(this);
+        instance.reloadUsers();
     }
 
     @Override
@@ -202,18 +200,20 @@ public class Subgroup extends EasyGroup {
         return "subgroups." + getName() + ".";
     }
 
-    @Override
-    public void delete() {
+    private void saveData(String key, Object value) {
+        Debug.recordAction(String.format("Saving subgroup '%s'", getName()));
+        if (value instanceof String) value = ((String) value).replace("§", "&");
         if (instance.getStorageType() == StorageType.LOCAL) {
-            groupsData.save("subgroups." + getName(), null);
+            key = key.replace("_", "-");
+            groupsData.save(getFileKey() + key, value);
         } else {
-            DeleteStatement deleteStatement = new DeleteStatement("subgroups").addCondition("group", getName());
-            if (!deleteStatement.execute()) {
-                Debug.log("§cCouldn't delete subgroup '" + getName() + "'!");
+            UpdateStatement updateStatement = new UpdateStatement("subgroups")
+                    .addCondition("group", getName())
+                    .setValue(key.replace("-", "_"), value);
+            if (!updateStatement.execute()) {
+                Debug.log("Couldn't save data to database! Error SDB1");
             }
         }
-        instance.getGroupHandler().getSubgroups().remove(this);
-        instance.reloadUsers();
     }
 
 }

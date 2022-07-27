@@ -70,7 +70,7 @@ public class Group extends EasyGroup {
         if (formatting != null && formatting.length() == 2) {
             this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
             if (this.chatFormatting == null) {
-                Debug.warn("Couldn't find chat formatting '" + formatting + "'! (group: " + name + ")");
+                Debug.warn(String.format("Couldn't find chat formatting '%s'! (group: %s)", formatting, name));
                 this.chatFormatting = null;
             }
         }
@@ -85,7 +85,7 @@ public class Group extends EasyGroup {
         } else {
             this.chatColor = Color.getByCode(color.substring(1, 2));
             if (chatColor == null) {
-                Debug.warn("Couldn't find chat color '" + color + "'! (group: " + name + ")");
+                Debug.warn(String.format("Couldn't find chat color '%s'! (group: %s)", color, name));
                 this.chatColor = Color.GRAY;
             }
         }
@@ -138,20 +138,18 @@ public class Group extends EasyGroup {
         return groupsData;
     }
 
-    private void saveData(@NotNull String key, @Nullable Object value) {
-        Debug.recordAction("Saving group '" + getName() + "'");
-        if (instance.getStorageType() == StorageType.SQL) {
-            UpdateStatement updateStatement = new UpdateStatement("groups")
-                    .addCondition("group", this.NAME)
-                    .setValue(key.replace("-", "_"), value);
-            if (!updateStatement.execute()) {
-                Debug.log("Couldn't save data to database! Error GDB1");
-            }
-
-            instance.getSqlDatabase().getSqlSynchronizer().sendSyncInstruction();
+    @Override
+    public void delete() {
+        if (instance.getStorageType() == StorageType.LOCAL) {
+            groupsData.save("groups." + getName(), null);
         } else {
-            groupsData.save(getFileKey() + key.replace("_", "-"), value);
+            DeleteStatement deleteStatement = new DeleteStatement("groups").addCondition("group", getName());
+            if (!deleteStatement.execute()) {
+                Debug.log(String.format("§cCouldn't delete group '%s'!", getName()));
+            }
         }
+        instance.getGroupHandler().getGroups().remove(this);
+        instance.reloadUsers();
     }
 
     @Override
@@ -281,18 +279,20 @@ public class Group extends EasyGroup {
         return "groups." + NAME + ".";
     }
 
-    @Override
-    public void delete() {
-        if (instance.getStorageType() == StorageType.LOCAL) {
-            groupsData.save("groups." + getName(), null);
-        } else {
-            DeleteStatement deleteStatement = new DeleteStatement("groups").addCondition("group", getName());
-            if (!deleteStatement.execute()) {
-                Debug.log("§cCouldn't delete group '" + getName() + "'!");
+    private void saveData(@NotNull String key, @Nullable Object value) {
+        Debug.recordAction(String.format("Saving group '%s'", getName()));
+        if (instance.getStorageType() == StorageType.SQL) {
+            UpdateStatement updateStatement = new UpdateStatement("groups")
+                    .addCondition("group", this.NAME)
+                    .setValue(key.replace("-", "_"), value);
+            if (!updateStatement.execute()) {
+                Debug.log("Couldn't save data to database! Error GDB1");
             }
+
+            instance.getSqlDatabase().getSqlSynchronizer().sendSyncInstruction();
+        } else {
+            groupsData.save(getFileKey() + key.replace("_", "-"), value);
         }
-        instance.getGroupHandler().getGroups().remove(this);
-        instance.reloadUsers();
     }
 
     @NotNull
