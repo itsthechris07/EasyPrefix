@@ -34,6 +34,11 @@ config:
       # cool down for changing prefix or suffix in hours
       # can be bypassed with permission EasyPrefix.custom.bypass
       cooldown: 0.5
+      # blacklist can be bypassed with permission Easyprefix.custom.blacklist
+      blacklist:
+        - "Admin"
+        - "Owner"
+        - "&4"
       alias:
         # requires permission EasyPrefix.custom.prefix
         prefix: /prefix

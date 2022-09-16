@@ -33,22 +33,17 @@ public enum Message {
     CHAT_BTN_CONFIRM("chat_button_confirm"),
     CHAT_COLOR_HEADER("chat_cmd_color_help_head"),
     CHAT_GROUP_NOT_FOUND("group_not_found"),
-    CHAT_INPUT_LAYOUT("chat_input_layout"),
-    CHAT_INPUT_PREFIX("chat_input_prefix"),
     CHAT_INPUT_PREFIX_CONFIRM("chat_input_prefix_confirm"),
-    CHAT_INPUT_PREFIX_RESET("chat_input_prefix_reset"),
     CHAT_INPUT_PREFIX_SAVED("chat_input_prefix_saved"),
-    CHAT_INPUT_SUFFIX("chat_input_suffix"),
+    GUI_INPUT_PREFIX("gui_input_prefix"),
+    GUI_INPUT_SUFFIX("gui_input_suffix"),
     CHAT_INPUT_SUFFIX_CONFIRM("chat_input_suffix_confirm"),
-    CHAT_INPUT_SUFFIX_RESET("chat_input_suffix_reset"),
     CHAT_INPUT_SUFFIX_SAVED("chat_input_suffix_saved"),
-    CHAT_INPUT_VALUE_RESET("chat_value_reset"),
     CHAT_LAYOUT_UPDATE_COOLDOWN("chat_layout_update_cooldown"),
     CHAT_NOTIFY_GENDER_BTN("select_gender_button"),
     CHAT_NOTIFY_GENDER_TEXT("select_gender_join_notification"),
     CHAT_NO_PERMS("no_permissions"),
     CHAT_PLAYER_NOT_FOUND("player_not_found"),
-    CHAT_SETUP_CANCELLED("setup_cancelled"),
     CHAT_TAGS_AVAILABLE("chat_cmd_tags_list_info"),
     CHAT_TAGS_AVAILABLE_OTHERS("chat_cmd_tags_list_info_others"),
     CHAT_TAGS_HEADER("chat_cmd_tags_help_head"),
@@ -89,7 +84,8 @@ public enum Message {
     TAGS_ITEM_LORE("chat_cmd_tags_hover"),
     TAGS_ITEM_TITLE("chat_cmd_tags_name"),
     TAGS_PLAYER_SELECT("chat_cmd_tags_selected"),
-    TAG_SET_TO_PLAYER("chat_cmd_tags_set_player");
+    TAG_SET_TO_PLAYER("chat_cmd_tags_set_player"),
+    CHATLAYOUT_INVALID("chat_input_invalid");
 
     public static final String PREFIX = "§7[§9EasyPrefix§7] ";
     public static final String CHAT_PLAYER_ONLY = "§cYou can't use this from console!";

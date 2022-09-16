@@ -52,6 +52,7 @@ public class ConfigData extends PluginFile {
         public static final String USE_GENDER = "gender.enabled";
         public static final String USE_JOIN_QUIT = "join-quit-messages.enabled";
         public static final String USE_TAGS = "tags.enabled";
+        public static final String CUSTOM_LAYOUT_BLACKLIST = "user.custom-layout.blacklist";
     }
 
 }
