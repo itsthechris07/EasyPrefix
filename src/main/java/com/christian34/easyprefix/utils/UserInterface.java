@@ -19,6 +19,7 @@ import de.themoep.inventorygui.StaticGuiElement;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -356,6 +357,11 @@ public class UserInterface {
             if (user.getChatColor().equals(color)) {
                 if (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                     itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                    ItemMeta meta = itemStack.getItemMeta();
+                    if (meta != null) {
+                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        itemStack.setItemMeta(meta);
+                    }
                 }
             }
 
@@ -382,6 +388,11 @@ public class UserInterface {
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta != null) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    itemStack.setItemMeta(meta);
+                }
             }
 
             groupFormattings.addElement(new StaticGuiElement('b',
@@ -431,6 +442,11 @@ public class UserInterface {
 
             if (user.getSubgroup() != null && user.getSubgroup().equals(subgroup)) {
                 bookItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                ItemMeta meta = bookItem.getItemMeta();
+                if (meta != null) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    bookItem.setItemMeta(meta);
+                }
             } else {
                 lore.add(" ");
                 lore.add(loreSelectTag);
@@ -509,6 +525,11 @@ public class UserInterface {
 
             if (user.getGroup().equals(group)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta != null) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    itemStack.setItemMeta(meta);
+                }
             } else {
                 lore.add(" ");
                 lore.add(loreSelectPrefix);
@@ -716,6 +737,11 @@ public class UserInterface {
             if (group.getChatColor().equals(color) && (group.getChatFormatting() == null
                     || !group.getChatFormatting().equals(ChatFormatting.RAINBOW))) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta != null) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    itemStack.setItemMeta(meta);
+                }
             }
 
             groupColors.addElement(new StaticGuiElement('a',
@@ -733,6 +759,11 @@ public class UserInterface {
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
             if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta != null) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    itemStack.setItemMeta(meta);
+                }
             }
 
             groupFormattings.addElement(new StaticGuiElement('b',
