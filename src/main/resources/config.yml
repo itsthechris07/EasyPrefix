@@ -44,7 +44,7 @@ config:
         prefix: /prefix
         # requires permission EasyPrefix.custom.suffix
         suffix: /suffix
-  # groups can mixed with tags - please look up at my github wiki for more information
+  # groups can be mixed with tags - please look up at my github wiki for more information
   tags:
     # show context menu for tags | only visible if necessary
     enabled: true
@@ -59,11 +59,8 @@ config:
         displayname: '&5Female'
       male:
         displayname: '&9Male'
-      # yes, this is a thing (biologically proven) - please respect it #loveislove <3
       intersex:
         displayname: '&eIntersex'
-      # newgender:
-      #   displayname: 'name'
   # settings for the gui
   gui:
     # specifies if all colors and formatting should be visible, even if the player has no permissions for it.
