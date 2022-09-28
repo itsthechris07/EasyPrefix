@@ -4,8 +4,10 @@ import com.christian34.easyprefix.commands.CommandHandler;
 import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
+import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
+import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
@@ -280,6 +282,17 @@ public class EasyPrefix extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
         metrics.addCustomChart(new SimplePie("genders", () -> (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) ? "enabled" : "disabled"));
         metrics.addCustomChart(new SimplePie("custom_layout", () -> (getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) ? "enabled" : "disabled"));
+
+        metrics.addCustomChart(new SimplePie("amount_of_gendered_groups", () -> {
+            int genderedGroups = 0;
+            for (Group group : getGroupHandler().getGroups()) {
+                if (group.getGenderedLayout() == null) continue;
+                GenderedLayout genderedLayout = group.getGenderedLayout();
+                genderedGroups += genderedLayout.getPrefixes().size();
+                genderedGroups += genderedLayout.getSuffixes().size();
+            }
+            return String.valueOf(genderedGroups);
+        }));
     }
 
 }

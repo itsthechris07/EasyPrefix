@@ -37,12 +37,19 @@ public class GenderedLayout {
         load();
     }
 
+    public Map<Gender, String> getPrefixes() {
+        return prefixes;
+    }
+
+    public Map<Gender, String> getSuffixes() {
+        return suffixes;
+    }
+
     private void load() {
         GroupHandler groupHandler = instance.getGroupHandler();
         if (instance.getStorageType() == StorageType.SQL) {
             SQLDatabase database = instance.getSqlDatabase();
-            String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%" + easyGroupType + "s_gendered` " +
-                    "WHERE `group` = '" + easyGroup.getName() + "'";
+            String sql = "SELECT `gender`, `prefix`, `suffix` FROM `%p%" + easyGroupType + "s_gendered` " + "WHERE `group` = '" + easyGroup.getName() + "'";
             try (ResultSet result = database.getValue(sql)) {
                 while (result != null && result.next()) {
                     Gender gender = groupHandler.getGender(result.getString("gender"));
