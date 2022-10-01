@@ -38,7 +38,6 @@ public class EasyPrefixCommand implements EasyCommand {
         subcommands.add(new SettingsCommand(this));
         subcommands.add(new ReloadCommand(this));
         subcommands.add(new DebugCommand(this));
-        subcommands.add(new GuiCommand(instance));
         subcommands.add(new ColorAliasCommand(commandHandler));
         subcommands.add(new TagsAliasCommand(commandHandler));
 

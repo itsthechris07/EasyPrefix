@@ -4,10 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
-import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
-import com.christian34.easyprefix.groups.gender.Gender;
-import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.cryptomorin.xseries.SkullUtils;
@@ -63,31 +60,8 @@ public class UserInterface {
         gui.show(user.getPlayer());
     }
 
-    private void openPageGroupGender(EasyGroup easyGroup) {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§8Select a gender", "xaaaaaaax");
-        GenderedLayout genderedLayout = easyGroup.getGenderedLayout();
-        GuiElementGroup elementGroup = new GuiElementGroup('a');
-        for (Gender gender : instance.getGroupHandler().getGenderTypes()) {
-            String prefix = "-/-";
-            String suffix = "-/-";
-            if (genderedLayout != null) {
-                prefix = genderedLayout.getPrefix(gender);
-                suffix = genderedLayout.getSuffix(gender);
-            }
-
-            elementGroup.addElement(new StaticGuiElement('a', getPlayerHead(), click -> {
-                openPageModifyGenderLayout(easyGroup, gender);
-                return true;
-            }, gender.getDisplayName(), " ", "§7Prefix: §7«§f" + prefix + "§7»", "§7Suffix: §7«§f" + suffix + "§7»"));
-        }
-
-        gui.addElement(elementGroup);
-        gui.show(user.getPlayer());
-    }
-
     public void openUserSettings() {
-        String pattern = instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER) ? "xxaxbxcxx" : "xxxaxcxxx";
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_MAIN), pattern);
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_MAIN), "xxxaxcxxx");
         gui.addElement(new StaticGuiElement('a', XMaterial.CHEST.parseItem(), click -> {
             int userGroups = user.getAvailableGroups().size();
             if (userGroups <= 1 && instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
@@ -106,10 +80,6 @@ public class UserInterface {
             }
             head.setItemMeta(meta);
         }
-        gui.addElement(new StaticGuiElement('b', head, click -> {
-            openSelectGenderPage();
-            return true;
-        }, Message.BTN_CHANGE_GENDER.getText()));
 
         gui.addElement(new StaticGuiElement('c', XMaterial.CHEST.parseItem(), click -> {
             openPageUserColors();
@@ -298,24 +268,6 @@ public class UserInterface {
         gui.show(user.getPlayer());
     }
 
-    public void openSelectGenderPage() {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_GENDER), "xxxxaxxxx");
-        GroupHandler groupHandler = this.instance.getGroupHandler();
-        List<GuiStateElement.State> states = new ArrayList<>();
-
-        for (Gender gender : groupHandler.getGenderTypes()) {
-            GuiStateElement.State state = new GuiStateElement.State(change -> user.setGenderType(gender), gender.getName(), getPlayerHead(), gender.getDisplayName());
-            states.add(state);
-        }
-        GuiStateElement selectElement = new GuiStateElement('a', states.toArray(new GuiStateElement.State[states.size() - 1]));
-        if (user.getGenderType() != null) {
-            selectElement.setState(user.getGenderType().getName());
-        }
-
-        gui.addElement(selectElement);
-        gui.show(user.getPlayer());
-    }
-
     private String getTimeMessage(Timestamp timestamp) {
         long min = (timestamp.getTime() - System.currentTimeMillis()) / 1000 / 60;
         int minutes = (int) (min % 60);
@@ -328,39 +280,6 @@ public class UserInterface {
         double delay = instance.getConfigData().getDouble(ConfigData.Keys.CUSTOM_LAYOUT_COOLDOWN);
         long newTime = (long) (last + (delay * 60 * 60 * 1000));
         return new Timestamp(newTime);
-    }
-
-    private void openPageModifyGenderLayout(EasyGroup group, Gender gender) {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9Group §8» §8" + group.getName() + " (" + gender.getName() + ")", "xabcxdexf");
-        GenderedLayout genderedLayout = group.getGenderedLayout();
-
-        String prefix = null, suffix = null;
-        if (genderedLayout != null) {
-            prefix = genderedLayout.getPrefix(gender);
-            suffix = genderedLayout.getSuffix(gender);
-        }
-
-        String finalPrefix = prefix == null ? " " : prefix;
-        gui.addElement(new StaticGuiElement('a', XMaterial.IRON_INGOT.parseItem(), click -> {
-            TextInput textInput = new TextInput(user, "§cType in the prefix", finalPrefix);
-            textInput.onComplete((input) -> {
-                group.setPrefix(input, gender);
-                user.sendAdminMessage("The prefix for group " + group.getName() + " (" + gender.getName() + ") has been updated!");
-            }).build();
-            return true;
-        }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + ((prefix == null) ? "-/-" : prefix) + "§7»", " "));
-
-        String finalSuffix = suffix == null ? " " : suffix;
-        gui.addElement(new StaticGuiElement('b', XMaterial.GOLD_INGOT.parseItem(), click -> {
-            TextInput textInput = new TextInput(user, "§cType in the suffix", finalSuffix);
-            textInput.onComplete((input) -> {
-                group.setSuffix(input, gender);
-                user.sendAdminMessage("The prefix for group " + group.getName() + " (" + gender.getName() + ") has been updated!");
-            }).build();
-            return true;
-        }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + ((suffix == null) ? "-/-" : suffix) + "§7»", " "));
-
-        gui.show(user.getPlayer());
     }
 
     private void openGroupsList() {
@@ -434,11 +353,8 @@ public class UserInterface {
     }
 
     private void openSettingsPage() {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Settings", "xxxaxbxxx");
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Settings", "xxxxbxxxx");
         ConfigData config = this.instance.getConfigData();
-        GuiStateElement gender = new GuiStateElement('a', new GuiStateElement.State(change -> config.save(ConfigData.Keys.USE_GENDER, true), "true", XMaterial.CHAINMAIL_HELMET.parseItem(), "§aGender §7(§aenabled§7)"), new GuiStateElement.State(change -> config.save(ConfigData.Keys.USE_GENDER, false), "false", XMaterial.CHAINMAIL_HELMET.parseItem(), "§aGender §7(§cdisabled§7)"));
-        gender.setState(instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER).toString());
-        gui.addElement(gender);
 
         GuiStateElement colors = new GuiStateElement('b', new GuiStateElement.State(change -> config.save(ConfigData.Keys.HANDLE_COLORS, true), "true", XMaterial.LIME_DYE.parseItem(), "§aHandle colors §7(§aenabled§7)"), new GuiStateElement.State(change -> config.save(ConfigData.Keys.HANDLE_COLORS, false), "false", XMaterial.LIME_DYE.parseItem(), "§aHandle colors §7(§cdisabled§7)"));
         colors.setState(instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS).toString());
@@ -581,11 +497,6 @@ public class UserInterface {
             return true;
         }, "§cQuit Message", DIVIDER, "§7Current: §7«§f" + group.getQuitMessage() + "§7»", " "));
 
-        gui.addElement(new StaticGuiElement('f', getPlayerHead(), click -> {
-            openPageGroupGender(group);
-            return true;
-        }, "§aGendered Layout", " "));
-
         if (!group.getName().equals("default")) {
             gui.addElement(new StaticGuiElement('q', new ItemStack(Material.BARRIER), click -> {
                 openPageDeleteGroup(group);
@@ -716,12 +627,6 @@ public class UserInterface {
             }).build();
             return true;
         }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + subgroup.getSuffix() + "§7»", " "));
-
-
-        gui.addElement(new StaticGuiElement('f', getPlayerHead(), click -> {
-            openPageGroupGender(subgroup);
-            return true;
-        }, "§aGendered Layout", " "));
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.BARRIER), click -> {
             openPageDeleteGroup(subgroup);

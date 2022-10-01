@@ -59,7 +59,6 @@ class DebugCommand implements Subcommand {
         sender.sendMessage("§9Version: §7" + VersionController.getPluginVersion());
         sender.sendMessage("§9Groups/Subgroups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
         sender.sendMessage("§9Users cached: §7" + this.instance.getUsers().size());
-        sender.sendMessage("§9Genders cached: §7" + groupHandler.getGenderTypes().size());
         sender.sendMessage("§9Bukkit Version: §7" + Bukkit.getVersion());
         sender.sendMessage("§9Java Version: §7" + System.getProperty("java.version"));
         sender.sendMessage("§9Version Name: §7" + Bukkit.getBukkitVersion());

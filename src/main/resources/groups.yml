@@ -50,16 +50,7 @@ groups:
     quit-msg: '&8« %ep_user_prefix%%player% &7left the game'
 subgroups:
   Vip:
-    # fallback if user hasn't chosen a gender yet
     # %ep_tag_prefix%
     prefix: '&6VIP'
     # %ep_tag_suffix%
     suffix: ''
-    # specific prefixes and/or suffixes for each gender
-    genders:
-      female:
-        prefix: '&5VIP'
-      male:
-        prefix: '&9VIP'
-      intersex:
-        prefix: '&eVIP'

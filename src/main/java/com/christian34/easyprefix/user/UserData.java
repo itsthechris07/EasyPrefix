@@ -56,7 +56,7 @@ public class UserData {
     public void loadData() {
         String username = player.getName();
         SelectQuery selectQuery = new SelectQuery("users", "uuid", "group", "username", "force_group", "subgroup",
-                "custom_prefix", "custom_prefix_update", "custom_suffix", "custom_suffix_update", "gender", "chat_color",
+                "custom_prefix", "custom_prefix_update", "custom_suffix", "custom_suffix_update", "chat_color",
                 "chat_formatting").addCondition("uuid", uniqueId.toString()).setDatabase(database);
 
         this.data = selectQuery.getData();
@@ -106,7 +106,7 @@ public class UserData {
                 Debug.log("Couldn't save data to database! Error UDDB4");
             }
         }
-        List<String> rows = Arrays.asList("group", "subgroup", "custom_prefix", "gender", "chat_color", "chat_formatting", "custom_suffix", "custom_prefix");
+        List<String> rows = Arrays.asList("group", "subgroup", "custom_prefix", "chat_color", "chat_formatting", "custom_suffix", "custom_prefix");
         for (String row : rows) {
             try {
                 UpdateStatement updateStatement = new UpdateStatement("users")

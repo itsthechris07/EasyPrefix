@@ -41,15 +41,12 @@ public class ConfigData extends PluginFile {
         public static final String CUSTOM_LAYOUT_COOLDOWN = "user.custom-layout.cooldown";
         public static final String ENABLED = "enabled";
         public static final String SQL_ENABLED = "sql.enabled";
-        public static final String FORCE_GENDER = "gender.force-gender";
-        public static final String GENDER_TYPES = "gender.types";
         public static final String GUI_SHOW_ALL_CHATCOLORS = "gui.show-all-chatcolors";
         public static final String HANDLE_CHAT = "chat.handle-chat";
         public static final String HANDLE_COLORS = "chat.handle-colors";
         public static final String HIDE_JOIN_QUIT = "join-quit-messages.hide-messages";
         public static final String PREFIX_ALIAS = "user.custom-layout.alias.prefix";
         public static final String SUFFIX_ALIAS = "user.custom-layout.alias.suffix";
-        public static final String USE_GENDER = "gender.enabled";
         public static final String USE_JOIN_QUIT = "join-quit-messages.enabled";
         public static final String USE_TAGS = "tags.enabled";
         public static final String CUSTOM_LAYOUT_BLACKLIST = "user.custom-layout.blacklist";

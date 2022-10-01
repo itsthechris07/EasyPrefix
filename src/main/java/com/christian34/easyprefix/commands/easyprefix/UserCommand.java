@@ -6,7 +6,6 @@ import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
-import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.ChatFormatting;
@@ -114,12 +113,6 @@ class UserCommand implements Subcommand {
                     sender.sendMessage(Message.CHAT_GROUP_NOT_FOUND.getText());
                 }
             }
-        } else if (args.get(2).equalsIgnoreCase("setgender")) {
-            if (args.size() != 4) {
-                showHelp(sender);
-            } else {
-                setGender(sender, target, args.get(3));
-            }
         }
     }
 
@@ -151,9 +144,6 @@ class UserCommand implements Subcommand {
         if (chatFormatting != null) {
             sender.sendMessage(" §9chat formatting§f: §7" + formatting.replace("§", "&"));
         }
-        if (user.getGenderType() != null) {
-            sender.sendMessage(" §9Gender§f: §7" + user.getGenderType().getName());
-        }
         sender.sendMessage(" \n§7-----------------------------------------------\n ");
     }
 
@@ -165,20 +155,7 @@ class UserCommand implements Subcommand {
         if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
             sender.sendMessage(prefix + "settag <Tag> §f| §7set tag to player");
         }
-        if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
-            sender.sendMessage(prefix + "setgender <Gender> §f| §7set gender");
-        }
         sender.sendMessage(" \n§7----------------------------------------------------\n ");
-    }
-
-    private void setGender(CommandSender sender, User targetUser, String gender) {
-        Gender genderType = groupHandler.getGender(gender);
-        if (genderType != null) {
-            targetUser.setGenderType(genderType);
-            sender.sendMessage(Message.PREFIX + "User has been updated!");
-        } else {
-            sender.sendMessage(Message.PREFIX + "§cThis gender doesn't exist");
-        }
     }
 
     @Override
@@ -191,9 +168,6 @@ class UserCommand implements Subcommand {
             return names;
         } else if (args.size() == 3) {
             List<String> matches = new ArrayList<>(Arrays.asList("reload", "info", "setgroup"));
-            if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
-                matches.add("setgender");
-            }
             if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
                 matches.add("settag");
             }
@@ -217,10 +191,6 @@ class UserCommand implements Subcommand {
             } else if (args.get(2).equalsIgnoreCase("settag")) {
                 for (Subgroup group : this.instance.getGroupHandler().getSubgroups()) {
                     matches.add(group.getName());
-                }
-            } else if (args.get(2).equalsIgnoreCase("setgender")) {
-                for (Gender gender : this.instance.getGroupHandler().getGenderTypes()) {
-                    matches.add(gender.getName());
                 }
             }
             return matches;

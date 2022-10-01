@@ -17,7 +17,6 @@ import java.util.List;
  */
 public enum Message {
     BTN_BACK("gui_button_back"),
-    BTN_CHANGE_GENDER("gui_button_user_gender"),
     BTN_CHANGE_PREFIX("gui_button_change_prefix"),
     BTN_CHANGE_SUFFIX("gui_button_change_suffix"),
     BTN_CUSTOM_LAYOUT("gui_button_custom_layout"),
@@ -40,8 +39,6 @@ public enum Message {
     CHAT_INPUT_SUFFIX_CONFIRM("chat_input_suffix_confirm"),
     CHAT_INPUT_SUFFIX_SAVED("chat_input_suffix_saved"),
     CHAT_LAYOUT_UPDATE_COOLDOWN("chat_layout_update_cooldown"),
-    CHAT_NOTIFY_GENDER_BTN("select_gender_button"),
-    CHAT_NOTIFY_GENDER_TEXT("select_gender_join_notification"),
     CHAT_NO_PERMS("no_permissions"),
     CHAT_PLAYER_NOT_FOUND("player_not_found"),
     CHAT_TAGS_AVAILABLE("chat_cmd_tags_list_info"),
@@ -71,7 +68,6 @@ public enum Message {
     FORMATTING_UNDERLINE("formattings.underline"),
     GUI_SETTINGS_TITLE("gui_title"),
     GUI_SETTINGS_TITLE_FORMATTINGS("gui_title_formattings"),
-    GUI_SETTINGS_TITLE_GENDER("gui_title_gender"),
     GUI_SETTINGS_TITLE_LAYOUT("gui_title_layout"),
     GUI_SETTINGS_TITLE_MAIN("gui_title_settings"),
     GUI_SETTINGS_TITLE_TAGS("gui_title_tags"),

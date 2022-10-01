@@ -1,7 +1,5 @@
 package com.christian34.easyprefix.groups;
 
-import com.christian34.easyprefix.groups.gender.Gender;
-import com.christian34.easyprefix.groups.gender.GenderedLayout;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,28 +18,17 @@ public abstract class EasyGroup {
 
     public abstract String getPrefix();
 
-    public abstract String getPrefix(Gender gender);
-
-    @Nullable
-    public abstract GenderedLayout getGenderedLayout();
-
     /**
      * @param prefix unformatted prefix
      */
     public abstract void setPrefix(@Nullable String prefix);
 
-    public abstract void setPrefix(@Nullable String prefix, @NotNull Gender gender);
-
     public abstract String getSuffix();
-
-    public abstract String getSuffix(Gender gender);
 
     /**
      * @param suffix unformatted suffix
      */
     public abstract void setSuffix(@Nullable String suffix);
-
-    public abstract void setSuffix(@Nullable String suffix, @NotNull Gender gender);
 
     /**
      * @return ChatColor returns the automatic generated color

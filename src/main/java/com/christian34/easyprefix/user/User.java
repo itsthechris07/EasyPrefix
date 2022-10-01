@@ -5,7 +5,6 @@ import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
-import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -35,7 +34,6 @@ public class User {
     private Group group;
     private Subgroup subgroup;
     private Color chatColor;
-    private Gender gender;
     private String customPrefix;
     private String customSuffix;
     private boolean isGroupForced;
@@ -147,11 +145,6 @@ public class User {
             } catch (ParseException ignored) {
             }
         }
-
-        String genderName = userData.getString("gender");
-        if (genderName != null && groupHandler.handleGenders()) {
-            this.gender = groupHandler.getGender(genderName);
-        }
     }
 
     public boolean hasPermission(@NotNull String permission) {
@@ -166,7 +159,7 @@ public class User {
         if (hasPermission("custom.prefix") && customPrefix != null) {
             return customPrefix;
         }
-        return group.getPrefix(gender);
+        return group.getPrefix();
     }
 
     public void setPrefix(String prefix) {
@@ -190,7 +183,7 @@ public class User {
         if (hasPermission("custom.suffix") && customSuffix != null) {
             return customSuffix;
         }
-        return group.getSuffix(gender);
+        return group.getSuffix();
     }
 
     public void setSuffix(String suffix) {
@@ -296,15 +289,6 @@ public class User {
         this.subgroup = subgroup;
         String name = (subgroup != null) ? subgroup.getName() : null;
         saveData("subgroup", name);
-    }
-
-    public Gender getGenderType() {
-        return gender;
-    }
-
-    public void setGenderType(Gender gender) {
-        this.gender = gender;
-        saveData("gender", gender.getName());
     }
 
     public Player getPlayer() {

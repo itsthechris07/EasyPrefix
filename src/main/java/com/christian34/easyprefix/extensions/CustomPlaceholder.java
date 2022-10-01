@@ -76,19 +76,14 @@ class CustomPlaceholder extends PlaceholderExpansion {
                     color += user.getChatFormatting().getCode();
                 }
                 return color.replace("&", "§");
-            case "user_gender":
-                if (user.getGenderType() != null) {
-                    return user.getGenderType().getDisplayName();
-                }
-                return "";
             case "user_subgroup_prefix":
             case "tag_prefix":
                 if (user.getSubgroup() == null) return "";
-                return Optional.ofNullable(user.getSubgroup().getPrefix(user.getGenderType())).orElse("");
+                return Optional.ofNullable(user.getSubgroup().getPrefix()).orElse("");
             case "user_subgroup_suffix":
             case "tag_suffix":
                 if (user.getSubgroup() == null) return "";
-                return Optional.ofNullable(user.getSubgroup().getSuffix(user.getGenderType())).orElse("");
+                return Optional.ofNullable(user.getSubgroup().getSuffix()).orElse("");
             default:
                 Debug.log("§aWarning: You've used an invalid placeholder! ("
                         + this.getIdentifier() + "_" + identifier + ")");

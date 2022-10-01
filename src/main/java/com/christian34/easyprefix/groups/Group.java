@@ -2,9 +2,10 @@ package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.GroupsData;
-import com.christian34.easyprefix.groups.gender.Gender;
-import com.christian34.easyprefix.groups.gender.GenderedLayout;
-import com.christian34.easyprefix.sql.*;
+import com.christian34.easyprefix.sql.Data;
+import com.christian34.easyprefix.sql.DeleteStatement;
+import com.christian34.easyprefix.sql.SelectQuery;
+import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
@@ -33,7 +34,6 @@ public class Group extends EasyGroup {
     private String prefix, suffix, joinMessage, quitMessage;
     private Color chatColor;
     private ChatFormatting chatFormatting;
-    private GenderedLayout genderedLayout = null;
 
     public Group(GroupHandler groupHandler, @NotNull String name) {
         this.NAME = name;
@@ -54,10 +54,6 @@ public class Group extends EasyGroup {
                 if (val != null) storage.put(key, val);
             }
             data = new Data(storage);
-        }
-
-        if (groupHandler.handleGenders()) {
-            this.genderedLayout = new GenderedLayout(this);
         }
 
         this.prefix = data.getStringOr("prefix", "");
@@ -93,12 +89,6 @@ public class Group extends EasyGroup {
         this.groupColor = getGroupColor(prefix);
         this.joinMessage = data.getString("join_msg");
         this.quitMessage = data.getString("quit_msg");
-    }
-
-    @Override
-    @Nullable
-    public GenderedLayout getGenderedLayout() {
-        return genderedLayout;
     }
 
     @Nullable
@@ -173,46 +163,6 @@ public class Group extends EasyGroup {
         saveData("prefix", this.prefix);
     }
 
-    @Nullable
-    @Override
-    public String getPrefix(Gender gender) {
-        if (this.groupHandler.handleGenders() && gender != null) {
-            String text = this.genderedLayout.getPrefix(gender);
-            if (text != null) return text;
-        }
-        return getPrefix();
-    }
-
-    @Override
-    public void setPrefix(@Nullable String prefix, @NotNull Gender gender) {
-        if (prefix != null) {
-            prefix = prefix.replace("§", "&");
-        }
-
-        if (instance.getStorageType() == StorageType.SQL) {
-            SelectQuery select = new SelectQuery("groups_gendered", "id")
-                    .addCondition("group", getName())
-                    .addCondition("gender", gender.getName());
-            if (select.getData().isEmpty()) {
-                InsertStatement insert = new InsertStatement("groups_gendered");
-                insert
-                        .setValue("group", getName())
-                        .setValue("gender", gender.getName());
-                insert.execute();
-            }
-
-            UpdateStatement update = new UpdateStatement("groups_gendered");
-            update.setValue("prefix", prefix);
-            update
-                    .addCondition("group", getName())
-                    .addCondition("gender", gender.getName());
-            update.execute();
-        } else {
-            getGroupsData().save(getFileKey() + "genders." + gender.getName() + ".prefix", prefix);
-        }
-        groupHandler.reloadGroup(this);
-    }
-
     @Override
     @Nullable
     public String getSuffix() {
@@ -226,46 +176,6 @@ public class Group extends EasyGroup {
         }
         this.suffix = suffix;
         saveData("suffix", this.suffix);
-    }
-
-    @Nullable
-    @Override
-    public String getSuffix(Gender gender) {
-        if (this.groupHandler.handleGenders() && gender != null) {
-            String text = this.genderedLayout.getSuffix(gender);
-            if (text != null) return text;
-        }
-        return getSuffix();
-    }
-
-    @Override
-    public void setSuffix(@Nullable String groupSuffix, @NotNull Gender gender) {
-        if (groupSuffix != null) {
-            groupSuffix = groupSuffix.replace("§", "&");
-        }
-
-        if (instance.getStorageType() == StorageType.SQL) {
-            SelectQuery select = new SelectQuery("groups_gendered", "id")
-                    .addCondition("group", getName())
-                    .addCondition("gender", gender.getName());
-            if (select.getData().isEmpty()) {
-                InsertStatement insert = new InsertStatement("groups_gendered");
-                insert
-                        .setValue("group", getName())
-                        .setValue("gender", gender.getName());
-                insert.execute();
-            }
-
-            UpdateStatement update = new UpdateStatement("groups_gendered");
-            update.setValue("suffix", groupSuffix);
-            update
-                    .addCondition("group", getName())
-                    .addCondition("gender", gender.getName());
-            update.execute();
-        } else {
-            getGroupsData().save(getFileKey() + "genders." + gender.getName() + ".suffix", groupSuffix);
-        }
-        groupHandler.reloadGroup(this);
     }
 
     @Override

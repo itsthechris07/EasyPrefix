@@ -3,7 +3,6 @@ package com.christian34.easyprefix.groups;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.GroupsData;
-import com.christian34.easyprefix.groups.gender.Gender;
 import com.christian34.easyprefix.sql.InsertStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
@@ -27,7 +26,6 @@ public class GroupHandler {
     private final GroupsData groupsData;
     private Set<Group> groups;
     private Set<Subgroup> subgroups;
-    private Set<Gender> genders = new HashSet<>();
     private Group defaultGroup;
     private SQLDatabase database;
 
@@ -48,13 +46,7 @@ public class GroupHandler {
             this.database = instance.getSqlDatabase();
             SelectQuery selectQuery = new SelectQuery("groups", "prefix").addCondition("group", "default");
             if (selectQuery.getData().isEmpty()) {
-                InsertStatement insertStatement = new InsertStatement("groups")
-                        .setValue("group", "default")
-                        .setValue("prefix", "&7")
-                        .setValue("suffix", "&f:")
-                        .setValue("chat_color", "&7")
-                        .setValue("join_msg", "&8» %ep_user_prefix%%player% &7joined the game")
-                        .setValue("quit_msg", "&8« %ep_user_prefix%%player% &7left the game");
+                InsertStatement insertStatement = new InsertStatement("groups").setValue("group", "default").setValue("prefix", "&7").setValue("suffix", "&f:").setValue("chat_color", "&7").setValue("join_msg", "&8» %ep_user_prefix%%player% &7joined the game").setValue("quit_msg", "&8« %ep_user_prefix%%player% &7left the game");
                 if (!insertStatement.execute()) {
                     Debug.warn("Couldn't upload default group to database!");
                 }
@@ -68,9 +60,6 @@ public class GroupHandler {
         Debug.recordAction("Loading groups...");
         this.groups = new HashSet<>();
         this.subgroups = new HashSet<>();
-        if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER)) {
-            loadGenders();
-        }
         this.defaultGroup = new Group(this, "default");
         groups.add(defaultGroup);
 
@@ -129,33 +118,6 @@ public class GroupHandler {
                 Debug.handleException(ex);
             }
         }
-    }
-
-    public boolean handleGenders() {
-        return instance.getConfigData().getBoolean(ConfigData.Keys.USE_GENDER);
-    }
-
-    public void loadGenders() {
-        this.genders = new HashSet<>();
-        ConfigurationSection section = instance.getConfigData().getSection(ConfigData.Keys.GENDER_TYPES);
-        if (section == null) return;
-        for (String name : section.getKeys(false)) {
-            try {
-                this.genders.add(new Gender(name));
-            } catch (Exception ex) {
-                Debug.handleException(ex);
-            }
-        }
-    }
-
-    public List<Gender> getGenderTypes() {
-        return new ArrayList<>(genders);
-    }
-
-    @Nullable
-    public Gender getGender(String name) {
-        if (name == null) return null;
-        return genders.stream().filter(gender -> gender.getName().equalsIgnoreCase(name)).findAny().orElse(null);
     }
 
     @NotNull

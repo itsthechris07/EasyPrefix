@@ -48,19 +48,6 @@ config:
   tags:
     # show context menu for tags | only visible if necessary
     enabled: true
-  # allow players to define their gender (placeholder: %ep_user_gender%) | works only if subgroups are enabled!
-  gender:
-    enabled: true
-    # force a player to select a gender
-    # true shows a message to select a gender on join
-    force-gender: false
-    types:
-      female:
-        displayname: '&5Female'
-      male:
-        displayname: '&9Male'
-      intersex:
-        displayname: '&eIntersex'
   # settings for the gui
   gui:
     # specifies if all colors and formatting should be visible, even if the player has no permissions for it.
