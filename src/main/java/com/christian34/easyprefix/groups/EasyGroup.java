@@ -37,11 +37,6 @@ public abstract class EasyGroup {
     public abstract ChatColor getGroupColor();
 
     /**
-     * @return String returns the key for group in FileConfiguration
-     */
-    public abstract String getFileKey();
-
-    /**
      * deletes the group recursively
      */
     public abstract void delete();

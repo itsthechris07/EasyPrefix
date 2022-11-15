@@ -17,7 +17,6 @@ config:
     database: 'EasyPrefix'
     username: 'username'
     password: 'password'
-    table-prefix: 'ep'
   # allow easyprefix to set join and quit messages
   # messages can be changed in 'groups.yml'
   join-quit-messages:

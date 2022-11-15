@@ -140,7 +140,7 @@ public class Debug {
         hub.setTag("offline-players", Bukkit.getOfflinePlayers().length + "");
         // set tags after plugin was loaded
         Bukkit.getScheduler().runTaskLater(instance, () -> {
-            hub.setTag("storage", instance.getStorageType().name().toLowerCase());
+            hub.setTag("storage", instance.getDatabaseManager().getDatabaseType().name().toLowerCase());
             GroupHandler groupHandler = instance.getGroupHandler();
             hub.setTag("groups", String.valueOf(groupHandler.getGroups().size()));
             hub.setTag("subgroups", String.valueOf(groupHandler.getSubgroups().size()));

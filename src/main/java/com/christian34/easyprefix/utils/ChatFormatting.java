@@ -67,4 +67,8 @@ public enum ChatFormatting {
         return code == null ? "" : "§" + code;
     }
 
+    public char getChar() {
+        return this.code.charAt(0);
+    }
+
 }

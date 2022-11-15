@@ -21,7 +21,7 @@ public class SQLDatabase implements Database {
     private final int port;
     private final EasyPrefix instance;
     private Connection connection;
-    private SQLSynchronizer sqlSynchronizer;
+   // private SQLSynchronizer sqlSynchronizer;
 
     public SQLDatabase(EasyPrefix instance) {
         this.instance = instance;
@@ -38,9 +38,9 @@ public class SQLDatabase implements Database {
         this.tablePrefix = tPrefix;
     }
 
-    public SQLSynchronizer getSqlSynchronizer() {
+   /* public SQLSynchronizer getSqlSynchronizer() {
         return sqlSynchronizer;
-    }
+    } */
 
     @Override
     public boolean connect() {
@@ -51,7 +51,7 @@ public class SQLDatabase implements Database {
                 Class.forName("com.mysql.jdbc.Driver");
                 this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&useUnicode=true&characterEncoding=utf-8" + "&autoReconnect=true&serverTimezone=" + TimeZone.getDefault().getID(), username, password);
                 updateTables();
-                this.sqlSynchronizer = new SQLSynchronizer(instance);
+                // this.sqlSynchronizer = new SQLSynchronizer(instance);
                 return true;
             } catch (SQLSyntaxErrorException e) {
                 Debug.warn("§cDatabase '" + database + "' does not exist!");

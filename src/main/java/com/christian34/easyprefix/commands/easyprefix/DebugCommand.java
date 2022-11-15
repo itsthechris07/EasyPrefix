@@ -4,7 +4,6 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.GroupHandler;
-import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bukkit.Bukkit;
@@ -55,6 +54,13 @@ class DebugCommand implements Subcommand {
 
     @Override
     public void handleCommand(@NotNull CommandSender sender, List<String> args) {
+        if (args.size() == 2) {
+            if (args.get(1).equals("stop")) {
+                EasyPrefix.getInstance().onDisable();
+                Bukkit.getServer().getPluginManager().disablePlugin(EasyPrefix.getInstance());
+            }
+            return;
+        }
         sender.sendMessage(" \n§7------------=== §9§lEasyPrefix DEBUG §7===------------");
         sender.sendMessage("§9Version: §7" + VersionController.getPluginVersion());
         sender.sendMessage("§9Groups/Subgroups: §7" + groupHandler.getGroups().size() + "/" + groupHandler.getSubgroups().size());
@@ -62,7 +68,7 @@ class DebugCommand implements Subcommand {
         sender.sendMessage("§9Bukkit Version: §7" + Bukkit.getVersion());
         sender.sendMessage("§9Java Version: §7" + System.getProperty("java.version"));
         sender.sendMessage("§9Version Name: §7" + Bukkit.getBukkitVersion());
-        sender.sendMessage("§9Storage: §7" + ((this.instance.getStorageType() == StorageType.SQL) ? "MySQL" : "local"));
+        sender.sendMessage("§9Storage: §7" + this.instance.getDatabaseManager().getDatabaseType().toString());
         sender.sendMessage("§9active EventHandler: §7" + HandlerList.getRegisteredListeners(this.instance.getPlugin()).size());
         sender.sendMessage("§9Client ID: §7" + instance.getConfigData().getString(ConfigData.Keys.CLIENT_ID));
     }

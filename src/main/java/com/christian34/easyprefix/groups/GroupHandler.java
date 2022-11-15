@@ -1,18 +1,19 @@
 package com.christian34.easyprefix.groups;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.database.DatabaseType;
+import com.christian34.easyprefix.database.tables.TableGroup;
+import com.christian34.easyprefix.database.tables.TableSubgroup;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.GroupsData;
-import com.christian34.easyprefix.sql.InsertStatement;
-import com.christian34.easyprefix.sql.SelectQuery;
-import com.christian34.easyprefix.sql.database.SQLDatabase;
-import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.groups.group.Group;
+import com.christian34.easyprefix.groups.subgroup.Subgroup;
 import com.christian34.easyprefix.utils.Debug;
+import com.j256.ormlite.dao.Dao;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -23,35 +24,35 @@ import java.util.*;
  */
 public class GroupHandler {
     private final EasyPrefix instance;
-    private final GroupsData groupsData;
     private Set<Group> groups;
     private Set<Subgroup> subgroups;
     private Group defaultGroup;
-    private SQLDatabase database;
 
     public GroupHandler(EasyPrefix instance) {
         this.instance = instance;
-        this.groupsData = instance.getFileManager().getGroupsData();
 
-        if (instance.getStorageType() == StorageType.LOCAL && getGroupsData() != null) {
-            GroupsData groupsData = getGroupsData();
-            if (groupsData.getString("default.join-msg") == null) {
-                groupsData.set("groups.default.join-msg", "&8» %ep_user_prefix%%player% &8joined the game");
-            }
-            if (groupsData.getString("default.quit-msg") == null) {
-                groupsData.set("groups.default.quit-msg", "&8« %ep_user_prefix%%player% &8left the game");
-            }
+        if (instance.getDatabaseManager().getDatabaseType().equals(DatabaseType.SQLITE)) {
+            GroupsData groupsData = instance.getFileManager().getGroupsData();
+            String path = "groups.default.";
+            groupsData.set(path + "prefix", "&7");
+            groupsData.set(path + "suffix", "&f:");
+            groupsData.set(path + "chat-color", "7");
             groupsData.save();
         } else {
-            this.database = instance.getSqlDatabase();
-            SelectQuery selectQuery = new SelectQuery("groups", "prefix").addCondition("group", "default");
-            if (selectQuery.getData().isEmpty()) {
-                InsertStatement insertStatement = new InsertStatement("groups").setValue("group", "default").setValue("prefix", "&7").setValue("suffix", "&f:").setValue("chat_color", "&7").setValue("join_msg", "&8» %ep_user_prefix%%player% &7joined the game").setValue("quit_msg", "&8« %ep_user_prefix%%player% &7left the game");
-                if (!insertStatement.execute()) {
-                    Debug.warn("Couldn't upload default group to database!");
+            Dao<TableGroup, String> groupDao = instance.getDatabaseManager().getTableGroupDao();
+            try {
+                TableGroup tableGroup = groupDao.queryBuilder().where().eq("name", "default").queryForFirst();
+                if (tableGroup == null) {
+                    TableGroup defaultGroup = new TableGroup("default");
+                    defaultGroup.setPrefix("&7");
+                    defaultGroup.setSuffix("&f:");
+                    defaultGroup.setChatColor("7");
+                    defaultGroup.setJoinMessage("&8» %ep_user_prefix%%player% &7joined the game");
+                    defaultGroup.setQuitMessage("&8« %ep_user_prefix%%player% &7left the game");
+                    groupDao.create(defaultGroup);
                 }
-                // todo upload default groups, the data migration will be removed by v1.8
-                Debug.warn("&cError: You haven't uploaded any data to the sql database yet. Please upload your data with: /easyprefix database upload");
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -61,13 +62,20 @@ public class GroupHandler {
         this.groups = new HashSet<>();
         this.subgroups = new HashSet<>();
         this.defaultGroup = new Group(this, "default");
+        if (defaultGroup.getJoinMessage() == null) {
+            defaultGroup.setJoinMessage("&8» %ep_user_prefix%%player% &8joined the game");
+        }
+        if (defaultGroup.getQuitMessage() == null) {
+            defaultGroup.setQuitMessage("&8« %ep_user_prefix%%player% &8left the game");
+        }
         groups.add(defaultGroup);
 
         List<String> groupNames = new ArrayList<>();
         List<String> subgroupNames = new ArrayList<>();
 
-        if (instance.getStorageType() == StorageType.LOCAL) {
-            GroupsData groupsData = getGroupsData();
+        if (instance.getDatabaseManager().getDatabaseType().equals(DatabaseType.SQLITE)) {
+            GroupsData groupsData = instance.getFileManager().getGroupsData();
+            assert groupsData != null;
             ConfigurationSection groupsSection = groupsData.getSection("groups");
             if (groupsSection != null) {
                 groupNames.addAll(groupsSection.getKeys(false));
@@ -79,28 +87,23 @@ public class GroupHandler {
                 }
             }
         } else {
-            try (ResultSet groupsResult = database.getValue("SELECT `group` FROM `%p%groups`")) {
-                while (groupsResult.next()) {
-                    String value = groupsResult.getString("group");
+            try {
+                Dao<TableGroup, String> groupDao = instance.getDatabaseManager().getTableGroupDao();
+                for (TableGroup groupData : groupDao.queryBuilder().query()) {
+                    String value = groupData.getName();
                     if (!value.equals("default")) groupNames.add(value);
                 }
-            } catch (SQLException e) {
-                Debug.handleException(e);
-                return;
-            }
 
-            try (ResultSet subgroupsResult = database.getValue("SELECT `group` FROM `%p%subgroups`")) {
-                while (subgroupsResult.next()) {
-                    String value = subgroupsResult.getString("group");
+                Dao<TableSubgroup, String> subgroupDao = instance.getDatabaseManager().getTableSubgroupDao();
+                for (TableSubgroup subgroupData : subgroupDao.queryBuilder().query()) {
+                    String value = subgroupData.getName();
                     subgroupNames.add(value);
                 }
             } catch (SQLException e) {
-                Debug.handleException(e);
-                return;
+                throw new RuntimeException(e);
             }
         }
 
-        groupNames.remove("default");
         Collections.sort(groupNames);
         for (String name : groupNames) {
             try {
@@ -149,39 +152,57 @@ public class GroupHandler {
         return instance;
     }
 
-    public boolean createGroup(String groupName) {
-        if (isGroup(groupName)) return false;
-        if (database == null) {
-            String path = "groups." + groupName + ".";
-            getGroupsData().set(path + "prefix", "&9" + groupName + " &7| &8");
-            getGroupsData().set(path + "suffix", "&f:");
-            getGroupsData().set(path + "chat-color", "&7");
-            getGroupsData().set(path + "chat-formatting", "&o");
-            getGroupsData().save();
+    @Deprecated
+    public boolean createGroup(String name) {
+        if (isGroup(name)) return false;
+        if (instance.getDatabaseManager().getDatabaseType().equals(DatabaseType.SQLITE)) {
+            GroupsData groupsData = instance.getFileManager().getGroupsData();
+            String path = "groups." + name + ".";
+            groupsData.set(path + "prefix", "&9" + name + " &7| &8");
+            groupsData.set(path + "suffix", "&f:");
+            groupsData.set(path + "chat-color", "7");
+            groupsData.save();
         } else {
-            InsertStatement insertStatement = new InsertStatement("groups").setValue("group", groupName);
-            if (!insertStatement.execute()) {
-                Debug.log("Couldn't save new group!");
+            Dao<TableGroup, String> groupDao = instance.getDatabaseManager().getTableGroupDao();
+            try {
+                TableGroup tableGroup = groupDao.queryBuilder().where().eq("name", name).queryForFirst();
+                if (tableGroup == null) {
+                    TableGroup group = new TableGroup(name);
+                    group.setPrefix("&9" + name + " &7| &8");
+                    group.setSuffix("&f:");
+                    group.setChatColor("7");
+                    groupDao.create(group);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
                 return false;
             }
         }
 
-        Group group = new Group(this, groupName);
+        Group group = new Group(this, name);
         groups.add(group);
         return true;
     }
 
     public boolean createSubgroup(String groupName) {
-        if (database == null) {
+        if (instance.getDatabaseManager().getDatabaseType().equals(DatabaseType.SQLITE)) {
+            GroupsData groupsData = this.instance.getFileManager().getGroupsData();
             String path = "subgroups." + groupName + ".";
-            getGroupsData().set(path + "prefix", "&6" + groupName + " &7| &8");
-            getGroupsData().set(path + "suffix", "&f:");
-            getGroupsData().save();
+            groupsData.set(path + "prefix", "&6" + groupName + " &7| &8");
+            groupsData.set(path + "suffix", "&f:");
+            groupsData.save();
         } else {
-            InsertStatement insertStatement = new InsertStatement("subgroups").setValue("group", groupName);
-            if (!insertStatement.execute()) {
-                Debug.log("Couldn't save new group!");
-                return false;
+            Dao<TableSubgroup, String> subgroupDao = instance.getDatabaseManager().getTableSubgroupDao();
+            try {
+                TableSubgroup tableSubgroup = subgroupDao.queryBuilder().where().eq("name", groupName).queryForFirst();
+                if (tableSubgroup == null) {
+                    TableSubgroup subgroup = new TableSubgroup(groupName);
+                    subgroup.setPrefix("&7");
+                    subgroup.setSuffix("&f:");
+                    subgroupDao.create(subgroup);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
@@ -200,10 +221,6 @@ public class GroupHandler {
             subgroups.remove(subgroup);
             subgroups.add(new Subgroup(this, easyGroup.getName()));
         }
-    }
-
-    private GroupsData getGroupsData() {
-        return groupsData;
     }
 
 }

@@ -15,8 +15,10 @@ public class CmdUtils {
             return possible;
         } else {
             List<String> matches = new ArrayList<>();
+            input = input.toLowerCase();
             for (String arg : possible) {
-                if (arg.toLowerCase().startsWith(input.toLowerCase())) {
+                arg = arg.toLowerCase();
+                if (arg.equalsIgnoreCase(input) || arg.startsWith(input)) {
                     matches.add(arg);
                 }
             }

@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class GroupsData extends PluginFile {
 
-    protected GroupsData() {
+    public GroupsData() {
         super(new File(FileManager.getPluginFolder(), "groups.yml"), null);
     }
 

@@ -1,17 +1,17 @@
 package com.christian34.easyprefix;
 
 import com.christian34.easyprefix.commands.CommandHandler;
+import com.christian34.easyprefix.database.DatabaseManager;
+import com.christian34.easyprefix.database.DatabaseType;
 import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
 import com.christian34.easyprefix.groups.GroupHandler;
-import com.christian34.easyprefix.groups.Subgroup;
+import com.christian34.easyprefix.groups.subgroup.Subgroup;
 import com.christian34.easyprefix.listeners.ChatListener;
 import com.christian34.easyprefix.listeners.JoinListener;
 import com.christian34.easyprefix.listeners.QuitListener;
-import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
-import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.RainbowEffect;
@@ -46,17 +46,20 @@ public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance = null;
     private final Pattern HEX_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
     private SQLDatabase sqlDatabase = null;
-    private LocalDatabase localDatabase = null;
     private Set<User> users;
     private Plugin plugin;
     private GroupHandler groupHandler;
     private FileManager fileManager;
     private ExpansionManager expansionManager;
-    private StorageType storageType;
     private Updater updater;
     private CommandHandler commandHandler;
     @SuppressWarnings("FieldCanBeLocal")
     private Debug debug;
+    private DatabaseManager databaseManager;
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
 
     public static EasyPrefix getInstance() {
         return instance;
@@ -66,20 +69,23 @@ public class EasyPrefix extends JavaPlugin {
         return commandHandler;
     }
 
-    public LocalDatabase getLocalDatabase() {
-        return localDatabase;
-    }
-
-    public StorageType getStorageType() {
-        return storageType;
-    }
-
+    @Deprecated
     public SQLDatabase getSqlDatabase() {
         return sqlDatabase;
     }
 
     public ConfigData getConfigData() {
         return getFileManager().getConfig();
+    }
+
+    public void onDisable() {
+        if (sqlDatabase != null) {
+            this.sqlDatabase.close();
+        }
+        this.databaseManager.disconnect();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player != null) player.closeInventory();
+        }
     }
 
     public void onEnable() {
@@ -93,14 +99,14 @@ public class EasyPrefix extends JavaPlugin {
         }
 
         if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED)) {
+            this.databaseManager = new DatabaseManager(DatabaseType.MYSQL);
             this.sqlDatabase = new SQLDatabase(this);
-            this.storageType = StorageType.SQL;
             if (!this.sqlDatabase.connect()) {
+                Debug.log("could not init sql connection");
                 return;
             }
         } else {
-            this.localDatabase = new LocalDatabase();
-            this.storageType = StorageType.LOCAL;
+            this.databaseManager = new DatabaseManager(DatabaseType.SQLITE);
         }
 
         this.groupHandler = new GroupHandler(this);
@@ -127,18 +133,6 @@ public class EasyPrefix extends JavaPlugin {
         }, 20 * 3);
     }
 
-    public void onDisable() {
-        if (sqlDatabase != null) {
-            this.sqlDatabase.close();
-        }
-        if (localDatabase != null) {
-            this.localDatabase.close();
-        }
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player != null) player.closeInventory();
-        }
-    }
-
     public boolean formatChat() {
         return getConfigData().getBoolean(ConfigData.Keys.HANDLE_CHAT);
     }
@@ -149,13 +143,13 @@ public class EasyPrefix extends JavaPlugin {
 
     @Nullable
     public synchronized User getUser(OfflinePlayer player) {
-        User user = new User(player);
+        /* User user = new User(player);
         try {
             user.login();
             return user;
         } catch (Exception ex) {
             Debug.handleException(ex);
-        }
+        } */
         return null;
     }
 
@@ -243,7 +237,7 @@ public class EasyPrefix extends JavaPlugin {
         Debug.recordAction("Reloading Plugin");
         this.fileManager = new FileManager(this);
         this.updater.check();
-        if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED) && this.storageType == StorageType.LOCAL) {
+        if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED) && this.databaseManager.getDatabaseType().equals(DatabaseType.SQLITE)) {
             Debug.warn("************************************************************");
             Debug.warn("* WARNING: You MUST restart the server to enable sql!");
             Debug.warn("* stopping plugin...");
@@ -255,9 +249,6 @@ public class EasyPrefix extends JavaPlugin {
             this.sqlDatabase.close();
             this.sqlDatabase = new SQLDatabase(this);
             this.sqlDatabase.connect();
-        } else {
-            this.localDatabase.close();
-            this.localDatabase.connect();
         }
         RainbowEffect.getRainbowColors().clear();
         this.groupHandler.load();
@@ -276,7 +267,7 @@ public class EasyPrefix extends JavaPlugin {
     private void hookMetrics() {
         Metrics metrics = new Metrics(this, 9682);
         metrics.addCustomChart(new SimplePie("placeholderapi", () -> (expansionManager.isUsingPapi()) ? "installed" : "not installed"));
-        metrics.addCustomChart(new SimplePie("storage", () -> storageType.name().toLowerCase()));
+        metrics.addCustomChart(new SimplePie("storage", () -> databaseManager.getDatabaseType().name().toLowerCase()));
         metrics.addCustomChart(new SimplePie("chat", () -> (formatChat()) ? "true" : "false"));
         metrics.addCustomChart(new SimplePie("custom_layout", () -> (getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) ? "enabled" : "disabled"));
     }

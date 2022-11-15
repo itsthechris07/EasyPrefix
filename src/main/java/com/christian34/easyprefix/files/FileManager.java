@@ -2,7 +2,6 @@ package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.utils.Debug;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -52,9 +51,16 @@ public class FileManager {
         return configData;
     }
 
-    @Nullable
     public GroupsData getGroupsData() {
         return groupsData;
+    }
+
+    public void setGroupsData(GroupsData groupsData) {
+        this.groupsData = groupsData;
+    }
+
+    public void backup() {
+
     }
 
 }

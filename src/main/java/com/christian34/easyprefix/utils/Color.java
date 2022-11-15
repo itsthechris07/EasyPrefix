@@ -88,4 +88,8 @@ public enum Color {
         return item;
     }
 
+    public char getChar() {
+        return this.code.charAt(0);
+    }
+
 }

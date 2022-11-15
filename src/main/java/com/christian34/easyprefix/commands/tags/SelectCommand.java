@@ -2,7 +2,7 @@ package com.christian34.easyprefix.commands.tags;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.groups.Subgroup;
+import com.christian34.easyprefix.groups.subgroup.Subgroup;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.christian34.easyprefix</groupId>
     <artifactId>EasyPrefix</artifactId>
-    <version>1.8.7</version>
+    <version>1.9</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -74,7 +74,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>copy-files-on-build</id>
@@ -195,6 +195,17 @@
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
             <version>1.5.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-core</artifactId>
+            <version>6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-jdbc</artifactId>
+            <version>6.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -2,8 +2,8 @@ package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.Subcommand;
-import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
+import com.christian34.easyprefix.groups.group.Group;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
 import org.bukkit.command.CommandSender;
