@@ -71,6 +71,7 @@ public class LocalDatabase implements Database {
             try {
                 if (getConnection() != null && !getConnection().isClosed()) {
                     getConnection().close();
+                    this.connection = null;
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
