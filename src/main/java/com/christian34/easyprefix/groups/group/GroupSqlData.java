@@ -51,32 +51,23 @@ public class GroupSqlData extends GroupData {
 
     @Override
     public Character getColor() {
-        String val = this.database.getChatColor();
-        if (val != null && val.length() > 1) {
-            setColor(val.charAt(0));
-        }
-        return (val != null) ? val.charAt(0) : null;
+        return this.database.getChatColor();
     }
 
     @Override
     public void setColor(@Nullable Character color) {
-        this.database.setChatColor(color + "");
+        this.database.setChatColor(color);
         save();
     }
 
     @Override
     public Character getFormatting() {
-        String val = this.database.getChatFormatting();
-        if (val != null && val.length() > 1) {
-            setFormatting(val.charAt(0));
-        }
-        return (val != null) ? val.charAt(0) : null;
+        return this.database.getChatFormatting();
     }
 
     @Override
     public void setFormatting(@Nullable Character formatting) {
-        String val = (formatting != null) ? formatting + "" : null;
-        this.database.setChatFormatting(val);
+        this.database.setChatFormatting(formatting);
         save();
     }
 

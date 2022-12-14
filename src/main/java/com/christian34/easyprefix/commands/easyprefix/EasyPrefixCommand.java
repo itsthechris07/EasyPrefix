@@ -7,7 +7,6 @@ import com.christian34.easyprefix.commands.EasyCommand;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetPrefixCommand;
 import com.christian34.easyprefix.commands.easyprefix.set.SetSuffixCommand;
-import com.christian34.easyprefix.database.DatabaseType;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
@@ -40,10 +39,7 @@ public class EasyPrefixCommand implements EasyCommand {
         subcommands.add(new DebugCommand(this));
         subcommands.add(new ColorAliasCommand(commandHandler));
         subcommands.add(new TagsAliasCommand(commandHandler));
-
-        if (instance.getDatabaseManager().getDatabaseType().equals(DatabaseType.MYSQL)) {
-            subcommands.add(new DatabaseCommand(this));
-        }
+        subcommands.add(new DatabaseCommand(this));
 
         if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) {
             subcommands.add(new SetPrefixCommand());

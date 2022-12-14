@@ -1,9 +1,9 @@
 package com.christian34.easyprefix.commands.easyprefix;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.commands.CmdUtils;
 import com.christian34.easyprefix.commands.Subcommand;
 import com.christian34.easyprefix.database.DataMigration;
-import com.christian34.easyprefix.database.DatabaseType;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Message;
 import org.bukkit.Bukkit;
@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,21 +60,28 @@ class DatabaseCommand implements Subcommand {
             return;
         }
 
-        if (args.get(1).equalsIgnoreCase("migrate")) {
-            if (this.instance.getDatabaseManager().getDatabaseType() == DatabaseType.MYSQL) {
-                sender.sendMessage(Message.PREFIX + "Downloading data from MySQL to Files...");
-                Bukkit.getScheduler().runTaskAsynchronously(this.instance, () -> {
-                    try {
-                        long timestamp = System.currentTimeMillis();
-                        DataMigration.sqlToFile();
-                        sender.sendMessage(Message.PREFIX + String.format("Migration has been completed! (took %s seconds)", ((double) (System.currentTimeMillis() - timestamp) / 1000)));
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            } else {
-                //upload
-            }
+        if (args.get(1).equalsIgnoreCase("download")) {
+            sender.sendMessage(Message.PREFIX + "Downloading data from MySQL to Files...");
+            Bukkit.getScheduler().runTaskAsynchronously(this.instance, () -> {
+                try {
+                    long timestamp = System.currentTimeMillis();
+                    DataMigration.sqlToFile();
+                    sender.sendMessage(Message.PREFIX + String.format("Migration has been completed! (took %s seconds)", ((double) (System.currentTimeMillis() - timestamp) / 1000)));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } else if (args.get(1).equalsIgnoreCase("upload")) {
+            sender.sendMessage(Message.PREFIX + "Uploading data from files to sql...");
+            Bukkit.getScheduler().runTaskAsynchronously(this.instance, () -> {
+                try {
+                    long timestamp = System.currentTimeMillis();
+                    DataMigration.fileToSQL();
+                    sender.sendMessage(Message.PREFIX + String.format("Migration has been completed! (took %s seconds)", ((double) (System.currentTimeMillis() - timestamp) / 1000)));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } else {
             parentCommand.getSubcommand("help").handleCommand(sender, null);
         }
@@ -81,6 +89,9 @@ class DatabaseCommand implements Subcommand {
 
     @Override
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+        if (args.size() == 2) {
+            return CmdUtils.matches(Arrays.asList("download", "upload"), args.get(1));
+        }
         return Collections.emptyList();
     }
 

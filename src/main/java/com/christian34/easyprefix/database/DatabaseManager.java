@@ -57,7 +57,7 @@ public class DatabaseManager {
     public void disconnect() {
         try {
             this.connectionSource.close();
-            this.synchronizer.disable();
+            if (this.synchronizer != null) this.synchronizer.disable();
         } catch (Exception e) {
             e.printStackTrace();
         }

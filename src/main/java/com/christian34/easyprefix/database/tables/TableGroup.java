@@ -79,23 +79,20 @@ public class TableGroup {
         this.suffix = suffix;
     }
 
-    public String getChatColor() {
-        return chatColor;
+    public Character getChatColor() {
+        return (chatColor != null) ? chatColor.charAt(0) : null;
     }
 
-    public void setChatColor(String chat_color) {
-        if (chat_color.length() > 1) throw new RuntimeException("The length must be 1 or less");
-        this.chatColor = chat_color;
+    public void setChatColor(Character chatColor) {
+        this.chatColor = (chatColor != null) ? chatColor.toString() : null;
     }
 
-    public String getChatFormatting() {
-        return chatFormatting;
+    public Character getChatFormatting() {
+        return (chatFormatting != null) ? chatFormatting.charAt(0) : null;
     }
 
-    public void setChatFormatting(@Nullable String chat_formatting) {
-        if (chat_formatting != null && chat_formatting.length() > 1)
-            throw new RuntimeException("The length must be 1 or less");
-        this.chatFormatting = chat_formatting;
+    public void setChatFormatting(@Nullable Character chatFormatting) {
+        this.chatFormatting = (chatFormatting != null) ? chatFormatting.toString() : null;
     }
 
     public String getJoinMessage() {

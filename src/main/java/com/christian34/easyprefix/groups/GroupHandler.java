@@ -46,7 +46,7 @@ public class GroupHandler {
                     TableGroup defaultGroup = new TableGroup("default");
                     defaultGroup.setPrefix("&7");
                     defaultGroup.setSuffix("&f:");
-                    defaultGroup.setChatColor("7");
+                    defaultGroup.setChatColor('7');
                     defaultGroup.setJoinMessage("&8» %ep_user_prefix%%player% &7joined the game");
                     defaultGroup.setQuitMessage("&8« %ep_user_prefix%%player% &7left the game");
                     groupDao.create(defaultGroup);
@@ -170,7 +170,7 @@ public class GroupHandler {
                     TableGroup group = new TableGroup(name);
                     group.setPrefix("&9" + name + " &7| &8");
                     group.setSuffix("&f:");
-                    group.setChatColor("7");
+                    group.setChatColor('7');
                     groupDao.create(group);
                 }
             } catch (SQLException e) {

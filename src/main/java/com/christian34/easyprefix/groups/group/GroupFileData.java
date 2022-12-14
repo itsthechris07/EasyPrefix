@@ -46,6 +46,10 @@ public class GroupFileData extends GroupData {
         }
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
+
     @Override
     public String getPrefix() {
         return (String) this.data.get("prefix");
