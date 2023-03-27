@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Debug;
+import com.christian34.easyprefix.utils.Message;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -63,10 +64,10 @@ class CustomPlaceholder extends PlaceholderExpansion {
         switch (identifier) {
             case "prefix":
             case "user_prefix":
-                return Optional.ofNullable(user.getPrefix()).orElse("");
+                return Message.setColors(Optional.ofNullable(user.getPrefix()).orElse(""));
             case "suffix":
             case "user_suffix":
-                return Optional.ofNullable(user.getSuffix()).orElse("");
+                return Message.setColors(Optional.ofNullable(user.getSuffix()).orElse(""));
             case "user_group":
                 return user.getGroup().getName();
             case "user_chatcolor":
@@ -79,11 +80,11 @@ class CustomPlaceholder extends PlaceholderExpansion {
             case "user_subgroup_prefix":
             case "tag_prefix":
                 if (user.getSubgroup() == null) return "";
-                return Optional.ofNullable(user.getSubgroup().getPrefix()).orElse("");
+                return Message.setColors(Optional.ofNullable(user.getSubgroup().getPrefix()).orElse(""));
             case "user_subgroup_suffix":
             case "tag_suffix":
                 if (user.getSubgroup() == null) return "";
-                return Optional.ofNullable(user.getSubgroup().getSuffix()).orElse("");
+                return Message.setColors(Optional.ofNullable(user.getSubgroup().getSuffix()).orElse(""));
             default:
                 Debug.log("§aWarning: You've used an invalid placeholder! ("
                         + this.getIdentifier() + "_" + identifier + ")");
