@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * EasyPrefix 2022.
@@ -71,7 +72,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         for (EasyCommand easyCommand : commands) {
             if (easyCommand.getName().equalsIgnoreCase(command.getName())) {
                 try {
-                    return easyCommand.getTabCompletion(sender, Arrays.asList(args));
+                    List<String> list = easyCommand.getTabCompletion(sender, Arrays.asList(args));
+                    return list.stream().filter(x -> x != null && !x.equals("null")).collect(Collectors.toList());
                 } catch (Exception e) {
                     Debug.handleException(e);
                 }
