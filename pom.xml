@@ -165,11 +165,6 @@
             <version>9.2.0</version>
         </dependency>
         <!-- ConfigUpdater -->
-        <dependency>
-            <groupId>com.tchristofferson</groupId>
-            <artifactId>ConfigUpdater</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
         <!-- Sentry -->
         <dependency>
             <groupId>io.sentry</groupId>
@@ -195,6 +190,11 @@
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
             <version>1.6.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tchristofferson</groupId>
+            <artifactId>ConfigUpdater</artifactId>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
