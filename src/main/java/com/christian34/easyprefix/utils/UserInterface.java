@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -243,6 +245,8 @@ public class UserInterface {
                 }
             } else {
                 lore.add(" ");
+                lore.add(subgroup.getPrefix());
+                lore.add(" ");
                 lore.add(loreSelectTag);
             }
 
@@ -389,7 +393,7 @@ public class UserInterface {
     }
 
     private void openUserGroupsListPage() {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), Arrays.asList("aaaaaaaaa", "aaaaaaaaa", "aaaaaaaaa", "aaaaaaaaa"));
         GuiElementGroup elementGroup = new GuiElementGroup('a');
 
         final String loreSelectPrefix = Message.BTN_SELECT_PREFIX.getText();
@@ -408,6 +412,20 @@ public class UserInterface {
                     itemStack.setItemMeta(meta);
                 }
             } else {
+                String prefix = group.getPrefix();
+                String regex = "&#([A-Fa-f0-9]{6})";
+                Pattern pattern = Pattern.compile(regex);
+                Matcher matcher = pattern.matcher(prefix);
+                StringBuffer buffer = new StringBuffer();
+                while (matcher.find()) {
+                    String colorCode = matcher.group(1);
+                    String replacement = "§x§" + colorCode.charAt(0) + "§" + colorCode.charAt(1) + "§" + colorCode.charAt(2) + "§" + colorCode.charAt(3) + "§" + colorCode.charAt(4) + "§" + colorCode.charAt(5);
+                    matcher.appendReplacement(buffer, replacement);
+                }
+                matcher.appendTail(buffer);
+                String prefix2 = ChatColor.translateAlternateColorCodes('&', buffer.toString());
+                lore.add(" ");
+                lore.add(prefix2);
                 lore.add(" ");
                 lore.add(loreSelectPrefix);
             }
