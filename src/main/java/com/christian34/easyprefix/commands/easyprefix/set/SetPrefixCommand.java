@@ -55,6 +55,11 @@ public class SetPrefixCommand implements Subcommand, CommandExecutor {
             return;
         }
 
+        if (this.getPermission() != null && !sender.hasPermission(this.getPermission().toString())) {
+            sender.sendMessage(Message.CHAT_NO_PERMS.getText());
+            return;
+        }
+
         User user = EasyPrefix.getInstance().getUser((Player) sender);
         UserInterface gui = new UserInterface(user);
         gui.showCustomPrefixGui();
