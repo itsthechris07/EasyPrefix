@@ -5,6 +5,8 @@ import com.christian34.easyprefix.user.User;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -35,10 +37,15 @@ public class TextInput {
     public TextInput onComplete(Consumer<String> consumer) {
         this.completeConsumer = consumer;
 
-        this.builder.onComplete((player, s) -> {
-            completeConsumer.accept(s);
-            return AnvilGUI.Response.close();
+        this.builder.onClick((slot, stateSnapshot) -> {
+            if (slot != AnvilGUI.Slot.OUTPUT) {
+                return Collections.emptyList();
+            }
+
+            completeConsumer.accept(stateSnapshot.getText());
+            return List.of(AnvilGUI.ResponseAction.close());
         });
+
         return this;
     }
 
