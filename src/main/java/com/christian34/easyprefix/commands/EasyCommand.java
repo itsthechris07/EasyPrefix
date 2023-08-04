@@ -17,6 +17,7 @@ public interface EasyCommand {
 
     void handleCommand(@NotNull CommandSender sender, List<String> args);
 
+    @NotNull
     List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args);
 
 }

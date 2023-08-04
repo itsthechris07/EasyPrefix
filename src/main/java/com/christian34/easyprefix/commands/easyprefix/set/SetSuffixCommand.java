@@ -66,7 +66,7 @@ public class SetSuffixCommand implements Subcommand, CommandExecutor {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 

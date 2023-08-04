@@ -84,7 +84,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${PROJECT_OUTPUT}</outputDirectory>
+                            <outputDirectory>D:\Programme\Minecraft\Server\paper\plugins</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/target</directory>

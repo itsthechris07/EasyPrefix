@@ -88,7 +88,7 @@ public class SelectCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (args.size() > 2) {
             return Collections.emptyList();
         }

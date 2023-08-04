@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * EasyPrefix 2022.
@@ -89,13 +90,13 @@ public class SetCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (args.size() > 3) {
             return Collections.emptyList();
         }
 
         if (args.size() < 3) {
-            return null;
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         }
 
         List<String> subgroups = new ArrayList<>();

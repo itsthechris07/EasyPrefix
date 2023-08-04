@@ -91,7 +91,7 @@ class GroupCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         List<String> matches;
         if (args.size() == 2) {
             matches = new ArrayList<>();

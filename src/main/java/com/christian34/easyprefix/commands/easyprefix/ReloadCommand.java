@@ -53,7 +53,7 @@ class ReloadCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
 

@@ -111,7 +111,7 @@ public class EasyPrefixCommand implements EasyCommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         String subcommand = args.get(0);
         if (args.size() == 1) {
             return CmdUtils.matches(subcommands.stream().map(Subcommand::getName).collect(Collectors.toList()), subcommand);
