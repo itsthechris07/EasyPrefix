@@ -93,7 +93,7 @@ public class EasyPrefixCommand implements EasyCommand {
         }
 
         for (Subcommand subCmd : subcommands) {
-            if (subCmd.getName().equalsIgnoreCase(subcommand) || subCmd.getName().startsWith(subcommand)) {
+            if (subCmd.getName().equalsIgnoreCase(subcommand) || subCmd.getName().startsWith(subcommand) && !subCmd.getName().equals("debug")) {
                 if (subCmd.getPermission() == null || sender.hasPermission(subCmd.getPermission().toString())) {
                     try {
                         subCmd.handleCommand(sender, args);

@@ -69,11 +69,11 @@ public class Debug {
 
     public static void handleException(Exception exception) {
         catchException(exception);
-        warn("&cAn error occurred while using EasyPrefix. If you think this is an error," +
+        warn("§cAn error occurred while using EasyPrefix. If you think this is an error," +
                 " please report following exception to GitHub!");
-        warn("&c------ ERROR ------");
+        warn("§c------ ERROR ------");
         exception.printStackTrace();
-        warn("&c------ END OF ERROR ------");
+        warn("§c------ END OF ERROR ------");
     }
 
     public static void log(String message) {
