@@ -93,7 +93,7 @@ public class EasyPrefixCommand implements EasyCommand {
         }
 
         for (Subcommand subCmd : subcommands) {
-            if (subCmd.getName().equalsIgnoreCase(subcommand) || subCmd.getName().startsWith(subcommand) && !subCmd.getName().equals("debug")) {
+            if (subCmd.getName().equalsIgnoreCase(subcommand) || subCmd.getName().startsWith(subcommand)) {
                 if (subCmd.getPermission() == null || sender.hasPermission(subCmd.getPermission().toString())) {
                     try {
                         subCmd.handleCommand(sender, args);
@@ -115,6 +115,7 @@ public class EasyPrefixCommand implements EasyCommand {
         if (args.size() == 1) {
             List<String> matches = new ArrayList<>();
             for (Subcommand subcmd : subcommands) {
+                if (subcmd.getName().equals("debug")) continue;
                 if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
                     matches.add(subcmd.getName());
                 }
