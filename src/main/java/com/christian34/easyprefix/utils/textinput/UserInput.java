@@ -10,7 +10,7 @@ public abstract class UserInput {
 
     public static UserInput create() {
         try {
-            new VersionMatcher().match();
+            if (new VersionMatcher().match() == null) return new ChatInput();
             return new AnvilInput();
         } catch (Exception ignored) {
         }

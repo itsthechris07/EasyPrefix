@@ -21,8 +21,6 @@ class AnvilInput extends UserInput {
                 .text(value)
                 .plugin(EasyPrefix.getInstance());
 
-        builder.open(user.getPlayer());
-
         builder.onClick((slot, stateSnapshot) -> {
             if (slot != AnvilGUI.Slot.OUTPUT) {
                 return Collections.emptyList();
@@ -31,6 +29,8 @@ class AnvilInput extends UserInput {
             consumer.accept(stateSnapshot.getText());
             return List.of(AnvilGUI.ResponseAction.close());
         });
+
+        builder.open(user.getPlayer());
     }
 
 }

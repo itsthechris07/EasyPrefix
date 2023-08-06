@@ -62,6 +62,15 @@
                                     <shadedPattern>com.christian34.easyprefix.shaded.inventorygui</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludeDefaults>false</excludeDefaults>
+                                    <includes>
+                                        <include>com.christian34.easyprefix.shaded.anvilgui</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
