@@ -7,6 +7,7 @@ import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Message;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * EasyPrefix 2022.
@@ -106,12 +108,12 @@ public class SelectCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (args.size() > 2) {
             return Collections.emptyList();
         }
         if (args.size() < 2) {
-            return null;
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         }
 
         List<String> names = new ArrayList<>();

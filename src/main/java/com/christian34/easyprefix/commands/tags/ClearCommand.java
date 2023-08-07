@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * EasyPrefix 2022.
@@ -73,11 +74,11 @@ public class ClearCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
-        if (args.size() >= 3) {
-            return Collections.emptyList();
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+        if (args.size() >= 2) {
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
         }
-        return null;
+        return Collections.emptyList();
     }
 
 }

@@ -93,7 +93,7 @@ public class ColorCommand implements EasyCommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (!instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS)) {
             return Collections.emptyList();
         }

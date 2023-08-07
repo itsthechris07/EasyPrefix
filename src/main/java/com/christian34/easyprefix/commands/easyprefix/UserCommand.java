@@ -159,7 +159,7 @@ class UserCommand implements Subcommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         if (args.size() == 2) {
             List<String> names = new ArrayList<>();
             for (OfflinePlayer op : Bukkit.getOfflinePlayers()) {

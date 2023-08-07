@@ -7,7 +7,7 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
-import com.cryptomorin.xseries.SkullUtils;
+import com.christian34.easyprefix.utils.textinput.UserInput;
 import com.cryptomorin.xseries.XMaterial;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiStateElement;
@@ -74,15 +74,6 @@ public class UserInterface {
             return true;
         }, Message.BTN_MY_PREFIXES.getText()));
 
-        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
-        if (head != null) {
-            ItemMeta meta = head.getItemMeta();
-            if (meta != null) {
-                SkullUtils.applySkin(meta, user.getPlayer().getName());
-            }
-            head.setItemMeta(meta);
-        }
-
         gui.addElement(new StaticGuiElement('c', XMaterial.CHEST.parseItem(), click -> {
             openPageUserColors();
             return true;
@@ -98,8 +89,7 @@ public class UserInterface {
             return;
         }
 
-        TextInput textInput = new TextInput(user, Message.GUI_INPUT_PREFIX.getText(), user.getPrefix());
-        textInput.onComplete((input) -> {
+        UserInput.create().build(user, Message.GUI_INPUT_PREFIX.getText(), user.getPrefix(), (input) -> {
             if (!user.hasPermission(UserPermission.CUSTOM_BLACKLIST)) {
                 for (String blocked : this.instance.getConfigData().getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST)) {
                     if (input.toLowerCase().contains(blocked.toLowerCase())) {
@@ -117,7 +107,7 @@ public class UserInterface {
                 user.saveData("custom_prefix_update", currentTime.toString());
                 user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText().replace("%content%", Optional.ofNullable(user.getPrefix()).orElse("-")));
             });
-        }).build();
+        });
     }
 
     public void showCustomSuffixGui() {
@@ -127,8 +117,7 @@ public class UserInterface {
             return;
         }
 
-        TextInput textInput = new TextInput(user, Message.GUI_INPUT_SUFFIX.getText(), user.getSuffix());
-        textInput.onComplete((input) -> {
+        UserInput.create().build(user, Message.GUI_INPUT_SUFFIX.getText(), user.getSuffix(), (input) -> {
             if (!user.hasPermission(UserPermission.CUSTOM_BLACKLIST)) {
                 for (String blocked : this.instance.getConfigData().getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST)) {
                     if (input.toLowerCase().contains(blocked.toLowerCase())) {
@@ -146,7 +135,7 @@ public class UserInterface {
                 user.saveData("custom_suffix_update", currentTime.toString());
                 user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText().replace("%content%", Optional.ofNullable(user.getSuffix()).orElse("-")));
             });
-        }).build();
+        });
     }
 
     public void openPageUserColors() {
@@ -461,22 +450,20 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('a', XMaterial.IRON_INGOT.parseItem(), click -> {
             String prefix = group.getPrefix();
             prefix = prefix == null ? " " : prefix.replace("§", "&");
-            TextInput textInput = new TextInput(user, "§cType in the prefix", prefix);
-            textInput.onComplete((input) -> {
+            UserInput.create().build(user, "§cType in the prefix", prefix, (input) -> {
                 group.setPrefix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
-            }).build();
+            });
             return true;
         }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + group.getPrefix() + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('b', XMaterial.GOLD_INGOT.parseItem(), click -> {
             String suffix = group.getSuffix();
             suffix = suffix == null ? " " : suffix.replace("§", "&");
-            TextInput textInput = new TextInput(user, "§cType in the prefix", suffix);
-            textInput.onComplete((input) -> {
+            UserInput.create().build(user, "§cType in the prefix", suffix, (input) -> {
                 group.setSuffix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
-            }).build();
+            });
             return true;
         }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + group.getSuffix() + "§7»", " "));
 
@@ -496,22 +483,20 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('d', XMaterial.BLAZE_ROD.parseItem(), click -> {
             String joinMsg = group.getJoinMessage();
             joinMsg = joinMsg == null ? " " : joinMsg.replace("§", "&");
-            TextInput textInput = new TextInput(user, "§cType in the join message", joinMsg);
-            textInput.onComplete((input) -> {
+            UserInput.create().build(user, "§cType in the join message", joinMsg, (input) -> {
                 group.setJoinMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
-            }).build();
+            });
             return true;
         }, "§aJoin Message", DIVIDER, "§7Current: §7«§f" + group.getJoinMessage() + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('e', XMaterial.STICK.parseItem(), click -> {
             String quitMsg = group.getQuitMessage();
             quitMsg = quitMsg == null ? " " : quitMsg.replace("§", "&");
-            TextInput textInput = new TextInput(user, "§cType in the quit message", quitMsg);
-            textInput.onComplete((input) -> {
+            UserInput.create().build(user, "§cType in the quit message", quitMsg, (input) -> {
                 group.setQuitMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
-            }).build();
+            });
             return true;
         }, "§cQuit Message", DIVIDER, "§7Current: §7«§f" + group.getQuitMessage() + "§7»", " "));
 
@@ -627,22 +612,20 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('a', XMaterial.IRON_INGOT.parseItem(), click -> {
             String prefix = subgroup.getPrefix();
             prefix = prefix == null ? " " : prefix.replace("§", "&");
-            TextInput textInput = new TextInput(user, "§cType in the prefix", prefix);
-            textInput.onComplete((input) -> {
+            UserInput.create().build(user, "§cType in the prefix", prefix, (input) -> {
                 subgroup.setPrefix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
-            }).build();
+            });
             return true;
         }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + subgroup.getPrefix() + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('b', XMaterial.GOLD_INGOT.parseItem(), click -> {
             String suffix = subgroup.getSuffix();
             suffix = suffix == null ? " " : suffix.replace("§", "&");
-            TextInput textInput = new TextInput(user, "§cType in the suffix", suffix);
-            textInput.onComplete((input) -> {
+            UserInput.create().build(user, "§cType in the suffix", suffix, (input) -> {
                 subgroup.setSuffix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
-            }).build();
+            });
             return true;
         }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + subgroup.getSuffix() + "§7»", " "));
 
@@ -655,27 +638,25 @@ public class UserInterface {
     }
 
     private void openGroupCreator() {
-        TextInput textInput = new TextInput(user, "§cType in the name", "ExampleGroup");
-        textInput.onComplete((input) -> {
+        UserInput.create().build(user, "§cType in the name", "ExampleGroup", (input) -> {
             String name = input.replaceAll("[^a-zA-Z0-9_]", "");
             if (this.instance.getGroupHandler().createGroup(name)) {
                 user.sendAdminMessage("&aGroup '" + name + "' has been created!");
             } else {
                 user.sendAdminMessage("§cCouldn't create group!");
             }
-        }).build();
+        });
     }
 
     private void openTagCreator() {
-        TextInput textInput = new TextInput(user, "§cType in the name", "ExampleGroup");
-        textInput.onComplete((input) -> {
+        UserInput.create().build(user, "§cType in the name", "ExampleGroup", (input) -> {
             String name = input.replaceAll("[^a-zA-Z0-9_]", "");
             if (this.instance.getGroupHandler().createSubgroup(name)) {
                 user.sendAdminMessage("&aTag '" + name + "' has been created!");
             } else {
                 user.sendAdminMessage("§cCouldn't create tag!");
             }
-        }).build();
+        });
     }
 
     private String setTitle(Message sub) {
@@ -684,18 +665,6 @@ public class UserInterface {
 
     private List<String> replaceInList(@NotNull List<String> list, @NotNull String value) {
         return list.stream().map(val -> val.replace("%content%", value)).collect(Collectors.toList());
-    }
-
-    private ItemStack getPlayerHead() {
-        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
-        if (head != null) {
-            ItemMeta meta = head.getItemMeta();
-            if (meta != null) {
-                SkullUtils.applySkin(meta, user.getPlayer().getName());
-            }
-            head.setItemMeta(meta);
-        }
-        return head;
     }
 
 }

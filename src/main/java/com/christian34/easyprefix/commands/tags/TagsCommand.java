@@ -79,6 +79,7 @@ public class TagsCommand implements EasyCommand {
     }
 
     @Override
+    @NotNull
     public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         String subcommand = args.get(0);
         if (args.size() == 1) {

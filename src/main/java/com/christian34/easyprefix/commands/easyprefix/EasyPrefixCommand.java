@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * EasyPrefix 2022.
@@ -111,15 +110,20 @@ public class EasyPrefixCommand implements EasyCommand {
     }
 
     @Override
-    public List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
+    public @NotNull List<String> getTabCompletion(@NotNull CommandSender sender, List<String> args) {
         String subcommand = args.get(0);
         if (args.size() == 1) {
-            return CmdUtils.matches(subcommands.stream().map(Subcommand::getName).collect(Collectors.toList()), subcommand);
-
+            List<String> matches = new ArrayList<>();
+            for (Subcommand subcmd : subcommands) {
+                if (subcmd.getName().equals("debug")) continue;
+                if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
+                    matches.add(subcmd.getName());
+                }
+            }
+            return CmdUtils.matches(matches, subcommand);
         } else {
             for (Subcommand subcmd : subcommands) {
                 if (subcmd.getDescription() == null) continue;
-
                 if (subcmd.getName().equalsIgnoreCase(subcommand) || subcmd.getName().toLowerCase().startsWith(subcommand.toLowerCase())) {
                     if (subcmd.getPermission() == null || sender.hasPermission(subcmd.getPermission().toString())) {
                         return subcmd.getTabCompletion(sender, args);
