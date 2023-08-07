@@ -37,7 +37,11 @@ gui_button_change_suffix_lore:
 gui_button_custom_layout: '&9My Layout'
 gui_button_custom_layout_lore:
   - '&7This option allows you to set a custom prefix and suffix.'
-gui_button_lore_select_prefix: '&9Click me to select this prefix'
+gui_button_select_layout_lore:
+  - ' '
+  - '&bPreview: %LAYOUT%'
+  - ' '
+  - '&9Click me to select this prefix'
 gui_button_lore_select_tag: '&9Click me to select this tag'
 gui_title: '&9Chat &8» %page%'
 gui_title_settings: '&9Settings'

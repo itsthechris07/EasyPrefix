@@ -26,7 +26,7 @@ public enum Message {
     BTN_NEXT("gui_button_next"),
     BTN_PREVIOUS("gui_button_previous"),
     BTN_RESET("gui_button_reset"),
-    BTN_SELECT_PREFIX("gui_button_lore_select_prefix"),
+    BTN_SELECT_PREFIX_LORE("gui_button_select_layout_lore"),
     BTN_SETTINGS_SELECT_TAG("gui_button_lore_select_tag"),
     BTN_SETTINGS_TAGS("gui_button_tags"),
     CHAT_BTN_CONFIRM("chat_button_confirm"),

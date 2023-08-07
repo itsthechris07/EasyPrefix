@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -381,7 +383,8 @@ public class UserInterface {
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_LAYOUT), Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
         GuiElementGroup elementGroup = new GuiElementGroup('a');
 
-        final String loreSelectPrefix = Message.BTN_SELECT_PREFIX.getText();
+        final List<String> defaultLore = Message.BTN_SELECT_PREFIX_LORE.getList();
+
         Material book = XMaterial.BOOK.parseMaterial();
         for (Group group : user.getAvailableGroups()) {
             ChatColor prefixColor = group.getGroupColor();
@@ -396,10 +399,25 @@ public class UserInterface {
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     itemStack.setItemMeta(meta);
                 }
-            } else {
-                lore.add(" ");
-                lore.add(loreSelectPrefix);
             }
+            String prefix = group.getPrefix();
+            String regex = "&#([A-Fa-f0-9]{6})";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(prefix);
+            StringBuffer buffer = new StringBuffer();
+            while (matcher.find()) {
+                String colorCode = matcher.group(1);
+                String replacement = "§x§" + colorCode.charAt(0) + "§" + colorCode.charAt(1) + "§" + colorCode.charAt(2) + "§" + colorCode.charAt(3) + "§" + colorCode.charAt(4) + "§" + colorCode.charAt(5);
+                matcher.appendReplacement(buffer, replacement);
+            }
+            matcher.appendTail(buffer);
+            final String layoutPreview = ChatColor.translateAlternateColorCodes('&', buffer.toString());
+
+            for (String line : defaultLore) {
+                line = line.replace("%LAYOUT%", layoutPreview + user.getName() + group.getSuffix());
+                lore.add(line);
+            }
+
             elementGroup.addElement(new StaticGuiElement('b', itemStack, click -> {
                 user.setGroup(group, false);
                 openUserGroupsListPage();
