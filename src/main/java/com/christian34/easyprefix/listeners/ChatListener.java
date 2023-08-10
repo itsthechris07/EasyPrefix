@@ -6,7 +6,6 @@ import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Message;
-import com.christian34.easyprefix.utils.RainbowEffect;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,12 +42,7 @@ public class ChatListener implements Listener {
             ChatFormatting chatFormatting = user.getChatFormatting();
             chatColor = user.getChatColor().getCode();
             if (chatFormatting != null && !chatFormatting.equals(ChatFormatting.UNDEFINED)) {
-                if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                    msg = RainbowEffect.addRainbowEffect(msg);
-                    chatColor = "";
-                } else {
-                    chatColor += chatFormatting.getCode();
-                }
+                chatColor += chatFormatting.getCode();
             }
 
             if (user.getPlayer().hasPermission("EasyPrefix.Color.all")) {

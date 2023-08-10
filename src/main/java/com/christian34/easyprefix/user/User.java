@@ -60,14 +60,10 @@ public class User {
         ChatFormatting chatFormatting = getChatFormatting();
         if (chatFormatting == null) chatFormatting = ChatFormatting.UNDEFINED;
         String name;
-        if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
-            name = chatFormatting.toString();
+        if (chatFormatting.equals(ChatFormatting.UNDEFINED)) {
+            name = color.toString();
         } else {
-            if (chatFormatting.equals(ChatFormatting.UNDEFINED)) {
-                name = color.toString();
-            } else {
-                name = color.getCode() + chatFormatting.getCode() + color.getName() + " " + chatFormatting.getName();
-            }
+            name = color.getCode() + chatFormatting.getCode() + color.getName() + " " + chatFormatting.getName();
         }
         return name;
     }
@@ -113,8 +109,6 @@ public class User {
         if (formatting != null && formatting.length() > 1) {
             if (formatting.equals("&@")) {
                 this.chatFormatting = ChatFormatting.UNDEFINED;
-            } else if (formatting.equals("%r")) {
-                this.chatFormatting = ChatFormatting.RAINBOW;
             } else {
                 this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
             }
@@ -222,9 +216,6 @@ public class User {
         String value = null;
         if (color != null) {
             value = color.getCode().replace("§", "&");
-            if (getChatFormatting() != null && getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                setChatFormatting(ChatFormatting.UNDEFINED);
-            }
         }
         saveData("chat_color", value);
     }
@@ -256,12 +247,7 @@ public class User {
         this.chatFormatting = chatFormatting;
         String value = null;
         if (chatFormatting != null) {
-            if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                setChatColor(null);
-                value = "%r";
-            } else {
-                value = chatFormatting.getCode().replace("§", "&");
-            }
+            value = chatFormatting.getCode().replace("§", "&");
         }
         saveData("chat_formatting", value);
     }

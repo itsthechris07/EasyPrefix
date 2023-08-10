@@ -73,11 +73,7 @@ public class Group extends EasyGroup {
 
         String color = data.getString("chat_color");
         if (color == null || color.length() < 2) {
-            if (this.chatFormatting != null && this.chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                this.chatColor = Color.GRAY;
-            } else {
-                setChatColor(Color.GRAY);
-            }
+            setChatColor(Color.GRAY);
         } else {
             this.chatColor = Color.getByCode(color.substring(1, 2));
             if (chatColor == null) {
@@ -213,7 +209,7 @@ public class Group extends EasyGroup {
     public void setChatColor(@NotNull Color color) {
         this.chatColor = color;
 
-        if (getChatFormatting() != null && getChatFormatting().equals(ChatFormatting.RAINBOW)) {
+        if (getChatFormatting() != null) {
             setChatFormatting(null);
         }
         saveData("chat-color", color.getCode().replace("§", "&"));
@@ -228,11 +224,7 @@ public class Group extends EasyGroup {
         this.chatFormatting = chatFormatting;
         String value = null;
         if (chatFormatting != null) {
-            if (chatFormatting.equals(ChatFormatting.RAINBOW)) {
-                value = "%r";
-            } else {
-                value = chatFormatting.getCode().replace("§", "&");
-            }
+            value = chatFormatting.getCode().replace("§", "&");
         }
         saveData("chat-formatting", value);
     }

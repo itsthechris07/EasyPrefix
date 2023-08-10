@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 public enum ChatFormatting {
     BOLD("l", Message.FORMATTING_BOLD.getText()),
     ITALIC("o", Message.FORMATTING_ITALIC.getText()),
-    RAINBOW("r", Message.FORMATTING_RAINBOW.getText()),
     STRIKETHROUGH("m", Message.FORMATTING_STRIKETHROUGH.getText()),
     UNDERLINE("n", Message.FORMATTING_UNDERLINE.getText()),
     UNDEFINED("@", ""),
@@ -53,13 +52,13 @@ public enum ChatFormatting {
     @Override
     public String toString() {
         if (code != null) {
-            return code.equals("r") ? getCode() + RainbowEffect.addRainbowEffect(getName()) : getCode() + getName();
+            return getCode() + getName();
         }
         return "";
     }
 
     public boolean isBukkit() {
-        return !this.equals(RAINBOW) && !this.equals(UNDEFINED) && !this.equals(INHERIT);
+        return true;
     }
 
     @NotNull

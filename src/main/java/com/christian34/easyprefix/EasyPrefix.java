@@ -14,7 +14,7 @@ import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Debug;
-import com.christian34.easyprefix.utils.RainbowEffect;
+import com.christian34.easyprefix.utils.TaskManager;
 import com.christian34.easyprefix.utils.Updater;
 import com.christian34.easyprefix.utils.VersionController;
 import org.bstats.bukkit.Metrics;
@@ -259,7 +259,6 @@ public class EasyPrefix extends JavaPlugin {
             this.localDatabase.close();
             this.localDatabase.connect();
         }
-        RainbowEffect.getRainbowColors().clear();
         this.groupHandler.load();
         reloadUsers();
         HandlerList.unregisterAll(this);
