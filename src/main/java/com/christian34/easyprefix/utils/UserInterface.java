@@ -150,12 +150,12 @@ public class UserInterface {
             ItemStack itemStack = color.toItemStack();
             if (user.getChatColor().equals(color)) {
                 //if (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                    itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
-                    ItemMeta meta = itemStack.getItemMeta();
-                    if (meta != null) {
-                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        itemStack.setItemMeta(meta);
-                    }
+                itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+                ItemMeta meta = itemStack.getItemMeta();
+                if (meta != null) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    itemStack.setItemMeta(meta);
+                }
                 //}
             }
 
@@ -295,7 +295,7 @@ public class UserInterface {
             String groupChatColor = group.getChatColor().getCode();
             if (group.getChatFormatting() != null) {
                 //  if (group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                    groupChatColor += group.getChatFormatting().getCode();
+                groupChatColor += group.getChatFormatting().getCode();
                 //   } else {
                 //   groupChatColor = Message.FORMATTING_RAINBOW.getText();
                 // }
@@ -472,7 +472,7 @@ public class UserInterface {
             // if (group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
             //     groupChatColor = ChatFormatting.RAINBOW.toString();
             // } else {
-                groupChatColor += group.getChatFormatting().getCode().replace("§", "&");
+            groupChatColor += group.getChatFormatting().getCode().replace("§", "&");
             //}
         }
         gui.addElement(new StaticGuiElement('c', XMaterial.LIME_DYE.parseItem(), click -> {
@@ -585,7 +585,7 @@ public class UserInterface {
                 ChatFormatting formatting = chatFormatting;
                 if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
                     //if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-                        formatting = null;
+                    formatting = null;
                     // }
                 }
                 group.setChatFormatting(formatting);

@@ -45,10 +45,10 @@ import java.util.function.Function;
 public class CommandManager {
     private final EasyPrefix instance;
     private final BukkitCommandManager<CommandSender> manager;
-    private CommandConfirmationManager<CommandSender> confirmationManager;
     private final AnnotationParser<CommandSender> annotationParser;
     private final MinecraftHelp<CommandSender> minecraftHelp;
     private final BukkitAudiences bukkitAudiences;
+    private CommandConfirmationManager<CommandSender> confirmationManager;
 
     public CommandManager(EasyPrefix instance) {
         this.instance = instance;

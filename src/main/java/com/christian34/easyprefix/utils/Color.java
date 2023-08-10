@@ -33,6 +33,8 @@ public enum Color {
 
     private final String code;
     private final String displayName;
+    private final String name;
+    private final ItemStack itemStack;
 
     Color(String code, @NotNull String name, YMaterial material) {
         this.code = code;
@@ -40,9 +42,6 @@ public enum Color {
         this.name = StringUtils.deleteWhitespace(name);
         this.itemStack = material.getItem();
     }
-
-    private final String name;
-    private final ItemStack itemStack;
 
     @NotNull
     public static Color[] getValues() {
@@ -56,16 +55,16 @@ public enum Color {
         return colors;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Nullable
     public static Color getByCode(String code) {
         for (Color color : Color.values()) {
             if (color.code.equals(code)) return color;
         }
         return null;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**
