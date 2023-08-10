@@ -1,7 +1,6 @@
 package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.cryptomorin.xseries.XMaterial;
 import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
 import org.bukkit.entity.Player;
@@ -24,9 +23,9 @@ public class GuiCreator {
         rows.add("   pwn  q");
 
         InventoryGui gui = new InventoryGui(EasyPrefix.getInstance(), player, title, rows.toArray(new String[0]));
-        gui.setFiller(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem());
-        gui.addElement(new GuiPageElement('p', XMaterial.ARROW.parseItem(), GuiPageElement.PageAction.PREVIOUS, Message.BTN_PREVIOUS.getText()));
-        gui.addElement(new GuiPageElement('n', XMaterial.ARROW.parseItem(), GuiPageElement.PageAction.NEXT, Message.BTN_NEXT.getText()));
+        gui.setFiller(YMaterial.GRAY_STAINED_GLASS_PANE.getItem());
+        gui.addElement(new GuiPageElement('p', YMaterial.ARROW.getItem(), GuiPageElement.PageAction.PREVIOUS, Message.BTN_PREVIOUS.getText()));
+        gui.addElement(new GuiPageElement('n', YMaterial.ARROW.getItem(), GuiPageElement.PageAction.NEXT, Message.BTN_NEXT.getText()));
         gui.setCloseAction(close -> false);
         return gui;
     }

@@ -27,15 +27,14 @@ public class Updater implements Listener {
 
     public Updater(EasyPrefix instance) {
         this.instance = instance;
-        this.UPDATE_MSG = Message.PREFIX + "§7A new update is available at: §bhttps://www.spigotmc"
-                + ".org/resources/44580/updates";
+        this.UPDATE_MSG = Message.PREFIX + "§7A new update is available at: §bhttps://www.spigotmc.org/resources/44580/updates";
         this.available = false;
         Bukkit.getPluginManager().registerEvents(this, instance);
         check();
     }
 
     public void check() {
-        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+        TaskManager.async(() -> {
             try {
                 HttpsURLConnection connection = (HttpsURLConnection)
                         new URL("https://api.spigotmc.org/legacy/update.php?resource=44580").openConnection();

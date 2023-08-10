@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Christian34
  */
-public class Migration {
+public final class Migration {
     private final File pluginFolder;
     private final SQLDatabase database;
 

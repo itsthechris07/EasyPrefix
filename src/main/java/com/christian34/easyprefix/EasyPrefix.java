@@ -117,7 +117,7 @@ public class EasyPrefix extends JavaPlugin {
         Debug.log("If you like the plugin or you have suggestions, please write a review on spigotmc.org!");
         Debug.log("This software uses Sentry for anonymous user statistics. License: https://github.com/getsentry/sentry/blob/master/LICENSE");
         PluginManager pluginManager = Bukkit.getPluginManager();
-        Bukkit.getScheduler().runTaskLater(this, () -> {
+        TaskManager.runLater(() -> {
             if (formatChat() && (pluginManager.isPluginEnabled("EssentialsChat") || pluginManager.isPluginEnabled("MultiChat"))) {
                 Debug.warn("§c--------------------------------------");
                 Debug.warn("§cYou are using a different chat management plugin. To avoid issues, please set 'handle-chat' in config.yml to false");
