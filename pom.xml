@@ -21,6 +21,15 @@
     </pluginRepositories>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.yml</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -33,7 +42,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>false</minimizeJar>
+                            <minimizeJar>true</minimizeJar>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                             <relocations>
@@ -60,6 +69,36 @@
                                 <relocation>
                                     <pattern>de.themoep</pattern>
                                     <shadedPattern>com.christian34.easyprefix.shaded.inventorygui</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>cloud.commandframework</pattern>
+                                    <shadedPattern>com.christian34.easyprefix.shaded.commandframework</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.leangen.geantyref</pattern>
+                                    <shadedPattern>
+                                        com.christian34.easyprefix.shaded.commandframework.shaded.geantryref
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.checkerframework</pattern>
+                                    <shadedPattern>
+                                        com.christian34.easyprefix.shaded.commandframework.shaded.checkerframework
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apiguardian</pattern>
+                                    <shadedPattern>
+                                        com.christian34.easyprefix.shaded.commandframework.shaded.apiguardian
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>com.christian34.easyprefix.shaded.adventure</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache</pattern>
+                                    <shadedPattern>com.christian34.easyprefix.shaded.apache</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
@@ -166,11 +205,6 @@
             <artifactId>annotations</artifactId>
             <version>24.0.1</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.cryptomorin</groupId>
-            <artifactId>XSeries</artifactId>
-            <version>9.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.tchristofferson</groupId>
