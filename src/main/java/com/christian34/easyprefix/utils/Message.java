@@ -44,6 +44,12 @@ public enum Message {
     CHAT_TAGS_AVAILABLE("chat_cmd_tags_list_info"),
     CHAT_TAGS_AVAILABLE_OTHERS("chat_cmd_tags_list_info_others"),
     CHAT_TAGS_HEADER("chat_cmd_tags_help_head"),
+    CHAT_CMD_HELP_HEAD("chat_cmd_help_head"),
+    CHAT_CMD_DESCRIPTION("chat_cmd_description"),
+    CHAT_CMD_HELP_QUERY("chat_cmd_help_query"),
+    CHAT_CMD_HELP_NEXT("chat_cmd_help_next"),
+    CHAT_CMD_HELP_PREVIOUS("chat_cmd_help_previous"),
+    CHAT_CMD_HELP_AVAILABLE("chat_cmd_help_available"),
     COLOR_AQUA("colors.aqua"),
     COLOR_BLACK("colors.black"),
     COLOR_DARK_AQUA("colors.cyan"),
@@ -125,6 +131,14 @@ public enum Message {
             return setColors(getText(false));
         }
         return getText(true);
+    }
+
+    @NotNull
+    public String get(@NotNull String varName, @NotNull String value) {
+        varName = "%" + varName + "%";
+        String text = getText(true);
+        if (text == null) return "";
+        return text.replace(varName, value);
     }
 
     public String getText(boolean setPlaceholders) {

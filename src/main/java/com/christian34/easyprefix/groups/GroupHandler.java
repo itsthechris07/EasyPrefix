@@ -113,7 +113,7 @@ public class GroupHandler {
         Collections.sort(subgroupNames);
         for (String name : subgroupNames) {
             try {
-                subgroups.add(new Subgroup(this, name));
+                subgroups.add(new Subgroup(name));
             } catch (Exception ex) {
                 Debug.handleException(ex);
             }
@@ -185,7 +185,7 @@ public class GroupHandler {
             }
         }
 
-        Subgroup group = new Subgroup(this, groupName);
+        Subgroup group = new Subgroup(groupName);
         subgroups.add(group);
         return true;
     }
@@ -198,7 +198,7 @@ public class GroupHandler {
         } else {
             Subgroup subgroup = (Subgroup) easyGroup;
             subgroups.remove(subgroup);
-            subgroups.add(new Subgroup(this, easyGroup.getName()));
+            subgroups.add(new Subgroup(easyGroup.getName()));
         }
     }
 

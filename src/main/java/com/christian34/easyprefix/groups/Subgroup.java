@@ -21,21 +21,23 @@ public class Subgroup extends EasyGroup {
     private final String NAME;
     private final GroupHandler groupHandler;
     private final EasyPrefix instance;
-    private final ChatColor groupColor;
+    private ChatColor groupColor;
     private String prefix, suffix;
     private GroupsData groupsData;
 
-    public Subgroup(GroupHandler groupHandler, String name) {
+    public Subgroup(String name) {
         this.NAME = name;
-        this.groupHandler = groupHandler;
-        this.instance = groupHandler.getInstance();
+        this.instance = EasyPrefix.getInstance();
+        this.groupHandler = instance.getGroupHandler();
+        if (name.equals("null")) return;
+
         if (instance.getStorageType() == StorageType.SQL) {
             SelectQuery selectQuery = new SelectQuery("subgroups", "prefix", "suffix").addCondition("group", name);
             Data data = selectQuery.getData();
             this.prefix = data.getString("prefix");
             this.suffix = data.getString("suffix");
         } else {
-            this.groupsData = groupHandler.getInstance().getFileManager().getGroupsData();
+            this.groupsData = this.groupHandler.getInstance().getFileManager().getGroupsData();
             if (groupsData != null) {
                 this.prefix = groupsData.getString(getFileKey() + "prefix");
                 this.suffix = groupsData.getString(getFileKey() + "suffix");

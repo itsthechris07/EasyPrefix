@@ -1,6 +1,6 @@
 package com.christian34.easyprefix;
 
-import com.christian34.easyprefix.commands.CommandHandler;
+import com.christian34.easyprefix.commands.CommandManager;
 import com.christian34.easyprefix.extensions.ExpansionManager;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.files.FileManager;
@@ -54,16 +54,12 @@ public class EasyPrefix extends JavaPlugin {
     private ExpansionManager expansionManager;
     private StorageType storageType;
     private Updater updater;
-    private CommandHandler commandHandler;
+    private CommandManager commandManager;
     @SuppressWarnings("FieldCanBeLocal")
     private Debug debug;
 
     public static EasyPrefix getInstance() {
         return instance;
-    }
-
-    public CommandHandler getCommandHandler() {
-        return commandHandler;
     }
 
     public LocalDatabase getLocalDatabase() {
@@ -80,6 +76,10 @@ public class EasyPrefix extends JavaPlugin {
 
     public ConfigData getConfigData() {
         return getFileManager().getConfig();
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public void onEnable() {
@@ -105,7 +105,6 @@ public class EasyPrefix extends JavaPlugin {
 
         this.groupHandler = new GroupHandler(this);
         groupHandler.load();
-        this.commandHandler = new CommandHandler(this);
         registerEvents();
         if (!getConfigData().getBoolean(ConfigData.Keys.ENABLED)) {
             Bukkit.getPluginManager().disablePlugin(this);
@@ -125,6 +124,8 @@ public class EasyPrefix extends JavaPlugin {
                 Debug.warn("§c--------------------------------------");
             }
         }, 20 * 3);
+
+        this.commandManager = new CommandManager(this);
     }
 
     public void onDisable() {

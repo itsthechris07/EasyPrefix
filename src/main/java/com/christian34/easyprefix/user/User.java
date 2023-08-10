@@ -63,7 +63,7 @@ public class User {
         if (chatFormatting.equals(ChatFormatting.UNDEFINED)) {
             name = color.toString();
         } else {
-            name = color.getCode() + chatFormatting.getCode() + color.getName() + " " + chatFormatting.getName();
+            name = color.getCode() + chatFormatting.getCode() + color.getDisplayName() + " " + chatFormatting.getName();
         }
         return name;
     }
