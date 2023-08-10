@@ -212,11 +212,14 @@ public class User {
     }
 
     public void setChatColor(@Nullable Color color) {
-        this.chatColor = color;
         String value = null;
+
+        if (color != null && color.equals(Color.NONE)) color = null;
+
         if (color != null) {
             value = color.getCode().replace("§", "&");
         }
+        this.chatColor = color;
         saveData("chat_color", value);
     }
 
