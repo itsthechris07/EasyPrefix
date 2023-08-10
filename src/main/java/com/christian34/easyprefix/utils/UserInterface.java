@@ -139,7 +139,7 @@ public class UserInterface {
     }
 
     public void openPageUserColors() {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), Arrays.asList("aaaaaaaaa", " aaaaaaa ", "  bbbbb  "));
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), Arrays.asList("a".repeat(9), "a".repeat(9), "b".repeat(9)));
         final boolean showAll = instance.getConfigData().getBoolean(ConfigData.Keys.GUI_SHOW_ALL_CHATCOLORS);
 
         List<Color> colors = showAll ? Arrays.asList(Color.getValues()) : new ArrayList<>(user.getColors());
@@ -149,14 +149,12 @@ public class UserInterface {
 
             ItemStack itemStack = color.toItemStack();
             if (user.getChatColor().equals(color)) {
-                //if (user.getChatFormatting() == null || !user.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
                 ItemMeta meta = itemStack.getItemMeta();
                 if (meta != null) {
                     meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     itemStack.setItemMeta(meta);
                 }
-                //}
             }
 
             groupColors.addElement(new StaticGuiElement('a', itemStack, click -> {
@@ -294,11 +292,7 @@ public class UserInterface {
 
             String groupChatColor = group.getChatColor().getCode();
             if (group.getChatFormatting() != null) {
-                //  if (group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                 groupChatColor += group.getChatFormatting().getCode();
-                //   } else {
-                //   groupChatColor = Message.FORMATTING_RAINBOW.getText();
-                // }
             }
 
             lore.add("§7Color: §f" + groupChatColor.replace("§", "&"));
@@ -469,11 +463,7 @@ public class UserInterface {
 
         String groupChatColor = group.getChatColor().getCode().replace("§", "&");
         if (group.getChatFormatting() != null) {
-            // if (group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
-            //     groupChatColor = ChatFormatting.RAINBOW.toString();
-            // } else {
             groupChatColor += group.getChatFormatting().getCode().replace("§", "&");
-            //}
         }
         gui.addElement(new StaticGuiElement('c', XMaterial.LIME_DYE.parseItem(), click -> {
             openPageColorGroup(group);
@@ -548,7 +538,7 @@ public class UserInterface {
     }
 
     private void openPageColorGroup(Group group) {
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), group.getGroupColor() + group.getName() + " §8» " + Message.GUI_SETTINGS_TITLE_FORMATTINGS.getText(), Arrays.asList("aaaaaaaaa", " aaaaaaa ", "  bbbbb  "));
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), group.getGroupColor() + group.getName() + " §8» " + Message.GUI_SETTINGS_TITLE_FORMATTINGS.getText(), Arrays.asList("a".repeat(9), "a".repeat(9), "b".repeat(9)));
 
         GuiElementGroup groupColors = new GuiElementGroup('a');
         for (Color color : Color.getValues()) {
@@ -584,9 +574,7 @@ public class UserInterface {
             groupFormattings.addElement(new StaticGuiElement('b', itemStack, click -> {
                 ChatFormatting formatting = chatFormatting;
                 if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
-                    //if (!group.getChatFormatting().equals(ChatFormatting.RAINBOW)) {
                     formatting = null;
-                    // }
                 }
                 group.setChatFormatting(formatting);
                 openPageColorGroup(group);
