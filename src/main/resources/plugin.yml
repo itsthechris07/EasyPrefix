@@ -6,13 +6,3 @@ api-version: "1.13"
 softdepend:
   - PlaceholderAPI
   - Vault
-
-commands:
-  EasyPrefix:
-    description: Main command
-    aliases: [ ep, easyp, eprefix ]
-  tags:
-    description: tag command
-  color:
-    description: color command for modifying chat color and formatting
-    aliases: [ chatcolor ]

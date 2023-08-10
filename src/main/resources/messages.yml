@@ -76,6 +76,13 @@ chat_cmd_color_not_found: '%prefix% &cCouldn''t find color &7%color%&c!'
 chat_cmd_color_selected: '%prefix% &aYour color has been set to &7%color%&a!'
 chat_cmd_color_set_player: '%prefix% &aThe color for %player% has been set to &7%color%&a!'
 
+chat_cmd_help_head: 'Help'
+chat_cmd_description: 'Description'
+chat_cmd_help_query: 'Showing search results for query'
+chat_cmd_help_next: 'Click for next page'
+chat_cmd_help_previous: 'Click for previous page'
+chat_cmd_help_available: 'Available Commands'
+
 colors:
   black: 'Black'
   blue: 'Blue'
