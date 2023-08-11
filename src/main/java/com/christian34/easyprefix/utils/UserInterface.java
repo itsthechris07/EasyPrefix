@@ -444,9 +444,9 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('a', XMaterial.IRON_INGOT.parseItem(), click -> {
             String prefix = group.getPrefix();
             prefix = prefix == null ? " " : prefix.replace("§", "&");
-            UserInput.create().build(user, "§cType in the prefix", prefix, (input) -> {
+            UserInput.create().build(user, "§cPlease type the prefix in the chat. Write \"quit\" to stop the process.", prefix, (input) -> {
                 group.setPrefix(input);
-                user.sendAdminMessage(Message.INPUT_SAVED);
+                user.getPlayer().sendMessage(Message.INPUT_SAVED.getText());
             });
             return true;
         }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + group.getPrefix() + "§7»", " "));
@@ -454,9 +454,9 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('b', XMaterial.GOLD_INGOT.parseItem(), click -> {
             String suffix = group.getSuffix();
             suffix = suffix == null ? " " : suffix.replace("§", "&");
-            UserInput.create().build(user, "§cType in the prefix", suffix, (input) -> {
+            UserInput.create().build(user, "§cPlease type the suffix in the chat. Write \"quit\" to stop the process.", suffix, (input) -> {
                 group.setSuffix(input);
-                user.sendAdminMessage(Message.INPUT_SAVED);
+                user.sendMessage(Message.INPUT_SAVED.getText());
             });
             return true;
         }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + group.getSuffix() + "§7»", " "));

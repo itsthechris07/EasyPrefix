@@ -42,9 +42,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
-                            <createDependencyReducedPom>true</createDependencyReducedPom>
-                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                            <minimizeJar>false</minimizeJar>
                             <relocations>
                                 <relocation>
                                     <pattern>net.wesjd.anvilgui</pattern>
@@ -92,14 +90,7 @@
                                         com.christian34.easyprefix.shaded.commandframework.shaded.apiguardian
                                     </shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>net.kyori</pattern>
-                                    <shadedPattern>com.christian34.easyprefix.shaded.adventure</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.apache</pattern>
-                                    <shadedPattern>com.christian34.easyprefix.shaded.apache</shadedPattern>
-                                </relocation>
+
                             </relocations>
                             <filters>
                                 <filter>
@@ -107,6 +98,7 @@
                                     <excludeDefaults>false</excludeDefaults>
                                     <includes>
                                         <include>com.christian34.easyprefix.shaded.anvilgui</include>
+                                        <include>com.christian34.easyprefix.shaded.adventure</include>
                                     </includes>
                                 </filter>
                             </filters>

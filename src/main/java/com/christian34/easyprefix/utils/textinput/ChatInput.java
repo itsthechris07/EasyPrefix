@@ -2,8 +2,8 @@ package com.christian34.easyprefix.utils.textinput;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
+import com.christian34.easyprefix.utils.TaskManager;
 import org.bukkit.conversations.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,8 +25,9 @@ class ChatInput extends UserInput {
             @Nullable
             @Override
             public Prompt acceptInput(@NotNull ConversationContext conversationContext, @Nullable String text) {
-                Debug.warn("accepted");
-                consumer.accept(text);
+                TaskManager.run(() -> {
+                    consumer.accept(text);
+                });
                 return Prompt.END_OF_CONVERSATION;
             }
         };
