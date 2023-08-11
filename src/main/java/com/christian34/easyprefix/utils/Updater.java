@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */

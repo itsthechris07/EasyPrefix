@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */

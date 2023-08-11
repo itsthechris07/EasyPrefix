@@ -15,7 +15,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import java.util.Optional;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */

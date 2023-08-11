@@ -38,7 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */

@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */

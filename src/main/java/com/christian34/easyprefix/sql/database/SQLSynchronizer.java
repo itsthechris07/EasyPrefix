@@ -11,7 +11,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.UUID;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */

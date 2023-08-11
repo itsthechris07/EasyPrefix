@@ -10,6 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+/**
+ * EasyPrefix 2023.
+ *
+ * @author Christian34
+ */
 class ChatInput extends UserInput {
 
     @Override

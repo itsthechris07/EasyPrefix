@@ -9,6 +9,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * EasyPrefix 2023.
+ *
+ * @author Christian34
+ */
 class AnvilInput extends UserInput {
 
     @Override

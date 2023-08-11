@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */

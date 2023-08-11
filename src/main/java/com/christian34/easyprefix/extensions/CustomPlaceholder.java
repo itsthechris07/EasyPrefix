@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * EasyPrefix 2022.
+ * EasyPrefix 2023.
  *
  * @author Christian34
  */
