@@ -246,7 +246,7 @@
         <dependency>
             <groupId>cloud.commandframework</groupId>
             <artifactId>cloud-minecraft-extras</artifactId>
-            <version>1.8.3</version>
+            <version>1.8.4</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
