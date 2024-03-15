@@ -2,7 +2,6 @@ package com.christian34.easyprefix.extensions;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.ChatFormatting;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -19,10 +18,8 @@ import java.util.Optional;
  * @author Christian34
  */
 class ChatProvider {
-    private final ExpansionManager expansionManager;
 
     public ChatProvider(ExpansionManager expansionManager) {
-        this.expansionManager = expansionManager;
 
         RegisteredServiceProvider<Permission> rsp = expansionManager.getInstance().getServer().getServicesManager().getRegistration(Permission.class);
         Permission perms = null;
@@ -65,11 +62,7 @@ class ChatProvider {
         public String getPlayerSuffix(String world, String player) {
             User user = getUser(player);
             if (user == null) return "";
-            ChatFormatting chatFormatting = user.getChatFormatting();
-            String chatColor = user.getChatColor().getCode();
-            if (chatFormatting != null) chatColor += chatFormatting.getCode();
-
-            return Optional.ofNullable(user.getSuffix()).orElse("") + chatColor;
+            return Optional.ofNullable(user.getSuffix()).orElse("");
         }
 
         @Override

@@ -23,7 +23,7 @@ public class CommandColor {
 
     @CommandMethod("color")
     @CommandDescription("opens the gui")
-    public void main(Player player) {
+    public void mainCmd(Player player) {
         User user = getInstance().getUser(player);
         UserInterface gui = new UserInterface(user);
         TaskManager.run(gui::openPageUserColors);
@@ -33,7 +33,7 @@ public class CommandColor {
     @ProxiedBy("setcolor")
     public void setColor(Player player, @Argument("color") Color color) {
         User user = getInstance().getUser(player);
-        user.setChatColor(color);
+        user.setColor(color);
         user.sendMessage(Message.COLOR_PLAYER_SELECT.get("color", color.getDisplayName()));
     }
 
@@ -41,7 +41,7 @@ public class CommandColor {
     @CommandPermission("easyprefix.admin")
     public void setColor(CommandSender sender, @Argument("player") Player target, @Argument("color") Color color) {
         User user = getInstance().getUser(target);
-        user.setChatColor(color);
+        user.setColor(color);
         sender.sendMessage(Message.COLOR_SET_TO_PLAYER.getText()
                 .replace("%color%", color.getDisplayName())
                 .replace("%player%", target.getName()));
@@ -50,8 +50,8 @@ public class CommandColor {
     @CommandMethod("color reset")
     public void resetColor(Player player) {
         User user = getInstance().getUser(player);
-        user.setChatColor(null);
-        user.setChatFormatting(null);
+        user.setColor(null);
+        user.setDecoration(null);
     }
 
 }

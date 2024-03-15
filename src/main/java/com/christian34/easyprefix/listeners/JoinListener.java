@@ -3,7 +3,7 @@ package com.christian34.easyprefix.listeners;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.Message;
+import com.christian34.easyprefix.utils.TextUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,7 +30,8 @@ public class JoinListener implements Listener {
             e.setJoinMessage(null);
         } else if (e.getJoinMessage() != null) {
             String joinMsg = instance.setPlaceholders(user, user.getGroup().getJoinMessage());
-            e.setJoinMessage(Message.setColors(joinMsg));
+            assert joinMsg != null;
+            e.setJoinMessage(TextUtils.deserialize(joinMsg));
         }
     }
 

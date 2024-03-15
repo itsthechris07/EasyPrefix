@@ -7,9 +7,10 @@ import com.christian34.easyprefix.sql.DeleteStatement;
 import com.christian34.easyprefix.sql.SelectQuery;
 import com.christian34.easyprefix.sql.UpdateStatement;
 import com.christian34.easyprefix.sql.database.StorageType;
-import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Debug;
+import com.christian34.easyprefix.utils.Decoration;
+import com.christian34.easyprefix.utils.TextUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -31,9 +32,9 @@ public class Group extends EasyGroup {
     private final GroupHandler groupHandler;
     private final ChatColor groupColor;
     private final EasyPrefix instance;
+    private Decoration decoration;
     private String prefix, suffix, joinMessage, quitMessage;
-    private Color chatColor;
-    private ChatFormatting chatFormatting;
+    private Color color;
 
     public Group(GroupHandler groupHandler, @NotNull String name) {
         this.NAME = name;
@@ -57,34 +58,45 @@ public class Group extends EasyGroup {
         }
 
         this.prefix = data.getStringOr("prefix", "");
-        this.prefix = prefix.replace("§", "&");
-
+        if (this.prefix.contains("&") || this.prefix.contains("§")) {
+            setPrefix(TextUtils.escapeLegacyColors(this.prefix));
+        }
         this.suffix = data.getStringOr("suffix", "");
-        this.suffix = suffix.replace("§", "&");
-
-        String formatting = data.getString("chat_formatting");
-        if (formatting != null && formatting.length() == 2) {
-            this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
-            if (this.chatFormatting == null) {
-                Debug.warn(String.format("Couldn't find chat formatting '%s'! (group: %s)", formatting, name));
-                this.chatFormatting = null;
-            }
+        if (this.suffix.contains("&") || this.suffix.contains("§")) {
+            setPrefix(TextUtils.escapeLegacyColors(this.suffix));
         }
 
-        String color = data.getString("chat_color");
-        if (color == null || color.length() < 2) {
-            setChatColor(Color.GRAY);
+        String formatting = TextUtils.escapeLegacyColors(data.getString("chat_formatting"));
+        if (formatting != null) {
+            this.decoration = Decoration.of(formatting);
+            if (this.decoration == null)
+                Debug.warn(String.format("Couldn't find chat formatting '%s'! (group: %s)", formatting, name));
+        } else this.decoration = null;
+
+        String colorName = TextUtils.escapeLegacyColors(data.getString("chat_color"));
+        if (colorName == null) {
+            setColor(Color.of("light_gray"));
         } else {
-            this.chatColor = Color.getByCode(color.substring(1, 2));
-            if (chatColor == null) {
-                Debug.warn(String.format("Couldn't find chat color '%s'! (group: %s)", color, name));
-                this.chatColor = Color.GRAY;
+            this.color = Color.of(colorName);
+            if (this.color == null) {
+                Debug.warn(String.format("Couldn't find chat color '%s'! (group: %s)", colorName, name));
+                this.color = Color.of("light_gray");
             }
         }
 
         this.groupColor = getGroupColor(prefix);
-        this.joinMessage = data.getString("join_msg");
-        this.quitMessage = data.getString("quit_msg");
+        this.joinMessage = TextUtils.escapeLegacyColors(data.getString("join_msg"));
+        this.quitMessage = TextUtils.escapeLegacyColors(data.getString("quit_msg"));
+    }
+
+    @NotNull
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+        saveData("chat-color", (color != null) ? color.getName() : null);
     }
 
     @Nullable
@@ -201,32 +213,13 @@ public class Group extends EasyGroup {
         }
     }
 
-    @NotNull
-    public Color getChatColor() {
-        return chatColor;
+    public Decoration getDecoration() {
+        return decoration;
     }
 
-    public void setChatColor(@NotNull Color color) {
-        this.chatColor = color;
-
-        if (getChatFormatting() != null) {
-            setChatFormatting(null);
-        }
-        saveData("chat-color", color.getCode().replace("§", "&"));
-    }
-
-    @Nullable
-    public ChatFormatting getChatFormatting() {
-        return chatFormatting;
-    }
-
-    public void setChatFormatting(@Nullable ChatFormatting chatFormatting) {
-        this.chatFormatting = chatFormatting;
-        String value = null;
-        if (chatFormatting != null) {
-            value = chatFormatting.getCode().replace("§", "&");
-        }
-        saveData("chat-formatting", value);
+    public void setDecoration(@Nullable Decoration decoration) {
+        this.decoration = decoration;
+        saveData("chat-formatting", (decoration != null) ? decoration.getName() : null);
     }
 
 }

@@ -1,18 +1,17 @@
 package com.christian34.easyprefix.listeners;
 
 import com.christian34.easyprefix.EasyPrefix;
-import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.ChatFormatting;
-import com.christian34.easyprefix.utils.Color;
-import com.christian34.easyprefix.utils.Message;
-import org.bukkit.ChatColor;
+import com.christian34.easyprefix.utils.TextUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.Optional;
+
+import static com.christian34.easyprefix.utils.TextUtils.miniMessage;
 
 /**
  * EasyPrefix 2023.
@@ -31,35 +30,29 @@ public class ChatListener implements Listener {
         if (!this.instance.formatChat()) return;
         User user = instance.getUser(e.getPlayer());
 
-        String prefix = Optional.ofNullable(Message.setColors(instance.setPlaceholders(user, user.getPrefix()))).orElse("");
-        String suffix = Optional.ofNullable(Message.setColors(instance.setPlaceholders(user, user.getSuffix()))).orElse("");
+        String prefix = Optional.ofNullable(instance.setPlaceholders(user, user.getPrefix())).orElse("");
+        String suffix = Optional.ofNullable(instance.setPlaceholders(user, user.getSuffix())).orElse("");
 
-        String msg = e.getMessage();
-        String chatColor = "";
+        String msg = TextUtils.escapeLegacyColors(e.getMessage());
 
-
-        if (instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS)) {
-            ChatFormatting chatFormatting = user.getChatFormatting();
-            chatColor = user.getChatColor().getCode();
-            if (chatFormatting != null && !chatFormatting.equals(ChatFormatting.UNDEFINED)) {
-                chatColor += chatFormatting.getCode();
-            }
-
-            if (user.getPlayer().hasPermission("EasyPrefix.Color.all")) {
-                msg = ChatColor.translateAlternateColorCodes('&', msg);
-            } else {
-                for (Color c : user.getColors()) {
-                    msg = msg.replace(c.getCode().replace("§", "&"), c.getCode());
-                }
-                for (ChatFormatting formatting : user.getChatFormattings()) {
-                    msg = msg.replace(formatting.getCode().replace("§", "&"), formatting.getCode());
-                }
-            }
+        Component componentMsg = Component.text("").color(user.getColor().getTextColor());
+        if (user.getDecoration() != null) {
+            componentMsg = componentMsg.decorate(user.getDecoration().getTextDecoration());
         }
+        componentMsg = componentMsg.append(user.deserialize(msg));
 
-        e.setMessage(msg);
-        String format = prefix + user.getPlayer().getDisplayName() + suffix + " " + chatColor + e.getMessage();
-        e.setFormat(format.replace("%", "%%"));
+        e.setMessage(TextUtils.serialize(componentMsg));
+
+        Component componentPrefix = Component.text("").append(miniMessage().deserialize(prefix + user.getPlayer().getDisplayName()));
+        Component componentSuffix = Component.text("").append(miniMessage().deserialize(suffix));
+
+        Component componentFormat = Component.text("")
+                .append(componentPrefix)
+                .append(componentSuffix)
+                .appendSpace()
+                .append(componentMsg);
+
+        e.setFormat(TextUtils.serialize(componentFormat));
     }
 
 }

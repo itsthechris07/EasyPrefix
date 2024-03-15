@@ -1,8 +1,12 @@
 package com.christian34.easyprefix.utils;
 
-import org.apache.commons.lang3.StringUtils;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.files.ConfigData;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
+import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,88 +15,88 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Christian34
  */
-public enum Color {
-    BLACK("0", Message.COLOR_BLACK.getText(), YMaterial.BLACK_TERRACOTTA),
-    DARK_BLUE("1", Message.COLOR_DARK_BLUE.getText(), YMaterial.BLUE_TERRACOTTA),
-    DARK_GREEN("2", Message.COLOR_DARK_GREEN.getText(), YMaterial.GREEN_TERRACOTTA),
-    DARK_AQUA("3", Message.COLOR_DARK_AQUA.getText(), YMaterial.LIGHT_BLUE_TERRACOTTA),
-    DARK_RED("4", Message.COLOR_DARK_RED.getText(), YMaterial.RED_TERRACOTTA),
-    DARK_PURPLE("5", Message.COLOR_PURPLE.getText(), YMaterial.PURPLE_TERRACOTTA),
-    GOLD("6", Message.COLOR_GOLD.getText(), YMaterial.ORANGE_TERRACOTTA),
-    GRAY("7", Message.COLOR_LIGHT_GRAY.getText(), YMaterial.LIGHT_GRAY_TERRACOTTA),
-    DARK_GRAY("8", Message.COLOR_GRAY.getText(), YMaterial.GRAY_TERRACOTTA),
-    BLUE("9", Message.COLOR_DARK_BLUE.getText(), YMaterial.CYAN_TERRACOTTA),
-    GREEN("a", Message.COLOR_DARK_GREEN.getText(), YMaterial.LIME_TERRACOTTA),
-    AQUA("b", Message.COLOR_AQUA.getText(), YMaterial.CYAN_TERRACOTTA),
-    RED("c", Message.COLOR_RED.getText(), YMaterial.PINK_TERRACOTTA),
-    LIGHT_PURPLE("d", Message.COLOR_MAGENTA.getText(), YMaterial.MAGENTA_TERRACOTTA),
-    YELLOW("e", Message.COLOR_YELLOW.getText(), YMaterial.YELLOW_TERRACOTTA),
-    WHITE("f", Message.COLOR_WHITE.getText(), YMaterial.WHITE_TERRACOTTA),
-    UNDEFINED("r", "", YMaterial.BLACK_TERRACOTTA),
-    NONE(null, "none", YMaterial.BLACK_TERRACOTTA);
-
-    private final String code;
-    private final String displayName;
+public final class Color implements TextFormat {
     private final String name;
-    private final ItemStack itemStack;
+    private final String displayName;
+    private final String colorCode;
+    private final TextColor textColor;
+    private final TagResolver tagResolver;
+    private final Permission permission;
+    private final String tagName;
 
-    Color(String code, @NotNull String name, YMaterial material) {
-        this.code = code;
-        this.displayName = name;
-        this.name = StringUtils.deleteWhitespace(name);
-        this.itemStack = material.getItem();
-    }
+    public Color(@NotNull String name) throws NullPointerException, IllegalArgumentException {
+        this.name = name;
+        EasyPrefix instance = EasyPrefix.getInstance();
+        ConfigData data = instance.getConfigData();
+        final String key = String.format("chat.colors.%s.", name);
+        this.displayName = data.getString(key + "display-name");
+        this.tagName = String.format("<%s>", name);
 
-    @NotNull
-    public static Color[] getValues() {
-        Color[] colors = new Color[values().length - 2];
-        int i = 0;
-        for (Color color : values()) {
-            if (color == UNDEFINED || color == NONE) continue;
-            colors[i] = color;
-            i++;
+        if (name.equalsIgnoreCase("rainbow")) {
+            this.colorCode = "x";
+            this.textColor = TextColor.fromHexString("#7188cf");
+            this.tagResolver = StandardTags.rainbow();
+        } else {
+            this.colorCode = data.getString(key + "code");
+            String hex = data.getString(key + "hex");
+            if (hex == null)
+                throw new NullPointerException(String.format("Color %s does not have any value for \"hex\"", name));
+            this.textColor = TextColor.fromHexString(hex);
+            if (this.textColor == null) {
+                throw new IllegalArgumentException(String.format("Color %s does not have a valid hex color!", name));
+            }
+            Tag tag = Tag.styling(styling -> styling.color(this.textColor));
+            this.tagResolver = TagResolver.builder().tag(this.name, tag).build();
         }
-        return colors;
+
+        if (!data.getBoolean(key + "default")) {
+            this.permission = new Permission("easyprefix.color." + this.name, String.format("allows a player to use the color %s.", this.name));
+        } else this.permission = null;
     }
 
     @Nullable
-    public static Color getByCode(String code) {
-        for (Color color : Color.values()) {
-            if (color.code.equals(code)) return color;
-        }
-        return null;
+    public static Color of(@Nullable String name) {
+        if (name == null) return null;
+        return EasyPrefix.getInstance().getColors().stream()
+                .filter(color -> color.getName().equalsIgnoreCase(name)).findAny().orElse(null);
     }
 
+    public String getTagName() {
+        return tagName;
+    }
+
+    @Override
+    @NotNull
+    public TagResolver tagResolver() {
+        return tagResolver;
+    }
+
+    @Nullable
+    public Permission getPermission() {
+        return permission;
+    }
+
+    @NotNull
+    public TextColor getTextColor() {
+        return textColor;
+    }
+
+    @NotNull
     public String getName() {
         return name;
     }
 
-    /**
-     * @return the translated name
-     */
+    @NotNull
     public String getDisplayName() {
-        return displayName;
-    }
-
-    @Override
-    public String toString() {
-        return getCode() + getDisplayName();
-    }
-
-    @NotNull
-    public String getCode() {
-        return "§" + code;
-    }
-
-    @NotNull
-    public ItemStack toItemStack() {
-        ItemStack item = itemStack.clone();
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(toString());
+        if (this.name.equalsIgnoreCase("rainbow")) {
+            return displayName;
         }
-        item.setItemMeta(meta);
-        return item;
+        return TextUtils.colorize(getTagName() + displayName);
+    }
+
+    @NotNull
+    public String getColorCode() {
+        return colorCode;
     }
 
 }

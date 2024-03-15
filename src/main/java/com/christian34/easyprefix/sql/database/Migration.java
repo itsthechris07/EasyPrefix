@@ -83,22 +83,23 @@ public final class Migration {
 
         try (ResultSet groupsResult = database.getValue("SELECT * FROM `%p%users`")) {
             while (groupsResult.next()) {
-                PreparedStatement stmt = localDatabase.getConnection().prepareStatement("INSERT INTO `users` (`uuid`, `username`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_prefix_update`, `custom_suffix`, `custom_suffix_update`, `chat_color`, `chat_formatting`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                stmt.setObject(1, groupsResult.getString("uuid"));
-                stmt.setObject(2, groupsResult.getString("username"));
-                stmt.setObject(3, groupsResult.getString("group"));
-                stmt.setBoolean(4, groupsResult.getBoolean("force_group"));
-                stmt.setObject(5, groupsResult.getString("subgroup"));
-                stmt.setObject(6, groupsResult.getString("custom_prefix"));
-                stmt.setObject(7, groupsResult.getString("custom_prefix_update"));
-                stmt.setObject(8, groupsResult.getString("custom_suffix"));
-                stmt.setObject(9, groupsResult.getString("custom_suffix_update"));
-                stmt.setObject(10, groupsResult.getString("chat_color"));
-                stmt.setObject(11, groupsResult.getString("chat_formatting"));
-                try {
-                    stmt.execute();
-                } catch (SQLException ignored) {
-                    Debug.warn("Couldn't migrate data for user '" + groupsResult.getString("uuid") + "'");
+                try (PreparedStatement stmt = localDatabase.getConnection().prepareStatement("INSERT INTO `users` (`uuid`, `username`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_prefix_update`, `custom_suffix`, `custom_suffix_update`, `chat_color`, `chat_formatting`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    stmt.setObject(1, groupsResult.getString("uuid"));
+                    stmt.setObject(2, groupsResult.getString("username"));
+                    stmt.setObject(3, groupsResult.getString("group"));
+                    stmt.setBoolean(4, groupsResult.getBoolean("force_group"));
+                    stmt.setObject(5, groupsResult.getString("subgroup"));
+                    stmt.setObject(6, groupsResult.getString("custom_prefix"));
+                    stmt.setObject(7, groupsResult.getString("custom_prefix_update"));
+                    stmt.setObject(8, groupsResult.getString("custom_suffix"));
+                    stmt.setObject(9, groupsResult.getString("custom_suffix_update"));
+                    stmt.setObject(10, groupsResult.getString("chat_color"));
+                    stmt.setObject(11, groupsResult.getString("chat_formatting"));
+                    try {
+                        stmt.execute();
+                    } catch (SQLException ignored) {
+                        Debug.warn("Couldn't migrate data for user '" + groupsResult.getString("uuid") + "'");
+                    }
                 }
             }
         } catch (SQLException e) {

@@ -21,6 +21,10 @@ public final class Chat {
         miniMessage = MiniMessage.miniMessage();
     }
 
+    public static MiniMessage miniMessage() {
+        return miniMessage;
+    }
+
     public static BukkitAudiences getBukkitAudiences() {
         return bukkitAudiences;
     }

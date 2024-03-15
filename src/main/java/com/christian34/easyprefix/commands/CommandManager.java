@@ -57,7 +57,8 @@ public class CommandManager {
         final Function<CommandSender, CommandSender> mapperFunction = Function.identity();
         try {
             this.manager = new PaperCommandManager<>(instance, executionCoordinatorFunction, mapperFunction, mapperFunction);
-        } catch (final Exception ignored) {
+        } catch (final Exception ex) {
+            ex.printStackTrace();
             throw new Error("Couldn't initialize commands...");
         }
 
@@ -137,22 +138,15 @@ public class CommandManager {
         this.manager.argumentBuilder(User.class, "user").withParser(userParser);
         this.manager.parserRegistry().registerParserSupplier(TypeToken.get(User.class), p -> userParser);
 
-        if (instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS)) {
-            ColorArgument.ColorParser<CommandSender> colorParser = new ColorArgument.ColorParser<>();
-            this.manager.argumentBuilder(Color.class, "color").withParser(colorParser);
-            this.manager.parserRegistry().registerParserSupplier(TypeToken.get(Color.class), p -> colorParser);
+        ColorArgument.ColorParser<CommandSender> colorParser = new ColorArgument.ColorParser<>();
+        this.manager.argumentBuilder(Color.class, "color").withParser(colorParser);
+        this.manager.parserRegistry().registerParserSupplier(TypeToken.get(Color.class), p -> colorParser);
 
-            this.annotationParser.parse(new CommandColor());
-        }
-
+        this.annotationParser.parse(new CommandColor());
         if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
             this.annotationParser.parse(new CommandTags());
         }
-        try {
-            this.annotationParser.parseContainers();
-        } catch (Exception e) {
-            throw new Error();
-        }
+        this.annotationParser.parse(new CommandEasyPrefix());
 
         ConfigData config = instance.getConfigData();
         String prefixAlias = config.getString(ConfigData.Keys.PREFIX_ALIAS, "")

@@ -100,6 +100,7 @@ public enum Message {
     }
 
     @Nullable
+    @Deprecated
     public static String setColors(@Nullable String text) {
         if (text == null) return null;
         return ChatColor.translateAlternateColorCodes('&', text);
@@ -107,6 +108,7 @@ public enum Message {
 
     @Contract("!null -> !null; null -> null")
     @Nullable
+    @Deprecated
     public static String setPlaceholders(@Nullable String text) {
         if (text == null) return null;
 

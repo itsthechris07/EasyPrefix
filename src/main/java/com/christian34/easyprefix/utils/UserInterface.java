@@ -10,7 +10,6 @@ import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.textinput.UserInput;
 import com.cryptomorin.xseries.XMaterial;
 import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.GuiStateElement;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import org.bukkit.ChatColor;
@@ -23,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +29,7 @@ import java.util.stream.Collectors;
  *
  * @author Christian34
  */
+@SuppressWarnings("DataFlowIssue")
 public class UserInterface {
     private static final String DIVIDER = "§7-------------------------";
     private final String TITLE = Message.GUI_SETTINGS_TITLE.getText();
@@ -140,15 +138,14 @@ public class UserInterface {
 
     public void openPageUserColors() {
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), Arrays.asList("a".repeat(9), "a".repeat(9), "b".repeat(9)));
-        final boolean showAll = instance.getConfigData().getBoolean(ConfigData.Keys.GUI_SHOW_ALL_CHATCOLORS);
 
-        List<Color> colors = showAll ? Arrays.asList(Color.getValues()) : new ArrayList<>(user.getColors());
+        Collection<Color> colors = user.getColors();
         GuiElementGroup groupColors = new GuiElementGroup('a');
         for (Color color : colors) {
-            if (!showAll && !user.hasPermission("color." + color.name())) continue;
+            if (!user.hasPermission(color.getPermission())) continue;
 
-            ItemStack itemStack = color.toItemStack();
-            if (user.getChatColor().equals(color)) {
+            ItemStack itemStack = new ItemStack(Material.BOOK);
+            if (user.getColor() != null && user.getColor().equals(color)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
                 ItemMeta meta = itemStack.getItemMeta();
                 if (meta != null) {
@@ -158,24 +155,25 @@ public class UserInterface {
             }
 
             groupColors.addElement(new StaticGuiElement('a', itemStack, click -> {
-                if (user.hasPermission("color." + color.name())) {
-                    user.setChatColor(color);
-                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", user.getChatColorName()));
+                if (user.hasPermission(color.getPermission())) {
+                    user.setColor(color);
+                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", user.getColor().getDisplayName()));
                     openPageUserColors();
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
                 return true;
-            }, "§r" + color));
+            }, "§r" + color.getDisplayName()));
         }
 
-        List<ChatFormatting> formattings = showAll ? Arrays.asList(ChatFormatting.getValues()) : new ArrayList<>(user.getChatFormattings());
+        Collection<Decoration> decorations = user.getDecorations();
         GuiElementGroup groupFormattings = new GuiElementGroup('b');
-        for (ChatFormatting chatFormatting : formattings) {
-            if (!showAll && !user.hasPermission("color." + chatFormatting.name())) continue;
+
+        for (Decoration decoration : decorations) {
+            if (!user.hasPermission(decoration.getPermission())) continue;
 
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
-            if (user.getChatFormatting() != null && user.getChatFormatting().equals(chatFormatting)) {
+            if (user.getDecoration() != null && user.getDecoration().equals(decoration)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
                 ItemMeta meta = itemStack.getItemMeta();
                 if (meta != null) {
@@ -185,24 +183,25 @@ public class UserInterface {
             }
 
             groupFormattings.addElement(new StaticGuiElement('b', itemStack, click -> {
-                ChatFormatting formatting = chatFormatting;
-                if (user.getPlayer().hasPermission("color." + formatting.name().toLowerCase())) {
-                    if (user.getChatFormatting() != null && user.getChatFormatting().equals(formatting)) {
-                        formatting = ChatFormatting.UNDEFINED;
+                if (user.hasPermission(decoration.getPermission())) {
+                    Decoration crntDecoration = decoration;
+                    if (user.getDecoration() != null && user.getDecoration().equals(decoration)) {
+                        crntDecoration = null;
                     }
-                    user.setChatFormatting(formatting);
-                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", user.getChatColorName()));
+                    user.setDecoration(crntDecoration);
+                    user.sendMessage(Message.COLOR_PLAYER_SELECT.getText().replace("%color%", user.getColor().getDisplayName()));
                     openPageUserColors();
                 } else {
                     user.sendMessage(Message.CHAT_NO_PERMS.getText());
                 }
                 return true;
-            }, "§r" + user.getChatColor().getCode() + chatFormatting));
+            }, TextUtils.colorize("<reset>" + decoration.getDisplayName())));
+
         }
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.BARRIER), click -> {
-            user.setChatColor(null);
-            user.setChatFormatting(null);
+            user.setColor(null);
+            user.setDecoration(null);
             openPageUserColors();
             return true;
         }, Message.BTN_RESET.getText(), " "));
@@ -290,12 +289,7 @@ public class UserInterface {
             }
             lore.add("§7Suffix: §7«§f" + suffix + "§7»");
 
-            String groupChatColor = group.getChatColor().getCode();
-            if (group.getChatFormatting() != null) {
-                groupChatColor += group.getChatFormatting().getCode();
-            }
-
-            lore.add("§7Color: §f" + groupChatColor.replace("§", "&"));
+            lore.add("§7Color: §f" + group.getColor().getDisplayName());
             lore.add("§7Permission: §fEasyPrefix.group." + group.getName());
             elementGroup.addElement(new StaticGuiElement('b', XMaterial.CHEST.parseItem(), click -> {
                 openGroupProfile(group);
@@ -341,9 +335,9 @@ public class UserInterface {
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Settings", "xxxxbxxxx");
         ConfigData config = this.instance.getConfigData();
 
-        GuiStateElement colors = new GuiStateElement('b', new GuiStateElement.State(change -> config.save(ConfigData.Keys.HANDLE_COLORS, true), "true", XMaterial.LIME_DYE.parseItem(), "§aHandle colors §7(§aenabled§7)"), new GuiStateElement.State(change -> config.save(ConfigData.Keys.HANDLE_COLORS, false), "false", XMaterial.LIME_DYE.parseItem(), "§aHandle colors §7(§cdisabled§7)"));
-        colors.setState(instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS).toString());
-        gui.addElement(colors);
+        //GuiStateElement colors = new GuiStateElement('b', new GuiStateElement.State(change -> config.save(ConfigData.Keys.HANDLE_COLORS, true), "true", XMaterial.LIME_DYE.parseItem(), "§aHandle colors §7(§aenabled§7)"), new GuiStateElement.State(change -> config.save(ConfigData.Keys.HANDLE_COLORS, false), "false", XMaterial.LIME_DYE.parseItem(), "§aHandle colors §7(§cdisabled§7)"));
+        //colors.setState(instance.getConfigData().getBoolean(ConfigData.Keys.HANDLE_COLORS).toString());
+        //gui.addElement(colors);
 
         gui.show(user.getPlayer());
     }
@@ -358,14 +352,14 @@ public class UserInterface {
 
     private void openPageDeleteGroup(EasyGroup easyGroup) {
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§4Delete " + easyGroup.getName() + "?", "xxxaxbxxx");
-        gui.addElement(new StaticGuiElement('a', Color.GREEN.toItemStack(), click -> {
+        gui.addElement(new StaticGuiElement('a', XMaterial.GREEN_TERRACOTTA.parseItem(), click -> {
             easyGroup.delete();
             if (easyGroup instanceof Group) openGroupsList();
             else openSubgroupsList();
             return true;
         }, "§aYes"));
 
-        gui.addElement(new StaticGuiElement('b', Color.RED.toItemStack(), click -> {
+        gui.addElement(new StaticGuiElement('b', XMaterial.RED_TERRACOTTA.parseItem(), click -> {
             openProfile(easyGroup);
             return true;
         }, "§cNo"));
@@ -395,20 +389,8 @@ public class UserInterface {
                 }
             }
             String prefix = group.getPrefix();
-            String regex = "&#([A-Fa-f0-9]{6})";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(prefix);
-            StringBuffer buffer = new StringBuffer();
-            while (matcher.find()) {
-                String colorCode = matcher.group(1);
-                String replacement = "§x§" + colorCode.charAt(0) + "§" + colorCode.charAt(1) + "§" + colorCode.charAt(2) + "§" + colorCode.charAt(3) + "§" + colorCode.charAt(4) + "§" + colorCode.charAt(5);
-                matcher.appendReplacement(buffer, replacement);
-            }
-            matcher.appendTail(buffer);
-            final String layoutPreview = ChatColor.translateAlternateColorCodes('&', buffer.toString());
-
             for (String line : defaultLore) {
-                line = line.replace("%LAYOUT%", layoutPreview + user.getName() + group.getSuffix());
+                line = line.replace("%LAYOUT%", prefix + user.getName() + group.getSuffix());
                 lore.add(line);
             }
 
@@ -461,14 +443,10 @@ public class UserInterface {
             return true;
         }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + group.getSuffix() + "§7»", " "));
 
-        String groupChatColor = group.getChatColor().getCode().replace("§", "&");
-        if (group.getChatFormatting() != null) {
-            groupChatColor += group.getChatFormatting().getCode().replace("§", "&");
-        }
         gui.addElement(new StaticGuiElement('c', XMaterial.LIME_DYE.parseItem(), click -> {
             openPageColorGroup(group);
             return true;
-        }, "§aChange Color", DIVIDER, "§7Current: §f" + groupChatColor, " "));
+        }, "§aChange Color", DIVIDER, "§7Current: §f" + group.getColor().getDisplayName(), " "));
 
         gui.addElement(new StaticGuiElement('d', XMaterial.BLAZE_ROD.parseItem(), click -> {
             String joinMsg = group.getJoinMessage();
@@ -541,28 +519,27 @@ public class UserInterface {
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), group.getGroupColor() + group.getName() + " §8» " + Message.GUI_SETTINGS_TITLE_FORMATTINGS.getText(), Arrays.asList("a".repeat(9), "a".repeat(9), "b".repeat(9)));
 
         GuiElementGroup groupColors = new GuiElementGroup('a');
-        for (Color color : Color.getValues()) {
-            ItemStack itemStack = color.toItemStack();
-            if (group.getChatColor().equals(color)) {
+        for (Color color : EasyPrefix.getInstance().getColors()) {
+            ItemStack itemStack = new ItemStack(Material.BOOK);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (group.getColor().equals(color)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
-                ItemMeta meta = itemStack.getItemMeta();
-                if (meta != null) {
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    itemStack.setItemMeta(meta);
-                }
+                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                itemStack.setItemMeta(itemMeta);
             }
+            itemStack.setItemMeta(itemMeta);
 
             groupColors.addElement(new StaticGuiElement('a', itemStack, click -> {
-                group.setChatColor(color);
+                group.setColor(color);
                 openPageColorGroup(group);
                 return true;
-            }, "§r" + color, " ", "§7Permission: §fEasyPrefix.color." + color.name().toLowerCase()));
+            }, "§r" + color.getDisplayName(), " ", (color.getPermission() != null ? String.format("§7Permission: §f%s", color.getPermission().getName()) : "")));
         }
 
         GuiElementGroup groupFormattings = new GuiElementGroup('b');
-        for (ChatFormatting chatFormatting : ChatFormatting.getValues()) {
+        for (Decoration decoration : instance.getDecorations()) {
             ItemStack itemStack = new ItemStack(Material.BOOKSHELF);
-            if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
+            if (group.getDecoration() != null && group.getDecoration().equals(decoration)) {
                 itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
                 ItemMeta meta = itemStack.getItemMeta();
                 if (meta != null) {
@@ -572,19 +549,20 @@ public class UserInterface {
             }
 
             groupFormattings.addElement(new StaticGuiElement('b', itemStack, click -> {
-                ChatFormatting formatting = chatFormatting;
-                if (group.getChatFormatting() != null && group.getChatFormatting().equals(chatFormatting)) {
-                    formatting = null;
+                Decoration deco = decoration;
+                if (group.getDecoration() != null && group.getDecoration().equals(decoration)) {
+                    deco = null;
                 }
-                group.setChatFormatting(formatting);
+                group.setDecoration(deco);
                 openPageColorGroup(group);
                 return true;
-            }, "§r" + group.getChatColor().getCode() + chatFormatting, " ", "§7Permission: §fEasyPrefix.color." + chatFormatting.name().toLowerCase()));
+            }, "<reset>" + decoration.getDisplayName(), " ", (decoration.getPermission() != null ? String.format("§7Permission: §f%s", decoration.getPermission().getName()) : "")));
+
         }
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.BARRIER), click -> {
-            user.setChatColor(null);
-            user.setChatFormatting(null);
+            user.setColor(null);
+            user.setDecoration(null);
             openPageUserColors();
             return true;
         }, Message.BTN_RESET.getText(), " "));

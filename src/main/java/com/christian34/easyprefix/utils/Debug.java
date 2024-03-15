@@ -69,11 +69,11 @@ public class Debug {
 
     public static void handleException(Exception exception) {
         catchException(exception);
-        warn("§cAn error occurred while using EasyPrefix. If you think this is an error," +
+        warn("An error occurred while using EasyPrefix. If you think this is an error," +
                 " please report following exception to GitHub!");
-        warn("§c------ ERROR ------");
+        warn("------ ERROR ------");
         exception.printStackTrace();
-        warn("§c------ END OF ERROR ------");
+        warn("------ END OF ERROR ------");
     }
 
     public static void log(String message) {
@@ -111,29 +111,18 @@ public class Debug {
             options.setDsn("https://593815c87f604f2da4620b5031945126@o393387.ingest.sentry.io/5242398");
             options.setEnableExternalConfiguration(false);
             options.setRelease(instance.getDescription().getVersion());
-            options.setBeforeSend((event, hint) -> {
-                Throwable throwable = event.getThrowable();
-                boolean isFromPlugin = false;
-                if (throwable != null) {
-                    for (StackTraceElement element : throwable.getStackTrace()) {
-                        if (element.getClassName().startsWith("com.christian34.easyprefix")) {
-                            isFromPlugin = true;
-                            break;
-                        }
-                    }
-                }
-                if (!isFromPlugin) {
+            options.setBeforeSendTransaction(((transaction, hint) -> {
+                if (transaction.getTransaction() != null && !transaction.getTransaction().equals("com/christian34/easyprefix")) {
                     return null;
                 }
-                return event;
-            });
+                return transaction;
+            }));
         });
         Sentry.configureScope(scope -> {
             User user = new User();
             user.setId(clientID);
             scope.setUser(user);
         });
-        hub.setTag("plugin-version", VersionController.getPluginVersion());
         hub.setTag("api", Bukkit.getBukkitVersion());
         hub.setTag("server", Bukkit.getVersion());
         hub.setTag("java", System.getProperty("java.version"));

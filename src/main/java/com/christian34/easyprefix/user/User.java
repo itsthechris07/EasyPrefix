@@ -6,12 +6,13 @@ import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.sql.UpdateStatement;
-import com.christian34.easyprefix.utils.ChatFormatting;
-import com.christian34.easyprefix.utils.Color;
-import com.christian34.easyprefix.utils.Debug;
-import com.christian34.easyprefix.utils.Message;
+import com.christian34.easyprefix.utils.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,12 +34,16 @@ public class User {
     private OfflinePlayer offlinePlayer;
     private Group group;
     private Subgroup subgroup;
-    private Color chatColor;
+    private Color color;
+    private Decoration decoration;
     private String customPrefix;
     private String customSuffix;
     private boolean isGroupForced;
     private long lastPrefixUpdate, lastSuffixUpdate;
-    private ChatFormatting chatFormatting = null;
+    private TagResolver.Builder tagResvBuilder;
+    private Collection<Color> colors;
+    private Collection<Decoration> decorations;
+    private MiniMessage miniMsg;
 
     public User(@NotNull OfflinePlayer player) {
         this.player = null;
@@ -53,19 +58,28 @@ public class User {
         this.instance = EasyPrefix.getInstance();
         this.groupHandler = this.instance.getGroupHandler();
         this.userData = new UserData(player.getUniqueId());
+        this.tagResvBuilder = TagResolver.builder();
     }
 
-    public String getChatColorName() {
-        Color color = getChatColor();
-        ChatFormatting chatFormatting = getChatFormatting();
-        if (chatFormatting == null) chatFormatting = ChatFormatting.UNDEFINED;
-        String name;
-        if (chatFormatting.equals(ChatFormatting.UNDEFINED)) {
-            name = color.toString();
-        } else {
-            name = color.getCode() + chatFormatting.getCode() + color.getDisplayName() + " " + chatFormatting.getName();
+    public Collection<Decoration> getDecorations() {
+        return decorations;
+    }
+
+    public Color getColor() {
+        if (color != null) {
+            return color;
         }
-        return name;
+        return getGroup().getColor();
+    }
+
+    public void setColor(@Nullable Color color) {
+        this.color = color;
+        String name = (color != null) ? color.getName() : null;
+        saveData("chat_color", name);
+    }
+
+    public Collection<Color> getColors() {
+        return colors;
     }
 
     public long getLastPrefixUpdate() {
@@ -93,6 +107,8 @@ public class User {
             }
         }
 
+        if (this.group == null) this.group = groupHandler.getGroup("default");
+
         if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {
             String subgroupName = userData.getString("subgroup");
             if (subgroupName != null) {
@@ -101,25 +117,36 @@ public class User {
         }
 
         String color = userData.getString("chat_color");
-        if (color != null && color.length() > 1) {
-            this.chatColor = Color.getByCode(color.substring(1, 2));
-        }
+        this.color = Color.of(color);
 
-        String formatting = userData.getString("chat_formatting");
-        if (formatting != null && formatting.length() > 1) {
-            if (formatting.equals("&@")) {
-                this.chatFormatting = ChatFormatting.UNDEFINED;
-            } else {
-                this.chatFormatting = ChatFormatting.getByCode(formatting.substring(1, 2));
+        this.colors = new HashSet<>();
+        for (Color c : instance.getColors()) {
+            if (c.getPermission() == null || getPlayer().hasPermission(c.getPermission())) {
+                this.colors.add(c);
+                this.tagResvBuilder.resolver(c.tagResolver());
             }
         }
+
+        this.decorations = new HashSet<>();
+        for (Decoration d : instance.getDecorations()) {
+            if (d.getPermission() == null || getPlayer().hasPermission(d.getPermission())) {
+                this.decorations.add(d);
+                this.tagResvBuilder.resolver(d.tagResolver());
+            }
+        }
+
+        this.miniMsg = MiniMessage.builder().tags(this.tagResvBuilder.build()).build();
+
+        String formatting = userData.getString("chat_formatting");
+        this.decoration = Decoration.of(formatting);
 
         if (instance.getConfigData().getBoolean(ConfigData.Keys.CUSTOM_LAYOUT)) {
             if (hasPermission("custom.prefix")) {
-                this.customPrefix = userData.getString("custom_prefix");
+                this.customPrefix = TextUtils.escapeLegacyColors(userData.getString("custom_prefix"));
+
             }
             if (hasPermission("custom.suffix")) {
-                this.customSuffix = userData.getString("custom_suffix");
+                this.customSuffix = TextUtils.escapeLegacyColors(userData.getString("custom_suffix"));
             }
         } else {
             this.customPrefix = null;
@@ -141,6 +168,29 @@ public class User {
         }
     }
 
+    public Component deserialize(String text) {
+        return this.miniMsg.deserialize(text);
+    }
+
+    public String deserializeToText(String text) {
+        return TextUtils.deserialize(text, this);
+    }
+
+
+    /**
+     * checks if the player has the permission
+     *
+     * @param permission
+     * @return true if the player has the permission, returns true if @param permission is null
+     */
+    public boolean hasPermission(@Nullable Permission permission) {
+        if (permission == null) return true;
+        if (player != null) {
+            return player.hasPermission("EasyPrefix." + permission);
+        }
+        return true;
+    }
+
     public boolean hasPermission(@NotNull String permission) {
         if (player != null) {
             return player.hasPermission("EasyPrefix." + permission);
@@ -153,7 +203,7 @@ public class User {
         if (hasPermission("custom.prefix") && customPrefix != null) {
             return customPrefix;
         }
-        return group.getPrefix();
+        return getGroup().getPrefix();
     }
 
     public void setPrefix(String prefix) {
@@ -177,7 +227,7 @@ public class User {
         if (hasPermission("custom.suffix") && customSuffix != null) {
             return customSuffix;
         }
-        return group.getSuffix();
+        return getGroup().getSuffix();
     }
 
     public void setSuffix(String suffix) {
@@ -186,41 +236,6 @@ public class User {
             suffix = suffix.replace("&", "§");
         }
         this.customSuffix = suffix;
-    }
-
-    @NotNull
-    public Set<Color> getColors() {
-        if (hasPermission("color.all")) {
-            return new HashSet<>(Arrays.asList(Color.getValues()));
-        } else {
-            Set<Color> colors = new HashSet<>();
-            for (Color color : Color.getValues()) {
-                if (hasPermission("color." + color.name())) {
-                    colors.add(color);
-                }
-            }
-            return Collections.unmodifiableSet(colors);
-        }
-    }
-
-    @NotNull
-    public Color getChatColor() {
-        if (chatColor != null) {
-            return chatColor;
-        }
-        return getGroup().getChatColor();
-    }
-
-    public void setChatColor(@Nullable Color color) {
-        String value = null;
-
-        if (color != null && color.equals(Color.NONE)) color = null;
-
-        if (color != null) {
-            value = color.getCode().replace("§", "&");
-        }
-        this.chatColor = color;
-        saveData("chat_color", value);
     }
 
     @NotNull
@@ -238,25 +253,24 @@ public class User {
         }
     }
 
+
     @Nullable
-    public ChatFormatting getChatFormatting() {
-        if (chatFormatting != null) {
-            return chatFormatting;
+    public Decoration getDecoration() {
+        if (decoration != null) {
+            return decoration;
         }
-        return getGroup().getChatFormatting();
+        //return getGroup().getDecoration();
+        return null;
     }
 
-    public void setChatFormatting(@Nullable ChatFormatting chatFormatting) {
-        this.chatFormatting = chatFormatting;
-        String value = null;
-        if (chatFormatting != null) {
-            value = chatFormatting.getCode().replace("§", "&");
-        }
-        saveData("chat_formatting", value);
+    public void setDecoration(@Nullable Decoration decoration) {
+        this.decoration = decoration;
+        saveData("chat_formatting", (decoration != null) ? decoration.getName() : null);
     }
 
     @NotNull
     public Group getGroup() {
+        if (group == null) return groupHandler.getGroup("default");
         return group;
     }
 
@@ -266,8 +280,8 @@ public class User {
         saveData("force_group", force);
         setPrefix(null);
         setSuffix(null);
-        setChatColor(null);
-        setChatFormatting(null);
+        setColor(null);
+        setDecoration(null);
     }
 
     public Subgroup getSubgroup() {
@@ -275,6 +289,7 @@ public class User {
     }
 
     public void setSubgroup(Subgroup subgroup) {
+        if (subgroup != null && subgroup.getName().equals("null")) subgroup = null;
         this.subgroup = subgroup;
         String name = (subgroup != null) ? subgroup.getName() : null;
         saveData("subgroup", name);

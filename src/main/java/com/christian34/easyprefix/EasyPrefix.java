@@ -13,15 +13,15 @@ import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.Debug;
-import com.christian34.easyprefix.utils.TaskManager;
-import com.christian34.easyprefix.utils.Updater;
-import com.christian34.easyprefix.utils.VersionController;
+import com.christian34.easyprefix.utils.*;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
@@ -30,12 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * EasyPrefix 2023.
@@ -44,7 +39,9 @@ import java.util.regex.Pattern;
  */
 public class EasyPrefix extends JavaPlugin {
     private static EasyPrefix instance = null;
-    private final Pattern HEX_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
+    private static boolean isPaper;
+    private Collection<Color> colors;
+    private Collection<Decoration> decorations;
     private SQLDatabase sqlDatabase = null;
     private LocalDatabase localDatabase = null;
     private Set<User> users;
@@ -57,9 +54,22 @@ public class EasyPrefix extends JavaPlugin {
     private CommandManager commandManager;
     @SuppressWarnings("FieldCanBeLocal")
     private Debug debug;
+    private MiniMessage miniMessage;
 
     public static EasyPrefix getInstance() {
         return instance;
+    }
+
+    public Collection<Decoration> getDecorations() {
+        return decorations;
+    }
+
+    public MiniMessage getMiniMessage() {
+        return miniMessage;
+    }
+
+    public Collection<Color> getColors() {
+        return colors;
     }
 
     public LocalDatabase getLocalDatabase() {
@@ -84,6 +94,14 @@ public class EasyPrefix extends JavaPlugin {
 
     public void onEnable() {
         EasyPrefix.instance = this;
+
+        try {
+            Class.forName("io.papermc.paper.plugin.bootstrap.PluginBootstrap");
+            EasyPrefix.isPaper = true;
+        } catch (ClassNotFoundException ignored) {
+            EasyPrefix.isPaper = false;
+        }
+
         this.plugin = this;
         this.debug = new Debug(this);
         this.users = Collections.synchronizedSet(new HashSet<>());
@@ -92,6 +110,10 @@ public class EasyPrefix extends JavaPlugin {
             getConfigData().save(ConfigData.Keys.CLIENT_ID, debug.getClientID());
         }
 
+        if (!getConfigData().getBoolean(ConfigData.Keys.ENABLED)) {
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED)) {
             this.sqlDatabase = new SQLDatabase(this);
             this.storageType = StorageType.SQL;
@@ -103,13 +125,8 @@ public class EasyPrefix extends JavaPlugin {
             this.storageType = StorageType.LOCAL;
         }
 
-        this.groupHandler = new GroupHandler(this);
-        groupHandler.load();
+
         registerEvents();
-        if (!getConfigData().getBoolean(ConfigData.Keys.ENABLED)) {
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
         this.expansionManager = new ExpansionManager(this);
         this.updater = new Updater(this);
         hookMetrics();
@@ -124,7 +141,65 @@ public class EasyPrefix extends JavaPlugin {
             }
         }, 20 * 3);
 
-        this.commandManager = new CommandManager(this);
+        try {
+            this.commandManager = new CommandManager(this);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        TagResolver.Builder tagResolverBuilder = TagResolver.builder();
+
+        this.colors = new ArrayList<>();
+        ConfigurationSection colorsSection = this.getConfigData().getSection("chat.colors");
+        if (colorsSection != null) {
+            for (String name : colorsSection.getKeys(false)) {
+                try {
+                    Color color = new Color(name);
+                    this.colors.add(color);
+                    tagResolverBuilder.resolver(color.tagResolver());
+                } catch (RuntimeException ex) {
+                    ex.fillInStackTrace();
+                }
+            }
+        }
+
+        this.decorations = new ArrayList<>();
+        ConfigurationSection decorationsSection = this.getConfigData().getSection("chat.decorations");
+        if (decorationsSection != null) {
+            for (String name : decorationsSection.getKeys(false)) {
+                try {
+                    Decoration decoration = new Decoration(name);
+                    this.decorations.add(decoration);
+                    tagResolverBuilder.resolver(decoration.tagResolver());
+                } catch (RuntimeException ex) {
+                    ex.fillInStackTrace();
+                }
+            }
+        }
+        tagResolverBuilder.resolver(StandardTags.defaults());
+        /*tagResolverBuilder.resolver(StandardTags.rainbow());
+        tagResolverBuilder.resolver(StandardTags.newline());
+        tagResolverBuilder.resolver(StandardTags.reset());
+        tagResolverBuilder.resolver(StandardTags.decorations());
+        tagResolverBuilder.resolver(StandardTags.clickEvent());
+        tagResolverBuilder.resolver(StandardTags.hoverEvent());
+        tagResolverBuilder.resolver(StandardTags.gradient());
+        tagResolverBuilder.resolver(StandardTags.font());
+        tagResolverBuilder.resolver(StandardTags.decorations(TextDecoration.BOLD));
+        tagResolverBuilder.resolver(StandardTags.decorations(TextDecoration.ITALIC));
+        tagResolverBuilder.resolver(StandardTags.decorations(TextDecoration.UNDERLINED));
+        tagResolverBuilder.resolver(StandardTags.decorations(TextDecoration.STRIKETHROUGH));
+        tagResolverBuilder.resolver(StandardTags.decorations(TextDecoration.OBFUSCATED));*/
+
+        this.miniMessage = MiniMessage.builder().tags(tagResolverBuilder.build()).build();
+        this.groupHandler = new GroupHandler(this);
+        try {
+            groupHandler.load();
+        } catch (Exception ex) {
+            Debug.handleException(ex);
+        }
+
+
     }
 
     public void onDisable() {
@@ -160,7 +235,7 @@ public class EasyPrefix extends JavaPlugin {
     }
 
     @NotNull
-    public synchronized User getUser(Player player) {
+    public User getUser(Player player) {
         User user = getUsers().stream().filter(usr -> usr.getPlayer().getName().equals(player.getName())).findAny().orElse(null);
         if (user == null) {
             user = new User(player);
@@ -172,22 +247,6 @@ public class EasyPrefix extends JavaPlugin {
             }
         }
         return user;
-    }
-
-    @Nullable
-    public String translateHexColorCodes(final String message) {
-        if (VersionController.getMinorVersion() < 16) return message;
-        final char colorChar = ChatColor.COLOR_CHAR;
-
-        final Matcher matcher = HEX_PATTERN.matcher(message);
-        final StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
-
-        while (matcher.find()) {
-            final String group = matcher.group(1);
-            matcher.appendReplacement(buffer, colorChar + "x" + colorChar + group.charAt(0) + colorChar + group.charAt(1) + colorChar + group.charAt(2) + colorChar + group.charAt(3) + colorChar + group.charAt(4) + colorChar + group.charAt(5));
-        }
-
-        return matcher.appendTail(buffer).toString();
     }
 
     @Nullable
@@ -267,7 +326,11 @@ public class EasyPrefix extends JavaPlugin {
 
     private void registerEvents() {
         PluginManager pluginManager = getServer().getPluginManager();
+        //if (isPaper) {
+        //     pluginManager.registerEvents(new PaperChatListener(this), this);
+        //  } else {
         pluginManager.registerEvents(new ChatListener(this), this);
+        //  }
         pluginManager.registerEvents(new JoinListener(this), this);
         pluginManager.registerEvents(new QuitListener(this), this);
     }

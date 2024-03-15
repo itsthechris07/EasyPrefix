@@ -48,28 +48,93 @@ config:
   tags:
     # show context menu for tags | only visible if necessary
     enabled: true
-  # settings for the gui
-  gui:
-    # specifies if all colors and formatting should be visible, even if the player has no permissions for it.
-    show-all-chatcolors: true
   # settings for chat appearance
   chat:
-    # allow easyprefix to handle colors and formattings
-    handle-colors: true
     # set to false, if you use other chat plugins like EssentialsChat or MultiChat
     # false requires vault!
     handle-chat: true
-    color:
-      # requires permission EasyPrefix.color.rainbow
+    colors:
+      black:
+        display-name: "Black"
+        hex: "#000000"
+        code: "0"
+        # set default to true to allow all users to use certain color. you won't need any further permission system
+        default: false
+      dark_blue:
+        display-name: "Dark Blue"
+        hex: "#0000aa"
+        code: "1"
+        #default: true
+      dark_green:
+        display-name: "Dark Green"
+        hex: "#00aa00"
+        code: "2"
+      dark_aqua:
+        display-name: "Dark Aqua"
+        hex: "#00aaaa"
+        code: "3"
+      dark_red:
+        display-name: "Dark Red"
+        hex: "#aa0000"
+        code: "4"
+      dark_purple:
+        display-name: "Dark Purple"
+        hex: "#aa00aa"
+        code: "5"
+      gold:
+        display-name: "Gold"
+        hex: "#xffaa00"
+        code: "6"
+      gray:
+        display-name: "Gray"
+        hex: "#AAAAAA"
+        code: "7"
+      dark_gray:
+        display-name: "Dark Gray"
+        hex: "#555555"
+        code: "8"
+      blue:
+        display-name: "Blue"
+        hex: "#5555FF"
+        code: "9"
+      green:
+        display-name: "Green"
+        hex: "#55FF55"
+        code: "a"
+      aqua:
+        display-name: "Aqua"
+        hex: "#55FFFF"
+        code: "b"
+      red:
+        display-name: "Red"
+        hex: "#ff5555"
+        code: "c"
+      light_purple:
+        display-name: "Light Purple"
+        hex: "#FF55FF"
+        code: "d"
+      yellow:
+        display-name: "Yellow"
+        hex: "#FFFF55"
+        code: "e"
+      white:
+        display-name: "White"
+        hex: "#ffffff"
+        code: "f"
       rainbow:
-        # please use valid chat colors, if you do not know the names, please lookup at
-        # https://minecraft.gamepedia.com/Formatting_codes#Color_codes
-        colors:
-          - YELLOW
-          - BLUE
-          - LIGHT_PURPLE
-          - RED
-          - DARK_AQUA
-          - GOLD
-          - GREEN
-          - DARK_PURPLE
+        display-name: "Rainbow"
+        default: false
+    decorations:
+      bold:
+        display-name: "Bold"
+        #default: true
+      underlined:
+        display-name: "Underlined"
+      italic:
+        display-name: "Italic"
+      strikethrough:
+        display-name: "Strikethrough"
+      obfuscated:
+        display-name: "Obfucasted"
+
+

@@ -6,6 +6,7 @@ import com.tchristofferson.configupdater.ConfigUpdater;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * EasyPrefix 2023.
@@ -31,19 +32,16 @@ public class ConfigData extends PluginFile {
     public void update() throws IOException {
         ConfigUpdater.update(EasyPrefix.getInstance().getPlugin(), "config.yml",
                 new File(FileManager.getPluginFolder(), "config.yml"),
-                new ArrayList<>());
+                new ArrayList<>(List.of("config.chat")));
     }
 
     public static final class Keys {
         public static final String CLIENT_ID = "client";
-        public static final String COLOR_RAINBOW_COLORS = "chat.color.rainbow.colors";
         public static final String CUSTOM_LAYOUT = "user.custom-layout.enabled";
         public static final String CUSTOM_LAYOUT_COOLDOWN = "user.custom-layout.cooldown";
         public static final String ENABLED = "enabled";
         public static final String SQL_ENABLED = "sql.enabled";
-        public static final String GUI_SHOW_ALL_CHATCOLORS = "gui.show-all-chatcolors";
         public static final String HANDLE_CHAT = "chat.handle-chat";
-        public static final String HANDLE_COLORS = "chat.handle-colors";
         public static final String HIDE_JOIN_QUIT = "join-quit-messages.hide-messages";
         public static final String PREFIX_ALIAS = "user.custom-layout.alias.prefix";
         public static final String SUFFIX_ALIAS = "user.custom-layout.alias.suffix";

@@ -40,9 +40,17 @@ public class Updater implements Listener {
                         new URL("https://api.spigotmc.org/legacy/update.php?resource=44580").openConnection();
                 connection.setRequestMethod("GET");
                 this.spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-                if (!VersionController.getPluginVersion().equals(spigotPluginVersion)) {
-                    this.available = true;
-                    instance.getServer().getConsoleSender().sendMessage(UPDATE_MSG);
+                if (!VersionController.getPluginVersion().contains("beta")) {
+                    if (!VersionController.getPluginVersion().equals(spigotPluginVersion)) {
+                        this.available = true;
+                        instance.getServer().getConsoleSender().sendMessage(UPDATE_MSG);
+                    }
+                } else {
+                    Debug.warn("You are using a beta version. Please check regularly for new updates on https://www.spigotmc.org/resources/44580/updates");
+                    if (spigotPluginVersion.startsWith("2.0") || spigotPluginVersion.startsWith("1.8.13")) {
+                        this.available = true;
+                        instance.getServer().getConsoleSender().sendMessage(UPDATE_MSG);
+                    }
                 }
             } catch (IOException ignored) {
                 Debug.warn("§cUpdate checker failed!");

@@ -8,13 +8,11 @@ import cloud.commandframework.exceptions.parsing.NoInputProvidedException;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Color;
-import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
@@ -38,12 +36,18 @@ public class ColorArgument<CommandSender> extends CommandArgument<CommandSender,
             if (inputQueue.peek() == null) {
                 return ArgumentParseResult.failure(new NoInputProvidedException(ColorArgument.class, commandContext));
             }
-
             String input = StringUtils.deleteWhitespace(inputQueue.peek());
-            Optional<Color> opt = Arrays.stream(Color.getValues()).filter(c -> c.getName().equalsIgnoreCase(input)).findAny();
-            if (opt.isPresent()) {
+
+            Optional<Color> optional;
+            if (commandContext.getSender() instanceof Player) {
+                User user = EasyPrefix.getInstance().getUser((Player) commandContext.getSender());
+                optional = user.getColors().stream().filter(color -> color.getName().equalsIgnoreCase(input)).findAny();
+            } else {
+                optional = EasyPrefix.getInstance().getColors().stream().filter(color -> color.getName().equalsIgnoreCase(input)).findAny();
+            }
+            if (optional.isPresent()) {
                 inputQueue.remove();
-                return ArgumentParseResult.success(opt.get());
+                return ArgumentParseResult.success(optional.get());
             } else {
                 return ArgumentParseResult.failure(new IllegalArgumentException(Message.COLOR_NOT_FOUND.get("color", input)));
             }
@@ -53,11 +57,10 @@ public class ColorArgument<CommandSender> extends CommandArgument<CommandSender,
         public @NonNull List<@NonNull String> suggestions(@NonNull CommandContext<CommandSender> commandContext, @NonNull String input) {
             List<String> color;
             if (commandContext.getSender() instanceof Player) {
-                Debug.warn("is player");
                 User user = EasyPrefix.getInstance().getUser((Player) commandContext.getSender());
                 color = user.getColors().stream().map(Color::getName).collect(Collectors.toList());
             } else {
-                color = Arrays.stream(Color.getValues()).map(Color::getName).collect(Collectors.toList());
+                color = EasyPrefix.getInstance().getColors().stream().map(Color::getName).collect(Collectors.toList());
             }
             color.add("none");
             return color;

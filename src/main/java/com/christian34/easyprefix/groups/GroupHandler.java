@@ -101,7 +101,6 @@ public class GroupHandler {
         }
 
         groupNames.remove("default");
-        Collections.sort(groupNames);
         for (String name : groupNames) {
             try {
                 groups.add(new Group(this, name));
@@ -191,8 +190,7 @@ public class GroupHandler {
     }
 
     public void reloadGroup(EasyGroup easyGroup) {
-        if (easyGroup instanceof Group) {
-            Group group = (Group) easyGroup;
+        if (easyGroup instanceof Group group) {
             groups.remove(group);
             groups.add(new Group(this, easyGroup.getName()));
         } else {

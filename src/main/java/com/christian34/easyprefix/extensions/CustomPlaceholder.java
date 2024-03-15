@@ -2,7 +2,6 @@ package com.christian34.easyprefix.extensions;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.user.User;
-import com.christian34.easyprefix.utils.ChatFormatting;
 import com.christian34.easyprefix.utils.Debug;
 import com.christian34.easyprefix.utils.Message;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -71,12 +70,7 @@ class CustomPlaceholder extends PlaceholderExpansion {
             case "user_group":
                 return user.getGroup().getName();
             case "user_chatcolor":
-                String color = user.getChatColor().getCode();
-                ChatFormatting chatFormatting = user.getChatFormatting();
-                if (chatFormatting != null && chatFormatting.isBukkit()) {
-                    color += user.getChatFormatting().getCode();
-                }
-                return color.replace("&", "§");
+                return user.getColor().getTagName();
             case "user_subgroup_prefix":
             case "tag_prefix":
                 if (user.getSubgroup() == null) return "";
