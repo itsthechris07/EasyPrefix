@@ -7,6 +7,7 @@ import com.christian34.easyprefix.groups.GroupHandler;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
@@ -41,7 +42,7 @@ class MySqlPluginTest extends PluginTestBase {
     @Override
     protected void beforePluginLoad() {
         try {
-            TestMySql.dropTables();
+            TestMySql.clearTables();
             YamlConfiguration pluginYml = YamlConfiguration.loadConfiguration(resource("/plugin.yml"));
             File folder = server.getPluginManager().createTemporaryDirectory("EasyPrefix-" + pluginYml.getString("version"));
             YamlConfiguration config = YamlConfiguration.loadConfiguration(resource("/config.yml"));
@@ -65,6 +66,10 @@ class MySqlPluginTest extends PluginTestBase {
         return new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream(name)), StandardCharsets.UTF_8);
     }
 
+    /**
+     * the schema is migrated by the first test only, the others just clear the rows
+     */
+    @BeforeAll
     @AfterAll
     static void dropTables() throws SQLException {
         TestMySql.dropTables();

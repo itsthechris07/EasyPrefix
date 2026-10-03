@@ -59,6 +59,20 @@ public final class TestMySql {
     }
 
     /**
+     * removes all rows but keeps the schema - much faster than {@link #dropTables()}, as the migrations (DDL) are slow
+     * on a small database server. The plugin then sees an empty database just like a new one.
+     */
+    public static void clearTables() throws SQLException {
+        try (Connection connection = connect(); Statement statement = connection.createStatement()) {
+            for (String table : List.of("users", "groups", "subgroups", "options", "messages")) {
+                try (var result = connection.getMetaData().getTables(connection.getCatalog(), null, PREFIX + table, null)) {
+                    if (result.next()) statement.executeUpdate("DELETE FROM `" + PREFIX + table + "`");
+                }
+            }
+        }
+    }
+
+    /**
      * @param sql %p% is replaced with the table prefix
      */
     public static void execute(String sql) throws SQLException {
