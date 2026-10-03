@@ -290,8 +290,7 @@ public class User {
         if (decoration != null) {
             return decoration;
         }
-        //return getGroup().getDecoration();
-        return null;
+        return getGroup().getDecoration();
     }
 
     public void setDecoration(@Nullable Decoration decoration) {

@@ -46,6 +46,15 @@ class UserTest extends PluginTestBase {
     }
 
     @Test
+    void decorationFallsBackToGroupDecoration() {
+        User user = user(addPlayer("Steve"));
+        user.getGroup().setDecoration(Decoration.of("italic"));
+        assertEquals("italic", user.getDecoration().getName());
+        user.setDecoration(Decoration.of("bold"));
+        assertEquals("bold", user.getDecoration().getName());
+    }
+
+    @Test
     void savesColorAndDecoration() {
         PlayerMock player = addPlayer("Steve");
         User user = user(player);
