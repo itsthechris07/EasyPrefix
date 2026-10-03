@@ -31,7 +31,11 @@ public class SQLDatabase extends PooledDatabase {
     private SQLSynchronizer sqlSynchronizer;
 
     public SQLDatabase(EasyPrefix instance) {
-        ConfigData config = instance.getFileManager().getConfig();
+        this(instance.getFileManager().getConfig());
+    }
+
+    // no statements before this(...): flexible constructors need Java 25, 1.21.x servers run on Java 21
+    private SQLDatabase(ConfigData config) {
         this(config.getString("sql.host"), config.getInt("sql.port"), config.getString("sql.database"),
                 config.getString("sql.username"), config.getString("sql.password"), config.getString("sql.table-prefix"));
     }
