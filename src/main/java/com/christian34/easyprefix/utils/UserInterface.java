@@ -6,6 +6,7 @@ import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.listeners.ChatListener;
+import com.christian34.easyprefix.user.CustomLayout;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.textinput.UserInput;
@@ -170,22 +171,19 @@ public class UserInterface {
         }
 
         UserInput.create().build(user, Message.GUI_INPUT_PREFIX.getText(), user.getPrefix(), (input) -> {
-            if (!user.hasPermission(UserPermission.CUSTOM_BLACKLIST)) {
-                for (String blocked : this.instance.getConfigData().getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST)) {
-                    if (input.toLowerCase().contains(blocked.toLowerCase())) {
-                        user.getPlayer().sendMessage(Message.CHATLAYOUT_INVALID.getText());
-                        return;
-                    }
-                }
+            String prefix = CustomLayout.sanitize(user, input);
+            if (CustomLayout.isBlocked(user, input, prefix)) {
+                user.getPlayer().sendMessage(Message.CHATLAYOUT_INVALID.getText());
+                return;
             }
 
-            String text = Message.CHAT_INPUT_PREFIX_CONFIRM.getText().replace("%content%", input);
+            String text = Message.CHAT_INPUT_PREFIX_CONFIRM.getText().replace("%content%", TextUtils.colorize(prefix));
             ChatButtonConfirm chatButtonConfirm = new ChatButtonConfirm(user.getPlayer(), text, Message.CHAT_BTN_CONFIRM.getText());
             chatButtonConfirm.onClick(() -> {
                 Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-                user.setPrefix(input);
+                user.setPrefix(prefix);
                 user.saveData("custom_prefix_update", currentTime.toString());
-                user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText().replace("%content%", Optional.ofNullable(user.getPrefix()).orElse("-")));
+                user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText().replace("%content%", TextUtils.colorize(prefix)));
             });
         });
     }
@@ -202,22 +200,19 @@ public class UserInterface {
         }
 
         UserInput.create().build(user, Message.GUI_INPUT_SUFFIX.getText(), user.getSuffix(), (input) -> {
-            if (!user.hasPermission(UserPermission.CUSTOM_BLACKLIST)) {
-                for (String blocked : this.instance.getConfigData().getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST)) {
-                    if (input.toLowerCase().contains(blocked.toLowerCase())) {
-                        user.getPlayer().sendMessage(Message.CHATLAYOUT_INVALID.getText());
-                        return;
-                    }
-                }
+            String suffix = CustomLayout.sanitize(user, input);
+            if (CustomLayout.isBlocked(user, input, suffix)) {
+                user.getPlayer().sendMessage(Message.CHATLAYOUT_INVALID.getText());
+                return;
             }
 
-            String text = Message.CHAT_INPUT_SUFFIX_CONFIRM.getText().replace("%content%", input);
+            String text = Message.CHAT_INPUT_SUFFIX_CONFIRM.getText().replace("%content%", TextUtils.colorize(suffix));
             ChatButtonConfirm chatButtonConfirm = new ChatButtonConfirm(user.getPlayer(), text, Message.CHAT_BTN_CONFIRM.getText());
             chatButtonConfirm.onClick(() -> {
                 Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-                user.setSuffix(input);
+                user.setSuffix(suffix);
                 user.saveData("custom_suffix_update", currentTime.toString());
-                user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText().replace("%content%", Optional.ofNullable(user.getSuffix()).orElse("-")));
+                user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText().replace("%content%", TextUtils.colorize(suffix)));
             });
         });
     }
@@ -730,9 +725,9 @@ public class UserInterface {
                     itemStack.setItemMeta(meta);
                 }
             }
-            String prefix = group.getPrefix();
+            String layout = TextUtils.colorize(group.getPrefix() + user.getName() + group.getSuffix());
             for (String line : defaultLore) {
-                line = line.replace("%LAYOUT%", prefix + user.getName() + group.getSuffix());
+                line = line.replace("%LAYOUT%", layout);
                 lore.add(line);
             }
 

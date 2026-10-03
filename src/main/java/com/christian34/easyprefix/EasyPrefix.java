@@ -14,6 +14,7 @@ import com.christian34.easyprefix.sql.database.LocalDatabase;
 import com.christian34.easyprefix.sql.database.SQLDatabase;
 import com.christian34.easyprefix.sql.database.SharedConfig;
 import com.christian34.easyprefix.sql.database.StorageType;
+import com.christian34.easyprefix.user.CustomLayout;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserData;
 import com.christian34.easyprefix.utils.*;
@@ -232,6 +233,7 @@ public class EasyPrefix extends JavaPlugin {
                 }
             }
         }
+        tagResolverBuilder.resolver(CustomLayout.PERCENT);
         tagResolverBuilder.resolver(StandardTags.defaults());
 
         this.colors = colors;

@@ -41,6 +41,7 @@ public class User {
     private boolean isGroupForced;
     private long lastPrefixUpdate, lastSuffixUpdate;
     private TagResolver.Builder tagResvBuilder;
+    private TagResolver tagResolver = TagResolver.empty();
     private Collection<Color> colors;
     private Collection<Decoration> decorations;
     private MiniMessage miniMsg;
@@ -156,7 +157,8 @@ public class User {
             }
         }
 
-        this.miniMsg = MiniMessage.builder().tags(this.tagResvBuilder.build()).build();
+        this.tagResolver = this.tagResvBuilder.build();
+        this.miniMsg = MiniMessage.builder().tags(this.tagResolver).build();
 
         String formatting = userData.getString("chat_formatting");
         if ("%r".equals(formatting)) {
@@ -195,6 +197,13 @@ public class User {
         } catch (IllegalArgumentException ex) {
             return 0;
         }
+    }
+
+    /**
+     * @return the tags of the colors and formattings the player has the permission for
+     */
+    public TagResolver getTagResolver() {
+        return this.tagResolver;
     }
 
     public Component deserialize(String text) {

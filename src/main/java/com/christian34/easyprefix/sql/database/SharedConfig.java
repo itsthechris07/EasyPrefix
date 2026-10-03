@@ -37,6 +37,7 @@ public final class SharedConfig {
             ConfigData.Keys.NAME_HOVER,
             ConfigData.Keys.NAME_CLICK,
             ConfigData.Keys.DATE_FORMAT,
+            "chat.mentions",
             ConfigData.Keys.COLOR_ICON,
             "chat.colors",
             "chat.decorations",

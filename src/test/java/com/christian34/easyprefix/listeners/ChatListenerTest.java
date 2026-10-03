@@ -167,6 +167,92 @@ class ChatListenerTest extends PluginTestBase {
         assertNull(ChatListener.formatLayout(user(player), "{prefix}{name}").hoverEvent());
     }
 
+    private static String lineFor(AsyncChatEvent event, Player viewer) {
+        return PlainTextComponentSerializer.plainText().serialize(
+                event.renderer().render(event.getPlayer(), event.getPlayer().displayName(), event.message(), viewer));
+    }
+
+    /**
+     * the component that shows the mention in the line
+     */
+    private static Component mention(Component line, String text) {
+        if (line instanceof net.kyori.adventure.text.TextComponent t && t.content().equals(text)) return line;
+        for (Component child : line.children()) {
+            Component found = mention(child, text);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    @Test
+    void mentionedPlayerSeesHighlightAndHearsSound() {
+        PlayerMock steve = addPlayer("Steve");
+        PlayerMock alex = addPlayer("Alex");
+        PlayerMock bob = addPlayer("Bob");
+        AsyncChatEvent event = chat(steve, "hi @alex, look");
+        server.getScheduler().performOneTick();
+
+        assertTrue(lineFor(event, alex).startsWith("» "), lineFor(event, alex));
+        assertTrue(lineFor(event, alex).endsWith("hi @Alex, look"), lineFor(event, alex));
+        assertFalse(lineFor(event, bob).startsWith("»"), lineFor(event, bob));
+        assertTrue(lineFor(event, bob).endsWith("hi @Alex, look"), lineFor(event, bob));
+
+        Component highlighted = mention(event.renderer().render(steve, steve.displayName(), event.message(), alex), "@Alex");
+        assertNotNull(highlighted);
+        assertEquals(NamedTextColor.YELLOW, highlighted.color());
+        assertTrue(highlighted.hasDecoration(TextDecoration.BOLD));
+        Component formatted = mention(event.renderer().render(steve, steve.displayName(), event.message(), bob), "@Alex");
+        assertNotNull(formatted);
+        assertEquals(NamedTextColor.AQUA, formatted.color());
+
+        assertEquals(1, alex.getHeardSounds().size());
+        assertEquals("minecraft:entity.experience_orb.pickup", alex.getHeardSounds().getFirst().getSound());
+        assertTrue(bob.getHeardSounds().isEmpty());
+        assertTrue(steve.getHeardSounds().isEmpty());
+    }
+
+    @Test
+    void mentionNeedsTheWholeName() {
+        PlayerMock steve = addPlayer("Steve");
+        PlayerMock alex = addPlayer("Alex");
+        AsyncChatEvent event = chat(steve, "mail@alexander.com @Alexa");
+        server.getScheduler().performOneTick();
+        assertFalse(lineFor(event, alex).startsWith("»"));
+        assertTrue(alex.getHeardSounds().isEmpty());
+    }
+
+    @Test
+    void ownNameDoesNotPing() {
+        PlayerMock steve = addPlayer("Steve");
+        AsyncChatEvent event = chat(steve, "I am @Steve");
+        server.getScheduler().performOneTick();
+        assertFalse(lineFor(event, steve).startsWith("»"));
+        assertTrue(steve.getHeardSounds().isEmpty());
+    }
+
+    @Test
+    void playersThatDoNotReceiveTheMessageHearNoSound() {
+        PlayerMock steve = addPlayer("Steve");
+        PlayerMock alex = addPlayer("Alex");
+        AsyncChatEvent event = event(steve, "hi @Alex");
+        // e.g. alex ignores steve
+        event.viewers().remove(alex);
+        new ChatListener(plugin).onChat(event);
+        server.getScheduler().performOneTick();
+        assertTrue(alex.getHeardSounds().isEmpty());
+    }
+
+    @Test
+    void mentionsCanBeDisabled() {
+        plugin.getConfigData().save(ConfigData.Keys.MENTIONS, false);
+        PlayerMock steve = addPlayer("Steve");
+        PlayerMock alex = addPlayer("Alex");
+        AsyncChatEvent event = chat(steve, "hi @alex");
+        server.getScheduler().performOneTick();
+        assertTrue(lineFor(event, alex).endsWith("hi @alex"));
+        assertTrue(alex.getHeardSounds().isEmpty());
+    }
+
     @Test
     void previewShowsFormattedLine() {
         PlayerMock player = addPlayer("Steve");

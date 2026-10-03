@@ -2,6 +2,7 @@ package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.commands.arguments.ColorArgument;
+import com.christian34.easyprefix.commands.arguments.DecorationArgument;
 import com.christian34.easyprefix.commands.arguments.GroupArgument;
 import com.christian34.easyprefix.commands.arguments.SubgroupArgument;
 import com.christian34.easyprefix.commands.arguments.UserArgument;
@@ -11,6 +12,7 @@ import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
 import com.christian34.easyprefix.utils.Color;
+import com.christian34.easyprefix.utils.Decoration;
 import com.christian34.easyprefix.utils.Message;
 import com.christian34.easyprefix.utils.TaskManager;
 import com.christian34.easyprefix.utils.UserInterface;
@@ -139,6 +141,9 @@ public class CommandManager {
 
         ColorArgument.ColorParser<CommandSender> colorParser = new ColorArgument.ColorParser<>();
         this.manager.parserRegistry().registerParserSupplier(TypeToken.get(Color.class), p -> colorParser);
+
+        DecorationArgument.DecorationParser<CommandSender> decorationParser = new DecorationArgument.DecorationParser<>();
+        this.manager.parserRegistry().registerParserSupplier(TypeToken.get(Decoration.class), p -> decorationParser);
 
         this.annotationParser.parse(new CommandColor());
         if (instance.getConfigData().getBoolean(ConfigData.Keys.USE_TAGS)) {

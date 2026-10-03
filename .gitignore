@@ -19,3 +19,6 @@ build/
 /gradlew
 /gradlew.bat
 /gradle/wrapper/
+
+# design sources of the store images (assets/*.png)
+/assets/source/

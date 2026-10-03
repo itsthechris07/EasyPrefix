@@ -68,6 +68,13 @@ public class ConfigData extends PluginFile {
         public static final String NAME_HOVER = "chat.name-hover";
         public static final String NAME_CLICK = "chat.name-click";
         public static final String DATE_FORMAT = "chat.date-format";
+        public static final String MENTIONS = "chat.mentions.enabled";
+        public static final String MENTION_FORMAT = "chat.mentions.format";
+        public static final String MENTION_HIGHLIGHT = "chat.mentions.highlight";
+        public static final String MENTION_LINE_PREFIX = "chat.mentions.line-prefix";
+        public static final String MENTION_SOUND = "chat.mentions.sound";
+        public static final String MENTION_VOLUME = "chat.mentions.volume";
+        public static final String MENTION_PITCH = "chat.mentions.pitch";
         public static final String HIDE_JOIN_QUIT = "join-quit-messages.hide-messages";
         public static final String PREFIX_ALIAS = "user.custom-layout.alias.prefix";
         public static final String SUFFIX_ALIAS = "user.custom-layout.alias.suffix";

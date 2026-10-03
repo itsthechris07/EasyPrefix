@@ -8,7 +8,8 @@ package com.christian34.easyprefix.user;
  * @author Christian34
  */
 public enum UserPermission {
-    ADMIN, SETTINGS, CUSTOM_PREFIX, CUSTOM_SUFFIX, CUSTOM_BYPASS, TAGS_SWITCH, CUSTOM_BLACKLIST;
+    ADMIN, SETTINGS, CUSTOM_PREFIX, CUSTOM_SUFFIX, CUSTOM_BYPASS, TAGS_SWITCH, CUSTOM_BLACKLIST,
+    CUSTOM_HEX, CUSTOM_GRADIENT, CUSTOM_SHADOW;
 
     private final static String PERMISSION_PREFIX = "EasyPrefix.";
 

@@ -7,7 +7,9 @@ import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.sql.database.Migration;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Debug;
+import com.christian34.easyprefix.utils.Decoration;
 import com.christian34.easyprefix.utils.Message;
 import com.christian34.easyprefix.utils.TaskManager;
 import com.christian34.easyprefix.utils.UserInterface;
@@ -179,6 +181,34 @@ public class CommandEasyPrefix {
         }
         user.setSuffix(suffix);
         sender.sendMessage(String.format(Message.PREFIX + "§cThe suffix of §7%s §chas been set to §7%s§c.", user.getName(), user.getSuffix()));
+    }
+
+    @Command("easyprefix|ep user <user> setcolor <color>")
+    @CommandDescription("sets the chat color of a player, also if they are offline")
+    @Permission("easyprefix.admin")
+    public void userSetColor(CommandSender sender, @Argument("user") User user, @Argument("color") Color color) {
+        CommandColor.setColor(sender, user, color);
+    }
+
+    @Command("easyprefix|ep user <user> setformat <formatting>")
+    @CommandDescription("sets the chat formatting (e.g. bold) of a player, also if they are offline")
+    @Permission("easyprefix.admin")
+    public void userSetFormatting(CommandSender sender, @Argument("user") User user, @Argument("formatting") Decoration decoration) {
+        CommandColor.setFormatting(sender, user, decoration);
+    }
+
+    @Command("easyprefix|ep user <user> setformat none")
+    @CommandDescription("removes the chat formatting of a player")
+    @Permission("easyprefix.admin")
+    public void userRemoveFormatting(CommandSender sender, @Argument("user") User user) {
+        CommandColor.setFormatting(sender, user, null);
+    }
+
+    @Command("easyprefix|ep user <user> resetcolor")
+    @CommandDescription("resets the chat color and formatting of a player to the default of their group")
+    @Permission("easyprefix.admin")
+    public void userResetColor(CommandSender sender, @Argument("user") User user) {
+        CommandColor.resetColor(sender, user);
     }
 
     @Command("easyprefix|ep settings")

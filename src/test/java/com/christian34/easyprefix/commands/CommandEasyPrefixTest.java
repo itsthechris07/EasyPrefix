@@ -20,6 +20,37 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommandEasyPrefixTest extends PluginTestBase {
 
     @Test
+    void setsColorAndFormattingOfUser() {
+        PlayerMock admin = addAdmin("Admin");
+        PlayerMock target = addPlayer("Steve");
+        assertNull(execute(admin, "ep user Steve setcolor red"));
+        assertNull(execute(admin, "ep user Steve setformat bold"));
+        assertEquals("red", user(target).getColor().getName());
+        assertEquals("bold", user(target).getDecoration().getName());
+        assertContains(messages(admin), "The formatting for Steve has been set to Bold");
+
+        assertNull(execute(admin, "ep user Steve setformat none"));
+        assertNull(user(target).getDecoration());
+        assertContains(messages(admin), "The formatting for Steve has been removed");
+
+        assertNull(execute(admin, "ep user Steve resetcolor"));
+        assertEquals(user(target).getGroup().getColor(), user(target).getColor());
+    }
+
+    @Test
+    void setsColorOfOfflineUser() {
+        PlayerMock admin = addAdmin("Admin");
+        PlayerMock target = addPlayer("Steve");
+        target.disconnect();
+        assertNull(execute(admin, "ep user Steve setcolor red"));
+        assertNull(execute(admin, "ep user Steve setformat italic"));
+
+        User user = plugin.getUser(server.getOfflinePlayer(target.getUniqueId()));
+        assertEquals("red", user.getColor().getName());
+        assertEquals("italic", user.getDecoration().getName());
+    }
+
+    @Test
     void mainCommandShowsVersion() {
         PlayerMock player = addPlayer("Steve");
         execute(player, "ep");

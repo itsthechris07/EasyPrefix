@@ -3,6 +3,7 @@ package com.christian34.easyprefix.listeners;
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Message;
 import com.christian34.easyprefix.utils.TextUtils;
 import io.papermc.paper.chat.ChatRenderer;
@@ -10,6 +11,8 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
@@ -18,7 +21,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.christian34.easyprefix.utils.TextUtils.miniMessage;
@@ -46,9 +50,24 @@ public class ChatListener implements Listener {
         // the text as other plugins (e.g. chat filters) left it, colored by the permissions of the player
         String text = PlainTextComponentSerializer.plainText().serialize(e.message());
         Component message = formatMessage(user, text);
-        e.message(message);
-        Component line = formatLine(user, message);
-        e.renderer(ChatRenderer.viewerUnaware((source, sourceDisplayName, msg) -> line));
+        Mentions mentions = Mentions.find(e.getPlayer(), text);
+        if (mentions == null) {
+            e.message(message);
+            Component line = formatLine(user, message);
+            e.renderer(ChatRenderer.viewerUnaware((source, sourceDisplayName, msg) -> line));
+            return;
+        }
+
+        e.message(mentions.format(message, null));
+        Component line = formatLine(user, e.message());
+        // mentioned players see their mention highlighted and a mark in front of the line
+        Map<Player, Component> highlighted = new HashMap<>();
+        for (Player player : mentions.getMentioned()) {
+            highlighted.put(player, mentions.linePrefix().append(formatLine(user, mentions.format(message, player))));
+        }
+        e.renderer((source, sourceDisplayName, msg, viewer) ->
+                viewer instanceof Player player ? highlighted.getOrDefault(player, line) : line);
+        mentions.playSound(e.viewers());
     }
 
     /**
@@ -67,13 +86,20 @@ public class ChatListener implements Listener {
         String msg = TextUtils.escapeLegacyColors(message);
 
         Component componentMsg = Component.text("");
-        if (user.getColor() != null) {
-            componentMsg = componentMsg.color(user.getColor().getTextColor());
+        Component content;
+        Color color = user.getColor();
+        if (color != null && color.getName().equalsIgnoreCase("rainbow")) {
+            // rainbow is a tag around the text, its hex value is only a fallback (e.g. for icons)
+            MiniMessage rainbow = MiniMessage.builder().tags(TagResolver.resolver(user.getTagResolver(), color.tagResolver())).build();
+            content = rainbow.deserialize("<rainbow>" + msg);
+        } else {
+            if (color != null) componentMsg = componentMsg.color(color.getTextColor());
+            content = user.deserialize(msg);
         }
         if (user.getDecoration() != null) {
             componentMsg = componentMsg.decorate(user.getDecoration().getTextDecoration());
         }
-        return componentMsg.append(user.deserialize(msg));
+        return componentMsg.append(content);
     }
 
     /**
