@@ -33,7 +33,7 @@ public final class CustomLayout {
      * a percent sign that is inserted after placeholders are resolved, so players can't use placeholders
      */
     public static final TagResolver PERCENT = TagResolver.resolver("percent", Tag.selfClosingInserting(Component.text("%")));
-    private static final String PERCENT_TAG = "<percent>";
+    public static final String PERCENT_TAG = "<percent>";
 
     private CustomLayout() {
     }

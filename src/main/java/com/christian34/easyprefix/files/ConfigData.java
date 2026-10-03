@@ -82,6 +82,7 @@ public class ConfigData extends PluginFile {
         public static final String USE_TAGS = "tags.enabled";
         public static final String CUSTOM_LAYOUT_BLACKLIST = "user.custom-layout.blacklist";
         public static final String COLOR_ICON = "chat.color-icon";
+        public static final String TEXT_INPUT = "text-input";
         public static final String DISPLAY_TAB_LIST = "display.tab-list";
         public static final String DISPLAY_SORT_TAB_LIST = "display.sort-tab-list";
         public static final String DISPLAY_NAME_TAGS = "display.name-tags";

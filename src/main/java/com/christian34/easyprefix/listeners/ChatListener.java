@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -156,10 +157,17 @@ public class ChatListener implements Listener {
      * @return prefix, name and suffix as shown in the chat
      */
     public static Component formatName(User user) {
-        Component componentPrefix = Component.text("").append(miniMessage().deserialize(resolve(user, user.getPrefix()) + displayName(user.getPlayer())));
+        return formatName(user, user.getPrefix(), user.getSuffix());
+    }
+
+    /**
+     * @return the name with another prefix and suffix, e.g. to preview a custom prefix before it is saved
+     */
+    public static Component formatName(User user, @Nullable String prefix, @Nullable String suffix) {
+        Component componentPrefix = Component.text("").append(miniMessage().deserialize(resolve(user, prefix) + displayName(user.getPlayer())));
         return Component.text("")
                 .append(componentPrefix)
-                .append(formatSuffix(user));
+                .append(Component.text("").append(miniMessage().deserialize(resolve(user, suffix))));
     }
 
     /**

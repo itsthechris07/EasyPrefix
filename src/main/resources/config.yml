@@ -7,6 +7,10 @@
 
 config:
   enabled: true
+  # how players type in texts (e.g. a custom prefix or in the setup GUI)
+  # dialog: a window with a text field that contains the current value and a preview
+  # chat: the text is written into the chat ("quit" cancels) - for clients that can't show dialogs (e.g. older versions with ViaBackwards)
+  text-input: dialog
   # connect multiple servers
   sql:
     enabled: false

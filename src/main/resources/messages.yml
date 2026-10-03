@@ -103,6 +103,15 @@ chat_input_suffix_confirm: '%prefix% &7Do you want to set your suffix to &7»&f%
 chat_input_suffix_saved: '%prefix% &aYour suffix has been set to &7»&f%content%&7«'
 chat_input_cancelled: '%prefix% &7The input has been cancelled, nothing was changed.'
 chat_input_timeout: '%prefix% &7You didn''t answer in time, nothing was changed.'
+# the text input in the chat (config.yml: text-input: chat)
+chat_input_quit_hint: '&7(write "quit" to cancel)'
+# clicking the current value writes it into the chat box
+chat_input_current: '%prefix% &7Current: &f%content% &8(click to edit)'
+# the text input dialog (config.yml: text-input: dialog)
+dialog_input_preview: '&7Preview: &r'
+dialog_button_save: '&aSave'
+dialog_button_preview: '&ePreview'
+dialog_button_cancel: '&cCancel'
 chat_layout_update_cooldown: '%prefix% &cYou have recently changed your layout. Please try again in %h% hours %m% minutes!'
 chat_cmd_tags_help_head: ' %newline%&7---------------=== &9&lTags &7===---------------%newline% '
 chat_cmd_tags_list_info: '%prefix% &7You have (&8%tags%&7) tag(s) available: %newline%'

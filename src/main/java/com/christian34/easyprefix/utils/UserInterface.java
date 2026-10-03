@@ -31,6 +31,7 @@ import java.sql.Timestamp;
 import java.util.regex.Pattern;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 /**
  * EasyPrefix 2026.
@@ -185,21 +186,12 @@ public class UserInterface {
             return;
         }
 
-        UserInput.create().build(user, Message.GUI_INPUT_PREFIX.getText(), user.getPrefix(), (input) -> {
-            String prefix = CustomLayout.sanitize(user, input);
-            if (CustomLayout.isBlocked(user, input, prefix)) {
-                user.getPlayer().sendMessage(Message.CHATLAYOUT_INVALID.getText());
-                return;
-            }
-
-            String text = Message.CHAT_INPUT_PREFIX_CONFIRM.getText().replace("%content%", TextUtils.colorize(prefix));
-            ChatButtonConfirm chatButtonConfirm = new ChatButtonConfirm(user.getPlayer(), text, Message.CHAT_BTN_CONFIRM.getText());
-            chatButtonConfirm.onClick(() -> {
-                Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-                user.setPrefix(prefix);
-                user.saveData("custom_prefix_update", currentTime.toString());
-                user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText().replace("%content%", TextUtils.colorize(prefix)));
-            });
+        UserInput input = UserInput.create()
+                .preview(text -> previewLayout(CustomLayout.sanitize(user, text), user.getSuffix()));
+        openCustomLayoutInput(input, Message.GUI_INPUT_PREFIX, user.getPrefix(), user.hasCustomPrefix(), Message.CHAT_INPUT_PREFIX_CONFIRM, prefix -> {
+            user.setPrefix(prefix);
+            user.saveData("custom_prefix_update", new Timestamp(System.currentTimeMillis()).toString());
+            user.getPlayer().sendMessage(Message.CHAT_INPUT_PREFIX_SAVED.getText().replace("%content%", TextUtils.colorize(prefix)));
         });
     }
 
@@ -214,22 +206,46 @@ public class UserInterface {
             return;
         }
 
-        UserInput.create().build(user, Message.GUI_INPUT_SUFFIX.getText(), user.getSuffix(), (input) -> {
-            String suffix = CustomLayout.sanitize(user, input);
-            if (CustomLayout.isBlocked(user, input, suffix)) {
-                user.getPlayer().sendMessage(Message.CHATLAYOUT_INVALID.getText());
-                return;
-            }
-
-            String text = Message.CHAT_INPUT_SUFFIX_CONFIRM.getText().replace("%content%", TextUtils.colorize(suffix));
-            ChatButtonConfirm chatButtonConfirm = new ChatButtonConfirm(user.getPlayer(), text, Message.CHAT_BTN_CONFIRM.getText());
-            chatButtonConfirm.onClick(() -> {
-                Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-                user.setSuffix(suffix);
-                user.saveData("custom_suffix_update", currentTime.toString());
-                user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText().replace("%content%", TextUtils.colorize(suffix)));
-            });
+        UserInput input = UserInput.create()
+                .preview(text -> previewLayout(user.getPrefix(), CustomLayout.sanitize(user, text)));
+        openCustomLayoutInput(input, Message.GUI_INPUT_SUFFIX, user.getSuffix(), user.hasCustomSuffix(), Message.CHAT_INPUT_SUFFIX_CONFIRM, suffix -> {
+            user.setSuffix(suffix);
+            user.saveData("custom_suffix_update", new Timestamp(System.currentTimeMillis()).toString());
+            user.getPlayer().sendMessage(Message.CHAT_INPUT_SUFFIX_SAVED.getText().replace("%content%", TextUtils.colorize(suffix)));
         });
+    }
+
+    /**
+     * asks for a custom prefix or suffix: the field contains the current one, blocked words are rejected. The chat
+     * input has no preview, so the sanitized text has to be confirmed there.
+     *
+     * @param save gets the sanitized text
+     */
+    private void openCustomLayoutInput(UserInput input, Message title, @Nullable String current, boolean custom, Message confirm, Consumer<String> save) {
+        // stored custom layouts are MiniMessage with escaped percent signs, group prefixes may contain §
+        String value = current == null ? "" : current.replace(CustomLayout.PERCENT_TAG, "%").replace("§", "&");
+        // placeholders of the group (e.g. %ep_tag_prefix%) would only be text in a custom layout
+        if (!custom) value = value.replaceAll("%[^%\\s]+%", "");
+        input.validate(text -> CustomLayout.isBlocked(user, text, CustomLayout.sanitize(user, text))
+                        ? Message.CHATLAYOUT_INVALID.getText() : null)
+                .build(user, title.getText(), value, text -> {
+                    String sanitized = CustomLayout.sanitize(user, text);
+                    if (input.showsPreview()) {
+                        save.accept(sanitized);
+                        return;
+                    }
+                    String question = confirm.getText().replace("%content%", TextUtils.colorize(sanitized));
+                    new ChatButtonConfirm(user.getPlayer(), question, Message.CHAT_BTN_CONFIRM.getText())
+                            .onClick(() -> save.accept(sanitized));
+                });
+    }
+
+    /**
+     * @return a chat line of the user with another prefix or suffix
+     */
+    private Component previewLayout(@Nullable String prefix, @Nullable String suffix) {
+        return ChatListener.formatName(user, prefix, suffix).appendSpace()
+                .append(ChatListener.formatMessage(user, Message.COLOR_PREVIEW_TEXT.getText()));
     }
 
     public void openPageUserColors() {
@@ -573,8 +589,8 @@ public class UserInterface {
         ConfigData config = this.instance.getConfigData();
         String alias = config.getString(key, "");
         return new StaticGuiElement(slot, new ItemStack(material), click -> {
-            UserInput.create().build(user, "§cType in the new command for " + type.toLowerCase() + "es (e.g. /" + type.toLowerCase()
-                    + "). Type \"-\" to disable it, \"quit\" to cancel.", alias.isEmpty() ? "-" : alias, (input) -> {
+            UserInput.create().build(user, "§9" + type + " command §8(e.g. /" + type.toLowerCase()
+                    + ", \"-\" disables it)", alias.isEmpty() ? "-" : alias, (input) -> {
                 if (!isAdmin()) return;
                 String value = input.trim().replace("/", "").replaceAll("[^a-zA-Z0-9_-]", "");
                 config.save(key, value.isEmpty() ? "" : "/" + value);
@@ -643,7 +659,7 @@ public class UserInterface {
         GuiCreator.addBackButton(gui, this::openSettingsPage);
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.NETHER_STAR), click -> {
-            UserInput.create().build(user, "§cType in the word to block. Write \"quit\" to cancel.", "", (input) -> {
+            UserInput.create().build(user, "§9Word to block", "", (input) -> {
                 if (!isAdmin()) return;
                 String word = input.trim();
                 List<String> updated = new ArrayList<>(config.getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST));
@@ -785,8 +801,8 @@ public class UserInterface {
 
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_INGOT), click -> {
             String prefix = group.getPrefix();
-            prefix = prefix == null ? " " : prefix.replace("§", "&");
-            UserInput.create().build(user, "§cPlease type the prefix in the chat. Write \"quit\" to stop the process.", prefix, (input) -> {
+            prefix = prefix == null ? "" : prefix.replace("§", "&");
+            UserInput.create().build(user, "§9Prefix of " + group.getName(), prefix, (input) -> {
                 if (!isAdmin()) return;
                 group.setPrefix(input);
                 user.getPlayer().sendMessage(Message.INPUT_SAVED.getText());
@@ -797,8 +813,8 @@ public class UserInterface {
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.GOLD_INGOT), click -> {
             String suffix = group.getSuffix();
-            suffix = suffix == null ? " " : suffix.replace("§", "&");
-            UserInput.create().build(user, "§cPlease type the suffix in the chat. Write \"quit\" to stop the process.", suffix, (input) -> {
+            suffix = suffix == null ? "" : suffix.replace("§", "&");
+            UserInput.create().build(user, "§9Suffix of " + group.getName(), suffix, (input) -> {
                 if (!isAdmin()) return;
                 group.setSuffix(input);
                 user.sendMessage(Message.INPUT_SAVED.getText());
@@ -814,8 +830,8 @@ public class UserInterface {
 
         gui.addElement(new StaticGuiElement('d', new ItemStack(Material.BLAZE_ROD), click -> {
             String joinMsg = group.getJoinMessage();
-            joinMsg = joinMsg == null ? " " : joinMsg.replace("§", "&");
-            UserInput.create().build(user, "§cType in the join message", joinMsg, (input) -> {
+            joinMsg = joinMsg == null ? "" : joinMsg.replace("§", "&");
+            UserInput.create().build(user, "§9Join message of " + group.getName(), joinMsg, (input) -> {
                 if (!isAdmin()) return;
                 group.setJoinMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
@@ -826,8 +842,8 @@ public class UserInterface {
 
         gui.addElement(new StaticGuiElement('e', new ItemStack(Material.STICK), click -> {
             String quitMsg = group.getQuitMessage();
-            quitMsg = quitMsg == null ? " " : quitMsg.replace("§", "&");
-            UserInput.create().build(user, "§cType in the quit message", quitMsg, (input) -> {
+            quitMsg = quitMsg == null ? "" : quitMsg.replace("§", "&");
+            UserInput.create().build(user, "§9Quit message of " + group.getName(), quitMsg, (input) -> {
                 if (!isAdmin()) return;
                 group.setQuitMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
@@ -887,7 +903,7 @@ public class UserInterface {
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openGroupProfile(group);
             } else if (click.getType().isRightClick()) {
-                UserInput.create().build(user, "§cType in the new line. Write \"quit\" to stop the process.", null, (input) -> {
+                UserInput.create().build(user, "§9New hover line", "", (input) -> {
                     if (!isAdmin()) return;
                     List<String> lines = new ArrayList<>(group.getHover());
                     lines.add(input);
@@ -896,7 +912,7 @@ public class UserInterface {
                     openGroupProfile(group);
                 });
             } else {
-                UserInput.create().build(user, "§cType in the lines, separated by |. Write \"quit\" to stop the process.", null, (input) -> {
+                UserInput.create().build(user, "§9Hover lines §8(separated by |)", String.join("|", hover), (input) -> {
                     if (!isAdmin()) return;
                     group.setHover(List.of(input.split(Pattern.quote("|"), -1)));
                     user.sendAdminMessage(Message.INPUT_SAVED);
@@ -1002,8 +1018,8 @@ public class UserInterface {
 
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_INGOT), click -> {
             String prefix = subgroup.getPrefix();
-            prefix = prefix == null ? " " : prefix.replace("§", "&");
-            UserInput.create().build(user, "§cType in the prefix", prefix, (input) -> {
+            prefix = prefix == null ? "" : prefix.replace("§", "&");
+            UserInput.create().build(user, "§9Prefix of " + subgroup.getName(), prefix, (input) -> {
                 if (!isAdmin()) return;
                 subgroup.setPrefix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
@@ -1014,8 +1030,8 @@ public class UserInterface {
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.GOLD_INGOT), click -> {
             String suffix = subgroup.getSuffix();
-            suffix = suffix == null ? " " : suffix.replace("§", "&");
-            UserInput.create().build(user, "§cType in the suffix", suffix, (input) -> {
+            suffix = suffix == null ? "" : suffix.replace("§", "&");
+            UserInput.create().build(user, "§9Suffix of " + subgroup.getName(), suffix, (input) -> {
                 if (!isAdmin()) return;
                 subgroup.setSuffix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
@@ -1035,7 +1051,7 @@ public class UserInterface {
 
     private void openGroupCreator() {
         if (!isAdmin()) return;
-        UserInput.create().build(user, "§cType in the name", "ExampleGroup", (input) -> {
+        UserInput.create().build(user, "§9Name of the new group", "ExampleGroup", (input) -> {
             if (!isAdmin()) return;
             String name = input.replaceAll("[^a-zA-Z0-9_]", "");
             if (this.instance.getGroupHandler().createGroup(name)) {
@@ -1049,7 +1065,7 @@ public class UserInterface {
 
     private void openTagCreator() {
         if (!isAdmin()) return;
-        UserInput.create().build(user, "§cType in the name", "ExampleTag", (input) -> {
+        UserInput.create().build(user, "§9Name of the new tag", "ExampleTag", (input) -> {
             if (!isAdmin()) return;
             String name = input.replaceAll("[^a-zA-Z0-9_]", "");
             if (this.instance.getGroupHandler().createSubgroup(name)) {

@@ -30,12 +30,19 @@ public class FoliaChatInput extends UserInput {
     private static final Map<UUID, Consumer<String>> PENDING = new ConcurrentHashMap<>();
 
     @Override
-    public void build(User user, String title, @Nullable String value, Consumer<String> consumer) {
+    public boolean showsPreview() {
+        return false;
+    }
+
+    @Override
+    public void build(User user, String title, @Nullable String value, Consumer<String> input) {
         Player player = user.getPlayer();
         UUID uniqueId = player.getUniqueId();
         player.closeInventory();
+        Consumer<String> consumer = text -> accept(user, text, input);
         PENDING.put(uniqueId, consumer);
-        player.sendMessage(Message.PREFIX_ALT.getText() + " " + title);
+        sendCurrentValue(player, value);
+        player.sendMessage(chatPrompt(title));
         TaskManager.runLater(player, () -> {
             // a newer input of the player has its own timeout
             if (PENDING.remove(uniqueId, consumer)) player.sendMessage(Message.CHAT_INPUT_TIMEOUT.getText());

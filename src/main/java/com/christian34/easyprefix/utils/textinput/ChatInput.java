@@ -25,20 +25,26 @@ import java.util.function.Consumer;
 class ChatInput extends UserInput {
 
     @Override
+    public boolean showsPreview() {
+        return false;
+    }
+
+    @Override
     public void build(User user, String title, @Nullable String value, Consumer<String> consumer) {
         Player player = user.getPlayer();
         player.closeInventory();
+        sendCurrentValue(player, value);
         Prompt prompt = new StringPrompt() {
             @NotNull
             @Override
             public String getPromptText(@NotNull ConversationContext conversationContext) {
-                return Message.PREFIX_ALT.getText() + " " + title;
+                return chatPrompt(title);
             }
 
             @Nullable
             @Override
             public Prompt acceptInput(@NotNull ConversationContext conversationContext, @Nullable String text) {
-                if (text != null) TaskManager.run(player, () -> consumer.accept(text));
+                if (text != null) TaskManager.run(player, () -> accept(user, text, consumer));
                 return Prompt.END_OF_CONVERSATION;
             }
         };

@@ -2,6 +2,9 @@ package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.PluginTestBase;
 import com.christian34.easyprefix.files.ConfigData;
+import com.christian34.easyprefix.user.CustomLayout;
+import com.christian34.easyprefix.user.User;
+import com.christian34.easyprefix.utils.textinput.UserInput;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
@@ -10,12 +13,15 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
+import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockbukkit.mockbukkit.simulate.entity.PlayerSimulation;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -298,6 +304,139 @@ class UserInterfaceTest extends PluginTestBase {
             click(admin, HANDLE_CHAT);
             assertTrue(plugin.getConfigData().getBoolean(ConfigData.Keys.HANDLE_CHAT), "setting changed without permission");
             assertFalse(hasGuiOpen(admin));
+        }
+
+        @Test
+        void hoverInputContainsCurrentLines() {
+            PlayerMock admin = addAdmin("Admin");
+            var group = plugin.getGroupHandler().getGroup("default");
+            group.setHover(List.of("first", "second"));
+            FakeInput input = FakeInput.install(true);
+            new UserInterface(user(admin)).openGroupProfile(group);
+            click(admin, 16);
+            assertEquals("first|second", input.value);
+            input.submit("one|two|three");
+            assertEquals(List.of("one", "two", "three"), group.getHover());
+        }
+    }
+
+    /**
+     * the text input of the custom prefix - the dialog itself can't be shown by MockBukkit
+     */
+    @Nested
+    class CustomPrefixInput {
+
+        private FakeInput open(PlayerMock player, boolean showsPreview) {
+            FakeInput input = FakeInput.install(showsPreview);
+            new UserInterface(user(player)).showCustomPrefixGui();
+            assertNotNull(input.consumer, "no input was opened");
+            return input;
+        }
+
+        @Test
+        void containsCurrentCustomPrefix() {
+            PlayerMock player = addPlayer("Steve", "easyprefix.custom.prefix");
+            user(player).setPrefix(CustomLayout.sanitize(user(player), "VIP 100% "));
+            assertEquals("VIP 100% ", open(player, true).value);
+        }
+
+        @Test
+        void containsGroupPrefixWithoutPlaceholders() {
+            PlayerMock player = addPlayer("Steve", "easyprefix.custom.prefix");
+            user(player).getGroup().setPrefix("<gray>[%ep_tag_prefix%Member] ");
+            assertEquals("<gray>[Member] ", open(player, true).value);
+        }
+
+        @Test
+        void savesWithoutConfirmationAfterPreview() {
+            PlayerMock player = addPlayer("Steve", "easyprefix.custom.prefix");
+            assertNull(open(player, true).submit("New "));
+            assertEquals("New ", user(player).getPrefix());
+            assertContains(messages(player), "Your prefix has been set");
+        }
+
+        @Test
+        void rejectsBlockedWords() {
+            PlayerMock player = addPlayer("Steve", "easyprefix.custom.prefix");
+            String before = user(player).getPrefix();
+            String error = open(player, true).submit("Admin ");
+            assertNotNull(error);
+            assertTrue(error.contains("forbidden words"), error);
+            assertEquals(before, user(player).getPrefix());
+        }
+
+        @Test
+        void chatInputAsksForConfirmation() {
+            PlayerMock player = addPlayer("Steve", "easyprefix.custom.prefix");
+            String before = user(player).getPrefix();
+            open(player, false).submit("New ");
+            assertEquals(before, user(player).getPrefix());
+            assertContains(messages(player), "Do you want to set your prefix");
+        }
+
+        @Test
+        void previewShowsChatLineWithNewPrefix() {
+            PlayerMock player = addPlayer("Steve", "easyprefix.custom.prefix", "easyprefix.color.red");
+            String preview = open(player, true).previewOf("&cVIP ");
+            assertTrue(preview.startsWith("VIP Steve"), preview);
+            assertTrue(preview.contains("Hello, this is what my messages look like!"), preview);
+        }
+
+        @Test
+        void previewShowsForbiddenColorsAsText() {
+            PlayerMock player = addPlayer("Steve", "easyprefix.custom.prefix");
+            String preview = open(player, true).previewOf("&cVIP ");
+            assertTrue(preview.startsWith("<red>VIP Steve"), preview);
+        }
+    }
+
+    @AfterEach
+    void resetInput() {
+        UserInput.setFactory(null);
+    }
+
+    /**
+     * remembers what the input was opened with, {@link #submit(String)} works like the save button of the dialog
+     */
+    static class FakeInput extends UserInput {
+        private final boolean showsPreview;
+        String title;
+        String value;
+        Consumer<String> consumer;
+
+        FakeInput(boolean showsPreview) {
+            this.showsPreview = showsPreview;
+        }
+
+        static FakeInput install(boolean showsPreview) {
+            FakeInput input = new FakeInput(showsPreview);
+            UserInput.setFactory(() -> input);
+            return input;
+        }
+
+        @Override
+        public boolean showsPreview() {
+            return showsPreview;
+        }
+
+        @Override
+        public void build(User user, String title, @Nullable String value, Consumer<String> consumer) {
+            this.title = title;
+            this.value = value;
+            this.consumer = consumer;
+        }
+
+        /**
+         * @return the error message if the text was not accepted
+         */
+        String submit(String text) {
+            String error = validator.apply(text);
+            if (error == null) consumer.accept(text);
+            return error;
+        }
+
+        String previewOf(String text) {
+            return PlainTextComponentSerializer.plainText().serialize(preview.apply(text));
         }
     }
 
