@@ -45,7 +45,6 @@ class PluginLoadTest extends PluginTestBase {
         plugin.getConfigData().update();
         YamlConfiguration updated = YamlConfiguration.loadConfiguration(file);
         assertTrue(updated.isList("config." + ConfigData.Keys.DISPLAY_EXCLUDED_WORLDS));
-        assertTrue(updated.getStringList("config." + ConfigData.Keys.DISPLAY_EXCLUDED_WORLDS).isEmpty());
     }
 
     @Test

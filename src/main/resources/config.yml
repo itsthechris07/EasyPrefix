@@ -67,7 +67,9 @@ config:
     update-interval: 5
     # worlds in which EasyPrefix leaves the tab list (and name tags) alone, e.g. minigame worlds
     # supports * as wildcard, case-insensitive
-    excluded-worlds: []
+    excluded-worlds: [
+      "ctb_*"
+    ]
   # settings for chat appearance
   chat:
     # set to false if another plugin (e.g. EssentialsChat, VentureChat) formats the chat - it can show the prefixes
