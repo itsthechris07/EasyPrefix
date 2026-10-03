@@ -92,6 +92,13 @@ public class ChatListener implements Listener {
      * @return the message in the user's chat color and formatting
      */
     public static Component formatMessage(User user, String message) {
+        return formatMessage(user, message, user.getColor(), user.getDecoration());
+    }
+
+    /**
+     * @return the message in another color and formatting, e.g. of a group in the setup preview
+     */
+    public static Component formatMessage(User user, String message, @Nullable Color color, @Nullable Decoration decoration) {
         // links are inserted as placeholders: color codes and tags must not change them ("?a=1&b=2" is no aqua)
         StringBuilder msg = new StringBuilder();
         TagResolver.Builder links = TagResolver.builder();
@@ -108,7 +115,6 @@ public class ChatListener implements Listener {
         // effects (e.g. gradients, shadows) are tags around the text, their hex value is only a fallback (e.g. for icons)
         StringBuilder effects = new StringBuilder();
         TagResolver.Builder effectTags = TagResolver.builder();
-        Color color = user.getColor();
         if (color != null) {
             if (color.isEffect()) {
                 effects.append(color.getTagName());
@@ -117,7 +123,6 @@ public class ChatListener implements Listener {
                 componentMsg = componentMsg.color(color.getTextColor());
             }
         }
-        Decoration decoration = user.getDecoration();
         if (decoration != null) {
             if (decoration.isEffect()) {
                 effects.append(decoration.getTagName());

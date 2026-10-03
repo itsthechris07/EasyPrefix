@@ -6,6 +6,7 @@ import com.christian34.easyprefix.user.CustomLayout;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.textinput.UserInput;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -307,6 +308,51 @@ class UserInterfaceTest extends PluginTestBase {
         }
 
         @Test
+        void groupListShowsRenderedValues() {
+            PlayerMock admin = addAdmin("Admin");
+            var group = plugin.getGroupHandler().getGroup("default");
+            group.setPrefix("%ep_tag_prefix% <gray>| <yellow>");
+            group.setColor(Color.of("rainbow"));
+            new UserInterface(user(admin)).openPageSetup();
+            click(admin, GROUPS);
+            String lore = java.util.Arrays.stream(admin.getOpenInventory().getTopInventory().getContents())
+                    .filter(item -> item != null && item.lore() != null)
+                    .map(item -> item.lore().stream().map(line -> PlainTextComponentSerializer.plainText().serialize(line))
+                            .collect(Collectors.joining("\n")))
+                    .filter(text -> text.contains("EasyPrefix.group.default")).findFirst().orElseThrow();
+            assertTrue(lore.contains("Prefix: «%ep_tag_prefix% | »"), lore);
+            assertTrue(lore.contains("Color: Rainbow"), lore);
+            assertFalse(lore.contains("<gray>"), lore);
+        }
+
+        @Test
+        void groupPrefixPreviewShowsWholeChatLine() {
+            PlayerMock admin = addAdmin("Admin");
+            var group = plugin.getGroupHandler().getGroup("default");
+            group.setSuffix("<gray>:");
+            FakeInput input = FakeInput.install(true);
+            new UserInterface(user(admin)).openGroupProfile(group);
+            // pattern "xabcxdehf" starts at slot 9
+            click(admin, 10);
+            // a prefix with only a color still shows the name and a message
+            String preview = input.previewOf("<aqua>");
+            assertTrue(preview.startsWith("Admin: Hello, this is what my messages look like!"), preview);
+        }
+
+        @Test
+        void groupPreviewUsesColorOfTheGroup() {
+            PlayerMock admin = addAdmin("Admin");
+            user(admin).setColor(Color.of("green"));
+            var group = plugin.getGroupHandler().getGroup("default");
+            group.setColor(Color.of("red"));
+            FakeInput input = FakeInput.install(true);
+            new UserInterface(user(admin)).openGroupProfile(group);
+            click(admin, 10);
+            String preview = LegacyComponentSerializer.legacySection().serialize(input.previewComponent(""));
+            assertTrue(preview.contains("§cHello"), preview);
+        }
+
+        @Test
         void hoverInputContainsCurrentLines() {
             PlayerMock admin = addAdmin("Admin");
             var group = plugin.getGroupHandler().getGroup("default");
@@ -433,6 +479,10 @@ class UserInterfaceTest extends PluginTestBase {
             String error = validator.apply(text);
             if (error == null) consumer.accept(text);
             return error;
+        }
+
+        Component previewComponent(String text) {
+            return preview.apply(text);
         }
 
         String previewOf(String text) {

@@ -248,6 +248,37 @@ public class UserInterface {
                 .append(ChatListener.formatMessage(user, Message.COLOR_PREVIEW_TEXT.getText()));
     }
 
+    /**
+     * @return a chat line as members of the group see it without an own chat color and formatting
+     */
+    private Component previewLayout(@Nullable String prefix, @Nullable String suffix, Group group) {
+        return ChatListener.formatName(user, prefix, suffix).appendSpace()
+                .append(ChatListener.formatMessage(user, Message.COLOR_PREVIEW_TEXT.getText(), group.getColor(), group.getDecoration()));
+    }
+
+    /**
+     * @return the text as it looks (tags and colors rendered, placeholders as they are), "-" if there is none
+     */
+    private static String layoutValue(@Nullable String text) {
+        if (text == null || text.isBlank()) return "-";
+        return TextUtils.colorize(TextUtils.escapeLegacyColors(text));
+    }
+
+    /**
+     * tags have no chat color of their own
+     */
+    private Group defaultGroup() {
+        return instance.getGroupHandler().getGroup("default");
+    }
+
+    /**
+     * @return a join or quit message of the user, like the join listener shows it
+     */
+    private Component previewMessage(String message) {
+        String resolved = Optional.ofNullable(instance.setPlaceholders(user, message)).orElse("");
+        return TextUtils.miniMessage().deserialize(TextUtils.escapeLegacyColors(resolved));
+    }
+
     public void openPageUserColors() {
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_FORMATTINGS), Arrays.asList("a".repeat(9), "a".repeat(9), "b".repeat(9)));
 
@@ -398,19 +429,13 @@ public class UserInterface {
         GuiElementGroup elementGroup = new GuiElementGroup('a');
 
         for (Group group : instance.getGroupHandler().getGroups()) {
-            String prefix = Optional.ofNullable(group.getPrefix()).orElse("-");
-            String suffix = Optional.ofNullable(group.getSuffix()).orElse("-");
             String prefixColor = group.getGroupColor();
             List<String> lore = new ArrayList<>();
             lore.add(prefixColor + group.getName());
             lore.add("§7-------------------------------");
-            if (prefix.length() > 25) {
-                lore.add("§7Prefix: §7«§f" + prefix.substring(0, 25));
-                lore.add("§f" + prefix.substring(25) + "§7»");
-            } else {
-                lore.add("§7Prefix: §7«§f" + prefix + "§7»");
-            }
-            lore.add("§7Suffix: §7«§f" + suffix + "§7»");
+            lore.add("§7Prefix: §7«§f" + layoutValue(group.getPrefix()) + "§7»");
+            lore.add("§7Suffix: §7«§f" + layoutValue(group.getSuffix()) + "§7»");
+            lore.add("§7Preview: §r" + TextUtils.serialize(previewLayout(group.getPrefix(), group.getSuffix(), group)));
 
             lore.add("§7Color: §f" + group.getColor().getDisplayName());
             lore.add("§7Permission: §fEasyPrefix.group." + group.getName());
@@ -802,26 +827,26 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_INGOT), click -> {
             String prefix = group.getPrefix();
             prefix = prefix == null ? "" : prefix.replace("§", "&");
-            UserInput.create().build(user, "§9Prefix of " + group.getName(), prefix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(text, group.getSuffix(), group)).build(user, "§9Prefix of " + group.getName(), prefix, (input) -> {
                 if (!isAdmin()) return;
                 group.setPrefix(input);
                 user.getPlayer().sendMessage(Message.INPUT_SAVED.getText());
                 openGroupProfile(group);
             });
             return true;
-        }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + group.getPrefix() + "§7»", " "));
+        }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getPrefix()) + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.GOLD_INGOT), click -> {
             String suffix = group.getSuffix();
             suffix = suffix == null ? "" : suffix.replace("§", "&");
-            UserInput.create().build(user, "§9Suffix of " + group.getName(), suffix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(group.getPrefix(), text, group)).build(user, "§9Suffix of " + group.getName(), suffix, (input) -> {
                 if (!isAdmin()) return;
                 group.setSuffix(input);
                 user.sendMessage(Message.INPUT_SAVED.getText());
                 openGroupProfile(group);
             });
             return true;
-        }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + group.getSuffix() + "§7»", " "));
+        }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getSuffix()) + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('c', new ItemStack(Material.LIME_DYE), click -> {
             openPageColorGroup(group);
@@ -831,26 +856,26 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('d', new ItemStack(Material.BLAZE_ROD), click -> {
             String joinMsg = group.getJoinMessage();
             joinMsg = joinMsg == null ? "" : joinMsg.replace("§", "&");
-            UserInput.create().build(user, "§9Join message of " + group.getName(), joinMsg, (input) -> {
+            UserInput.create().preview(this::previewMessage).build(user, "§9Join message of " + group.getName(), joinMsg, (input) -> {
                 if (!isAdmin()) return;
                 group.setJoinMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openGroupProfile(group);
             });
             return true;
-        }, "§aJoin Message", DIVIDER, "§7Current: §7«§f" + group.getJoinMessage() + "§7»", " "));
+        }, "§aJoin Message", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getJoinMessage()) + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('e', new ItemStack(Material.STICK), click -> {
             String quitMsg = group.getQuitMessage();
             quitMsg = quitMsg == null ? "" : quitMsg.replace("§", "&");
-            UserInput.create().build(user, "§9Quit message of " + group.getName(), quitMsg, (input) -> {
+            UserInput.create().preview(this::previewMessage).build(user, "§9Quit message of " + group.getName(), quitMsg, (input) -> {
                 if (!isAdmin()) return;
                 group.setQuitMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openGroupProfile(group);
             });
             return true;
-        }, "§cQuit Message", DIVIDER, "§7Current: §7«§f" + group.getQuitMessage() + "§7»", " "));
+        }, "§cQuit Message", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getQuitMessage()) + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('f', new ItemStack(Material.EXPERIENCE_BOTTLE), click -> {
             if (!isAdmin()) return true;
@@ -929,20 +954,12 @@ public class UserInterface {
         GuiElementGroup elementGroup = new GuiElementGroup('a');
 
         for (final Subgroup subgroup : this.instance.getGroupHandler().getSubgroups()) {
-            String prefix = Optional.ofNullable(subgroup.getPrefix()).orElse("-");
-            String suffix = Optional.ofNullable(subgroup.getSuffix()).orElse("-");
-
             String prefixColor = subgroup.getGroupColor();
             List<String> lore = new ArrayList<>();
             lore.add(prefixColor + subgroup.getName());
             lore.add("§7-------------------------");
-            if (prefix.length() > 25) {
-                lore.add("§7Prefix: §7«§f" + prefix.substring(0, 25));
-                lore.add("§f" + prefix.substring(25) + "§7»");
-            } else {
-                lore.add("§7Prefix: §7«§f" + prefix + "§7»");
-            }
-            lore.add("§7Suffix: §7«§f" + suffix + "§7»");
+            lore.add("§7Prefix: §7«§f" + layoutValue(subgroup.getPrefix()) + "§7»");
+            lore.add("§7Suffix: §7«§f" + layoutValue(subgroup.getSuffix()) + "§7»");
             lore.add("§7Permission: §fEasyPrefix.tag." + subgroup.getName());
 
             ItemStack sgBtn = new ItemStack(Material.WRITABLE_BOOK);
@@ -1019,26 +1036,26 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_INGOT), click -> {
             String prefix = subgroup.getPrefix();
             prefix = prefix == null ? "" : prefix.replace("§", "&");
-            UserInput.create().build(user, "§9Prefix of " + subgroup.getName(), prefix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(text, subgroup.getSuffix(), defaultGroup())).build(user, "§9Prefix of " + subgroup.getName(), prefix, (input) -> {
                 if (!isAdmin()) return;
                 subgroup.setPrefix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openSubgroupProfile(subgroup);
             });
             return true;
-        }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + subgroup.getPrefix() + "§7»", " "));
+        }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + layoutValue(subgroup.getPrefix()) + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.GOLD_INGOT), click -> {
             String suffix = subgroup.getSuffix();
             suffix = suffix == null ? "" : suffix.replace("§", "&");
-            UserInput.create().build(user, "§9Suffix of " + subgroup.getName(), suffix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(subgroup.getPrefix(), text, defaultGroup())).build(user, "§9Suffix of " + subgroup.getName(), suffix, (input) -> {
                 if (!isAdmin()) return;
                 subgroup.setSuffix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openSubgroupProfile(subgroup);
             });
             return true;
-        }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + subgroup.getSuffix() + "§7»", " "));
+        }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + layoutValue(subgroup.getSuffix()) + "§7»", " "));
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.BARRIER), click -> {
             openPageDeleteGroup(subgroup);
