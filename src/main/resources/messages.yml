@@ -1,0 +1,140 @@
+############################################################
+# +------------------------------------------------------+ #
+# |                   - Messages -                       | #
+# |               Plugin by Christian34	  	      	     | #
+# +------------------------------------------------------+ #
+############################################################
+
+#
+# use %newline% to break lines
+#
+
+#this prefix is only for messages addressed to the players (not allowed for all messages!)
+#can be used with %prefix%
+prefix_alt: '&7[&9Chat&7]'
+no_permissions: '%prefix% &cYou do not have permission to use that command.'
+player_not_found: '%prefix% &cPlayer was not found!'
+group_not_found: '%prefix% &cGroup was not found!'
+gui_button_back: '&7« &cBack'
+gui_button_reset: '&4Reset'
+gui_button_user_prefixes: '&3My Prefixes'
+gui_button_user_formattings: '&3Chat Formattings'
+gui_button_user_prefixes_lore:
+  - '&7Choose one of the prefixes'
+  - '&7that are available to you'
+gui_button_user_formattings_lore:
+  - '&7Color: &f%color%'
+  - '&7Formatting: &f%formatting%'
+  - ' '
+  - '&9Click me to change your chat color'
+gui_button_user_info: '&9%player%'
+# available: %group%, %tag%, %user_prefix%, %user_suffix%, %color%, %formatting%
+gui_button_user_info_lore:
+  - '&7--------------------------'
+  - '&7Group: &f%group%'
+  - '&7Tag: &f%tag%'
+  - '&7Prefix: &7«&f%user_prefix%&7»'
+  - '&7Suffix: &7«&f%user_suffix%&7»'
+  - '&7Color: &f%color%'
+  - '&7Formatting: &f%formatting%'
+gui_button_preview: '&9Chat Preview'
+gui_button_preview_lore:
+  - '&7Shows how your chat messages look'
+gui_button_reset_lore:
+  - '&7Resets your color, formatting and'
+  - '&7layout to the default of your group'
+gui_button_plugin_settings: '&cPlugin Settings'
+gui_button_plugin_settings_lore:
+  - '&7Change the configuration of EasyPrefix'
+gui_value_none: '-'
+gui_button_next: '&enext page &7(&e%nextpage%&7)'
+gui_button_previous: '&eprevious page &7(&e%prevpage%&7)'
+gui_button_tags: '&9My Tags'
+gui_button_change_prefix: '&9Change Prefix'
+gui_button_change_prefix_lore:
+  - '&7--------------------------'
+  - '&7Content: &7«&f%content%&7»'
+  - ' '
+  - '&9Click me to update your prefix'
+gui_button_change_suffix: '&9Change Suffix'
+gui_button_change_suffix_lore:
+  - '&7--------------------------'
+  - '&7Content: &7«&f%content%&7»'
+  - ' '
+  - '&9Click me to update your suffix'
+gui_button_custom_layout: '&9My Layout'
+gui_button_custom_layout_lore:
+  - '&7This option allows you to set a custom prefix and suffix.'
+gui_button_select_layout_lore:
+  - ' '
+  - '&bPreview: %LAYOUT%'
+  - ' '
+  - '&9Click me to select this prefix'
+gui_button_lore_select_tag: '&9Click me to select this tag'
+gui_title: '&9Chat &8» %page%'
+gui_title_settings: '&9Settings'
+gui_title_formattings: '&8Formattings'
+gui_title_layout: '&8Custom Layout'
+gui_title_tags: '&9My tags'
+chat_value_save: '%prefix% &aYour input has been saved!'
+chat_button_confirm: ' &7[&aConfirm&7]'
+gui_input_prefix: '&cType in the prefix'
+gui_input_suffix: '&cType in the suffix'
+# value of "chat_button_confirm" will be displayed after the text (clickable button)
+chat_input_prefix_confirm: '%prefix% &7Do you want to set your prefix to &7»&f%content%&7«?'
+# value of "chat_button_confirm" will be displayed after the text (clickable button)
+chat_input_prefix_saved: '%prefix% &aYour prefix has been set to &7»&f%content%&7«'
+chat_input_invalid: '%prefix% &cYour input contains forbidden words!'
+chat_input_suffix_confirm: '%prefix% &7Do you want to set your suffix to &7»&f%content%&7«?'
+chat_input_suffix_saved: '%prefix% &aYour suffix has been set to &7»&f%content%&7«'
+chat_input_cancelled: '%prefix% &7The input has been cancelled, nothing was changed.'
+chat_input_timeout: '%prefix% &7You didn''t answer in time, nothing was changed.'
+chat_layout_update_cooldown: '%prefix% &cYou have recently changed your layout. Please try again in %h% hours %m% minutes!'
+chat_cmd_tags_help_head: ' %newline%&7---------------=== &9&lTags &7===---------------%newline% '
+chat_cmd_tags_list_info: '%prefix% &7You have (&8%tags%&7) tag(s) available: %newline%'
+chat_cmd_tags_list_info_others: '%prefix% &7%player% has (&8%tags%&7) tag(s) available: %newline%'
+# this is the layout for each title (at command /tags list)
+# the name is clickable
+chat_cmd_tags_name: '&9%name%'
+chat_cmd_tags_hover: '&7Prefix: &f%tag_prefix%&7 %newline%&7Suffix: &f%tag_suffix%&7'
+chat_cmd_tags_not_found: '%prefix% &cCouldn''t find tag &7%tag%&c!'
+chat_cmd_tags_selected: '%prefix% &aYour tag has been set to &7%tag%&a!'
+chat_cmd_tags_set_player: '%prefix% &aThe tag for %player% has been set to &7%tag%&a!'
+chat_cmd_tags_cleared_player: '%prefix% &aThe tag for %player% has been removed&a!'
+chat_cmd_color_help_head: ' %newline%&7---------------=== &9&lColor &7===---------------%newline% '
+chat_cmd_color_not_found: '%prefix% &cCouldn''t find color &7%color%&c!'
+chat_cmd_color_selected: '%prefix% &aYour color has been set to &7%color%&a!'
+chat_cmd_color_set_player: '%prefix% &aThe color for %player% has been set to &7%color%&a!'
+chat_cmd_color_reset: '%prefix% &aYour color has been reset to the default of your group&a!'
+chat_cmd_color_reset_player: '%prefix% &aThe color for %player% has been reset to the default of their group&a!'
+chat_cmd_color_preview: '%prefix% &7This is how chat messages of %player% look:'
+chat_cmd_color_preview_text: 'Hello, this is what my messages look like!'
+
+chat_cmd_help_head: 'Help'
+chat_cmd_description: 'Description'
+chat_cmd_help_query: 'Showing search results for query'
+chat_cmd_help_next: 'Click for next page'
+chat_cmd_help_previous: 'Click for previous page'
+chat_cmd_help_available: 'Available Commands'
+
+colors:
+  black: 'Black'
+  blue: 'Blue'
+  green: 'Green'
+  cyan: 'Cyan'
+  dark_red: 'Dark Red'
+  purple: 'Purple'
+  gold: 'Gold'
+  light_gray: 'Light Gray'
+  gray: 'Gray'
+  aqua: 'Aqua'
+  red: 'Red'
+  magenta: 'Magenta'
+  yellow: 'Yellow'
+  white: 'White'
+formattings:
+  bold: 'Bold'
+  italic: 'Italic'
+  strikethrough: 'Strikethrough'
+  underline: 'Underline'
+  rainbow: 'Rainbow'

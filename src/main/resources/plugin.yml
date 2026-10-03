@@ -1,0 +1,11 @@
+name: EasyPrefix
+version: ${version}
+author: Christian34
+main: com.christian34.easyprefix.EasyPrefix
+# keep below 1.21.5: Paper then rewrites the old enum calls of the shaded InventoryGui (org.bukkit.Sound is an interface now)
+api-version: "1.13"
+# the region schedulers of Paper are used, so the same jar runs on Paper and Folia
+folia-supported: true
+softdepend:
+  - PlaceholderAPI
+  - Vault

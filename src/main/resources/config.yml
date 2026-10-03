@@ -1,0 +1,172 @@
+############################################################
+# +------------------------------------------------------+ #
+# |                     - Config -                       | #
+# |               Plugin by Christian34	  	      	     | #
+# +------------------------------------------------------+ #
+############################################################
+
+config:
+  enabled: true
+  # connect multiple servers
+  sql:
+    enabled: false
+    host: 'localhost'
+    port: 3306
+    database: 'EasyPrefix'
+    username: 'username'
+    password: 'password'
+    table-prefix: 'ep'
+  # allow easyprefix to set join and quit messages
+  # messages can be changed in 'groups.yml'
+  join-quit-messages:
+    # let easyprefix manage join and quit messages
+    enabled: true
+    # hide join/quit messages
+    hide-messages: false
+  user:
+    # allow players to create custom prefixes and suffixes
+    # requires permission EasyPrefix.custom.prefix or EasyPrefix.custom.suffix
+    # EasyPrefix.custom.gui shows icon in /ep settings
+    custom-layout:
+      enabled: true
+      # cool down for changing prefix or suffix in hours
+      # can be bypassed with permission EasyPrefix.custom.bypass
+      cooldown: 0.5
+      # blacklist can be bypassed with permission Easyprefix.custom.blacklist
+      blacklist:
+        - "Admin"
+        - "Owner"
+        - "&4"
+      alias:
+        # requires permission EasyPrefix.custom.prefix
+        prefix: /prefix
+        # requires permission EasyPrefix.custom.suffix
+        suffix: /suffix
+  # tags are additional titles players can switch between (/tags)
+  # they are shown where %ep_tag_prefix% or %ep_tag_suffix% is used, e.g. in the prefix of a group (groups.yml)
+  tags:
+    # show context menu for tags | only visible if necessary
+    enabled: true
+  # prefixes and suffixes outside of the chat
+  # a disabled feature is not touched at all, so another plugin (e.g. TAB) can manage it
+  display:
+    # show prefix and suffix in the tab list
+    tab-list: true
+    # sort the tab list by the priority of the groups (groups.yml, higher first)
+    sort-tab-list: true
+    # show prefix and suffix above the heads of players
+    # uses teams of the main scoreboard - disable it if another plugin manages name tags
+    name-tags: true
+    # layouts: {prefix}, {name} and {suffix} of the player, colors and placeholders (e.g. %ep_tag_prefix%)
+    # the suffix is left out by default, as it usually ends with the separator of the chat (e.g. ":")
+    tab-list-layout: "{prefix}{name}"
+    # text before and after the name above the heads ("" = nothing), the name itself can't be changed
+    name-tag-prefix: "{prefix}"
+    name-tag-suffix: ""
+    # seconds between updates, needed for placeholders of other plugins (0 = only update on changes)
+    update-interval: 5
+    # worlds in which EasyPrefix leaves the tab list (and name tags) alone, e.g. minigame worlds
+    # supports * as wildcard, case-insensitive
+    excluded-worlds: []
+  # settings for chat appearance
+  chat:
+    # set to false if another plugin (e.g. EssentialsChat, VentureChat) formats the chat - it can show the prefixes
+    # of EasyPrefix with Vault or the PlaceholderAPI placeholders (%ep_user_prefix%, ...)
+    handle-chat: true
+    # hovering over the name of a player in the chat shows the hover text of the group (groups.yml)
+    name-hover: true
+    # clicking on the name of a player in the chat writes this command into the chat box (empty = nothing)
+    # %player% is the name of the player
+    name-click: "/msg %player% "
+    # date format of %ep_user_first_join% in the hover (e.g. dd.MM.yyyy or MM/dd/yyyy)
+    date-format: "dd.MM.yyyy"
+    # item shown for each color in the color menu (/color):
+    # wool, glass, dye - closest of the 16 minecraft colors
+    # leather, firework_star - exact hex color
+    # book - no color (also used if the value is invalid)
+    color-icon: wool
+    colors:
+      black:
+        display-name: "Black"
+        hex: "#000000"
+        code: "0"
+        # set default to true to allow all users to use certain color. you won't need any further permission system
+        default: false
+      dark_blue:
+        display-name: "Dark Blue"
+        hex: "#0000aa"
+        code: "1"
+        #default: true
+      dark_green:
+        display-name: "Dark Green"
+        hex: "#00aa00"
+        code: "2"
+      dark_aqua:
+        display-name: "Dark Aqua"
+        hex: "#00aaaa"
+        code: "3"
+      dark_red:
+        display-name: "Dark Red"
+        hex: "#aa0000"
+        code: "4"
+      dark_purple:
+        display-name: "Dark Purple"
+        hex: "#aa00aa"
+        code: "5"
+      gold:
+        display-name: "Gold"
+        hex: "#FFAA00"
+        code: "6"
+      gray:
+        display-name: "Gray"
+        hex: "#AAAAAA"
+        code: "7"
+      dark_gray:
+        display-name: "Dark Gray"
+        hex: "#555555"
+        code: "8"
+      blue:
+        display-name: "Blue"
+        hex: "#5555FF"
+        code: "9"
+      green:
+        display-name: "Green"
+        hex: "#55FF55"
+        code: "a"
+      aqua:
+        display-name: "Aqua"
+        hex: "#55FFFF"
+        code: "b"
+      red:
+        display-name: "Red"
+        hex: "#ff5555"
+        code: "c"
+      light_purple:
+        display-name: "Light Purple"
+        hex: "#FF55FF"
+        code: "d"
+      yellow:
+        display-name: "Yellow"
+        hex: "#FFFF55"
+        code: "e"
+      white:
+        display-name: "White"
+        hex: "#ffffff"
+        code: "f"
+      rainbow:
+        display-name: "Rainbow"
+        default: false
+    decorations:
+      bold:
+        display-name: "Bold"
+        #default: true
+      underlined:
+        display-name: "Underlined"
+      italic:
+        display-name: "Italic"
+      strikethrough:
+        display-name: "Strikethrough"
+      obfuscated:
+        display-name: "Obfuscated"
+
+

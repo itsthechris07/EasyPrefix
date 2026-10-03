@@ -1,0 +1,91 @@
+############################################################
+# +------------------------------------------------------+ #
+# |                     - Groups -                       | #
+# |                Plugin by Christian34	  	     	      | #
+# +------------------------------------------------------+ #
+############################################################
+
+# priority: players with the permissions of several groups get the one with the highest priority,
+# the tab list is sorted by it as well (higher first)
+# default: the default group has 0, all other groups 1
+# hover: shown when hovering over the name of a player in the chat (config.yml: chat.name-hover)
+#   groups without their own hover use the one of the default group, just like join and quit messages
+#   supports colors, MiniMessage tags, PlaceholderAPI (e.g. %player_ping%, %vault_eco_balance%) and these
+#   placeholders, which are only available here:
+#     %ep_user_display_name% %ep_user_name% %ep_user_real_name% (only set if the display name is different)
+#     %ep_user_group% %ep_user_group_prefix% %ep_user_group_color%
+#     %ep_user_tag% %ep_user_tag_prefix% %ep_user_tag_color%
+#     %ep_user_playtime% %ep_user_first_join% %ep_user_world%
+#   a line is left out if one of these placeholders is empty (e.g. the tag line of players without a tag)
+groups:
+  Owner:
+    priority: 100
+    prefix: '&4Owner &7| &4'
+    suffix: '&f:'
+    chat-color: '&7'
+    hover:
+      - '&4&l%ep_user_display_name%'
+      - '&7Server owner'
+      - ''
+      - '&8» Click to write a message'
+  Admin:
+    priority: 90
+    prefix: '&4Admin &7| &4'
+    suffix: '&f:'
+    chat-color: '&7'
+  Developer:
+    priority: 80
+    prefix: '&3Dev &7| &4'
+    suffix: '&f:'
+    chat-color: '&7'
+  Moderator:
+    priority: 70
+    prefix: '&c&lMod &7| &c'
+    suffix: '&f:'
+    chat-color: '&7'
+  Supporter:
+    priority: 60
+    prefix: '&9Sup &7| &9'
+    suffix: '&f:'
+    chat-color: '&7'
+  Builder:
+    priority: 50
+    prefix: '&aBuilder &7| &a'
+    suffix: '&f:'
+    chat-color: '&7'
+    join-msg: '&8» &aMaster Builder %player% &7joined the game'
+    quit-msg: '&8« %ep_user_prefix%%player% &7left the game'
+  Vip:
+    priority: 20
+    prefix: '%ep_tag_prefix% &7| &e'
+    suffix: '&f:'
+    chat-color: rainbow
+  Premium:
+    priority: 30
+    prefix: '&6Premium &7| &6'
+    suffix: '&f:'
+    chat-color: '&7'
+  # default group: used as fallback, if no permission was set
+  # DO NOT REMOVE THIS SECTION!
+  default:
+    priority: 0
+    prefix: '&7'
+    suffix: '&f:'
+    chat-color: '&7'
+    join-msg: '&8» %ep_user_prefix%%player% &7joined the game'
+    quit-msg: '&8« %ep_user_prefix%%player% &7left the game'
+    hover:
+      - '%ep_user_group_color%&l%ep_user_display_name%'
+      - '&7Name: &f%ep_user_real_name%'
+      - '&7Rank: %ep_user_group_color%%ep_user_group%'
+      - '&7Tag: %ep_user_tag_color%%ep_user_tag%'
+      - '&7Playtime: &f%ep_user_playtime%'
+      - '&7Member since: &f%ep_user_first_join%'
+      - ''
+      - '&8» Click to write a message'
+subgroups:
+  Vip:
+    # %ep_tag_prefix%
+    prefix: '&6VIP'
+    # %ep_tag_suffix%
+    suffix: ''

@@ -1,0 +1,21 @@
+# IDE
+/.idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+# local settings (serverPluginsDir, relocateLibraries, testMysql)
+/gradle.properties
+
+# release jars (./gradlew clean build -PrelocateLibraries=true)
+/release/
+
+# local tooling (Claude Code, test server script)
+/.claude/
+/scripts/
+
+# Gradle wrapper (kept local)
+/gradlew
+/gradlew.bat
+/gradle/wrapper/
