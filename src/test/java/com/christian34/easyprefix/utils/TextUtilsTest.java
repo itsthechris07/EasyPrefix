@@ -37,7 +37,8 @@ class TextUtilsTest extends PluginTestBase {
 
     @Test
     void serializesHexColors() {
-        assertTrue(TextUtils.colorize("<#123456>Hi").contains("123456"));
+        // the format Bukkit reads (lore, item names, sendMessage) and other plugins expect
+        assertEquals("§x§1§2§3§4§5§6Hi", TextUtils.colorize("<#123456>Hi"));
     }
 
 }

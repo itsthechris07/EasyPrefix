@@ -22,7 +22,9 @@ public class TextUtils {
     private static final LegacyComponentSerializer legacySerializer;
 
     static {
-        legacySerializer = LegacyComponentSerializer.builder().hexColors().hexCharacter('#').build();
+        // hex colors as §x§r§r§g§g§b§b - the only hex format Bukkit (lore, item names, sendMessage) and other plugins read
+        legacySerializer = LegacyComponentSerializer.builder().character(LegacyComponentSerializer.SECTION_CHAR)
+                .hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     }
 
     public static LegacyComponentSerializer getLegacySerializer() {
