@@ -173,9 +173,34 @@ config:
         display-name: "White"
         hex: "#ffffff"
         code: "f"
+      # effects: instead of "hex" a single MiniMessage tag around the whole text, e.g. gradient, rainbow,
+      # transition or pride (https://docs.papermc.io/adventure/minimessage/format/)
+      # players only get this effect (permission easyprefix.color.<name>), not every gradient
+      # "hex" is optional here, it is only the color of the icon in the color menu (default: the first color)
       rainbow:
         display-name: "Rainbow"
-        default: false
+        tag: "<rainbow>"
+      sunset:
+        display-name: "Sunset"
+        tag: "<gradient:#ff5555:#ffaa00>"
+      ocean:
+        display-name: "Ocean"
+        tag: "<gradient:#55ffff:#5555ff>"
+      toxic:
+        display-name: "Toxic"
+        tag: "<gradient:#55ff55:#ffff55>"
+      candy:
+        display-name: "Candy"
+        tag: "<gradient:#ff55ff:#55ffff>"
+      fire:
+        display-name: "Fire"
+        tag: "<gradient:#ffff55:#ff5555:#aa0000>"
+      ice:
+        display-name: "Ice"
+        tag: "<gradient:#ffffff:#55ffff:#5555ff>"
+      pride:
+        display-name: "Pride"
+        tag: "<pride>"
     decorations:
       bold:
         display-name: "Bold"
@@ -188,5 +213,14 @@ config:
         display-name: "Strikethrough"
       obfuscated:
         display-name: "Obfuscated"
-
-
+      # effects like for colors: a single MiniMessage tag around the whole text, e.g. a shadow
+      # <shadow:color:opacity> (opacity 0-1) or <!shadow> for no shadow
+      glow:
+        display-name: "Glow"
+        tag: "<shadow:gold:0.6>"
+      neon:
+        display-name: "Neon"
+        tag: "<shadow:aqua:0.6>"
+      no_shadow:
+        display-name: "No Shadow"
+        tag: "<!shadow>"

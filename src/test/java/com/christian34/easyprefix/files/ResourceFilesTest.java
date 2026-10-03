@@ -84,7 +84,10 @@ class ResourceFilesTest {
             ConfigurationSection color = colors.getConfigurationSection(name);
             assertNotNull(color);
             assertNotNull(color.getString("display-name"), name + " has no display-name");
-            if (name.equals("rainbow")) continue;
+            if (color.getString("tag") != null) {
+                assertNull(color.getString("code"), name + " is an effect and can't have a legacy code");
+                continue;
+            }
 
             String hex = color.getString("hex");
             assertNotNull(hex, name + " has no hex value");
@@ -106,6 +109,8 @@ class ResourceFilesTest {
         ConfigurationSection decorations = load("config.yml").getConfigurationSection("config.chat.decorations");
         assertNotNull(decorations);
         for (String name : decorations.getKeys(false)) {
+            // effects (e.g. shadows) are checked when they are loaded (PluginLoadTest#loadsAllDecorations)
+            if (decorations.getString(name + ".tag") != null) continue;
             assertDoesNotThrow(() -> TextDecoration.valueOf(name.toUpperCase(Locale.ROOT)), name + " is no text decoration");
         }
     }

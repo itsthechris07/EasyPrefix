@@ -4,6 +4,7 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.utils.Color;
+import com.christian34.easyprefix.utils.Decoration;
 import com.christian34.easyprefix.utils.Message;
 import com.christian34.easyprefix.utils.TextUtils;
 import io.papermc.paper.chat.ChatRenderer;
@@ -104,18 +105,35 @@ public class ChatListener implements Listener {
         msg.append(TextUtils.escapeLegacyColors(message.substring(end)));
 
         Component componentMsg = Component.text("");
-        Component content;
+        // effects (e.g. gradients, shadows) are tags around the text, their hex value is only a fallback (e.g. for icons)
+        StringBuilder effects = new StringBuilder();
+        TagResolver.Builder effectTags = TagResolver.builder();
         Color color = user.getColor();
-        if (color != null && color.getName().equalsIgnoreCase("rainbow")) {
-            // rainbow is a tag around the text, its hex value is only a fallback (e.g. for icons)
-            MiniMessage rainbow = MiniMessage.builder().tags(TagResolver.resolver(user.getTagResolver(), color.tagResolver())).build();
-            content = rainbow.deserialize("<rainbow>" + msg, links.build());
-        } else {
-            if (color != null) componentMsg = componentMsg.color(color.getTextColor());
-            content = user.deserialize(msg.toString(), links.build());
+        if (color != null) {
+            if (color.isEffect()) {
+                effects.append(color.getTagName());
+                effectTags.resolver(color.tagResolver());
+            } else {
+                componentMsg = componentMsg.color(color.getTextColor());
+            }
         }
-        if (user.getDecoration() != null) {
-            componentMsg = componentMsg.decorate(user.getDecoration().getTextDecoration());
+        Decoration decoration = user.getDecoration();
+        if (decoration != null) {
+            if (decoration.isEffect()) {
+                effects.append(decoration.getTagName());
+                effectTags.resolver(decoration.tagResolver());
+            } else {
+                componentMsg = componentMsg.decorate(decoration.getTextDecoration());
+            }
+        }
+
+        Component content;
+        if (effects.isEmpty()) {
+            content = user.deserialize(msg.toString(), links.build());
+        } else {
+            // the effects are also set by admins without the permission of the player, so they are added here
+            MiniMessage miniMessage = MiniMessage.builder().tags(TagResolver.resolver(user.getTagResolver(), effectTags.build())).build();
+            content = miniMessage.deserialize(effects.toString() + msg, links.build());
         }
         return componentMsg.append(content);
     }

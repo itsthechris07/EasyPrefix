@@ -48,7 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EasyPrefix extends JavaPlugin {
     private static final Set<String> DEFAULT_COLORS = Set.of("black", "dark_blue", "dark_green", "dark_aqua", "dark_red",
-            "dark_purple", "gold", "gray", "dark_gray", "blue", "green", "aqua", "red", "light_purple", "yellow", "white", "rainbow");
+            "dark_purple", "gold", "gray", "dark_gray", "blue", "green", "aqua", "red", "light_purple", "yellow", "white", "rainbow", "sunset", "ocean", "toxic", "candy", "fire", "ice", "pride");
     private static final List<String> RELATED_PLUGINS = List.of("LuckPerms", "Vault", "PlaceholderAPI", "EssentialsChat",
             "MultiChat", "TAB", "DiscordSRV", "ChatControl", "VentureChat", "CMI", "NametagEdit", "Geyser-Spigot", "ViaVersion");
     private static EasyPrefix instance = null;

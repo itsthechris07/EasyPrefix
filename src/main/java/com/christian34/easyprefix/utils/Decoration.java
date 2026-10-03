@@ -15,7 +15,8 @@ import java.util.Locale;
 /**
  * EasyPrefix 2026.
  * <p>
- * A chat formatting (e.g. bold) from config.yml with its permission.
+ * A chat formatting (e.g. bold) from config.yml with its permission - or an effect like a shadow (a MiniMessage tag
+ * in "tag").
  *
  * @author Christian34
  */
@@ -38,9 +39,17 @@ public class Decoration implements TextFormat {
             this.permission = new Permission("easyprefix.color." + this.name, String.format("allows a player to use the decorator %s.", this.name));
         } else this.permission = null;
 
+        String effect = data.getString(key + "tag");
+        if (effect != null && !effect.isBlank()) {
+            // a tag around the text (e.g. a colored shadow) instead of a text decoration
+            this.textDecoration = null;
+            this.tagResolver = EffectTag.resolver(name, effect);
+            return;
+        }
         this.textDecoration = Arrays.stream(TextDecoration.values()).filter(textDecoration1 -> textDecoration1.name().equalsIgnoreCase(name)).findAny().orElse(null);
         if (textDecoration == null) {
-            throw new IllegalArgumentException(String.format("Decorator %s is not a valid text decorator! Allowed names: " + TextDecoration.values(), name));
+            throw new IllegalArgumentException(String.format("Decorator %s is not a valid text decorator and has no \"tag\"! Allowed names: %s",
+                    name, Arrays.toString(TextDecoration.values()).toLowerCase(Locale.ROOT)));
         }
         this.tagResolver = TagResolver.resolver(StandardTags.decorations(textDecoration));
     }
@@ -66,8 +75,23 @@ public class Decoration implements TextFormat {
                 .filter(decoration -> decoration.getName().equalsIgnoreCase(search)).findAny().orElse(null);
     }
 
+    /**
+     * @return the text decoration, null for effects ({@link #isEffect()})
+     */
+    @Nullable
     public TextDecoration getTextDecoration() {
         return textDecoration;
+    }
+
+    /**
+     * @return true if this is a tag around the whole text (e.g. a shadow) instead of a text decoration
+     */
+    public boolean isEffect() {
+        return textDecoration == null;
+    }
+
+    public String getTagName() {
+        return "<" + name + ">";
     }
 
     @Override
