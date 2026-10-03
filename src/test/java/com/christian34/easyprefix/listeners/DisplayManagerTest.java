@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -129,8 +130,25 @@ class DisplayManagerTest extends PluginTestBase {
         void isSortedByGroupPriority() {
             PlayerMock admin = addPlayer("Anna", "EasyPrefix.group.Admin");
             PlayerMock guest = addPlayer("Steve");
-            assertEquals(90, admin.getPlayerListOrder());
-            assertEquals(0, guest.getPlayerListOrder());
+            assertEquals(DisplayManager.order(90, 0), admin.getPlayerListOrder());
+            assertEquals(DisplayManager.order(0, 0), guest.getPlayerListOrder());
+        }
+
+        @Test
+        void playersOfAGroupAreSortedByNameWithNumbersByValue() {
+            PlayerMock bot19 = addPlayer("EpBot19");
+            PlayerMock bot2 = addPlayer("EpBot2");
+            PlayerMock anna = addPlayer("anna");
+            assertEquals(DisplayManager.order(0, 0), anna.getPlayerListOrder());
+            assertTrue(anna.getPlayerListOrder() > bot2.getPlayerListOrder());
+            assertTrue(bot2.getPlayerListOrder() > bot19.getPlayerListOrder());
+        }
+
+        @Test
+        void naturalOrder() {
+            List<String> names = new ArrayList<>(List.of("EpBot10", "epbot9", "EpBot1", "Anna", "EpBot", "EpBot01a"));
+            names.sort(DisplayManager.NATURAL_ORDER);
+            assertEquals(List.of("Anna", "EpBot", "EpBot1", "EpBot01a", "epbot9", "EpBot10"), names);
         }
 
         @Test
@@ -219,7 +237,7 @@ class DisplayManagerTest extends PluginTestBase {
         @Test
         void changingWorldsRemovesAndRestoresTheName() {
             RecordingPlayer player = join("Steve", world(), "EasyPrefix.group.Admin");
-            assertEquals(90, player.getPlayerListOrder());
+            assertEquals(DisplayManager.order(90, 0), player.getPlayerListOrder());
 
             player.teleport(minigame.getSpawnLocation());
             assertNull(player.rawListName);
@@ -228,7 +246,7 @@ class DisplayManagerTest extends PluginTestBase {
             player.teleport(world().getSpawnLocation());
             assertTrue(plain(player.rawListName).endsWith("Steve"), plain(player.rawListName));
             assertNotEquals("Steve", plain(player.rawListName));
-            assertEquals(90, player.getPlayerListOrder());
+            assertEquals(DisplayManager.order(90, 0), player.getPlayerListOrder());
         }
 
         @Test

@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,8 +69,20 @@ public class DisplayManager implements Listener {
      */
     private final Map<UUID, Shown> shown = new ConcurrentHashMap<>();
 
+    /**
+     * true while {@link #updateAll()} updates the players - they are sorted once at the end
+     */
+    private boolean updatingAll = false;
+
     private record Shown(Component name, int order) {
     }
+
+    /**
+     * the client sorts players with the same order by name (EpBot19 before EpBot2), so every player of a group gets
+     * its own order: see {@link #order(int, int)}, the group is sorted by name (numbers by value)
+     */
+    static final int ORDER_PER_PRIORITY = 1000;
+    static final Comparator<String> NATURAL_ORDER = DisplayManager::compareNatural;
 
     public DisplayManager(EasyPrefix instance) {
         this.instance = instance;
@@ -163,9 +176,15 @@ public class DisplayManager implements Listener {
 
     public void updateAll() {
         if (!running) return;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            update(instance.getUser(player));
+        this.updatingAll = true;
+        try {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                update(instance.getUser(player));
+            }
+        } finally {
+            this.updatingAll = false;
         }
+        sort();
     }
 
     public void update(@NotNull User user) {
@@ -189,11 +208,85 @@ public class DisplayManager implements Listener {
             Component name = ChatListener.formatLayout(user, layout(ConfigData.Keys.DISPLAY_TAB_LIST_LAYOUT, "{prefix}{name}"));
             // setting the name sends a packet to every player, so only on changes
             if (!name.equals(player.playerListName())) player.playerListName(name);
-            int order = config().getBoolean(ConfigData.Keys.DISPLAY_SORT_TAB_LIST) ? user.getGroup().getPriority() : 0;
-            if (player.getPlayerListOrder() != order) player.setPlayerListOrder(order);
-            shown.put(player.getUniqueId(), new Shown(name, order));
+            Shown previous = shown.get(player.getUniqueId());
+            shown.put(player.getUniqueId(), new Shown(name, previous == null ? player.getPlayerListOrder() : previous.order()));
+            // a new priority or player can move the other players of the group as well
+            if (!updatingAll) sort();
         }
         if (nameTagsActive) updateTeam(user);
+    }
+
+    /**
+     * sets the order of all players in the tab list: by group priority (higher first), then by name - only players
+     * whose order changes are updated, so a player joining at the end of a group does not move the others
+     */
+    private void sort() {
+        if (!tabListActive) return;
+        boolean sorted = config().getBoolean(ConfigData.Keys.DISPLAY_SORT_TAB_LIST);
+        record Entry(Player player, int priority) {
+        }
+        List<Entry> entries = new ArrayList<>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!shown.containsKey(player.getUniqueId())) continue;
+            entries.add(new Entry(player, sorted ? instance.getUser(player).getGroup().getPriority() : 0));
+        }
+        entries.sort(Comparator.comparingInt(Entry::priority).reversed()
+                .thenComparing(entry -> entry.player().getName(), NATURAL_ORDER));
+
+        int position = 0;
+        for (int i = 0; i < entries.size(); i++) {
+            Entry entry = entries.get(i);
+            position = i > 0 && entries.get(i - 1).priority() == entry.priority() ? position + 1 : 0;
+            int order = sorted ? order(entry.priority(), position) : 0;
+            Player player = entry.player();
+            Shown current = shown.get(player.getUniqueId());
+            if (current == null || (current.order() == order && player.getPlayerListOrder() == order)) continue;
+            // on Folia other regions own the players
+            TaskManager.runNowOrLater(player, () -> {
+                // reset in the meantime (excluded world, quit)
+                Shown now = shown.get(player.getUniqueId());
+                if (now == null) return;
+                if (player.getPlayerListOrder() != order) player.setPlayerListOrder(order);
+                shown.put(player.getUniqueId(), new Shown(now.name(), order));
+            });
+        }
+    }
+
+    /**
+     * @param position the position of the player in its group, 0 is the first
+     * @return the order in the tab list (higher first) - it can't be negative
+     */
+    static int order(int priority, int position) {
+        int base = Math.clamp(priority, 0, Integer.MAX_VALUE / ORDER_PER_PRIORITY - 1) * ORDER_PER_PRIORITY;
+        return base + ORDER_PER_PRIORITY - 1 - Math.min(position, ORDER_PER_PRIORITY - 1);
+    }
+
+    /**
+     * compares names case-insensitively, numbers by their value (EpBot2 before EpBot19)
+     */
+    static int compareNatural(String a, String b) {
+        int i = 0, j = 0;
+        while (i < a.length() && j < b.length()) {
+            char ca = a.charAt(i), cb = b.charAt(j);
+            if (Character.isDigit(ca) && Character.isDigit(cb)) {
+                int startA = i, startB = j;
+                while (i < a.length() && Character.isDigit(a.charAt(i))) i++;
+                while (j < b.length() && Character.isDigit(b.charAt(j))) j++;
+                // without leading zeros the longer number is the bigger one
+                String numberA = a.substring(startA, i).replaceFirst("^0+(?=.)", "");
+                String numberB = b.substring(startB, j).replaceFirst("^0+(?=.)", "");
+                int result = numberA.length() != numberB.length()
+                        ? Integer.compare(numberA.length(), numberB.length()) : numberA.compareTo(numberB);
+                if (result != 0) return result;
+                continue;
+            }
+            int result = Character.compare(Character.toLowerCase(ca), Character.toLowerCase(cb));
+            if (result != 0) return result;
+            i++;
+            j++;
+        }
+        int result = Integer.compare(a.length() - i, b.length() - j);
+        return result != 0 ? result : a.compareTo(b);
     }
 
     /**
