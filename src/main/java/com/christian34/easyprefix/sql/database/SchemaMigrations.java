@@ -119,7 +119,16 @@ final class SchemaMigrations {
             // players can turn off being pinged by @mentions (null = mentions are on)
             new Migration(7, "mentions per player",
                     List.of(required("ALTER TABLE `%p%users` ADD `mentions_disabled` BOOLEAN NULL DEFAULT NULL")),
-                    List.of(required("ALTER TABLE `%p%users` ADD `mentions_disabled` BOOLEAN NULL DEFAULT NULL")))
+                    List.of(required("ALTER TABLE `%p%users` ADD `mentions_disabled` BOOLEAN NULL DEFAULT NULL"))),
+            // the synchronizer polls and cleans up the messages by their age every second, the shared config is
+            // looked up by its name
+            new Migration(8, "indexes for sync messages and options",
+                    List.of(
+                            required("ALTER TABLE `%p%messages` ADD INDEX `idx_created_at` (`created_at`)"),
+                            required("ALTER TABLE `%p%options` ADD INDEX `idx_option_name` (`option_name`)")
+                    ),
+                    // a local storage has neither of these tables
+                    List.of())
     );
 
     private SchemaMigrations() {
