@@ -74,8 +74,9 @@ public final class Mentions {
         while (matcher.find()) {
             found = true;
             Player player = players.get(matcher.group(1).toLowerCase(Locale.ROOT));
-            // writing your own name is formatted, but does not ping yourself
-            if (player != source) mentioned.add(player);
+            // writing your own name is formatted, but does not ping yourself - neither does the name of a player
+            // who turned mentions off
+            if (player != source && EasyPrefix.getInstance().getUser(player).isMentionable()) mentioned.add(player);
         }
         if (!found) return null;
 

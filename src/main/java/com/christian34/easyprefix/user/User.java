@@ -39,6 +39,7 @@ public class User {
     private String customPrefix;
     private String customSuffix;
     private boolean isGroupForced;
+    private boolean mentionsDisabled;
     private long lastPrefixUpdate, lastSuffixUpdate;
     private TagResolver.Builder tagResvBuilder;
     private TagResolver tagResolver = TagResolver.empty();
@@ -185,6 +186,7 @@ public class User {
 
         this.lastPrefixUpdate = parseTimestamp(userData.getString("custom_prefix_update"));
         this.lastSuffixUpdate = parseTimestamp(userData.getString("custom_suffix_update"));
+        this.mentionsDisabled = userData.getBoolean("mentions_disabled");
     }
 
     /**
@@ -295,6 +297,18 @@ public class User {
     public void setDecoration(@Nullable Decoration decoration) {
         this.decoration = decoration;
         saveData("chat_formatting", (decoration != null) ? decoration.getName() : null);
+    }
+
+    /**
+     * @return false if the player turned off being pinged by @mentions (they can also be off in config.yml)
+     */
+    public boolean isMentionable() {
+        return !mentionsDisabled;
+    }
+
+    public void setMentionable(boolean mentionable) {
+        this.mentionsDisabled = !mentionable;
+        saveData("mentions_disabled", mentionable ? null : true);
     }
 
     @NotNull

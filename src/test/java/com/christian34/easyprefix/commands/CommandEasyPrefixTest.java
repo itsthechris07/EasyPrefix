@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.PluginTestBase;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.user.User;
 import org.bukkit.event.inventory.InventoryType;
 import org.junit.jupiter.api.Test;
@@ -183,6 +184,29 @@ class CommandEasyPrefixTest extends PluginTestBase {
         var top = player.getOpenInventory().getTopInventory();
         assertTrue(top == null || top.getType() != InventoryType.CHEST);
         assertContains(messages(player), "You do not have permission");
+    }
+
+    @Test
+    void togglesMentions() {
+        PlayerMock player = addPlayer("Steve", "easyprefix.settings");
+        assertNull(execute(player, "ep mentions"));
+        assertFalse(user(player).isMentionable());
+        assertContains(messages(player), "no longer ping you");
+        // stored, also for the next login
+        assertFalse(plugin.getUser(server.getOfflinePlayer(player.getUniqueId())).isMentionable());
+
+        assertNull(execute(player, "ep mentions"));
+        assertTrue(user(player).isMentionable());
+        assertTrue(plugin.getUser(server.getOfflinePlayer(player.getUniqueId())).isMentionable());
+    }
+
+    @Test
+    void mentionsCanNotBeToggledWhenDisabledGlobally() {
+        plugin.getConfigData().save(ConfigData.Keys.MENTIONS, false);
+        PlayerMock player = addPlayer("Steve", "easyprefix.settings");
+        assertNull(execute(player, "ep mentions"));
+        assertTrue(user(player).isMentionable());
+        assertContains(messages(player), "Mentions are disabled on this server");
     }
 
     @Test

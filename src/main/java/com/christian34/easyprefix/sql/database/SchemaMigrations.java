@@ -115,7 +115,11 @@ final class SchemaMigrations {
                             required("DELETE FROM `%p%options` WHERE `option_name` = 'perform_sync'")
                     ),
                     // a local storage is not shared
-                    List.of())
+                    List.of()),
+            // players can turn off being pinged by @mentions (null = mentions are on)
+            new Migration(7, "mentions per player",
+                    List.of(required("ALTER TABLE `%p%users` ADD `mentions_disabled` BOOLEAN NULL DEFAULT NULL")),
+                    List.of(required("ALTER TABLE `%p%users` ADD `mentions_disabled` BOOLEAN NULL DEFAULT NULL")))
     );
 
     private SchemaMigrations() {

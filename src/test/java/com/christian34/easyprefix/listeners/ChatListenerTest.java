@@ -299,6 +299,26 @@ class ChatListenerTest extends PluginTestBase {
     }
 
     @Test
+    void playersCanTurnOffMentions() {
+        PlayerMock steve = addPlayer("Steve");
+        PlayerMock alex = addPlayer("Alex");
+        PlayerMock bob = addPlayer("Bob");
+        user(alex).setMentionable(false);
+        AsyncChatEvent event = chat(steve, "hi @Alex and @Bob");
+        server.getScheduler().performOneTick();
+
+        // the name is still formatted, but alex is not pinged
+        assertFalse(lineFor(event, alex).startsWith("»"), lineFor(event, alex));
+        Component formatted = mention(event.renderer().render(steve, steve.displayName(), event.message(), alex), "@Alex");
+        assertNotNull(formatted);
+        assertEquals(NamedTextColor.AQUA, formatted.color());
+        assertTrue(alex.getHeardSounds().isEmpty());
+
+        assertTrue(lineFor(event, bob).startsWith("» "), lineFor(event, bob));
+        assertEquals(1, bob.getHeardSounds().size());
+    }
+
+    @Test
     void previewShowsFormattedLine() {
         PlayerMock player = addPlayer("Steve");
         PlayerMock admin = addAdmin("Admin");

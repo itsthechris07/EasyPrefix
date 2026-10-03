@@ -59,8 +59,9 @@ class UserInterfaceTest extends PluginTestBase {
 
     @Nested
     class UserSettings {
-        // pattern: "    i    ", " a c t l " (centered, only the usable buttons), "   v r   " + footer "<  pwn  q"
-        static final int INFO = 13, PREFIXES = 21, COLORS = 23, PREVIEW = 30, RESET = 32, PLUGIN_SETTINGS = 44;
+        // pattern: "    i    ", a centered row of the usable buttons out of a c t l m, "   v r   " + footer "<  pwn  q"
+        // (without permissions: "  a c m  ")
+        static final int INFO = 13, PREFIXES = 20, COLORS = 22, MENTIONS = 24, PREVIEW = 30, RESET = 32, PLUGIN_SETTINGS = 44;
 
         private PlayerMock open(PlayerMock player) {
             new UserInterface(user(player)).openUserSettings();
@@ -101,10 +102,31 @@ class UserInterfaceTest extends PluginTestBase {
         @Test
         void centersTheUsableButtons() {
             PlayerMock player = open(addPlayer("Steve", "easyprefix.custom.gui"));
-            // no tags: prefixes, colors and layout in the middle of the row
-            assertEquals(Material.NAME_TAG, itemAt(player, 20));
-            assertEquals(Material.ANVIL, itemAt(player, 24));
-            assertEquals(Material.GRAY_STAINED_GLASS_PANE, itemAt(player, 19));
+            // no tags: prefixes, colors, layout and mentions in the middle of the row
+            assertEquals(Material.NAME_TAG, itemAt(player, 19));
+            assertEquals(Material.ANVIL, itemAt(player, 23));
+            assertEquals(Material.BELL, itemAt(player, 25));
+            assertEquals(Material.GRAY_STAINED_GLASS_PANE, itemAt(player, 20));
+        }
+
+        @Test
+        void togglesMentions() {
+            PlayerMock player = open(addPlayer("Steve"));
+            assertEquals(Material.BELL, itemAt(player, MENTIONS));
+            click(player, MENTIONS);
+            assertFalse(user(player).isMentionable());
+            click(player, MENTIONS);
+            assertTrue(user(player).isMentionable());
+        }
+
+        @Test
+        void noMentionsButtonWhenDisabledGlobally() {
+            plugin.getConfigData().save(ConfigData.Keys.MENTIONS, false);
+            PlayerMock player = open(addPlayer("Steve"));
+            // only prefixes and colors are left
+            assertEquals(Material.NAME_TAG, itemAt(player, 21));
+            assertNotEquals(Material.BELL, itemAt(player, 25));
+            assertNotEquals(Material.BELL, itemAt(player, 24));
         }
 
         @Test
@@ -164,9 +186,9 @@ class UserInterfaceTest extends PluginTestBase {
 
     @Nested
     class Setup {
-        // setup: "xxaxbxcxx"; settings: " a b c d ", " e f g h ", " n o p   ", " i j m k " + footer
+        // setup: "xxaxbxcxx"; settings: " a b c d ", " e f g h ", " n o p q ", " i j m k " + footer
         static final int GROUPS = 11, SETTINGS = 13;
-        static final int HANDLE_CHAT = 10, COLOR_ICONS = 12, COOLDOWN = 23, TAB_LIST = 28, NAME_TAGS = 32, BACK = 45;
+        static final int HANDLE_CHAT = 10, COLOR_ICONS = 12, COOLDOWN = 23, TAB_LIST = 28, NAME_TAGS = 32, MENTIONS = 34, BACK = 45;
 
         private PlayerMock openSettings() {
             PlayerMock admin = addAdmin("Admin");
@@ -191,6 +213,16 @@ class UserInterfaceTest extends PluginTestBase {
             assertFalse(plugin.getConfigData().getBoolean(ConfigData.Keys.HANDLE_CHAT));
             click(admin, HANDLE_CHAT);
             assertTrue(plugin.getConfigData().getBoolean(ConfigData.Keys.HANDLE_CHAT));
+        }
+
+        @Test
+        void togglesMentionsGlobally() {
+            PlayerMock admin = openSettings();
+            assertEquals(Material.BELL, itemAt(admin, MENTIONS));
+            click(admin, MENTIONS);
+            assertFalse(plugin.getConfigData().getBoolean(ConfigData.Keys.MENTIONS));
+            click(admin, MENTIONS);
+            assertTrue(plugin.getConfigData().getBoolean(ConfigData.Keys.MENTIONS));
         }
 
         @Test

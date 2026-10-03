@@ -83,6 +83,7 @@ config:
     # date format of %ep_user_first_join% in the hover (e.g. dd.MM.yyyy or MM/dd/yyyy)
     date-format: "dd.MM.yyyy"
     # mention players with @name in the chat
+    # players can turn off being pinged for themselves (/ep settings or /ep mentions)
     mentions:
       enabled: true
       # how @name looks for the other players ({name} = name of the mentioned player)

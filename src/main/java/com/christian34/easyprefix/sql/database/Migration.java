@@ -160,7 +160,7 @@ public final class Migration {
         if (!localDatabase.connect()) throw new SQLException("Couldn't open " + file.getName());
         try (PreparedStatement stmt = connection.prepareStatement(upsert("users", "uuid", "username", "group",
                 "force_group", "subgroup", "custom_prefix", "custom_prefix_update", "custom_suffix",
-                "custom_suffix_update", "chat_color", "chat_formatting"))) {
+                "custom_suffix_update", "chat_color", "chat_formatting", "mentions_disabled"))) {
             return localDatabase.query("SELECT * FROM `users`", result -> {
                 int count = 0;
                 while (result.next()) {
@@ -177,6 +177,7 @@ public final class Migration {
                     stmt.setString(9, result.getString("custom_suffix_update"));
                     stmt.setString(10, result.getString("chat_color"));
                     stmt.setString(11, result.getString("chat_formatting"));
+                    stmt.setBoolean(12, result.getBoolean("mentions_disabled"));
                     try {
                         stmt.executeUpdate();
                         count++;
@@ -274,7 +275,7 @@ public final class Migration {
         try (Connection local = localDatabase.getConnection()) {
             database.query("SELECT * FROM `%p%users`", result -> {
                 while (result.next()) {
-                    try (PreparedStatement stmt = local.prepareStatement("INSERT INTO `users` (`uuid`, `username`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_prefix_update`, `custom_suffix`, `custom_suffix_update`, `chat_color`, `chat_formatting`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    try (PreparedStatement stmt = local.prepareStatement("INSERT INTO `users` (`uuid`, `username`, `group`, `force_group`, `subgroup`, `custom_prefix`, `custom_prefix_update`, `custom_suffix`, `custom_suffix_update`, `chat_color`, `chat_formatting`, `mentions_disabled`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                         stmt.setObject(1, result.getString("uuid"));
                         stmt.setObject(2, result.getString("username"));
                         stmt.setObject(3, result.getString("group"));
@@ -286,6 +287,7 @@ public final class Migration {
                         stmt.setObject(9, result.getString("custom_suffix_update"));
                         stmt.setObject(10, result.getString("chat_color"));
                         stmt.setObject(11, result.getString("chat_formatting"));
+                        stmt.setBoolean(12, result.getBoolean("mentions_disabled"));
                         stmt.execute();
                     } catch (SQLException ignored) {
                         Debug.warn("Couldn't migrate data for user '" + result.getString("uuid") + "'");

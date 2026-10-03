@@ -61,7 +61,8 @@ class SchemaMigrationsTest {
         assertTrue(database.connect());
         assertEquals(SchemaMigrations.latestVersion(), SchemaMigrations.currentVersion(database));
         assertTrue(columns("users").containsAll(List.of("uuid", "username", "group", "subgroup", "custom_prefix",
-                "custom_prefix_update", "custom_suffix", "custom_suffix_update", "chat_color", "chat_formatting")));
+                "custom_prefix_update", "custom_suffix", "custom_suffix_update", "chat_color", "chat_formatting",
+                "mentions_disabled")));
     }
 
     @Test

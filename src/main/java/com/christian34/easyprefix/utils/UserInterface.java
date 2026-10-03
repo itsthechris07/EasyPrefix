@@ -79,6 +79,8 @@ public class UserInterface {
         List<Character> buttons = new ArrayList<>(List.of('a', 'c'));
         if (tags) buttons.add('t');
         if (customLayout) buttons.add('l');
+        boolean mentions = config.getBoolean(ConfigData.Keys.MENTIONS);
+        if (mentions) buttons.add('m');
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), setTitle(Message.GUI_SETTINGS_TITLE_MAIN),
                 Arrays.asList("    i    ", GuiCreator.centeredRow(buttons), "   v r   "));
 
@@ -130,6 +132,19 @@ public class UserInterface {
                 openCustomLayoutPage();
                 return true;
             }, layoutLore.toArray(new String[0])));
+        }
+
+        if (mentions) {
+            boolean mentionable = user.isMentionable();
+            Map<String, String> mentionValues = Map.of("player", user.getName(),
+                    "status", (mentionable ? Message.GUI_VALUE_ENABLED : Message.GUI_VALUE_DISABLED).getText());
+            ItemStack bell = new ItemStack(Material.BELL);
+            if (mentionable) highlight(bell);
+            gui.addElement(new StaticGuiElement('m', bell, click -> {
+                user.setMentionable(!mentionable);
+                openUserSettings();
+                return true;
+            }, withLore(Message.BTN_MENTIONS.getText(), Message.BTN_MENTIONS_LORE, mentionValues)));
         }
 
         gui.addElement(new StaticGuiElement('v', new ItemStack(Material.SPYGLASS), click -> {
@@ -429,7 +444,7 @@ public class UserInterface {
     private void openSettingsPage() {
         if (!isAdmin()) return;
         InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Settings",
-                Arrays.asList(" a b c d ", " e f g h ", " n o p   ", " i j m k "));
+                Arrays.asList(" a b c d ", " e f g h ", " n o p q ", " i j m k "));
         ConfigData config = this.instance.getConfigData();
 
         gui.addElement(toggleElement('a', Material.OAK_SIGN, "Handle Chat", ConfigData.Keys.HANDLE_CHAT,
@@ -465,6 +480,12 @@ public class UserInterface {
                 "Shows prefix and suffix above the heads.",
                 "§8Uses teams of the main scoreboard, disable",
                 "§8it if another plugin manages name tags."));
+
+        gui.addElement(toggleElement('q', Material.BELL, "Mentions", ConfigData.Keys.MENTIONS,
+                "Players can ping others with @name",
+                "in the chat (chat.mentions in config.yml).",
+                "§8Players can turn it off for themselves",
+                "§8in /ep settings or with /ep mentions."));
 
         gui.addElement(toggleElement('e', Material.IRON_DOOR, "Hide Join & Quit Messages", ConfigData.Keys.HIDE_JOIN_QUIT,
                 "Hides all join and quit messages.",

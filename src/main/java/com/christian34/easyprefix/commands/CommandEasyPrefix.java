@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.commands;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.files.ConfigData;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.GroupHandler;
 import com.christian34.easyprefix.groups.Subgroup;
@@ -217,6 +218,19 @@ public class CommandEasyPrefix {
     public void openSettings(Player player) {
         UserInterface gui = new UserInterface(EasyPrefix.getInstance().getUser(player));
         TaskManager.run(player, gui::openUserSettings);
+    }
+
+    @Command("easyprefix|ep mentions")
+    @CommandDescription("turns on or off whether @mentions of your name ping you")
+    @Permission("easyprefix.settings")
+    public void toggleMentions(Player player) {
+        if (!getInstance().getConfigData().getBoolean(ConfigData.Keys.MENTIONS)) {
+            player.sendMessage(Message.MENTIONS_DISABLED_GLOBALLY.getText());
+            return;
+        }
+        User user = getInstance().getUser(player);
+        user.setMentionable(!user.isMentionable());
+        player.sendMessage((user.isMentionable() ? Message.MENTIONS_ENABLED : Message.MENTIONS_DISABLED).getText());
     }
 
     @Command("easyprefix|ep setup")
