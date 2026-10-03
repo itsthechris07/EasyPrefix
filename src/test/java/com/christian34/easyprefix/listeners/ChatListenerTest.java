@@ -102,6 +102,51 @@ class ChatListenerTest extends PluginTestBase {
         assertEquals("hello", PlainTextComponentSerializer.plainText().serialize(message));
     }
 
+    /**
+     * the component with the click event of the link
+     */
+    private static Component link(Component component) {
+        if (component.clickEvent() != null) return component;
+        for (Component child : component.children()) {
+            Component found = link(child);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    @Test
+    void linksAreKeptAndClickable() {
+        PlayerMock player = addPlayer("Steve", "easyprefix.color.aqua");
+        String url = "https://example.org/a_b/?c=1&b=2&lol";
+        Component message = ChatListener.formatMessage(user(player), "see " + url + ", ok");
+        assertEquals("see " + url + ", ok", PlainTextComponentSerializer.plainText().serialize(message));
+
+        Component link = link(message);
+        assertNotNull(link);
+        assertEquals(url, PlainTextComponentSerializer.plainText().serialize(link));
+        assertEquals(ClickEvent.Action.OPEN_URL, link.clickEvent().action());
+        assertEquals(url, ((ClickEvent.Payload.Text) link.clickEvent().payload()).value());
+        assertNull(link.color(), "the color code in the url was applied");
+    }
+
+    @Test
+    void wwwLinksOpenWithHttps() {
+        PlayerMock player = addPlayer("Steve");
+        Component link = link(ChatListener.formatMessage(user(player), "go to www.example.org."));
+        assertNotNull(link);
+        assertEquals("www.example.org", PlainTextComponentSerializer.plainText().serialize(link));
+        assertEquals("https://www.example.org", ((ClickEvent.Payload.Text) link.clickEvent().payload()).value());
+    }
+
+    @Test
+    void linksInRainbowChat() {
+        PlayerMock player = addPlayer("Steve");
+        user(player).setColor(Color.of("rainbow"));
+        Component message = ChatListener.formatMessage(user(player), "hi https://example.org/?a&b");
+        assertEquals("hi https://example.org/?a&b", PlainTextComponentSerializer.plainText().serialize(message));
+        assertNotNull(link(message));
+    }
+
     @Test
     void doesNothingWhenChatHandlingIsDisabled() {
         plugin.getConfigData().save(ConfigData.Keys.HANDLE_CHAT, false);

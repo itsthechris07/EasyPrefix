@@ -210,6 +210,13 @@ public class User {
         return this.miniMsg.deserialize(text);
     }
 
+    /**
+     * @param extra more tags, e.g. placeholders that are not part of the user's tags
+     */
+    public Component deserialize(String text, TagResolver extra) {
+        return this.miniMsg.deserialize(text, extra);
+    }
+
     public String deserializeToText(String text) {
         return TextUtils.deserialize(text, this);
     }

@@ -12,6 +12,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -24,6 +25,8 @@ import org.bukkit.event.Listener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.christian34.easyprefix.utils.TextUtils.miniMessage;
 
@@ -36,6 +39,10 @@ import static com.christian34.easyprefix.utils.TextUtils.miniMessage;
  * @author Christian34
  */
 public class ChatListener implements Listener {
+    /**
+     * http(s) and www. links - punctuation at the end belongs to the sentence ("see https://x.org.")
+     */
+    private static final Pattern URL = Pattern.compile("(?i)(?<![\\w/])(?:https?://|www\\.)[^\\s<>]*[^\\s<>.,;:!?)\"']");
     private final EasyPrefix instance;
 
     public ChatListener(EasyPrefix instance) {
@@ -83,7 +90,17 @@ public class ChatListener implements Listener {
      * @return the message in the user's chat color and formatting
      */
     public static Component formatMessage(User user, String message) {
-        String msg = TextUtils.escapeLegacyColors(message);
+        // links are inserted as placeholders: color codes and tags must not change them ("?a=1&b=2" is no aqua)
+        StringBuilder msg = new StringBuilder();
+        TagResolver.Builder links = TagResolver.builder();
+        Matcher matcher = URL.matcher(message);
+        int end = 0;
+        for (int i = 0; matcher.find(); i++) {
+            msg.append(TextUtils.escapeLegacyColors(message.substring(end, matcher.start()))).append("<ep_link_").append(i).append('>');
+            links.resolver(Placeholder.component("ep_link_" + i, link(matcher.group())));
+            end = matcher.end();
+        }
+        msg.append(TextUtils.escapeLegacyColors(message.substring(end)));
 
         Component componentMsg = Component.text("");
         Component content;
@@ -91,15 +108,23 @@ public class ChatListener implements Listener {
         if (color != null && color.getName().equalsIgnoreCase("rainbow")) {
             // rainbow is a tag around the text, its hex value is only a fallback (e.g. for icons)
             MiniMessage rainbow = MiniMessage.builder().tags(TagResolver.resolver(user.getTagResolver(), color.tagResolver())).build();
-            content = rainbow.deserialize("<rainbow>" + msg);
+            content = rainbow.deserialize("<rainbow>" + msg, links.build());
         } else {
             if (color != null) componentMsg = componentMsg.color(color.getTextColor());
-            content = user.deserialize(msg);
+            content = user.deserialize(msg.toString(), links.build());
         }
         if (user.getDecoration() != null) {
             componentMsg = componentMsg.decorate(user.getDecoration().getTextDecoration());
         }
         return componentMsg.append(content);
+    }
+
+    /**
+     * @return the link as written, opens the url on click ("www." links get https://)
+     */
+    private static Component link(String url) {
+        String target = url.regionMatches(true, 0, "http", 0, 4) ? url : "https://" + url;
+        return Component.text(url).clickEvent(ClickEvent.openUrl(target));
     }
 
     /**
