@@ -22,3 +22,4 @@ build/
 
 # design sources of the store images (assets/*.png)
 /assets/source/
+/site/

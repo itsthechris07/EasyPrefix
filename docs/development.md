@@ -28,7 +28,7 @@ Put these into `gradle.properties` (it is gitignored):
 
 With `serverPluginsDir` set, `./gradlew testServer -Pcommands="ep help;color show"` starts the local test server, runs
 the `;`-separated console commands, stops it and prints a summary of warnings and errors
-([scripts/test-server.ps1](../scripts/test-server.ps1)).
+(`scripts/test-server.ps1`, local only).
 
 ## Tests
 
@@ -83,12 +83,28 @@ directly), the Paper command manager (tests use `TestCommandManager`).
 - **Texts for other plugins** (PlaceholderAPI, Vault) are legacy colors with all placeholders resolved
   (`ExpansionManager#toLegacy`).
 
+## Documentation
+
+The documentation in `docs/` is published with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) on
+[GitHub Pages](https://itsthechris07.github.io/EasyPrefix/) by the [docs workflow](https://github.com/itsthechris07/EasyPrefix/blob/master/.github/workflows/docs.yml)
+on every push to `master`. Navigation and theme are in `mkdocs.yml`, the branding in `docs/stylesheets/brand.css`.
+New pages must be added to `nav` in `mkdocs.yml`.
+
+Preview it locally:
+
+```bash
+pip install "mkdocs>=1.6,<2" "mkdocs-material==9.7.7"
+mkdocs serve
+```
+
+`mkdocs build --strict` fails on broken links, like the workflow does.
+
 ## Releasing
 
 1. Bump `version` in `build.gradle.kts` and commit it.
 2. Tag it with the release note: `git tag -a v<version> -F notes.md` and `git push origin v<version>`.
 
-The [release workflow](../.github/workflows/release.yml) builds the jar with tests, creates the GitHub release and
+The [release workflow](https://github.com/itsthechris07/EasyPrefix/blob/master/.github/workflows/release.yml) builds the jar with tests, creates the GitHub release and
 publishes it to Modrinth and Hangar. Versions with a `-` (e.g. `2.1.0-beta.1`) are pre-releases and only go to
 GitHub. Supported Minecraft versions are set in `minecraftVersions` in `build.gradle.kts`. SpigotMC is updated by
 hand.

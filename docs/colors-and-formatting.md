@@ -6,8 +6,8 @@ Prefixes, suffixes, tags, hovers and join/quit messages understand both formats,
 
 | Format | Example |
 |---|---|
-| Legacy color codes | `&4Admin &7\| &c` |
-| [MiniMessage](https://docs.papermc.io/adventure/minimessage/format/) | `<dark_red>Admin <gray>\| <red>` |
+| Legacy color codes | `&4Admin &7» &c` |
+| [MiniMessage](https://docs.papermc.io/adventure/minimessage/format/) | `<dark_red>Admin <gray>» <red>` |
 | Hex colors | `<#ff5555>` |
 | Gradients and effects | `<gradient:#ff5555:#ffaa00>Admin</gradient>`, `<rainbow>VIP</rainbow>`, `<shadow:gold:0.6>Glow</shadow>` |
 

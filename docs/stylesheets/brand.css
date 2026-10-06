@@ -1,0 +1,159 @@
+/* EasyPrefix branding (assets/source): dark grid background, gold accent, Sora / IBM Plex Sans / JetBrains Mono */
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@600;700&display=swap");
+
+:root {
+  --ep-bg: #101217;
+  --ep-grid: #1a1d24;
+  --ep-surface: #181b22;
+  --ep-border: #2e333d;
+  --ep-text: #ecedef;
+  --ep-muted: #a3a9b3;
+  --ep-gold: #ffaa00;
+  --ep-gold-dark: #9a6600;
+
+  --md-primary-fg-color: var(--ep-bg);
+  --md-primary-fg-color--light: var(--ep-surface);
+  --md-primary-fg-color--dark: var(--ep-bg);
+  --md-primary-bg-color: var(--ep-text);
+  --md-primary-bg-color--light: var(--ep-muted);
+  --md-accent-fg-color: var(--ep-gold);
+  --md-accent-fg-color--transparent: rgba(255, 170, 0, 0.1);
+  --md-typeset-a-color: var(--ep-gold-dark);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-hue: 222;
+  --md-default-bg-color: var(--ep-bg);
+  --md-default-fg-color: var(--ep-text);
+  --md-default-fg-color--light: var(--ep-muted);
+  --md-default-fg-color--lighter: #6b717c;
+  --md-default-fg-color--lightest: var(--ep-border);
+  --md-code-bg-color: var(--ep-surface);
+  --md-code-fg-color: var(--ep-text);
+  --md-typeset-color: #c3c7cf;
+  --md-typeset-a-color: var(--ep-gold);
+  --md-typeset-table-color: var(--ep-border);
+  --md-footer-bg-color: var(--ep-bg);
+  --md-footer-bg-color--dark: #0b0d11;
+}
+
+/* the 32px grid of the banner */
+[data-md-color-scheme="slate"] body {
+  background-color: var(--ep-bg);
+  background-image: linear-gradient(var(--ep-grid) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--ep-grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
+}
+
+[data-md-color-scheme="slate"] .md-main,
+[data-md-color-scheme="slate"] .md-container {
+  background: transparent;
+}
+
+/* header and tabs stay dark in both schemes, like the banner */
+.md-header,
+.md-tabs {
+  background-color: var(--ep-bg);
+  color: var(--ep-text);
+  border-bottom: 1px solid #262a33;
+}
+
+.md-header__title {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ep-wordmark-gold {
+  color: var(--ep-gold);
+}
+
+.md-search__form {
+  background-color: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+  border-radius: 6px;
+}
+
+/* headings like the wordmark */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1,
+[data-md-color-scheme="slate"] .md-typeset h2,
+[data-md-color-scheme="slate"] .md-typeset h3 {
+  color: var(--ep-text);
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+}
+
+/* inline code like the tags on the banner */
+.md-typeset code {
+  border-radius: 4px;
+}
+
+[data-md-color-scheme="slate"] .md-typeset :not(pre) > code {
+  border: 1px solid var(--ep-border);
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre > code {
+  border: 1px solid var(--ep-border);
+  border-radius: 6px;
+}
+
+/* tables */
+.md-typeset table:not([class]) {
+  border-radius: 6px;
+  font-size: 0.68rem;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  background-color: var(--ep-surface);
+  border: 1px solid var(--ep-border);
+}
+
+/* option names, commands and permissions in the first column don't break */
+.md-typeset td:first-child code {
+  white-space: nowrap;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: #1f232b;
+  color: var(--ep-text);
+}
+
+/* navigation: the current page in gold */
+.md-nav__link--active,
+.md-nav__item .md-nav__link--active {
+  color: var(--ep-gold-dark);
+}
+
+[data-md-color-scheme="slate"] .md-nav__link--active,
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link--active {
+  color: var(--ep-gold);
+}
+
+.md-nav__title,
+.md-nav--primary .md-nav__item--section > .md-nav__link {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__item--section > .md-nav__link {
+  color: var(--ep-gold);
+}
+
+/* the banner on the start page */
+.md-typeset img[alt="EasyPrefix"] {
+  border-radius: 8px;
+  border: 1px solid var(--ep-border);
+}

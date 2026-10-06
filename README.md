@@ -11,7 +11,7 @@
   <a href="https://hangar.papermc.io/Christian34/EasyPrefixGUI">Hangar</a> ·
   <a href="https://www.spigotmc.org/resources/easyprefix-prefix-chat-color-tab-list-gui.44580/">SpigotMC</a> ·
   <a href="https://github.com/itsthechris07/EasyPrefix/releases">Releases</a> ·
-  <a href="docs/README.md">Documentation</a>
+  <a href="https://itsthechris07.github.io/EasyPrefix/">Documentation</a>
 </p>
 
 ---
@@ -59,6 +59,8 @@ Spigot and older Minecraft versions are not supported by this version.
 Players without a group permission get the `default` group. More in [Getting started](docs/getting-started.md).
 
 ## Documentation
+
+Read it on **[itsthechris07.github.io/EasyPrefix](https://itsthechris07.github.io/EasyPrefix/)** or right here:
 
 | | |
 |---|---|

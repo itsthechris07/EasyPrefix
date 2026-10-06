@@ -1,7 +1,9 @@
 # EasyPrefix documentation
 
+![EasyPrefix](https://raw.githubusercontent.com/itsthechris07/EasyPrefix/master/assets/banner.png)
+
 EasyPrefix is a chat formatting plugin for Paper and Folia 1.21.7 - 26.x. This documentation covers setup,
-configuration and all features. Back to the [project page](../README.md).
+configuration and all features. Source code and downloads: [GitHub](https://github.com/itsthechris07/EasyPrefix).
 
 ## For server owners
 
