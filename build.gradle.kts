@@ -11,6 +11,8 @@ buildscript {
 plugins {
     java
     id("com.gradleup.shadow") version "9.6.1"
+    id("com.modrinth.minotaur") version "2.10.0"
+    id("io.papermc.hangar-publish-plugin") version "0.1.4"
 }
 
 group = "com.christian34.easyprefix"
@@ -180,6 +182,62 @@ tasks {
         relocate("de.themoep", "com.christian34.easyprefix.libs.inventorygui")
         relocate("com.tchristofferson", "com.christian34.easyprefix.libs.configupdater")
         relocate("com.zaxxer.hikari", "com.christian34.easyprefix.libs.hikari")
+    }
+}
+
+// uploads to Modrinth (modrinth) and Hangar (publishPluginPublicationToHangar), run by .github/workflows/release.yml
+// with the relocated release jar; -PpublishDryRun only shows what Modrinth would get
+val minecraftVersions = listOf(
+    "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11", "26.1", "26.1.1", "26.1.2", "26.2", "26.3"
+)
+// the release notes, written by the workflow
+val releaseNotes = providers.gradleProperty("releaseNotes").map { file(it).readText() }
+    .orElse("See https://github.com/itsthechris07/EasyPrefix/releases")
+
+modrinth {
+    // token: MODRINTH_TOKEN environment variable
+    projectId = "easyprefix-christian34"
+    versionName = "EasyPrefix $version"
+    versionType = "release"
+    uploadFile.set(tasks.shadowJar)
+    gameVersions.addAll(minecraftVersions)
+    loaders.addAll("paper", "spigot")
+    detectLoaders = false
+    changelog = releaseNotes
+    debugMode = providers.gradleProperty("publishDryRun").isPresent
+    dependencies {
+        optional.project("placeholderapi")
+        // Vault itself isn't on Modrinth
+        optional.project("vaultunlocked")
+    }
+}
+
+// HotSwap builds don't relocate the libraries - such a jar must never be published
+if (providers.gradleProperty("relocateLibraries").orNull == "false") {
+    tasks.matching { it.name == "modrinth" || it.name.endsWith("ToHangar") }.configureEach {
+        doFirst { throw GradleException("relocateLibraries=false: publish with -PrelocateLibraries=true") }
+    }
+}
+
+hangarPublish {
+    publications.register("plugin") {
+        // the name EasyPrefix is taken on Hangar
+        id = "EasyPrefixGUI"
+        version = project.version.toString()
+        channel = "Release"
+        changelog = releaseNotes
+        apiKey = providers.environmentVariable("HANGAR_API_KEY")
+        platforms {
+            paper {
+                jar = tasks.shadowJar.flatMap { it.archiveFile }
+                platformVersions = minecraftVersions
+                dependencies {
+                    hangar("PlaceholderAPI") { required = false }
+                    // Vault isn't on Hangar
+                    url("Vault", "https://www.spigotmc.org/resources/vault.34315/") { required = false }
+                }
+            }
+        }
     }
 }
 
