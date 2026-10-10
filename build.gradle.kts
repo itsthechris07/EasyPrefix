@@ -39,7 +39,7 @@ dependencies {
     // Paper API already ships Adventure (incl. MiniMessage + legacy serializer)
     // compiled against the oldest supported version (dialogs need 1.21.7), so newer api can't slip in;
     // the tests run on the current one (testImplementation below)
-    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.132-stable")
     compileOnly("me.clip:placeholderapi:2.12.3")
     compileOnly("org.jetbrains:annotations:26.1.0")
     // VaultUnlocked (the Vault fork) contains the legacy Vault api (net.milkbowl.vault) and its new one (net.milkbowl.vault2)
@@ -61,7 +61,7 @@ dependencies {
     }
 
     // tests run the plugin against a mocked Paper server
-    testImplementation("io.papermc.paper:paper-api:26.2.build.129-stable")
+    testImplementation("io.papermc.paper:paper-api:26.2.build.132-stable")
     testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v26.2:4.116.1")
     testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
