@@ -25,9 +25,12 @@ jobs:
           distribution: temurin
           java-version: 25
       - uses: gradle/actions/setup-gradle@v5
+        with:
+          # the wrapper is not in the repository
+          gradle-version: "9.8.0"
 
       - name: Build (with tests)
-        run: chmod +x gradlew && ./gradlew :build
+        run: gradle :build
 
       - name: Upload the test reports
         if: failure()
