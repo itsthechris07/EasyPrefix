@@ -23,17 +23,17 @@ import java.util.Locale;
  * @author Christian34
  */
 public enum ColorIcon {
-    WOOL("Wool", "closest of the 16 minecraft colors"),
-    GLASS("Stained Glass", "closest of the 16 minecraft colors"),
-    DYE("Dye", "closest of the 16 minecraft colors"),
-    LEATHER("Leather Helmet", "exact color"),
-    FIREWORK_STAR("Firework Star", "exact color"),
-    BOOK("Book", "no color");
+    WOOL(Message.COLOR_ICON_WOOL, Message.COLOR_ICON_CLOSEST_COLOR),
+    GLASS(Message.COLOR_ICON_GLASS, Message.COLOR_ICON_CLOSEST_COLOR),
+    DYE(Message.COLOR_ICON_DYE, Message.COLOR_ICON_CLOSEST_COLOR),
+    LEATHER(Message.COLOR_ICON_LEATHER, Message.COLOR_ICON_EXACT_COLOR),
+    FIREWORK_STAR(Message.COLOR_ICON_FIREWORK_STAR, Message.COLOR_ICON_EXACT_COLOR),
+    BOOK(Message.COLOR_ICON_BOOK, Message.COLOR_ICON_NO_COLOR);
 
-    private final String displayName;
-    private final String description;
+    private final Message displayName;
+    private final Message description;
 
-    ColorIcon(String displayName, String description) {
+    ColorIcon(Message displayName, Message description) {
         this.displayName = displayName;
         this.description = description;
     }
@@ -110,11 +110,11 @@ public enum ColorIcon {
     }
 
     public String getDisplayName() {
-        return displayName;
+        return displayName.getText();
     }
 
     public String getDescription() {
-        return description;
+        return description.getText();
     }
 
     /**

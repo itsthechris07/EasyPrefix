@@ -54,7 +54,7 @@ public abstract class PluginFile {
         try {
             this.data = YamlConfiguration.loadConfiguration(getSourceFile());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Debug.handleException(ex);
         }
     }
 
@@ -71,7 +71,7 @@ public abstract class PluginFile {
         try {
             data.save(getSourceFile());
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.handleException(e);
         }
         load();
     }

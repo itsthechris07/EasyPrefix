@@ -14,7 +14,10 @@
 The shaded jar lands in `release/`. `build` also runs the tests - skip them with `-x test`.
 
 Libraries (Cloud, InventoryGui, bStats, ConfigUpdater) are shaded and relocated. Adventure, MiniMessage and the
-MySQL driver come with Paper and are not shaded.
+MySQL driver come with Paper and are not shaded. InventoryGui still calls `org.bukkit.Sound` as an enum: the build
+rewrites these calls (`BukkitEnumRewrite` in `build.gradle.kts`), so `plugin.yml` can use a current `api-version`.
+
+Every push and pull request is built and tested by `.github/workflows/build.yml`.
 
 ### Local settings
 
@@ -76,7 +79,7 @@ directly), the Paper command manager (tests use `TestCommandManager`).
 ### Conventions
 
 - **Folia**: never use the `BukkitScheduler`, only `TaskManager` (`global`, `run(player, ...)`, `async`).
-- **New messages**: add the key to `messages.yml` **and** the `Message` enum.
+- **New messages**: add the key to `messages.yml` (MiniMessage) **and** the `Message` enum, no hard-coded texts.
 - **Schema changes**: add a new `Migration` at the end of `SchemaMigrations.MIGRATIONS` (for MySQL and SQLite),
   never change a released one.
 - **Database connections**: always try-with-resources or `Database#query`, they come from a pool.

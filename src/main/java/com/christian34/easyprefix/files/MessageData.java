@@ -49,7 +49,7 @@ public class MessageData {
                 ConfigUpdater.update(instance, langFile, file, new ArrayList<>());
             } catch (IOException e) {
                 Debug.log("§cCouldn't update file. Please report this error on spigotmc.org (discussion tab of EasyPrefix)!");
-                e.printStackTrace();
+                Debug.handleException(e);
             }
         }
         data = YamlConfiguration.loadConfiguration(file);

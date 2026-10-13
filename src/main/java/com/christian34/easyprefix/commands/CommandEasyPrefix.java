@@ -32,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +55,7 @@ public class CommandEasyPrefix {
     @Command("easyprefix|ep")
     @CommandDescription("main command")
     public void mainCmd(CommandSender sender) {
-        sender.sendMessage(Message.PREFIX + String.format("§7This server uses §9EasyPrefix §7version §b%s §7by Christian34.\nType '/easyprefix help' to get a command overview.", getInstance().getPlugin().getPluginMeta().getVersion()));
+        sender.sendMessage(Message.CMD_INFO.admin("version", getInstance().getPlugin().getPluginMeta().getVersion()));
     }
 
     @Suggestions("help_queries")
@@ -76,14 +75,19 @@ public class CommandEasyPrefix {
     @CommandDescription("configure groups")
     @Permission("easyprefix.admin")
     public void groupInfo(CommandSender sender, @Argument("group") Group group) {
-        sender.sendMessage(String.format(" \n§7--------------=== §9§l%s §7===--------------\n ", group.getName()));
-        sender.sendMessage(String.format("§9Prefix§f: §8«§7%s§8»", group.getPrefix()));
-        sender.sendMessage(String.format("§9Suffix§f: §8«§7%s§8»", group.getSuffix()));
-        sender.sendMessage("§9Chat color§f: §7" + group.getColor().getDisplayName());
-        sender.sendMessage("§9Priority§f: §7" + group.getPriority());
-        sender.sendMessage("§9Join message§f: §7" + group.getJoinMessage());
-        sender.sendMessage("§9Quit message§f: §7" + group.getQuitMessage());
-        sender.sendMessage(" \n§7-----------------------------------------------\n ");
+        Message.CMD_GROUP_INFO.getList(
+                "group", group.getName(),
+                "group_prefix", orNone(group.getPrefix()),
+                "group_suffix", orNone(group.getSuffix()),
+                "color", group.getColor().getDisplayName(),
+                "priority", Integer.toString(group.getPriority()),
+                "join_message", orNone(group.getJoinMessage()),
+                "quit_message", orNone(group.getQuitMessage())
+        ).forEach(sender::sendMessage);
+    }
+
+    private static String orNone(String value) {
+        return value == null ? "-" : value;
     }
 
     @Command("easyprefix|ep group <group> setprefix <prefix>")
@@ -94,7 +98,7 @@ public class CommandEasyPrefix {
             prefix = prefix.substring(1, prefix.length() - 1);
         }
         group.setPrefix(prefix);
-        sender.sendMessage(String.format("§aThe prefix of group §7%s §ahas been set to §7\"%s\"§a.", group.getName(), group.getPrefix()));
+        sender.sendMessage(Message.CMD_GROUP_PREFIX_SET.admin("group", group.getName(), "content", orNone(group.getPrefix())));
     }
 
     @Command("easyprefix|ep group <group> setsuffix <suffix>")
@@ -105,7 +109,7 @@ public class CommandEasyPrefix {
             suffix = suffix.substring(1, suffix.length() - 1);
         }
         group.setSuffix(suffix);
-        sender.sendMessage(String.format("§aThe suffix of group §7%s §ahas been set to §7\"%s\"§a.", group.getName(), group.getSuffix()));
+        sender.sendMessage(Message.CMD_GROUP_SUFFIX_SET.admin("group", group.getName(), "content", orNone(group.getSuffix())));
     }
 
     @Command("easyprefix|ep group <group> setpriority <priority>")
@@ -113,30 +117,29 @@ public class CommandEasyPrefix {
     @Permission("easyprefix.admin")
     public void groupSetPriority(CommandSender sender, @Argument("group") Group group, @Argument("priority") int priority) {
         group.setPriority(priority);
-        sender.sendMessage(String.format("§aThe priority of group §7%s §ahas been set to §7%d§a.", group.getName(), priority));
+        sender.sendMessage(Message.CMD_GROUP_PRIORITY_SET.admin("group", group.getName(), "priority", Integer.toString(priority)));
     }
 
     @Command("easyprefix|ep user <user> info")
     @CommandDescription("shows user information and applied settings")
     @Permission("easyprefix.admin")
     public void userInfo(CommandSender sender, @Argument("user") User user) {
-        String subgroup = (user.getSubgroup() != null) ? user.getSubgroup().getName() : "-";
+        Message.CMD_USER_INFO.getList(
+                "player", user.getName(),
+                "group", user.getGroup().getName(),
+                "tag", user.getSubgroup() != null ? user.getSubgroup().getName() : "-",
+                "user_prefix", orNone(user.getPrefix()),
+                "prefix_custom", user.hasCustomPrefix() ? customized(user.getLastPrefixUpdate()) : "",
+                "user_suffix", orNone(user.getSuffix()),
+                "suffix_custom", user.hasCustomSuffix() ? customized(user.getLastSuffixUpdate()) : "",
+                "color", user.getColor() != null ? user.getColor().getDisplayName() : "-",
+                "colors", Integer.toString(user.getColors().size()),
+                "formatting", user.getDecoration() != null ? user.getDecoration().getDisplayName() : "-"
+        ).forEach(sender::sendMessage);
+    }
 
-        sender.sendMessage(String.format(" \n§7--------------=== §9§l%s §7===--------------", user.getName()));
-        sender.sendMessage("§9Group§f: §7" + user.getGroup().getName());
-        sender.sendMessage("§9Tag§f: §7" + subgroup);
-        sender.sendMessage("§9Prefix§f: §8«§7" + Optional.ofNullable(user.getPrefix()).orElse("-") + "§8»"
-                + (user.hasCustomPrefix() ? " §7(§9customized§7)"
-                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastPrefixUpdate()) : ""));
-        sender.sendMessage("§9Suffix§f: §8«§7" + Optional.ofNullable(user.getSuffix()).orElse("-") + "§8»"
-                + (user.hasCustomSuffix() ? " §7(§9customized§7)"
-                + "\n  §7↳ §9last update§f: §7" + new Timestamp(user.getLastSuffixUpdate()) : ""));
-        sender.sendMessage("§9current color§f: §7" + ((user.getColor() != null) ? user.getColor().getDisplayName() : "-"));
-        sender.sendMessage("§9colors§f: §7" + user.getColors().size());
-        if (user.getDecoration() != null) {
-            sender.sendMessage(" §9chat formatting§f: §7" + user.getDecoration().getDisplayName());
-        }
-        sender.sendMessage(" \n§7-----------------------------------------------\n ");
+    private static String customized(long lastUpdate) {
+        return Message.CMD_USER_INFO_CUSTOM.get("time", new Timestamp(lastUpdate).toString());
     }
 
     @Command("easyprefix|ep user <user> setgroup <group>")
@@ -144,7 +147,7 @@ public class CommandEasyPrefix {
     @Permission("easyprefix.admin")
     public void userSetgroup(CommandSender sender, @Argument("user") User user, @Argument("group") Group group) {
         user.setGroup(group, true);
-        sender.sendMessage(Message.PREFIX + "User has been updated!");
+        sender.sendMessage(Message.CMD_USER_UPDATED.admin());
     }
 
     @Command("easyprefix|ep user <user> setsubgroup <subgroup>")
@@ -152,7 +155,7 @@ public class CommandEasyPrefix {
     @Permission("easyprefix.admin")
     public void userSetsubgroup(CommandSender sender, @Argument("user") User user, @Argument("subgroup") Subgroup subgroup) {
         user.setSubgroup(subgroup);
-        sender.sendMessage(Message.PREFIX + "User has been updated!");
+        sender.sendMessage(Message.CMD_USER_UPDATED.admin());
     }
 
     @Command("easyprefix|ep user <user> settag <subgroup>")
@@ -170,7 +173,7 @@ public class CommandEasyPrefix {
             prefix = prefix.substring(1, prefix.length() - 1);
         }
         user.setPrefix(prefix);
-        sender.sendMessage(String.format(Message.PREFIX + "§cThe prefix of §7%s §chas been set to §7%s§c.", user.getName(), user.getPrefix()));
+        sender.sendMessage(Message.CMD_USER_PREFIX_SET.admin("player", user.getName(), "content", orNone(user.getPrefix())));
     }
 
     @Command("easyprefix|ep user <user> setsuffix <suffix>")
@@ -181,7 +184,7 @@ public class CommandEasyPrefix {
             suffix = suffix.substring(1, suffix.length() - 1);
         }
         user.setSuffix(suffix);
-        sender.sendMessage(String.format(Message.PREFIX + "§cThe suffix of §7%s §chas been set to §7%s§c.", user.getName(), user.getSuffix()));
+        sender.sendMessage(Message.CMD_USER_SUFFIX_SET.admin("player", user.getName(), "content", orNone(user.getSuffix())));
     }
 
     @Command("easyprefix|ep user <user> setcolor <color>")
@@ -246,13 +249,14 @@ public class CommandEasyPrefix {
     @Permission("easyprefix.admin")
     public void reload(CommandSender sender) {
         TaskManager.global(getInstance()::reload);
-        sender.sendMessage(Message.PREFIX + "§aPlugin has been reloaded!");
+        sender.sendMessage(Message.CMD_RELOADED.admin());
     }
 
     @Command("easyprefix|ep debug")
     @CommandDescription("shows useful debug information")
     @Permission("easyprefix.admin")
     public void showDebugInfo(CommandSender sender) {
+        // not in messages.yml on purpose: the output is meant for bug reports
         GroupHandler groupHandler = getInstance().getGroupHandler();
         sender.sendMessage(" \n§7------------=== §9§lEasyPrefix DEBUG §7===------------");
         sender.sendMessage("§9Version: §7" + VersionController.getPluginVersion());
@@ -278,21 +282,21 @@ public class CommandEasyPrefix {
     @Permission("easyprefix.admin")
     public void databaseMigration(CommandSender sender) {
         if (getInstance().getStorageType().equals(StorageType.SQL)) {
-            sender.sendMessage(Message.PREFIX + "Downloading data from MySQL to Files...");
+            sender.sendMessage(Message.CMD_DOWNLOAD_START.admin());
             TaskManager.async(() -> {
                 long timestamp = System.currentTimeMillis();
                 try {
                     new Migration().download();
                 } catch (RuntimeException ex) {
                     Debug.handleException(ex);
-                    sender.sendMessage(Message.PREFIX + "§cThe migration failed, please check the console! Your local files are in the backup folder.");
+                    sender.sendMessage(Message.CMD_DOWNLOAD_FAILED.admin());
                     return;
                 }
-                sender.sendMessage(Message.PREFIX + String.format("§aMigration has been completed! (took %s seconds)", ((double) (System.currentTimeMillis() - timestamp) / 1000)));
-                sender.sendMessage(Message.PREFIX + "§7To use the local storage, set 'sql.enabled' in config.yml to false and restart the server.");
+                sender.sendMessage(Message.CMD_DOWNLOAD_DONE.admin("seconds", Double.toString((System.currentTimeMillis() - timestamp) / 1000.0)));
+                sender.sendMessage(Message.CMD_DOWNLOAD_HINT.admin());
             });
         } else {
-            sender.sendMessage(Message.PREFIX + "§cThis downloads the data from MySQL to the local storage - please enable sql in 'config.yml' first!");
+            sender.sendMessage(Message.CMD_DOWNLOAD_REQUIRES_SQL.admin());
         }
     }
 
@@ -301,24 +305,24 @@ public class CommandEasyPrefix {
     @Permission("easyprefix.admin")
     public void databaseUpload(CommandSender sender) {
         if (getInstance().getStorageType() != StorageType.SQL) {
-            sender.sendMessage(Message.PREFIX + "§cThis uploads the local storage to MySQL - please enable sql in 'config.yml' and restart the server first!");
+            sender.sendMessage(Message.CMD_UPLOAD_REQUIRES_SQL.admin());
             return;
         }
-        sender.sendMessage(Message.PREFIX + "Uploading groups.yml and storage.db to MySQL...");
+        sender.sendMessage(Message.CMD_UPLOAD_START.admin());
         TaskManager.async(() -> {
             Migration.UploadResult result;
             try {
                 result = new Migration().upload();
             } catch (RuntimeException ex) {
                 Debug.handleException(ex);
-                sender.sendMessage(Message.PREFIX + "§cThe upload failed, please check the console!");
+                sender.sendMessage(Message.CMD_UPLOAD_FAILED.admin());
                 return;
             }
             getInstance().getGroupHandler().load();
             getInstance().reloadUsers();
             getInstance().getDisplayManager().updateAll();
-            sender.sendMessage(Message.PREFIX + String.format("§aUploaded %d groups, %d tags and %d users!",
-                    result.groups(), result.tags(), result.users()));
+            sender.sendMessage(Message.CMD_UPLOAD_DONE.admin("groups", Integer.toString(result.groups()),
+                    "tags", Integer.toString(result.tags()), "users", Integer.toString(result.users())));
         });
     }
 

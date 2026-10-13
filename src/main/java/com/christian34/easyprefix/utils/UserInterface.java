@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,21 +55,21 @@ public class UserInterface {
 
     public void openPageSetup() {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Configuration", "xxaxbxcxx");
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE.getText(), "xxaxbxcxx");
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.CHEST), click -> {
             openGroupsList();
             return true;
-        }, "§9Groups"));
+        }, Message.SETUP_BTN_GROUPS.getText()));
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.NETHER_STAR), click -> {
             openSettingsPage();
             return true;
-        }, "§9Settings"));
+        }, Message.SETUP_BTN_SETTINGS.getText()));
 
         gui.addElement(new StaticGuiElement('c', new ItemStack(Material.WRITABLE_BOOK), click -> {
             openSubgroupsList();
             return true;
-        }, "§9Tags §8(Subgroups)"));
+        }, Message.SETUP_BTN_TAGS.getText()));
         gui.show(user.getPlayer());
     }
 
@@ -252,8 +253,12 @@ public class UserInterface {
      * @return a chat line as members of the group see it without an own chat color and formatting
      */
     private Component previewLayout(@Nullable String prefix, @Nullable String suffix, Group group) {
+        return previewLayout(prefix, suffix, group, Message.COLOR_PREVIEW_TEXT);
+    }
+
+    private Component previewLayout(@Nullable String prefix, @Nullable String suffix, Group group, Message text) {
         return ChatListener.formatName(user, prefix, suffix).appendSpace()
-                .append(ChatListener.formatMessage(user, Message.COLOR_PREVIEW_TEXT.getText(), group.getColor(), group.getDecoration()));
+                .append(ChatListener.formatMessage(user, text.getText(), group.getColor(), group.getDecoration()));
     }
 
     /**
@@ -425,31 +430,28 @@ public class UserInterface {
 
     private void openGroupsList() {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Groups", Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_GROUPS.getText(), Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
         GuiElementGroup elementGroup = new GuiElementGroup('a');
 
         for (Group group : instance.getGroupHandler().getGroups()) {
-            String prefixColor = group.getGroupColor();
-            List<String> lore = new ArrayList<>();
-            lore.add(prefixColor + group.getName());
-            lore.add("§7-------------------------------");
-            lore.add("§7Prefix: §7«§f" + layoutValue(group.getPrefix()) + "§7»");
-            lore.add("§7Suffix: §7«§f" + layoutValue(group.getSuffix()) + "§7»");
-            lore.add("§7Preview: §r" + TextUtils.serialize(previewLayout(group.getPrefix(), group.getSuffix(), group)));
-
-            lore.add("§7Color: §f" + group.getColor().getDisplayName());
-            lore.add("§7Permission: §fEasyPrefix.group." + group.getName());
             elementGroup.addElement(new StaticGuiElement('b', new ItemStack(Material.CHEST), click -> {
                 openGroupProfile(group);
                 return true;
-            }, lore.toArray(new String[0])));
+            }, Message.SETUP_GROUP.lines(
+                    "name", group.getGroupColor() + group.getName(),
+                    "group_prefix", layoutValue(group.getPrefix()),
+                    "group_suffix", layoutValue(group.getSuffix()),
+                    // a short text, the tooltip would get too wide otherwise
+                    "preview", TextUtils.serialize(previewLayout(group.getPrefix(), group.getSuffix(), group, Message.SETUP_GROUP_PREVIEW_TEXT)),
+                    "color", group.getColor().getDisplayName(),
+                    "group", group.getName())));
         }
         gui.addElement(elementGroup);
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.NETHER_STAR), click -> {
             openGroupCreator();
             return true;
-        }, "§aAdd Group"));
+        }, Message.SETUP_BTN_ADD_GROUP.getText()));
 
         GuiCreator.addBackButton(gui, this::openPageSetup);
         gui.show(user.getPlayer());
@@ -484,58 +486,26 @@ public class UserInterface {
 
     private void openSettingsPage() {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Settings",
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_SETTINGS.getText(),
                 Arrays.asList(" a b c d ", " e f g h ", " n o p q ", " i j m k "));
         ConfigData config = this.instance.getConfigData();
 
-        gui.addElement(toggleElement('a', Material.OAK_SIGN, "Handle Chat", ConfigData.Keys.HANDLE_CHAT,
-                "Formats the chat with prefix, suffix and colors.",
-                "Disable it if you use another chat plugin",
-                "like EssentialsChat (requires Vault)."));
+        gui.addElement(toggleElement('a', Material.OAK_SIGN, Message.SETUP_TOGGLE_HANDLE_CHAT, ConfigData.Keys.HANDLE_CHAT));
 
         ColorIcon colorIcon = ColorIcon.fromConfig();
         gui.addElement(new StaticGuiElement('b', colorIcon.create(sampleColor()), click -> {
             openColorIconPage();
             return true;
-        }, "§9Color Icons", DIVIDER, "§7Item shown for each color in /color.", " ",
-                "§7Current: §f" + colorIcon.getDisplayName(), " ", "§9Click to choose"));
+        }, Message.SETUP_BTN_COLOR_ICONS.lines("current", colorIcon.getDisplayName())));
 
-        gui.addElement(toggleElement('c', Material.NAME_TAG, "Tags", ConfigData.Keys.USE_TAGS,
-                "Players can select tags (subgroups)",
-                "in addition to their group.",
-                "§8The /tags command requires a restart."));
-
-        gui.addElement(toggleElement('d', Material.OAK_DOOR, "Join & Quit Messages", ConfigData.Keys.USE_JOIN_QUIT,
-                "Uses the join and quit messages",
-                "of the groups (groups.yml)."));
-
-        gui.addElement(toggleElement('n', Material.PAINTING, "Tab List", ConfigData.Keys.DISPLAY_TAB_LIST,
-                "Shows prefix and suffix in the tab list."));
-
-        gui.addElement(toggleElement('o', Material.LADDER, "Sort Tab List", ConfigData.Keys.DISPLAY_SORT_TAB_LIST,
-                "Sorts the tab list by the priority of the",
-                "groups (groups.yml, higher first).",
-                "§8Requires 'Tab List'."));
-
-        gui.addElement(toggleElement('p', Material.NAME_TAG, "Name Tags", ConfigData.Keys.DISPLAY_NAME_TAGS,
-                "Shows prefix and suffix above the heads.",
-                "§8Uses teams of the main scoreboard, disable",
-                "§8it if another plugin manages name tags."));
-
-        gui.addElement(toggleElement('q', Material.BELL, "Mentions", ConfigData.Keys.MENTIONS,
-                "Players can ping others with @name",
-                "in the chat (chat.mentions in config.yml).",
-                "§8Players can turn it off for themselves",
-                "§8in /ep settings or with /ep mentions."));
-
-        gui.addElement(toggleElement('e', Material.IRON_DOOR, "Hide Join & Quit Messages", ConfigData.Keys.HIDE_JOIN_QUIT,
-                "Hides all join and quit messages.",
-                "§8Requires 'Join & Quit Messages'."));
-
-        gui.addElement(toggleElement('f', Material.ANVIL, "Custom Layout", ConfigData.Keys.CUSTOM_LAYOUT,
-                "Players can set their own prefix and suffix.",
-                "§8Permissions: EasyPrefix.custom.prefix,",
-                "§8EasyPrefix.custom.suffix, EasyPrefix.custom.gui"));
+        gui.addElement(toggleElement('c', Material.NAME_TAG, Message.SETUP_TOGGLE_TAGS, ConfigData.Keys.USE_TAGS));
+        gui.addElement(toggleElement('d', Material.OAK_DOOR, Message.SETUP_TOGGLE_JOIN_QUIT, ConfigData.Keys.USE_JOIN_QUIT));
+        gui.addElement(toggleElement('n', Material.PAINTING, Message.SETUP_TOGGLE_TAB_LIST, ConfigData.Keys.DISPLAY_TAB_LIST));
+        gui.addElement(toggleElement('o', Material.LADDER, Message.SETUP_TOGGLE_SORT_TAB_LIST, ConfigData.Keys.DISPLAY_SORT_TAB_LIST));
+        gui.addElement(toggleElement('p', Material.NAME_TAG, Message.SETUP_TOGGLE_NAME_TAGS, ConfigData.Keys.DISPLAY_NAME_TAGS));
+        gui.addElement(toggleElement('q', Material.BELL, Message.SETUP_TOGGLE_MENTIONS, ConfigData.Keys.MENTIONS));
+        gui.addElement(toggleElement('e', Material.IRON_DOOR, Message.SETUP_TOGGLE_HIDE_JOIN_QUIT, ConfigData.Keys.HIDE_JOIN_QUIT));
+        gui.addElement(toggleElement('f', Material.ANVIL, Message.SETUP_TOGGLE_CUSTOM_LAYOUT, ConfigData.Keys.CUSTOM_LAYOUT));
 
         double cooldown = config.getDouble(ConfigData.Keys.CUSTOM_LAYOUT_COOLDOWN);
         gui.addElement(new StaticGuiElement('g', new ItemStack(Material.CLOCK), click -> {
@@ -546,57 +516,47 @@ public class UserInterface {
             config.save(ConfigData.Keys.CUSTOM_LAYOUT_COOLDOWN, value);
             openSettingsPage();
             return true;
-        }, "§9Custom Layout Cooldown", DIVIDER, "§7Time between two changes of a",
-                "§7custom prefix or suffix.", "§8Bypass: EasyPrefix.custom.bypass", " ",
-                "§7Current: §f" + formatHours(cooldown), " ",
-                "§9Left click §7+0.5h  §9Right click §7-0.5h", "§9Shift click §7±5h"));
+        }, Message.SETUP_BTN_COOLDOWN.lines("current", formatHours(cooldown))));
 
         List<String> blacklist = config.getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST);
-        List<String> blacklistLore = new ArrayList<>(List.of("§9Custom Layout Blacklist", DIVIDER,
-                "§7Words that are not allowed in", "§7custom prefixes and suffixes.",
-                "§8Bypass: EasyPrefix.custom.blacklist", " "));
-        blacklist.stream().limit(8).forEach(word -> blacklistLore.add("§7- §f" + word.replace("§", "&")));
-        if (blacklist.size() > 8) blacklistLore.add("§7... and " + (blacklist.size() - 8) + " more");
-        if (blacklist.isEmpty()) blacklistLore.add("§7(empty)");
-        blacklistLore.addAll(List.of(" ", "§9Click to edit"));
+        List<String> words = new ArrayList<>();
+        blacklist.stream().limit(8).forEach(word -> words.add(Message.SETUP_BLACKLIST_WORD.get("word", word.replace("§", "&"))));
+        if (blacklist.size() > 8) words.add(Message.SETUP_BLACKLIST_MORE.get("amount", Integer.toString(blacklist.size() - 8)));
+        if (blacklist.isEmpty()) words.add(Message.SETUP_BLACKLIST_EMPTY.getText());
         gui.addElement(new StaticGuiElement('h', new ItemStack(Material.IRON_BARS), click -> {
             openBlacklistPage();
             return true;
-        }, blacklistLore.toArray(new String[0])));
+        }, Message.SETUP_BTN_BLACKLIST.lines("words", String.join("\n", words))));
 
-        gui.addElement(aliasElement('i', Material.IRON_INGOT, "Prefix", ConfigData.Keys.PREFIX_ALIAS));
-        gui.addElement(aliasElement('j', Material.GOLD_INGOT, "Suffix", ConfigData.Keys.SUFFIX_ALIAS));
+        gui.addElement(aliasElement('i', Material.IRON_INGOT, Message.SETUP_ALIAS_PREFIX, "prefix", ConfigData.Keys.PREFIX_ALIAS));
+        gui.addElement(aliasElement('j', Material.GOLD_INGOT, Message.SETUP_ALIAS_SUFFIX, "suffix", ConfigData.Keys.SUFFIX_ALIAS));
 
         boolean sql = config.getBoolean(ConfigData.Keys.SQL_ENABLED);
         gui.addElement(new StaticGuiElement('m', new ItemStack(Material.ENDER_CHEST), click -> true,
-                "§9Storage", DIVIDER, "§7Current: §f" + (sql ? "MySQL" : "Local files"),
-                " ", "§8The database connection can only be", "§8changed in config.yml (restart required)."));
+                Message.SETUP_BTN_STORAGE.lines("current", (sql ? Message.SETUP_STORAGE_MYSQL : Message.SETUP_STORAGE_LOCAL).getText())));
 
         gui.addElement(new StaticGuiElement('k', new ItemStack(Material.RECOVERY_COMPASS), click -> {
             gui.close();
             if (!isAdmin()) return true;
             instance.reload();
-            user.sendAdminMessage("&aEasyPrefix has been reloaded!");
+            user.sendAdminMessage(Message.CMD_RELOADED);
             return true;
-        }, "§cReload", DIVIDER, "§7Reloads all files (config.yml, groups.yml,", "§7messages.yml) and users.", " ", "§9Click to reload"));
+        }, Message.SETUP_BTN_RELOAD.lines()));
 
         GuiCreator.addBackButton(gui, this::openPageSetup);
 
         gui.show(user.getPlayer());
     }
 
-    private StaticGuiElement toggleElement(char slot, Material material, String name, String key, String... description) {
+    /**
+     * @param text the name of the setting, followed by its description
+     */
+    private StaticGuiElement toggleElement(char slot, Material material, Message text, String key) {
         ConfigData config = this.instance.getConfigData();
         boolean enabled = config.getBoolean(key);
 
-        List<String> lore = new ArrayList<>();
-        lore.add("§9" + name);
-        lore.add(DIVIDER);
-        for (String line : description) lore.add(line.startsWith("§") ? line : "§7" + line);
-        lore.add(" ");
-        lore.add("§7Status: " + (enabled ? "§aenabled" : "§cdisabled"));
-        lore.add(" ");
-        lore.add("§9Click to " + (enabled ? "disable" : "enable"));
+        List<String> lore = text.getList();
+        lore.addAll((enabled ? Message.SETUP_TOGGLE_ENABLED : Message.SETUP_TOGGLE_DISABLED).getList());
 
         ItemStack itemStack = new ItemStack(material);
         if (enabled) highlight(itemStack);
@@ -610,27 +570,29 @@ public class UserInterface {
         }, lore.toArray(new String[0]));
     }
 
-    private StaticGuiElement aliasElement(char slot, Material material, String type, String key) {
+    /**
+     * @param command "prefix" or "suffix", as in the permission EasyPrefix.custom.prefix
+     */
+    private StaticGuiElement aliasElement(char slot, Material material, Message type, String command, String key) {
         ConfigData config = this.instance.getConfigData();
         String alias = config.getString(key, "");
         return new StaticGuiElement(slot, new ItemStack(material), click -> {
-            UserInput.create().build(user, "§9" + type + " command §8(e.g. /" + type.toLowerCase()
-                    + ", \"-\" disables it)", alias.isEmpty() ? "-" : alias, (input) -> {
+            String title = Message.SETUP_INPUT_ALIAS.get("type", type.getText(), "command", command);
+            UserInput.create().build(user, title, alias.isEmpty() ? "-" : alias, (input) -> {
                 if (!isAdmin()) return;
                 String value = input.trim().replace("/", "").replaceAll("[^a-zA-Z0-9_-]", "");
                 config.save(key, value.isEmpty() ? "" : "/" + value);
-                user.sendAdminMessage("&aThe command has been changed. Please restart the server to apply it!");
+                user.sendAdminMessage(Message.SETUP_ALIAS_CHANGED);
                 openSettingsPage();
             });
             return true;
-        }, "§9" + type + " Command", DIVIDER, "§7Opens the " + type.toLowerCase() + " input directly.",
-                "§8Requires EasyPrefix.custom." + type.toLowerCase(), "§8Changes require a restart.", " ",
-                "§7Current: §f" + (alias.isEmpty() ? "disabled" : alias), " ", "§9Click to change");
+        }, Message.SETUP_BTN_ALIAS.lines("type", type.getText(), "command", command,
+                "current", alias.isEmpty() ? Message.SETUP_ALIAS_DISABLED.getText() : alias));
     }
 
     private void openColorIconPage() {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9Settings §8» §8Color Icons",
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_COLOR_ICONS.getText(),
                 Arrays.asList("  aaaaaa ", "         ", "bbbbbbbbb", "bbbbbbbbb"));
         ConfigData config = this.instance.getConfigData();
         ColorIcon current = ColorIcon.fromConfig();
@@ -645,14 +607,14 @@ public class UserInterface {
                 config.save(ConfigData.Keys.COLOR_ICON, icon.getConfigValue());
                 openColorIconPage();
                 return true;
-            }, "§9" + icon.getDisplayName(), DIVIDER, "§7" + icon.getDescription(), " ",
-                    selected ? "§aSelected" : "§9Click to select"));
+            }, Message.SETUP_COLOR_ICON.lines("name", icon.getDisplayName(), "description", icon.getDescription(),
+                    "status", (selected ? Message.SETUP_COLOR_ICON_SELECTED : Message.SETUP_COLOR_ICON_SELECT).getText())));
         }
 
         GuiElementGroup preview = new GuiElementGroup('b');
         for (Color color : instance.getColors()) {
             preview.addElement(new StaticGuiElement('b', current.create(color), click -> true,
-                    "§r" + color.getDisplayName(), "§8Preview"));
+                    "§r" + color.getDisplayName(), Message.SETUP_COLOR_ICON_PREVIEW.getText()));
         }
 
         gui.addElement(icons);
@@ -663,7 +625,7 @@ public class UserInterface {
 
     private void openBlacklistPage() {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9Settings §8» §8Blacklist",
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_BLACKLIST.getText(),
                 Arrays.asList("aaaaaaaaa", "aaaaaaaaa", "aaaaaaaaa"));
         ConfigData config = this.instance.getConfigData();
         List<String> blacklist = config.getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST);
@@ -677,14 +639,14 @@ public class UserInterface {
                 config.save(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST, updated);
                 openBlacklistPage();
                 return true;
-            }, "§f" + word.replace("§", "&"), " ", "§cClick to remove"));
+            }, Message.SETUP_BLACKLIST_ENTRY.lines("word", word.replace("§", "&"))));
         }
         gui.addElement(entries);
 
         GuiCreator.addBackButton(gui, this::openSettingsPage);
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.NETHER_STAR), click -> {
-            UserInput.create().build(user, "§9Word to block", "", (input) -> {
+            UserInput.create().build(user, Message.SETUP_INPUT_BLACKLIST.getText(), "", (input) -> {
                 if (!isAdmin()) return;
                 String word = input.trim();
                 List<String> updated = new ArrayList<>(config.getList(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST));
@@ -695,7 +657,7 @@ public class UserInterface {
                 openBlacklistPage();
             });
             return true;
-        }, "§aAdd Word"));
+        }, Message.SETUP_BTN_ADD_WORD.getText()));
 
         gui.show(user.getPlayer());
     }
@@ -715,9 +677,9 @@ public class UserInterface {
     }
 
     private static String formatHours(double hours) {
-        if (hours <= 0) return "none";
-        if (hours < 1) return Math.round(hours * 60) + " minutes";
-        return (hours == Math.floor(hours) ? Long.toString((long) hours) : Double.toString(hours)) + " hours";
+        if (hours <= 0) return Message.SETUP_COOLDOWN_NONE.getText();
+        if (hours < 1) return Message.SETUP_COOLDOWN_MINUTES.get("amount", Long.toString(Math.round(hours * 60)));
+        return Message.SETUP_COOLDOWN_HOURS.get("amount", hours == Math.floor(hours) ? Long.toString((long) hours) : Double.toString(hours));
     }
 
     /**
@@ -750,19 +712,19 @@ public class UserInterface {
 
     private void openPageDeleteGroup(EasyGroup easyGroup) {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§4Delete " + easyGroup.getName() + "?", "xxxaxbxxx");
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_DELETE.get("name", easyGroup.getName()), "xxxaxbxxx");
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.GREEN_TERRACOTTA), click -> {
             if (!isAdmin()) return true;
             easyGroup.delete();
             if (easyGroup instanceof Group) openGroupsList();
             else openSubgroupsList();
             return true;
-        }, "§aYes"));
+        }, Message.SETUP_BTN_YES.getText()));
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.RED_TERRACOTTA), click -> {
             openProfile(easyGroup);
             return true;
-        }, "§cNo"));
+        }, Message.SETUP_BTN_NO.getText()));
 
         gui.show(user.getPlayer());
     }
@@ -822,60 +784,60 @@ public class UserInterface {
 
     void openGroupProfile(Group group) {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9Group §8» §7" + group.getGroupColor() + group.getName(), "xabcxdehf");
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_GROUP.get("name", group.getGroupColor() + group.getName()), "xabcxdehf");
 
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_INGOT), click -> {
             String prefix = group.getPrefix();
             prefix = prefix == null ? "" : prefix.replace("§", "&");
-            UserInput.create().preview(text -> previewLayout(text, group.getSuffix(), group)).build(user, "§9Prefix of " + group.getName(), prefix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(text, group.getSuffix(), group)).build(user, Message.SETUP_INPUT_PREFIX.get("name", group.getName()), prefix, (input) -> {
                 if (!isAdmin()) return;
                 group.setPrefix(input);
                 user.getPlayer().sendMessage(Message.INPUT_SAVED.getText());
                 openGroupProfile(group);
             });
             return true;
-        }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getPrefix()) + "§7»", " "));
+        }, Message.SETUP_BTN_PREFIX.lines("current", layoutValue(group.getPrefix()))));
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.GOLD_INGOT), click -> {
             String suffix = group.getSuffix();
             suffix = suffix == null ? "" : suffix.replace("§", "&");
-            UserInput.create().preview(text -> previewLayout(group.getPrefix(), text, group)).build(user, "§9Suffix of " + group.getName(), suffix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(group.getPrefix(), text, group)).build(user, Message.SETUP_INPUT_SUFFIX.get("name", group.getName()), suffix, (input) -> {
                 if (!isAdmin()) return;
                 group.setSuffix(input);
                 user.sendMessage(Message.INPUT_SAVED.getText());
                 openGroupProfile(group);
             });
             return true;
-        }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getSuffix()) + "§7»", " "));
+        }, Message.SETUP_BTN_SUFFIX.lines("current", layoutValue(group.getSuffix()))));
 
         gui.addElement(new StaticGuiElement('c', new ItemStack(Material.LIME_DYE), click -> {
             openPageColorGroup(group);
             return true;
-        }, "§aChange Color", DIVIDER, "§7Current: §f" + group.getColor().getDisplayName(), " "));
+        }, Message.SETUP_BTN_COLOR.lines("current", group.getColor().getDisplayName())));
 
         gui.addElement(new StaticGuiElement('d', new ItemStack(Material.BLAZE_ROD), click -> {
             String joinMsg = group.getJoinMessage();
             joinMsg = joinMsg == null ? "" : joinMsg.replace("§", "&");
-            UserInput.create().preview(this::previewMessage).build(user, "§9Join message of " + group.getName(), joinMsg, (input) -> {
+            UserInput.create().preview(this::previewMessage).build(user, Message.SETUP_INPUT_JOIN_MESSAGE.get("name", group.getName()), joinMsg, (input) -> {
                 if (!isAdmin()) return;
                 group.setJoinMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openGroupProfile(group);
             });
             return true;
-        }, "§aJoin Message", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getJoinMessage()) + "§7»", " "));
+        }, Message.SETUP_BTN_JOIN_MESSAGE.lines("current", layoutValue(group.getJoinMessage()))));
 
         gui.addElement(new StaticGuiElement('e', new ItemStack(Material.STICK), click -> {
             String quitMsg = group.getQuitMessage();
             quitMsg = quitMsg == null ? "" : quitMsg.replace("§", "&");
-            UserInput.create().preview(this::previewMessage).build(user, "§9Quit message of " + group.getName(), quitMsg, (input) -> {
+            UserInput.create().preview(this::previewMessage).build(user, Message.SETUP_INPUT_QUIT_MESSAGE.get("name", group.getName()), quitMsg, (input) -> {
                 if (!isAdmin()) return;
                 group.setQuitMessage(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openGroupProfile(group);
             });
             return true;
-        }, "§cQuit Message", DIVIDER, "§7Current: §7«§f" + layoutValue(group.getQuitMessage()) + "§7»", " "));
+        }, Message.SETUP_BTN_QUIT_MESSAGE.lines("current", layoutValue(group.getQuitMessage()))));
 
         gui.addElement(new StaticGuiElement('f', new ItemStack(Material.EXPERIENCE_BOTTLE), click -> {
             if (!isAdmin()) return true;
@@ -884,9 +846,7 @@ public class UserInterface {
             group.setPriority(group.getPriority() + step);
             openGroupProfile(group);
             return true;
-        }, "§aPriority", DIVIDER, "§7Players with several groups get the one", "§7with the highest priority. The tab list",
-                "§7is sorted by it (higher first).", " ", "§7Current: §f" + group.getPriority(), " ",
-                "§9Left click §7+1  §9Right click §7-1", "§9Shift click §7±10"));
+        }, Message.SETUP_BTN_PRIORITY.lines("current", Integer.toString(group.getPriority()))));
 
         gui.addElement(hoverElement(group));
 
@@ -894,7 +854,7 @@ public class UserInterface {
             gui.addElement(new StaticGuiElement('q', new ItemStack(Material.BARRIER), click -> {
                 openPageDeleteGroup(group);
                 return true;
-            }, "§4Delete", " "));
+            }, Message.SETUP_BTN_DELETE.getText(), " "));
         }
 
         GuiCreator.addBackButton(gui, this::openGroupsList);
@@ -908,18 +868,13 @@ public class UserInterface {
         boolean isDefault = group.getName().equals("default");
         boolean inherited = group.getOwnHover() == null;
         List<String> hover = group.getHover();
-        List<String> lore = new ArrayList<>();
-        lore.add("§aHover Text");
-        lore.add(DIVIDER);
-        lore.add("§7Shown when hovering over the name in the chat.");
-        lore.add(" ");
-        lore.add(!inherited ? "§7Current:" : isDefault ? "§7Current §8(built-in)§7:" : "§7Current §8(of the default group)§7:");
-        hover.stream().limit(10).forEach(line -> lore.add("§8| §r" + Message.setColors(line)));
-        if (hover.size() > 10) lore.add("§8| §7...");
-        lore.add(" ");
-        lore.add("§9Left click §7set all lines (separated by |)");
-        lore.add("§9Right click §7add a line");
-        lore.add(isDefault ? "§9Shift click §7use the built-in text again" : "§9Shift click §7use the text of the default group");
+        List<String> shown = new ArrayList<>();
+        hover.stream().limit(10).forEach(line -> shown.add(Message.SETUP_HOVER_LINE.get("line", Message.setColors(line))));
+        if (hover.size() > 10) shown.add(Message.SETUP_HOVER_MORE.getText());
+        Message current = !inherited ? Message.SETUP_HOVER_CURRENT
+                : isDefault ? Message.SETUP_HOVER_CURRENT_BUILTIN : Message.SETUP_HOVER_CURRENT_DEFAULT;
+        String[] lore = Message.SETUP_BTN_HOVER.lines("current", current.getText(), "lines", String.join("\n", shown),
+                "reset", (isDefault ? Message.SETUP_HOVER_RESET_BUILTIN : Message.SETUP_HOVER_RESET_DEFAULT).getText());
 
         return new StaticGuiElement('h', new ItemStack(Material.OAK_SIGN), click -> {
             if (!isAdmin()) return true;
@@ -928,7 +883,7 @@ public class UserInterface {
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openGroupProfile(group);
             } else if (click.getType().isRightClick()) {
-                UserInput.create().build(user, "§9New hover line", "", (input) -> {
+                UserInput.create().build(user, Message.SETUP_INPUT_HOVER_LINE.getText(), "", (input) -> {
                     if (!isAdmin()) return;
                     List<String> lines = new ArrayList<>(group.getHover());
                     lines.add(input);
@@ -937,7 +892,7 @@ public class UserInterface {
                     openGroupProfile(group);
                 });
             } else {
-                UserInput.create().build(user, "§9Hover lines §8(separated by |)", String.join("|", hover), (input) -> {
+                UserInput.create().build(user, Message.SETUP_INPUT_HOVER_LINES.getText(), String.join("|", hover), (input) -> {
                     if (!isAdmin()) return;
                     group.setHover(List.of(input.split(Pattern.quote("|"), -1)));
                     user.sendAdminMessage(Message.INPUT_SAVED);
@@ -945,28 +900,24 @@ public class UserInterface {
                 });
             }
             return true;
-        }, lore.toArray(new String[0]));
+        }, lore);
     }
 
     private void openSubgroupsList() {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9EasyPrefix §8» §8Tags", Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_TAGS.getText(), Arrays.asList("aaaaaaaaa", "aaaaaaaaa"));
         GuiElementGroup elementGroup = new GuiElementGroup('a');
 
         for (final Subgroup subgroup : this.instance.getGroupHandler().getSubgroups()) {
-            String prefixColor = subgroup.getGroupColor();
-            List<String> lore = new ArrayList<>();
-            lore.add(prefixColor + subgroup.getName());
-            lore.add("§7-------------------------");
-            lore.add("§7Prefix: §7«§f" + layoutValue(subgroup.getPrefix()) + "§7»");
-            lore.add("§7Suffix: §7«§f" + layoutValue(subgroup.getSuffix()) + "§7»");
-            lore.add("§7Permission: §fEasyPrefix.tag." + subgroup.getName());
-
             ItemStack sgBtn = new ItemStack(Material.WRITABLE_BOOK);
             elementGroup.addElement(new StaticGuiElement('b', sgBtn, click -> {
                 openSubgroupProfile(subgroup);
                 return true;
-            }, lore.toArray(new String[0])));
+            }, Message.SETUP_TAG.lines(
+                    "name", subgroup.getGroupColor() + subgroup.getName(),
+                    "tag_prefix", layoutValue(subgroup.getPrefix()),
+                    "tag_suffix", layoutValue(subgroup.getSuffix()),
+                    "tag", subgroup.getName())));
         }
 
         gui.addElement(elementGroup);
@@ -974,7 +925,7 @@ public class UserInterface {
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.NETHER_STAR), click -> {
             openTagCreator();
             return true;
-        }, "§aAdd Tag"));
+        }, Message.SETUP_BTN_ADD_TAG.getText()));
         GuiCreator.addBackButton(gui, this::openPageSetup);
         gui.show(user.getPlayer());
     }
@@ -994,7 +945,7 @@ public class UserInterface {
                 group.setColor(color);
                 openPageColorGroup(group);
                 return true;
-            }, "§r" + color.getDisplayName(), " ", (color.getPermission() != null ? String.format("§7Permission: §f%s", color.getPermission().getName()) : "")));
+            }, "§r" + color.getDisplayName(), " ", permissionLine(color.getPermission())));
         }
 
         GuiElementGroup groupFormattings = new GuiElementGroup('b');
@@ -1018,7 +969,7 @@ public class UserInterface {
                 group.setDecoration(deco);
                 openPageColorGroup(group);
                 return true;
-            }, decorationTitle(decoration), " ", (decoration.getPermission() != null ? String.format("§7Permission: §f%s", decoration.getPermission().getName()) : "")));
+            }, decorationTitle(decoration), " ", permissionLine(decoration.getPermission())));
 
         }
 
@@ -1029,38 +980,42 @@ public class UserInterface {
         gui.show(user.getPlayer());
     }
 
+    private static String permissionLine(@Nullable Permission permission) {
+        return permission == null ? "" : Message.SETUP_COLOR_PERMISSION.get("permission", permission.getName());
+    }
+
     private void openSubgroupProfile(Subgroup subgroup) {
         if (!isAdmin()) return;
-        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), "§9Tag (Subgroup) §8» §7" + subgroup.getGroupColor() + subgroup.getName(), " a b   f ");
+        InventoryGui gui = GuiCreator.createStatic(user.getPlayer(), Message.SETUP_TITLE_TAG.get("name", subgroup.getGroupColor() + subgroup.getName()), " a b   f ");
 
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.IRON_INGOT), click -> {
             String prefix = subgroup.getPrefix();
             prefix = prefix == null ? "" : prefix.replace("§", "&");
-            UserInput.create().preview(text -> previewLayout(text, subgroup.getSuffix(), defaultGroup())).build(user, "§9Prefix of " + subgroup.getName(), prefix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(text, subgroup.getSuffix(), defaultGroup())).build(user, Message.SETUP_INPUT_PREFIX.get("name", subgroup.getName()), prefix, (input) -> {
                 if (!isAdmin()) return;
                 subgroup.setPrefix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openSubgroupProfile(subgroup);
             });
             return true;
-        }, "§aChange Prefix", DIVIDER, "§7Current: §7«§f" + layoutValue(subgroup.getPrefix()) + "§7»", " "));
+        }, Message.SETUP_BTN_PREFIX.lines("current", layoutValue(subgroup.getPrefix()))));
 
         gui.addElement(new StaticGuiElement('b', new ItemStack(Material.GOLD_INGOT), click -> {
             String suffix = subgroup.getSuffix();
             suffix = suffix == null ? "" : suffix.replace("§", "&");
-            UserInput.create().preview(text -> previewLayout(subgroup.getPrefix(), text, defaultGroup())).build(user, "§9Suffix of " + subgroup.getName(), suffix, (input) -> {
+            UserInput.create().preview(text -> previewLayout(subgroup.getPrefix(), text, defaultGroup())).build(user, Message.SETUP_INPUT_SUFFIX.get("name", subgroup.getName()), suffix, (input) -> {
                 if (!isAdmin()) return;
                 subgroup.setSuffix(input);
                 user.sendAdminMessage(Message.INPUT_SAVED);
                 openSubgroupProfile(subgroup);
             });
             return true;
-        }, "§aChange Suffix", DIVIDER, "§7Current: §7«§f" + layoutValue(subgroup.getSuffix()) + "§7»", " "));
+        }, Message.SETUP_BTN_SUFFIX.lines("current", layoutValue(subgroup.getSuffix()))));
 
         gui.addElement(new StaticGuiElement('q', new ItemStack(Material.BARRIER), click -> {
             openPageDeleteGroup(subgroup);
             return true;
-        }, "§4Delete", " "));
+        }, Message.SETUP_BTN_DELETE.getText(), " "));
 
         GuiCreator.addBackButton(gui, this::openSubgroupsList);
         gui.show(user.getPlayer());
@@ -1068,13 +1023,13 @@ public class UserInterface {
 
     private void openGroupCreator() {
         if (!isAdmin()) return;
-        UserInput.create().build(user, "§9Name of the new group", "ExampleGroup", (input) -> {
+        UserInput.create().build(user, Message.SETUP_INPUT_GROUP_NAME.getText(), "ExampleGroup", (input) -> {
             if (!isAdmin()) return;
             String name = input.replaceAll("[^a-zA-Z0-9_]", "");
             if (this.instance.getGroupHandler().createGroup(name)) {
-                user.sendAdminMessage("&aGroup '" + name + "' has been created!");
+                user.sendAdminMessage(Message.SETUP_GROUP_CREATED, "name", name);
             } else {
-                user.sendAdminMessage("§cCouldn't create group!");
+                user.sendAdminMessage(Message.SETUP_GROUP_NOT_CREATED);
             }
             openGroupsList();
         });
@@ -1082,13 +1037,13 @@ public class UserInterface {
 
     private void openTagCreator() {
         if (!isAdmin()) return;
-        UserInput.create().build(user, "§9Name of the new tag", "ExampleTag", (input) -> {
+        UserInput.create().build(user, Message.SETUP_INPUT_TAG_NAME.getText(), "ExampleTag", (input) -> {
             if (!isAdmin()) return;
             String name = input.replaceAll("[^a-zA-Z0-9_]", "");
             if (this.instance.getGroupHandler().createSubgroup(name)) {
-                user.sendAdminMessage("&aTag '" + name + "' has been created!");
+                user.sendAdminMessage(Message.SETUP_TAG_CREATED, "name", name);
             } else {
-                user.sendAdminMessage("§cCouldn't create tag!");
+                user.sendAdminMessage(Message.SETUP_TAG_NOT_CREATED);
             }
             openSubgroupsList();
         });

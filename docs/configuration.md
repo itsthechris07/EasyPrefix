@@ -91,5 +91,11 @@ Players can ping each other with `@name` in the chat. Everyone can turn off bein
 
 ## messages.yml
 
-All texts of the plugin are in `messages.yml` - translate or change them there. `%newline%` breaks a line, `%prefix%`
-inserts `prefix_alt`. Keep a space after every `key:`, a single invalid line stops the whole file from loading.
+All texts of the plugin are in `messages.yml` - translate or change them there, including the admin commands and the
+setup menus (`setup_...`). `%newline%` breaks a line, `%prefix%` inserts `prefix_alt`. Keep a space after every
+`key:`, a single invalid line stops the whole file from loading.
+
+Texts are written in [MiniMessage](https://docs.advntr.dev/minimessage/format.html) (`<red>`, `<#ff8800>`, `<bold>`,
+`<gradient:red:blue>`; click and hover tags are not supported here). Files of older versions with legacy codes like
+`&c` keep working, but a text with legacy codes can't contain tags. `/ep debug` is always English, it is meant for
+bug reports.

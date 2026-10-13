@@ -15,6 +15,7 @@ import com.christian34.easyprefix.utils.Color;
 import com.christian34.easyprefix.utils.Decoration;
 import com.christian34.easyprefix.utils.Message;
 import com.christian34.easyprefix.utils.TaskManager;
+import com.christian34.easyprefix.utils.TextUtils;
 import com.christian34.easyprefix.utils.UserInterface;
 import io.leangen.geantyref.TypeToken;
 import net.kyori.adventure.text.Component;
@@ -81,28 +82,28 @@ public class CommandManager {
                 .build();
 
         MinecraftExceptionHandler.<CommandSender>create(sender -> sender)
-                .handler(InvalidSyntaxException.class, (formatter, ctx) -> {
-                    ClickEvent clickEvent = ClickEvent.runCommand("/ep help");
-                    Component componentCmd = Component.text("\"/ep help\"").clickEvent(clickEvent).color(NamedTextColor.GRAY);
-                    return Component.text(Message.PREFIX + "§cInvalid syntax. Type ")
-                            .append(componentCmd).append(Component.text(" for more help.").color(NamedTextColor.RED))
-                            .append(Component.text(
-                                    String.format("\nCorrect command syntax: /%s", ctx.exception().correctSyntax()),
-                                    NamedTextColor.GRAY
-                            ));
-                })
+                .handler(InvalidSyntaxException.class, (formatter, ctx) ->
+                        legacy(Message.CMD_INVALID_SYNTAX.admin("syntax", ctx.exception().correctSyntax()))
+                                .clickEvent(ClickEvent.runCommand("/ep help")))
                 .handler(InvalidCommandSenderException.class, (formatter, ctx) -> {
                     if (ctx.exception().requiredSenderTypes().contains(Player.class)) {
-                        return Component.text(Message.PREFIX + "§cYou cannot use this command in the console!");
+                        return legacy(Message.CMD_PLAYER_ONLY.admin());
                     } else {
-                        return Component.text(Message.PREFIX + "§cInvalid command sender. You must be of type " + ctx.exception().requiredSenderTypes());
+                        return legacy(Message.CMD_INVALID_SENDER.admin("types", ctx.exception().requiredSenderTypes().toString()));
                     }
                 })
-                .handler(NoPermissionException.class, (formatter, ctx) -> Component.text(Message.CHAT_NO_PERMS.getText()))
-                .handler(ArgumentParseException.class, (formatter, ctx) -> Component.text(ctx.exception().getCause().getMessage()))
+                .handler(NoPermissionException.class, (formatter, ctx) -> legacy(Message.CHAT_NO_PERMS.getText()))
+                .handler(ArgumentParseException.class, (formatter, ctx) -> legacy(ctx.exception().getCause().getMessage()))
                 .defaultCommandExecutionHandler()
                 .registerTo(this.manager);
         constructCommands();
+    }
+
+    /**
+     * the texts of messages.yml contain legacy colors
+     */
+    private static Component legacy(String text) {
+        return TextUtils.getLegacySerializer().deserialize(text);
     }
 
     private static LegacyPaperCommandManager<CommandSender> createPaperManager(EasyPrefix instance) {

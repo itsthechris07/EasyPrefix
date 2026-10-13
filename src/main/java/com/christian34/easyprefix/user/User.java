@@ -407,8 +407,9 @@ public class User {
         player.sendMessage(Message.setPlaceholders(message));
     }
 
-    public void sendAdminMessage(Message message) {
-        sendAdminMessage(message.getText(false));
+    public void sendAdminMessage(Message message, String... replacements) {
+        if (player == null) return;
+        player.sendMessage(message.admin(replacements));
     }
 
     public String getUniqueId() {

@@ -24,7 +24,7 @@ public class FileManager {
         try {
             load();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Debug.handleException(ex);
         }
     }
 

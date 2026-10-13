@@ -56,7 +56,9 @@ class DialogTextInput extends UserInput {
         Player player = user.getPlayer();
         List<DialogBody> body = new ArrayList<>();
         if (error != null) body.add(DialogBody.plainMessage(legacy(error), 400));
-        body.add(DialogBody.plainMessage(legacy(Message.DIALOG_PREVIEW.getText()).append(preview.apply(text)), 400));
+        // siblings, so the preview does not inherit the color of the label
+        body.add(DialogBody.plainMessage(Component.empty().append(legacy(Message.DIALOG_PREVIEW.getText()))
+                .append(preview.apply(text)), 400));
 
         ActionButton save = button(Message.DIALOG_BTN_SAVE, player, input -> {
             String invalid = validator.apply(input);

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockbukkit.mockbukkit.simulate.entity.PlayerSimulation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -49,6 +50,25 @@ class UserInterfaceTest extends PluginTestBase {
     private static Material itemAt(PlayerMock player, int slot) {
         ItemStack item = player.getOpenInventory().getTopInventory().getItem(slot);
         return item == null ? Material.AIR : item.getType();
+    }
+
+    /**
+     * the texts of the open menu come from messages.yml: no tag, color code or placeholder may be left
+     */
+    private static void assertTextsAreRendered(PlayerMock player) {
+        List<Component> texts = new ArrayList<>();
+        texts.add(player.getOpenInventory().title());
+        for (ItemStack item : player.getOpenInventory().getTopInventory().getContents()) {
+            if (item == null || !item.hasItemMeta()) continue;
+            if (item.getItemMeta().displayName() != null) texts.add(item.getItemMeta().displayName());
+            if (item.lore() != null) texts.addAll(item.lore());
+        }
+        for (Component component : texts) {
+            String text = PlainTextComponentSerializer.plainText().serialize(component);
+            // values of groups are shown as they are configured (placeholders, hover lines also with tags)
+            if (text.contains("«") || text.startsWith("| ")) continue;
+            assertFalse(text.matches(".*(<[a-z_#/]|§|%[a-z_]+%).*"), "text is not rendered: " + text);
+        }
     }
 
     private static void assertNoRawTags(PlayerMock player) {
@@ -194,14 +214,43 @@ class UserInterfaceTest extends PluginTestBase {
     @Nested
     class Setup {
         // setup: "xxaxbxcxx"; settings: " a b c d ", " e f g h ", " n o p q ", " i j m k " + footer
-        static final int GROUPS = 11, SETTINGS = 13;
-        static final int HANDLE_CHAT = 10, COLOR_ICONS = 12, COOLDOWN = 23, TAB_LIST = 28, NAME_TAGS = 32, MENTIONS = 34, BACK = 45;
+        static final int GROUPS = 11, SETTINGS = 13, TAGS = 15;
+        static final int HANDLE_CHAT = 10, COLOR_ICONS = 12, COOLDOWN = 23, BLACKLIST = 25, TAB_LIST = 28, NAME_TAGS = 32, MENTIONS = 34, BACK = 45;
 
         private PlayerMock openSettings() {
             PlayerMock admin = addAdmin("Admin");
             new UserInterface(user(admin)).openPageSetup();
             click(admin, SETTINGS);
             return admin;
+        }
+
+        @Test
+        void textsOfAllPagesAreRendered() {
+            PlayerMock admin = addAdmin("Admin");
+            plugin.getGroupHandler().createSubgroup("Vip");
+            plugin.getConfigData().save(ConfigData.Keys.CUSTOM_LAYOUT_BLACKLIST, List.of("badword"));
+            UserInterface gui = new UserInterface(user(admin));
+
+            gui.openPageSetup();
+            assertTextsAreRendered(admin);
+            for (int page : new int[]{GROUPS, SETTINGS, TAGS}) {
+                gui.openPageSetup();
+                click(admin, page);
+                assertTextsAreRendered(admin);
+                // the first entry of the lists
+                if (page != SETTINGS) {
+                    click(admin, 9);
+                    assertTextsAreRendered(admin);
+                }
+            }
+            for (int page : new int[]{COLOR_ICONS, BLACKLIST}) {
+                gui.openPageSetup();
+                click(admin, SETTINGS);
+                click(admin, page);
+                assertTextsAreRendered(admin);
+            }
+            gui.openPageColorGroup(plugin.getGroupHandler().getGroup("default"));
+            assertTextsAreRendered(admin);
         }
 
         @Test
