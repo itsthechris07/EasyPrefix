@@ -85,6 +85,10 @@ dependencies {
     }
 }
 
+// the plugin jar and the tests get the rewritten InventoryGui
+configurations.runtimeClasspath {
+    attributes.attribute(bukkitEnumsRewritten, true)
+}
 configurations.testRuntimeClasspath {
     attributes.attribute(bukkitEnumsRewritten, true)
 }
@@ -242,9 +246,10 @@ hangarPublish {
 }
 
 /**
- * Bukkit enums like Sound became interfaces. Paper rewrites old plugin bytecode on load (enum method calls become
- * interface calls), MockBukkit doesn't - so InventoryGui, which is compiled against the old api, crashes in the tests.
- * This does the same rewrite for the test classpath only; the plugin jar is not touched.
+ * Bukkit enums like Sound became interfaces. Paper only rewrites the bytecode of plugins with an old api-version on
+ * load (enum method calls become interface calls) and MockBukkit never does - so InventoryGui, which is compiled
+ * against the old api, would crash. This does the same rewrite at build time for the plugin jar and the tests,
+ * which allows a current api-version in plugin.yml.
  */
 abstract class BukkitEnumRewrite : TransformAction<TransformParameters.None> {
     @get:InputArtifact
