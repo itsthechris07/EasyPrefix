@@ -5,7 +5,7 @@ import java.util.zip.ZipOutputStream
 
 buildscript {
     repositories { mavenCentral() }
-    dependencies { classpath("org.ow2.asm:asm:9.10.1") }
+    dependencies { classpath("org.ow2.asm:asm:9.11.1") }
 }
 
 plugins {
