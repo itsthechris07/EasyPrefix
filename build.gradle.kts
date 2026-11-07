@@ -72,7 +72,7 @@ dependencies {
     }
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // provided by the real server
-    testRuntimeOnly("org.xerial:sqlite-jdbc:3.53.4.0")
+    testRuntimeOnly("org.xerial:sqlite-jdbc:3.54.1.0")
     testRuntimeOnly("com.mysql:mysql-connector-j:26.7.0")
     testRuntimeOnly("org.apache.commons:commons-lang3:3.21.0")
 
