@@ -158,6 +158,11 @@ chat_cmd_invalid_syntax: '<red>Invalid syntax. Type <gray>"/ep help"</gray> for 
 chat_cmd_player_only: '<red>You cannot use this command in the console!'
 chat_cmd_invalid_sender: '<red>Invalid command sender. You must be of type %types%'
 chat_cmd_reloaded: '<green>Plugin has been reloaded!'
+# sent to admins on every join and once to the console when a new version is released on GitHub
+update_available:
+  - '%prefix% <gold><bold>A new version of EasyPrefix is available!'
+  - '%prefix% <gray>Installed: <red>%current%</red> - latest: <green>%latest%'
+  - '%prefix% <click:open_url:''%url%''><hover:show_text:''<gray>Open the release on GitHub''><aqua><underlined>%url%'
 chat_cmd_group_info:
   - ' '
   - '<gray>--------------=== <blue><bold>%group%</bold></blue> ===--------------'

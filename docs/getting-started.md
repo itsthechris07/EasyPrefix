@@ -71,7 +71,7 @@ show dialogs (e.g. older versions via ViaBackwards), set `text-input: chat` in `
 ## Updating
 
 Replace the jar in `plugins/` and restart. New options are added to `config.yml` and `messages.yml` automatically,
-the database is migrated on start. EasyPrefix tells admins on join when a new version is available.
+the database is migrated on start. EasyPrefix checks GitHub for new releases (on start, `/ep reload` and every 6 hours) and tells admins on every join, with a link to the release.
 
 `/reload` does **not** reload plugins on Paper 26. `/ep reload` reloads the files of EasyPrefix, but after an update a
 restart is required.

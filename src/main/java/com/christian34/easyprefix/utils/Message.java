@@ -2,6 +2,7 @@ package com.christian34.easyprefix.utils;
 
 import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.files.MessageData;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -134,6 +135,7 @@ public enum Message {
     CMD_PLAYER_ONLY("chat_cmd_player_only"),
     CMD_INVALID_SENDER("chat_cmd_invalid_sender"),
     CMD_RELOADED("chat_cmd_reloaded"),
+    UPDATE_AVAILABLE("update_available"),
     CMD_GROUP_INFO("chat_cmd_group_info"),
     CMD_GROUP_PREFIX_SET("chat_cmd_group_prefix_set"),
     CMD_GROUP_SUFFIX_SET("chat_cmd_group_suffix_set"),
@@ -252,6 +254,7 @@ public enum Message {
      * the prefix of messages for admins, players get the one of messages.yml (prefix_alt)
      */
     public static final String PREFIX = "§7[§9EasyPrefix§7] ";
+    private static final String PREFIX_MINI_MESSAGE = "<gray>[<blue>EasyPrefix</blue>]</gray>";
     private static final Pattern LEGACY_AMPERSAND = Pattern.compile("&([0-9a-fk-orxA-FK-ORX])");
     /**
      * the texts of messages.yml with legacy colors, each one is only parsed once
@@ -367,6 +370,24 @@ public enum Message {
     @NotNull
     public String[] lines(@NotNull String... replacements) {
         return getList(replacements).toArray(new String[0]);
+    }
+
+    /**
+     * @return the lines of a list as one component for admins (%prefix% is the one of the plugin): MiniMessage keeps
+     * click and hover events, which the legacy texts of {@link #getList(String...)} lose; the values of the
+     * placeholders are inserted as plain text
+     */
+    @NotNull
+    public Component component(@NotNull String... replacements) {
+        List<String> lines = messageData().getList(key);
+        String text = String.join("\n", lines.isEmpty() ? List.of(messageData().getText(key)) : lines)
+                .replace("%newline%", "\n");
+        if (text.indexOf('§') >= 0 || LEGACY_AMPERSAND.matcher(text).find()) {
+            return TextUtils.getLegacySerializer().deserialize(replace(setColors(text).replace("%prefix%", PREFIX.trim()), replacements));
+        }
+        String[] escaped = replacements.clone();
+        for (int i = 1; i < escaped.length; i += 2) escaped[i] = MiniMessage.miniMessage().escapeTags(escaped[i]);
+        return MiniMessage.miniMessage().deserialize(replace(text.replace("%prefix%", PREFIX_MINI_MESSAGE), escaped));
     }
 
     public String getPath() {
