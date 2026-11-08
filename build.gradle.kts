@@ -5,7 +5,7 @@ import java.util.zip.ZipOutputStream
 
 buildscript {
     repositories { mavenCentral() }
-    dependencies { classpath("org.ow2.asm:asm:9.10.1") }
+    dependencies { classpath("org.ow2.asm:asm:9.11.1") }
 }
 
 plugins {
@@ -61,8 +61,8 @@ dependencies {
     }
 
     // tests run the plugin against a mocked Paper server
-    testImplementation("io.papermc.paper:paper-api:26.2.build.132-stable")
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v26.2:4.117.0")
+    testImplementation("io.papermc.paper:paper-api:26.3.build.244-stable")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v26.3:4.119.0")
     testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.jetbrains:annotations:26.1.0")
@@ -72,8 +72,8 @@ dependencies {
     }
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // provided by the real server
-    testRuntimeOnly("org.xerial:sqlite-jdbc:3.53.4.0")
-    testRuntimeOnly("com.mysql:mysql-connector-j:26.7.0")
+    testRuntimeOnly("org.xerial:sqlite-jdbc:3.54.1.0")
+    testRuntimeOnly("com.mysql:mysql-connector-j:26.10.0")
     testRuntimeOnly("org.apache.commons:commons-lang3:3.21.0")
 
     // see BukkitEnumRewrite
@@ -205,7 +205,7 @@ modrinth {
     versionType = "release"
     uploadFile.set(tasks.shadowJar)
     gameVersions.addAll(minecraftVersions)
-    loaders.addAll("paper", "spigot")
+    loaders.addAll("paper", "folia")
     detectLoaders = false
     changelog = releaseNotes
     debugMode = providers.gradleProperty("publishDryRun").isPresent
