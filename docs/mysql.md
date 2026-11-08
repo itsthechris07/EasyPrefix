@@ -37,6 +37,17 @@ The first server only starts with the default groups in MySQL. To take over the 
 Both commands need `sql.enabled: true`. To go back to local storage, run `/ep database migrate`, set
 `sql.enabled: false` and restart.
 
+## When MySQL is not reachable
+
+If the database can't be reached on start or `/ep reload`, EasyPrefix keeps running on the local storage of this
+server (`groups.yml` and `storage.db`) and warns in the console; `/ep debug` shows `Storage: local (MySQL not reachable)`.
+Run `/ep reload` or restart once MySQL is back to switch to it again.
+
+- The local storage is what was there before - run `/ep database migrate` from time to time, so it holds a current
+  copy of your groups and players.
+- Changes made meanwhile are only saved on this server and are **not** copied to MySQL later.
+- `sql.fallback-to-local: false` disables the plugin instead (the behaviour of older versions).
+
 ## What is shared
 
 Groups, tags and all player data (group, tag, colors, custom prefixes, mention setting) are stored in MySQL.

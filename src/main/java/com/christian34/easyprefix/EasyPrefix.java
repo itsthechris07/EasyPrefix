@@ -67,6 +67,10 @@ public class EasyPrefix extends JavaPlugin {
     private ExpansionManager expansionManager;
     private DisplayManager displayManager;
     private StorageType storageType;
+    /**
+     * MySQL is enabled, but wasn't reachable: the plugin runs on the local storage until the next reload or restart
+     */
+    private boolean sqlFallback;
     private Updater updater;
     private CommandManager commandManager;
     private volatile MiniMessage miniMessage;
@@ -111,6 +115,14 @@ public class EasyPrefix extends JavaPlugin {
         return storageType;
     }
 
+    public boolean isSqlFallback() {
+        return sqlFallback;
+    }
+
+    public Updater getUpdater() {
+        return updater;
+    }
+
     public SQLDatabase getSqlDatabase() {
         return sqlDatabase;
     }
@@ -151,23 +163,11 @@ public class EasyPrefix extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED)) {
-            this.sqlDatabase = new SQLDatabase(this);
-            this.storageType = StorageType.SQL;
-            if (!this.sqlDatabase.connect()) {
-                Bukkit.getPluginManager().disablePlugin(this);
-                return;
-            }
-            this.sqlDatabase.startSynchronizer(this);
-            SharedConfig.load(this);
-        } else {
-            this.localDatabase = new LocalDatabase();
-            this.storageType = StorageType.LOCAL;
-            if (!this.localDatabase.connect()) {
-                Bukkit.getPluginManager().disablePlugin(this);
-                return;
-            }
+        if (!connectStorage()) {
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
+        if (storageType == StorageType.SQL) SharedConfig.load(this);
 
         loadFormats();
         this.updater = new Updater(this);
@@ -198,6 +198,46 @@ public class EasyPrefix extends JavaPlugin {
             Debug.handleException(ex);
         }
         displayManager.start();
+    }
+
+    /**
+     * Connects to MySQL if it is enabled, otherwise (or if it isn't reachable and the fallback is enabled) to the local
+     * storage.
+     *
+     * @return false if no storage could be opened
+     */
+    private boolean connectStorage() {
+        this.sqlFallback = false;
+        if (getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED)) {
+            SQLDatabase database = new SQLDatabase(this);
+            if (database.connect()) {
+                this.sqlDatabase = database;
+                this.storageType = StorageType.SQL;
+                database.startSynchronizer(this);
+                return true;
+            }
+            if (!getConfigData().getBoolean(ConfigData.Keys.SQL_FALLBACK)) return false;
+            this.sqlFallback = true;
+            Debug.warn("§c************************************************************");
+            Debug.warn("§cMySQL is not reachable - EasyPrefix runs on the local storage (groups.yml, storage.db).");
+            Debug.warn("§cChanges are only saved on this server and are NOT copied to MySQL later!");
+            Debug.warn("§cRestart the server or run /ep reload once MySQL is reachable again.");
+            Debug.warn("§c************************************************************");
+        }
+        this.localDatabase = new LocalDatabase();
+        this.storageType = StorageType.LOCAL;
+        return this.localDatabase.connect();
+    }
+
+    private void closeStorage() {
+        if (sqlDatabase != null) {
+            this.sqlDatabase.close();
+            this.sqlDatabase = null;
+        }
+        if (localDatabase != null) {
+            this.localDatabase.close();
+            this.localDatabase = null;
+        }
     }
 
     /**
@@ -243,12 +283,7 @@ public class EasyPrefix extends JavaPlugin {
 
     public void onDisable() {
         if (displayManager != null) displayManager.stop();
-        if (sqlDatabase != null) {
-            this.sqlDatabase.close();
-        }
-        if (localDatabase != null) {
-            this.localDatabase.close();
-        }
+        closeStorage();
         for (Player player : Bukkit.getOnlinePlayers()) {
             // on Folia other regions own the players
             if (player != null && Bukkit.isOwnedByCurrentRegion(player)) player.closeInventory();
@@ -383,7 +418,7 @@ public class EasyPrefix extends JavaPlugin {
         this.fileManager = new FileManager(this);
         this.updater.check();
         boolean sqlEnabled = getConfigData().getBoolean(ConfigData.Keys.SQL_ENABLED);
-        if (sqlEnabled != (this.storageType == StorageType.SQL)) {
+        if (sqlEnabled != (this.storageType == StorageType.SQL || sqlFallback)) {
             Debug.warn("************************************************************");
             Debug.warn("* WARNING: You MUST restart the server to " + (sqlEnabled ? "enable" : "disable") + " sql!");
             Debug.warn("* stopping plugin...");
@@ -391,19 +426,17 @@ public class EasyPrefix extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        if (sqlEnabled) {
-            this.sqlDatabase.close();
-            this.sqlDatabase = new SQLDatabase(this);
-            if (!this.sqlDatabase.connect()) {
-                Bukkit.getPluginManager().disablePlugin(this);
-                return;
-            }
-            this.sqlDatabase.startSynchronizer(this);
-            // config.yml was edited by hand: its shared settings go to the other servers
-            SharedConfig.upload(this);
-        } else {
-            this.localDatabase.close();
-            this.localDatabase.connect();
+        boolean wasSql = this.storageType == StorageType.SQL;
+        closeStorage();
+        if (!connectStorage()) {
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+        if (storageType == StorageType.SQL) {
+            // config.yml was edited by hand: its shared settings go to the other servers - after the fallback to the
+            // local storage the database wins, like on a start
+            if (wasSql) SharedConfig.upload(this);
+            else SharedConfig.load(this);
         }
         loadFormats();
         // groups and users keep the files they were loaded from, so both are loaded again

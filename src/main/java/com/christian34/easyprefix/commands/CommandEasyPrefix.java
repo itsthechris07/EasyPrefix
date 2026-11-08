@@ -266,7 +266,8 @@ public class CommandEasyPrefix {
         sender.sendMessage("§9Bukkit Version: §7" + Bukkit.getVersion());
         sender.sendMessage("§9Java Version: §7" + System.getProperty("java.version"));
         sender.sendMessage("§9Version Name: §7" + Bukkit.getBukkitVersion());
-        sender.sendMessage("§9Storage: §7" + ((getInstance().getStorageType() == StorageType.SQL) ? "MySQL" : "local"));
+        sender.sendMessage("§9Storage: §7" + ((getInstance().getStorageType() == StorageType.SQL) ? "MySQL"
+                : getInstance().isSqlFallback() ? "local (MySQL not reachable)" : "local"));
         sender.sendMessage("§9active EventHandler: §7" + HandlerList.getRegisteredListeners(getInstance().getPlugin()).size());
     }
 

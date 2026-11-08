@@ -20,6 +20,9 @@ config:
     username: 'username'
     password: 'password'
     table-prefix: 'ep'
+    # use the local storage (groups.yml, storage.db) if mysql is not reachable on start or reload, instead of disabling
+    # the plugin - changes made meanwhile are only saved on this server
+    fallback-to-local: true
   # allow easyprefix to set join and quit messages
   # messages can be changed in 'groups.yml'
   join-quit-messages:

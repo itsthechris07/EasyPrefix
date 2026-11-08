@@ -6,6 +6,7 @@ import com.christian34.easyprefix.groups.EasyGroup;
 import com.christian34.easyprefix.groups.Group;
 import com.christian34.easyprefix.groups.Subgroup;
 import com.christian34.easyprefix.listeners.ChatListener;
+import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.user.CustomLayout;
 import com.christian34.easyprefix.user.User;
 import com.christian34.easyprefix.user.UserPermission;
@@ -531,7 +532,8 @@ public class UserInterface {
         gui.addElement(aliasElement('i', Material.IRON_INGOT, Message.SETUP_ALIAS_PREFIX, "prefix", ConfigData.Keys.PREFIX_ALIAS));
         gui.addElement(aliasElement('j', Material.GOLD_INGOT, Message.SETUP_ALIAS_SUFFIX, "suffix", ConfigData.Keys.SUFFIX_ALIAS));
 
-        boolean sql = config.getBoolean(ConfigData.Keys.SQL_ENABLED);
+        // the storage in use: local while MySQL is enabled, but not reachable
+        boolean sql = instance.getStorageType() == StorageType.SQL;
         gui.addElement(new StaticGuiElement('m', new ItemStack(Material.ENDER_CHEST), click -> true,
                 Message.SETUP_BTN_STORAGE.lines("current", (sql ? Message.SETUP_STORAGE_MYSQL : Message.SETUP_STORAGE_LOCAL).getText())));
 

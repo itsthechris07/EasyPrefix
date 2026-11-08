@@ -1,6 +1,7 @@
 package com.christian34.easyprefix.files;
 
 import com.christian34.easyprefix.EasyPrefix;
+import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.Debug;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,6 +57,10 @@ public class FileManager {
 
     @Nullable
     public GroupsData getGroupsData() {
+        // MySQL is enabled, but not reachable: the groups come from groups.yml
+        if (groupsData == null && instance.getStorageType() == StorageType.LOCAL) {
+            this.groupsData = new GroupsData();
+        }
         return groupsData;
     }
 

@@ -64,6 +64,7 @@ public class ConfigData extends PluginFile {
         public static final String CUSTOM_LAYOUT_COOLDOWN = "user.custom-layout.cooldown";
         public static final String ENABLED = "enabled";
         public static final String SQL_ENABLED = "sql.enabled";
+        public static final String SQL_FALLBACK = "sql.fallback-to-local";
         public static final String HANDLE_CHAT = "chat.handle-chat";
         public static final String NAME_HOVER = "chat.name-hover";
         public static final String NAME_CLICK = "chat.name-click";

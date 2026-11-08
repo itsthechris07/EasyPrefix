@@ -21,6 +21,7 @@ New options are added to your file automatically on start, your values and comme
 | `sql.host`, `sql.port`, `sql.database` | `localhost`, `3306`, `EasyPrefix` | connection |
 | `sql.username`, `sql.password` | | login |
 | `sql.table-prefix` | `ep` | prefix of the table names, e.g. for several networks in one database |
+| `sql.fallback-to-local` | `true` | if MySQL is not reachable on start or `/ep reload`, run on `groups.yml` and `storage.db` instead of disabling the plugin |
 
 See [MySQL and multiple servers](mysql.md).
 
