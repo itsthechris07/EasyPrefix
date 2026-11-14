@@ -71,9 +71,9 @@ class UpdaterTest extends PluginTestBase {
             PlayerMock admin = addAdmin("Admin" + i);
             server.getScheduler().performTicks(100);
             List<String> messages = messages(admin);
-            assertContains(messages, "A new version of EasyPrefix is available!");
+            assertContains(messages, "A new version is available");
             assertContains(messages, "99.0.0");
-            assertContains(messages, RELEASE.url());
+            assertContains(messages, "[Download]");
             admin.disconnect();
         }
     }
@@ -96,14 +96,14 @@ class UpdaterTest extends PluginTestBase {
         plugin.getUpdater().setLatest(RELEASE);
         PlayerMock player = addPlayer("Steve");
         server.getScheduler().performTicks(100);
-        assertNotContains(messages(player), "A new version of EasyPrefix is available!");
+        assertNotContains(messages(player), "A new version is available");
     }
 
     @Test
     void noMessageWithoutUpdate() {
         PlayerMock admin = addAdmin("Admin");
         server.getScheduler().performTicks(100);
-        assertNotContains(messages(admin), "A new version of EasyPrefix is available!");
+        assertNotContains(messages(admin), "A new version is available");
     }
 
 }

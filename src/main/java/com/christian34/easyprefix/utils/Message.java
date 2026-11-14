@@ -135,7 +135,7 @@ public enum Message {
     CMD_PLAYER_ONLY("chat_cmd_player_only"),
     CMD_INVALID_SENDER("chat_cmd_invalid_sender"),
     CMD_RELOADED("chat_cmd_reloaded"),
-    UPDATE_AVAILABLE("update_available"),
+    UPDATE_AVAILABLE("update_notification"),
     CMD_GROUP_INFO("chat_cmd_group_info"),
     CMD_GROUP_PREFIX_SET("chat_cmd_group_prefix_set"),
     CMD_GROUP_SUFFIX_SET("chat_cmd_group_suffix_set"),

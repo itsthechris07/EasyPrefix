@@ -127,7 +127,10 @@ public class Updater implements Listener {
             // only announced once per new release in the console, the admins get it on every join
             boolean announce = latest == null || !latest.equals(release);
             this.latest = release;
-            if (announce) notify(instance.getServer().getConsoleSender());
+            if (announce) {
+                notify(instance.getServer().getConsoleSender());
+                Debug.log("Download: " + release.url());
+            }
         });
     }
 
