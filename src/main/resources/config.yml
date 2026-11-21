@@ -12,6 +12,8 @@ config:
   # chat: the text is written into the chat ("quit" cancels) - for clients that can't show dialogs (e.g. older versions with ViaBackwards)
   text-input: dialog
   # connect multiple servers
+  # values can be read from environment variables, so the password doesn't stand in this file:
+  # password: "${EP_MYSQL_PASSWORD}" (see the MySQL page of the docs)
   sql:
     enabled: false
     host: 'localhost'

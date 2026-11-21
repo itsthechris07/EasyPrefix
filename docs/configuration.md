@@ -23,6 +23,9 @@ New options are added to your file automatically on start, your values and comme
 | `sql.table-prefix` | `ep` | prefix of the table names, e.g. for several networks in one database |
 | `sql.fallback-to-local` | `true` | if MySQL is not reachable on start or `/ep reload`, run on `groups.yml` and `storage.db` instead of disabling the plugin |
 
+Every value can reference an environment variable as `${NAME}`, e.g. `password: "${EP_MYSQL_PASSWORD}"`, so the
+password doesn't stand in `config.yml` - see [Keep the password out of config.yml](mysql.md#keep-the-password-out-of-configyml).
+
 See [MySQL and multiple servers](mysql.md).
 
 ## Join and quit messages - `join-quit-messages`

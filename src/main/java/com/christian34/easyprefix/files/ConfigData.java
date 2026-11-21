@@ -4,13 +4,16 @@ import com.christian34.easyprefix.EasyPrefix;
 import com.christian34.easyprefix.sql.database.SharedConfig;
 import com.christian34.easyprefix.sql.database.StorageType;
 import com.christian34.easyprefix.utils.TaskManager;
+import com.christian34.easyprefix.utils.Debug;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * EasyPrefix 2026.
@@ -45,6 +48,32 @@ public class ConfigData extends PluginFile {
             if (current.isConfigurationSection(section)) ignoredSections.add(section);
         }
         ConfigUpdater.update(EasyPrefix.getInstance().getPlugin(), "config.yml", file, ignoredSections);
+    }
+
+    /**
+     * {@code ${NAME}} is replaced with the environment variable (see {@link EnvironmentVariables})
+     */
+    @Override
+    public String getString(@NotNull String key) {
+        return EnvironmentVariables.resolve(super.getString(key), key);
+    }
+
+    /**
+     * also reads a number from an environment variable, e.g. {@code port: "${EP_MYSQL_PORT}"}
+     */
+    @Override
+    public int getInt(@NotNull String key) {
+        Object value = getData().get("config." + key);
+        if (value instanceof String text && text.contains("${")) {
+            String resolved = EnvironmentVariables.resolve(text, key);
+            try {
+                return Integer.parseInt(Objects.requireNonNull(resolved).trim());
+            } catch (NumberFormatException ex) {
+                Debug.warn("'" + key + "' in config.yml is not a number");
+                return 0;
+            }
+        }
+        return super.getInt(key);
     }
 
     /**

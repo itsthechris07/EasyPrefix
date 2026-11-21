@@ -8,7 +8,7 @@ EasyPrefix uses the MySQL driver that comes with Paper, no extra plugin is neede
 
 ## Setup
 
-1. Create a database and a user for EasyPrefix.
+1. Create a database and a user for EasyPrefix (not root, see [A user of its own](#a-mysql-user-of-its-own)).
 2. Enter the connection in `config.yml` on **every** server:
    ```yaml
    sql:
@@ -24,6 +24,67 @@ EasyPrefix uses the MySQL driver that comes with Paper, no extra plugin is neede
 
 Servers with the same database **and** the same `table-prefix` share their data. Use different prefixes to put several
 networks into one database.
+
+## Keep the password out of config.yml
+
+`config.yml` is often shared - in a support chat, with an AI assistant or in git. Any value in it can reference an
+environment variable as `${NAME}`, which EasyPrefix replaces when it reads the config:
+
+```yaml
+sql:
+  enabled: true
+  host: 'db.example.com'
+  username: 'easyprefix'
+  password: "${EP_MYSQL_PASSWORD}"
+```
+
+The file keeps `${EP_MYSQL_PASSWORD}`, also when EasyPrefix saves it. Values without `${...}` work as before. The
+other connection values can come from variables as well (`host: "${EP_MYSQL_HOST}"`, `port: "${EP_MYSQL_PORT}"`). If
+a variable isn't set, the console warns once with its name and the value is empty. Set the variable where the server
+is started:
+
+**Start script (Linux)** - `start.sh`:
+
+```bash
+export EP_MYSQL_PASSWORD='your password'
+java -Xmx4G -jar paper.jar --nogui
+```
+
+**Start script (Windows)** - `start.bat`:
+
+```bat
+set "EP_MYSQL_PASSWORD=your password"
+java -Xmx4G -jar paper.jar --nogui
+```
+
+**Docker** - `docker run -e EP_MYSQL_PASSWORD='your password' ...`, or in `docker-compose.yml`:
+
+```yaml
+services:
+  minecraft:
+    environment:
+      EP_MYSQL_PASSWORD: "your password"
+```
+
+**Pterodactyl / Pelican** - the panel only passes the variables of the egg to the server. Add a variable
+`EP_MYSQL_PASSWORD` to the egg (admin area: *Nests* → egg → *Variables*; untick "Users Can View" if they shouldn't
+see it), then set its value on the server's *Startup* page.
+
+A start script still holds the password, but it is rarely shared - keep it out of git (or put the `export` into a file
+next to it that is not committed).
+
+### A MySQL user of its own
+
+Don't let EasyPrefix log in as `root`. Create a user that may only use its database, so a leaked password can't harm
+anything else:
+
+```sql
+CREATE DATABASE EasyPrefix;
+CREATE USER 'easyprefix'@'%' IDENTIFIED BY 'a long random password';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, REFERENCES ON EasyPrefix.* TO 'easyprefix'@'%';
+```
+
+Replace `%` with the IP of the Minecraft server if it always connects from the same address.
 
 ## Moving existing data
 
@@ -69,6 +130,7 @@ server can show prefixes in the tab list while another leaves it to a minigame p
 ## Troubleshooting
 
 - **The server can't connect**: check host, port and login, and that the MySQL user may connect from the server's
-  IP. The error is in the console on start.
+  IP. The error is in the console on start. With `${NAME}` in `config.yml`, look for a warning that the environment
+  variable isn't set (it is only passed to the server if it is set where the server is started).
 - **Changes don't show up on other servers**: all servers need the same `table-prefix`. A server that could not
   reach the database for some minutes reloads everything once it is back.
