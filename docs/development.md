@@ -108,6 +108,6 @@ zensical serve
 2. Tag it with the release note: `git tag -a v<version> -F notes.md` and `git push origin v<version>`.
 
 The [release workflow](https://github.com/itsthechris07/EasyPrefix/blob/master/.github/workflows/release.yml) builds the jar with tests, creates the GitHub release and
-publishes it to Modrinth. Versions with a `-` (e.g. `2.1.0-beta.1`) are pre-releases and only go to
-GitHub. Supported Minecraft versions are set in `minecraftVersions` in `build.gradle.kts`. Hangar and SpigotMC are
-updated by hand.
+publishes it to Modrinth and Hangar. Versions with a `-` (e.g. `2.1.0-beta.1`) are pre-releases and only go to
+GitHub. Supported Minecraft versions are set in `minecraftVersions` in `build.gradle.kts`. SpigotMC is updated by
+hand.
