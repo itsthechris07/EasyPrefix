@@ -11,6 +11,9 @@ updates:
       interval: "weekly"
     ignore:
       - dependency-name: "annotations"
+      # compiled against the oldest supported version on purpose (1.21.x servers run on Java 21);
+      # dependabot would bump it together with the test paper-api, so that one is bumped by hand with MockBukkit
+      - dependency-name: "io.papermc.paper:paper-api"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
