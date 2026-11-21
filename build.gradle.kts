@@ -46,7 +46,7 @@ dependencies {
     compileOnly("net.milkbowl.vault:VaultUnlockedAPI:2.20") {
         exclude(group = "org.bukkit")
     }
-    compileOnly("org.apache.commons:commons-lang3:3.21.0")
+    compileOnly("org.apache.commons:commons-lang3:3.22.0")
 
     implementation("org.incendo:cloud-annotations:2.1.0")
     implementation("org.incendo:cloud-paper:2.0.1")
@@ -74,7 +74,7 @@ dependencies {
     // provided by the real server
     testRuntimeOnly("org.xerial:sqlite-jdbc:3.54.1.0")
     testRuntimeOnly("com.mysql:mysql-connector-j:26.10.0")
-    testRuntimeOnly("org.apache.commons:commons-lang3:3.21.0")
+    testRuntimeOnly("org.apache.commons:commons-lang3:3.22.0")
 
     // see BukkitEnumRewrite
     attributesSchema { attribute(bukkitEnumsRewritten) }
