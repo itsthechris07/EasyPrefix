@@ -75,6 +75,15 @@
   border-radius: 6px;
 }
 
+/* Zensical replaces the search form with a button that opens the search dialog */
+@media screen and (min-width: 60em) {
+  .md-search__button {
+    background-color: var(--ep-surface);
+    border: 1px solid var(--ep-border);
+    border-radius: 6px;
+  }
+}
+
 /* headings like the wordmark */
 .md-typeset h1,
 .md-typeset h2,

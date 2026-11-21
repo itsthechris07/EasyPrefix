@@ -24,6 +24,8 @@ nav:
 
 theme:
   name: material
+  # keeps the look of Material for MkDocs, brand.css and wordmark.js rely on its markup
+  variant: classic
   logo: assets/logo.svg
   favicon: assets/logo.svg
   icon:
@@ -80,6 +82,7 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.superfences
 
+# zensical build --strict fails on broken links and anchors
 validation:
-  links:
-    anchors: warn
+  invalid_links: true
+  invalid_link_anchors: true

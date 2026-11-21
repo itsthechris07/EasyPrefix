@@ -88,19 +88,19 @@ directly), the Paper command manager (tests use `TestCommandManager`).
 
 ## Documentation
 
-The documentation in `docs/` is published with [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) on
+The documentation in `docs/` is published with [Zensical](https://zensical.org/) on
 [GitHub Pages](https://itsthechris07.github.io/EasyPrefix/) by the [docs workflow](https://github.com/itsthechris07/EasyPrefix/blob/master/.github/workflows/docs.yml)
-on every push to `master`. Navigation and theme are in `mkdocs.yml`, the branding in `docs/stylesheets/brand.css`.
+on every push to `master`. Navigation and theme are in `mkdocs.yml` (Zensical reads it, `variant: classic` keeps the look of Material for MkDocs), the branding in `docs/stylesheets/brand.css`.
 New pages must be added to `nav` in `mkdocs.yml`.
 
 Preview it locally:
 
 ```bash
-pip install "mkdocs>=1.6,<2" "mkdocs-material==9.7.7"
-mkdocs serve
+pip install "zensical==0.1.3"
+zensical serve
 ```
 
-`mkdocs build --strict` fails on broken links, like the workflow does.
+`zensical build --strict` fails on broken links and anchors, like the workflow does.
 
 ## Releasing
 
