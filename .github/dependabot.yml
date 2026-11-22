@@ -14,6 +14,9 @@ updates:
       # compiled against the oldest supported version on purpose (1.21.x servers run on Java 21);
       # dependabot would bump it together with the test paper-api, so that one is bumped by hand with MockBukkit
       - dependency-name: "io.papermc.paper:paper-api"
+      # repo.minebench.de answers Dependabot (not Gradle) with an authentication error, which fails the whole run;
+      # InventoryGui is a snapshot, update it by hand
+      - dependency-name: "de.themoep:inventorygui"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
